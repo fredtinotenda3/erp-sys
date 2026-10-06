@@ -1,0 +1,674 @@
+// ============================================================================
+// Manufacturing Operations Intelligence Platform — Prisma schema
+// Revised 2026-10-06 per Phase 0 approval notes. See ARCHITECTURE.md
+// "Phase 0 Addendum" for the reasoning behind each change vs the original
+// draft. This file is the actual source of truth once migrations run.
+//
+// Prisma ORM 7 (verified against the published registry and current docs on
+// 2026-10-06 — pin exact versions in package.json, do not float `latest`:
+// the `prisma` CLI package's "latest" dist-tag currently resolves to an
+// 8.0.0 release candidate while `@prisma/client`'s "latest" is still 7.10.0
+// stable; installing both unpinned would silently mix CLI/client majors).
+// Prisma 7 made the Rust-free "prisma-client" generator the default,
+// replacing "prisma-client-js". It requires an explicit `output` path and a
+// driver adapter (@prisma/adapter-pg) at runtime — see src/server/shared/db.ts
+// and prisma.config.ts. Full setup commands are in docs/SETUP_COMMANDS.md.
+// Import note: application code imports from "<output>/client" (e.g.
+// "src/generated/prisma/client"), NOT the bare output directory — the
+// generator emits its importable entry point as a client.ts/.js file there,
+// confirmed against current Prisma v7 docs though not run in this sandbox
+// (see ARCHITECTURE.md "Known verification gap"). Every import in this
+// delivery already uses that suffix — if your actual generated output
+// differs, it's a one-line fix per file.
+//
+// All UUID primary keys use @default(dbgenerated("gen_random_uuid()")),
+// NOT @default(uuid()). This is not cosmetic: @default(uuid()) is a
+// Prisma-Client-level default — the UUID is generated in the Node process
+// before the INSERT is sent, and Prisma's migration-SQL generator does NOT
+// emit a `DEFAULT` clause for it on a @db.Uuid column (confirmed against
+// prisma/prisma#14138, "@default is not turned into SQL in migration when
+// using @db.Uuid with Postgres"). Under that default, any insert path that
+// doesn't go through this exact Prisma Client — docs/schema.sql run
+// directly via psql, a future ETL job, a DBA fixing data by hand — would
+// hit a NOT NULL column with no server-side default and fail, or worse,
+// require every caller to remember to generate its own UUID. dbgenerated
+// makes Postgres itself own the default (`DEFAULT gen_random_uuid()` in the
+// actual DDL), matching docs/schema.sql exactly and making the column
+// correct regardless of which client writes to it.
+//
+// Six things are NOT expressible in this file and need a hand-written SQL
+// follow-up migration (exact steps in SETUP_COMMANDS.md):
+//   1. job_cost_actual.gross_profit — a Postgres GENERATED column.
+//      Deliberately NOT modeled as a Prisma field at all (approval note #1):
+//      read it via $queryRaw against the real column name, never through
+//      the Prisma model, so there is no risk of Prisma Client trying to
+//      write to a column the database itself computes.
+//   2. app_user's `email = lower(email)` CHECK constraint.
+//   3. The partial unique index: one ACTIVE BillOfMaterial per product.
+//   4. The stock_balance-maintaining trigger (SECURITY DEFINER — see
+//      schema.sql for why that's load-bearing, not optional) and the
+//      negative-stock / currency-mixing / branch-consistency checks inside it.
+//   5. The two immutability triggers' underlying function (prevent_mutation)
+//      and its four attachments (stock_movement, audit_log, exchange_rate,
+//      job_cost_actual) — see docs/db-roles-and-security.sql.
+//   6. job_material_cost_live / job_labour_cost_live views — left unmapped
+//      here by design (Phase 4 costing module queries them via $queryRaw);
+//      modeling them as Prisma `view` blocks would commit a Phase 1 schema
+//      to a Phase 4 concern it doesn't need yet.
+// ============================================================================
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("MIGRATION_DATABASE_URL") // mops_migrator — CLI/migrations ONLY.
+  // The running application NEVER uses this. Its Prisma Client is
+  // instantiated in src/server/shared/db.ts with a separately-configured
+  // @prisma/adapter-pg pointed at RUNTIME_DATABASE_URL (mops_runtime). These
+  // are two different env vars on purpose — see docs/SETUP_COMMANDS.md.
+}
+
+// ---------------------------------------------------------------------------
+// IAM / TENANCY                                    — PHASE 1 (actually built)
+// ---------------------------------------------------------------------------
+
+enum Role {
+  OWNER_ADMIN
+  OPERATIONS_MANAGER
+  PRODUCTION_MANAGER
+  INVENTORY_MANAGER
+  PRODUCTION_OPERATOR
+  FINANCE_MANAGER
+  VIEWER
+}
+
+model Organization {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String
+  baseCurrency String   @map("base_currency") @db.Char(3)
+  currency     Currency @relation(fields: [baseCurrency], references: [code])
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  branches  Branch[]
+  users     User[]
+  auditLogs AuditLog[]
+  items     Item[]
+  customers Customer[]
+
+  @@map("organization")
+}
+
+model Branch {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId     String   @map("org_id") @db.Uuid
+  org       Organization @relation(fields: [orgId], references: [id])
+  name      String
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  userAccess     UserBranchAccess[]
+  warehouses     Warehouse[]
+  productionJobs ProductionJob[]
+  salesOrders    SalesOrder[]
+  auditLogs      AuditLog[]
+
+  @@unique([orgId, name])
+  @@unique([orgId, id]) // lets children do composite FK (orgId, branchId) -> Branch(orgId, id)
+  @@map("branch")
+}
+
+model User {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId        String   @map("org_id") @db.Uuid
+  org          Organization @relation(fields: [orgId], references: [id])
+  email        String   // lowercased by the application before every write/read; DB-enforced via manual CHECK (see header)
+  passwordHash String   @map("password_hash")
+  fullName     String   @map("full_name")
+  role         Role
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  branchAccessGranted UserBranchAccess[] @relation("accessForUser")
+  branchAccessGivenBy UserBranchAccess[] @relation("grantedByUser")
+  sessions            UserSession[]
+  auditActions        AuditLog[]
+
+  @@unique([orgId, email])
+  @@unique([orgId, id])
+  @@map("app_user")
+}
+
+model UserBranchAccess {
+  orgId     String   @map("org_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  user      User     @relation("accessForUser", fields: [orgId, userId], references: [orgId, id], onDelete: Cascade)
+  branchId  String   @map("branch_id") @db.Uuid
+  branch    Branch   @relation(fields: [orgId, branchId], references: [orgId, id], onDelete: Cascade)
+  grantedAt DateTime @default(now()) @map("granted_at")
+  grantedBy String?  @map("granted_by") @db.Uuid
+  granter   User?    @relation("grantedByUser", fields: [grantedBy], references: [id])
+
+  @@id([userId, branchId])
+  @@map("user_branch_access")
+}
+
+model UserSession {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId     String    @map("org_id") @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  user      User      @relation(fields: [orgId, userId], references: [orgId, id], onDelete: Cascade)
+  tokenHash String    @unique @map("token_hash")
+  createdAt DateTime  @default(now()) @map("created_at")
+  expiresAt DateTime  @map("expires_at")
+  revokedAt DateTime? @map("revoked_at")
+  ipAddress String?   @map("ip_address")
+  userAgent String?   @map("user_agent")
+
+  @@map("user_session")
+}
+
+enum AuditAction {
+  create
+  update
+  delete
+  transition
+  grant
+  revoke
+}
+
+model AuditLog {
+  id          BigInt      @id @default(autoincrement())
+  orgId       String      @map("org_id") @db.Uuid
+  org         Organization @relation(fields: [orgId], references: [id])
+  branchId    String?     @map("branch_id") @db.Uuid
+  branch      Branch?     @relation(fields: [orgId, branchId], references: [orgId, id])
+  actorUserId String?     @map("actor_user_id") @db.Uuid
+  actor       User?       @relation(fields: [orgId, actorUserId], references: [orgId, id])
+  entityType  String      @map("entity_type") // intentionally free text — see schema.sql comment
+  entityId    String      @map("entity_id") @db.Uuid
+  action      AuditAction
+  beforeValue Json?       @map("before_value")
+  afterValue  Json?       @map("after_value")
+  reason      String?
+  createdAt   DateTime    @default(now()) @map("created_at")
+
+  @@index([entityType, entityId])
+  @@index([orgId, createdAt])
+  @@map("audit_log")
+}
+
+// ---------------------------------------------------------------------------
+// CURRENCY — platform-wide reference data, intentionally NOT org-scoped
+// ---------------------------------------------------------------------------
+
+enum RateSource {
+  RBZ_OFFICIAL
+  MARKET
+  MANUAL
+}
+
+model Currency {
+  code     String @id @db.Char(3)
+  name     String
+  decimals Int    @default(2)
+
+  organizations        Organization[]
+  exchangeRatesAsBase  ExchangeRate[] @relation("baseCurrency")
+  exchangeRatesAsQuote ExchangeRate[] @relation("quoteCurrency")
+
+  @@map("currency")
+}
+
+model ExchangeRate {
+  id            String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  baseCurrency  String     @map("base_currency") @db.Char(3)
+  base          Currency   @relation("baseCurrency", fields: [baseCurrency], references: [code])
+  quoteCurrency String     @map("quote_currency") @db.Char(3)
+  quote         Currency   @relation("quoteCurrency", fields: [quoteCurrency], references: [code])
+  rate          Decimal    @db.Decimal(18, 8)
+  asOfDate      DateTime   @map("as_of_date") @db.Date
+  source        RateSource
+  recordedById  String?    @map("recorded_by") @db.Uuid
+  recordedAt    DateTime   @default(now()) @map("recorded_at")
+
+  @@index([baseCurrency, quoteCurrency, source, asOfDate])
+  @@map("exchange_rate")
+}
+
+// ---------------------------------------------------------------------------
+// CATALOG                                              — LATER PHASE (design)
+// ---------------------------------------------------------------------------
+
+enum ItemType {
+  raw_material
+  consumable
+  spare_part
+  finished_good
+  wip
+}
+
+model Item {
+  id                   String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId                String   @map("org_id") @db.Uuid
+  org                  Organization @relation(fields: [orgId], references: [id])
+  sku                  String
+  name                 String
+  description          String?
+  uom                  String
+  itemType             ItemType @map("item_type")
+  isSellable           Boolean  @default(false) @map("is_sellable")
+  sellingPrice         Decimal? @map("selling_price") @db.Decimal(14, 4)
+  sellingPriceCurrency String?  @map("selling_price_currency") @db.Char(3)
+  standardCost         Decimal? @map("standard_cost") @db.Decimal(14, 4)
+  standardCostCurrency String?  @map("standard_cost_currency") @db.Char(3)
+  isActive             Boolean  @default(true) @map("is_active")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  bomsAsProduct        BillOfMaterial[]          @relation("productItem")
+  bomLinesAsMaterial    BomLine[]                @relation("materialItem")
+  salesOrderLines       SalesOrderLine[]
+  productionJobs        ProductionJob[]
+  materialRequirements  MaterialRequirement[]
+  stockMovements        StockMovement[]
+  stockBalances         StockBalance[]
+  stageTemplates        ProductionStageTemplate[]
+
+  @@unique([orgId, sku])
+  @@unique([orgId, id])
+  @@map("item")
+}
+
+enum BomStatus {
+  draft
+  active
+  superseded
+}
+
+model BillOfMaterial {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId         String    @map("org_id") @db.Uuid
+  productItemId String    @map("product_item_id") @db.Uuid
+  productItem   Item      @relation("productItem", fields: [orgId, productItemId], references: [orgId, id])
+  version       Int
+  status        BomStatus @default(draft) // partial unique index enforces exactly one ACTIVE per product — manual SQL, see header
+  effectiveFrom DateTime? @map("effective_from") @db.Date
+  createdById   String?   @map("created_by") @db.Uuid
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  lines          BomLine[]
+  productionJobs ProductionJob[]
+
+  @@unique([productItemId, version])
+  @@unique([orgId, id])
+  @@map("bill_of_material")
+}
+
+model BomLine {
+  id             String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId          String  @map("org_id") @db.Uuid
+  bomId          String  @map("bom_id") @db.Uuid
+  bom            BillOfMaterial @relation(fields: [orgId, bomId], references: [orgId, id], onDelete: Cascade)
+  materialItemId String  @map("material_item_id") @db.Uuid
+  materialItem   Item    @relation("materialItem", fields: [orgId, materialItemId], references: [orgId, id])
+  quantity       Decimal @db.Decimal(14, 4)
+  uom            String
+
+  @@index([bomId])
+  @@map("bom_line")
+}
+
+// ---------------------------------------------------------------------------
+// SALES                                                — LATER PHASE (design)
+// Customer is org-scoped, not branch-scoped — approved: Q5 = org-wide.
+// ---------------------------------------------------------------------------
+
+enum CustomerStatus {
+  active
+  inactive
+}
+
+model Customer {
+  id        String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId     String         @map("org_id") @db.Uuid
+  org       Organization   @relation(fields: [orgId], references: [id])
+  name      String
+  contact   String?
+  address   String?
+  status    CustomerStatus @default(active)
+  notes     String?
+  createdAt DateTime       @default(now()) @map("created_at")
+  updatedAt DateTime       @updatedAt @map("updated_at")
+
+  salesOrders    SalesOrder[]
+  productionJobs ProductionJob[]
+
+  @@unique([orgId, id])
+  @@map("customer")
+}
+
+enum SalesOrderStatus {
+  draft
+  confirmed
+  in_production
+  partially_delivered
+  delivered
+  closed
+  cancelled
+}
+
+model SalesOrder {
+  id                    String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId                 String           @map("org_id") @db.Uuid
+  branchId              String           @map("branch_id") @db.Uuid
+  branch                Branch           @relation(fields: [orgId, branchId], references: [orgId, id])
+  orderNumber           String           @map("order_number")
+  customerId            String           @map("customer_id") @db.Uuid
+  customer              Customer         @relation(fields: [orgId, customerId], references: [orgId, id])
+  status                SalesOrderStatus @default(draft)
+  currency              String           @db.Char(3)
+  requestedDeliveryDate DateTime?        @map("requested_delivery_date") @db.Date
+  createdAt             DateTime         @default(now()) @map("created_at")
+  updatedAt             DateTime         @updatedAt @map("updated_at")
+
+  lines SalesOrderLine[]
+
+  @@unique([orgId, orderNumber])
+  @@unique([orgId, id])
+  @@map("sales_order")
+}
+
+model SalesOrderLine {
+  id           String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId        String     @map("org_id") @db.Uuid
+  salesOrderId String     @map("sales_order_id") @db.Uuid
+  salesOrder   SalesOrder @relation(fields: [orgId, salesOrderId], references: [orgId, id], onDelete: Cascade)
+  itemId       String     @map("item_id") @db.Uuid
+  item         Item       @relation(fields: [orgId, itemId], references: [orgId, id])
+  quantity     Decimal    @db.Decimal(14, 4)
+  unitPrice    Decimal    @map("unit_price") @db.Decimal(14, 4)
+  currency     String     @db.Char(3)
+
+  productionJob ProductionJob?
+
+  @@unique([orgId, id])
+  @@map("sales_order_line")
+}
+
+// ---------------------------------------------------------------------------
+// PRODUCTION                                           — LATER PHASE (design)
+// ---------------------------------------------------------------------------
+
+enum ProductionJobStatus {
+  planned
+  released
+  in_progress
+  on_hold
+  completed
+  closed
+  cancelled
+}
+
+model ProductionJob {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId            String   @map("org_id") @db.Uuid
+  branchId         String   @map("branch_id") @db.Uuid
+  branch           Branch   @relation(fields: [orgId, branchId], references: [orgId, id])
+  jobNumber        String   @map("job_number")
+  salesOrderLineId String?  @unique @map("sales_order_line_id") @db.Uuid
+  salesOrderLine   SalesOrderLine? @relation(fields: [orgId, salesOrderLineId], references: [orgId, id])
+  customerId       String?  @map("customer_id") @db.Uuid
+  customer         Customer? @relation(fields: [orgId, customerId], references: [orgId, id])
+  productItemId    String   @map("product_item_id") @db.Uuid
+  productItem      Item     @relation(fields: [orgId, productItemId], references: [orgId, id])
+  bomId            String   @map("bom_id") @db.Uuid
+  bom              BillOfMaterial @relation(fields: [orgId, bomId], references: [orgId, id])
+  plannedQty       Decimal  @map("planned_qty") @db.Decimal(14, 4)
+  plannedStart     DateTime? @map("planned_start") @db.Date
+  plannedEnd       DateTime? @map("planned_end") @db.Date
+  actualStart      DateTime? @map("actual_start")
+  actualEnd        DateTime? @map("actual_end")
+  status           ProductionJobStatus @default(planned)
+  quotedAmount     Decimal? @map("quoted_amount") @db.Decimal(14, 4)
+  quotedCurrency   String?  @map("quoted_currency") @db.Char(3)
+  createdById      String?  @map("created_by") @db.Uuid
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  materialRequirements MaterialRequirement[]
+  labourRecords        LabourRecord[]
+  costEstimate         JobCostEstimate?
+  costActual           JobCostActual?
+  stages               ProductionJobStage[]
+  qualityRecords       QualityRecord[]
+
+  @@unique([orgId, jobNumber])
+  @@unique([orgId, id])
+  @@index([branchId, status])
+  @@map("production_job")
+}
+
+model MaterialRequirement {
+  id             String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId          String  @map("org_id") @db.Uuid
+  jobId          String  @map("job_id") @db.Uuid
+  job            ProductionJob @relation(fields: [orgId, jobId], references: [orgId, id], onDelete: Cascade)
+  materialItemId String  @map("material_item_id") @db.Uuid
+  materialItem   Item    @relation(fields: [orgId, materialItemId], references: [orgId, id])
+  expectedQty    Decimal @map("expected_qty") @db.Decimal(14, 4)
+  uom            String
+
+  @@index([jobId])
+  @@map("material_requirement")
+}
+
+model LabourRecord {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId           String   @map("org_id") @db.Uuid
+  jobId           String   @map("job_id") @db.Uuid
+  job             ProductionJob @relation(fields: [orgId, jobId], references: [orgId, id])
+  userId          String?  @map("user_id") @db.Uuid
+  hours           Decimal  @db.Decimal(8, 2)
+  rate            Decimal  @db.Decimal(14, 4)
+  rateCurrency    String   @map("rate_currency") @db.Char(3)
+  clientRequestId String?  @map("client_request_id") @db.Uuid
+  recordedAt      DateTime @default(now()) @map("recorded_at")
+
+  @@unique([orgId, clientRequestId]) // composite, not global — see approval note #5
+  @@index([jobId])
+  @@map("labour_record")
+}
+
+model ProductionStageTemplate {
+  id            String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId         String  @map("org_id") @db.Uuid
+  productItemId String? @map("product_item_id") @db.Uuid
+  product       Item?   @relation(fields: [orgId, productItemId], references: [orgId, id])
+  stageName     String  @map("stage_name")
+  sequence      Int
+
+  @@unique([orgId, id])
+  @@map("production_stage_template")
+}
+
+enum ProductionJobStageStatus {
+  pending
+  in_progress
+  completed
+}
+
+model ProductionJobStage {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId           String   @map("org_id") @db.Uuid
+  jobId           String   @map("job_id") @db.Uuid
+  job             ProductionJob @relation(fields: [orgId, jobId], references: [orgId, id], onDelete: Cascade)
+  stageName       String   @map("stage_name")
+  sequence        Int
+  status          ProductionJobStageStatus @default(pending)
+  startedAt       DateTime? @map("started_at")
+  completedAt     DateTime? @map("completed_at")
+  operatorUserId  String?  @map("operator_user_id") @db.Uuid
+  qtyProcessed    Decimal? @map("qty_processed") @db.Decimal(14, 4)
+  qtyRejected     Decimal? @map("qty_rejected") @db.Decimal(14, 4)
+  notes           String?
+  clientRequestId String?  @map("client_request_id") @db.Uuid
+
+  qualityRecords QualityRecord[]
+
+  @@unique([orgId, id])
+  @@unique([orgId, clientRequestId])
+  @@map("production_job_stage")
+}
+
+enum RejectReason {
+  wrong_dimensions
+  damaged
+  paint_defect
+  missing_component
+  other
+}
+
+model QualityRecord {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId           String        @map("org_id") @db.Uuid
+  jobId           String        @map("job_id") @db.Uuid
+  job             ProductionJob @relation(fields: [orgId, jobId], references: [orgId, id])
+  jobStageId      String?       @map("job_stage_id") @db.Uuid
+  jobStage        ProductionJobStage? @relation(fields: [orgId, jobStageId], references: [orgId, id])
+  producedQty     Decimal       @map("produced_qty") @db.Decimal(14, 4)
+  acceptedQty     Decimal       @map("accepted_qty") @db.Decimal(14, 4)
+  rejectedQty     Decimal       @map("rejected_qty") @db.Decimal(14, 4)
+  rejectReason    RejectReason? @map("reject_reason")
+  notes           String?
+  evidenceRef     String?       @map("evidence_ref")
+  clientRequestId String?       @map("client_request_id") @db.Uuid
+  recordedAt      DateTime      @default(now()) @map("recorded_at")
+
+  @@unique([orgId, clientRequestId])
+  @@map("quality_record")
+}
+
+// ---------------------------------------------------------------------------
+// INVENTORY                                            — LATER PHASE (design)
+// ---------------------------------------------------------------------------
+
+model Warehouse {
+  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId     String  @map("org_id") @db.Uuid
+  branchId  String  @map("branch_id") @db.Uuid
+  branch    Branch  @relation(fields: [orgId, branchId], references: [orgId, id])
+  name      String
+  isActive  Boolean @default(true) @map("is_active")
+
+  stockMovements StockMovement[]
+  stockBalances  StockBalance[]
+
+  @@unique([branchId, name])
+  @@unique([orgId, id])
+  @@map("warehouse")
+}
+
+enum MovementType {
+  purchase_receipt
+  material_issue
+  material_return
+  production_consumption
+  finished_goods_receipt
+  sale_delivery
+  adjustment
+  stock_transfer_out
+  stock_transfer_in
+}
+
+enum ReferenceType {
+  production_job
+  purchase_order
+  sales_order
+  manual
+}
+
+model StockMovement {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId           String        @map("org_id") @db.Uuid
+  branchId        String        @map("branch_id") @db.Uuid // denormalized from warehouse.branchId, validated by trigger
+  itemId          String        @map("item_id") @db.Uuid
+  item            Item          @relation(fields: [orgId, itemId], references: [orgId, id])
+  warehouseId     String        @map("warehouse_id") @db.Uuid
+  warehouse       Warehouse     @relation(fields: [orgId, warehouseId], references: [orgId, id])
+  movementType    MovementType  @map("movement_type")
+  quantity        Decimal       @db.Decimal(14, 4) // signed
+  unitCost        Decimal?      @map("unit_cost") @db.Decimal(14, 4) // required on receipts; system-stamped on consumption — see trigger
+  currency        String?       @db.Char(3)
+  referenceType   ReferenceType? @map("reference_type")
+  referenceId     String?       @map("reference_id") @db.Uuid
+  reason          String?
+  clientRequestId String?       @map("client_request_id") @db.Uuid
+  createdById     String?       @map("created_by") @db.Uuid
+  occurredAt      DateTime      @default(now()) @map("occurred_at")
+  syncedAt        DateTime      @default(now()) @map("synced_at")
+
+  @@unique([orgId, clientRequestId])
+  @@index([itemId, warehouseId, occurredAt])
+  @@index([referenceType, referenceId])
+  @@map("stock_movement")
+}
+
+// Written ONLY by the trg_stock_movement_before_insert trigger (SECURITY
+// DEFINER — see schema.sql). No repository function should ever call
+// prisma.stockBalance.create/update/upsert; this model exists for reads only.
+model StockBalance {
+  orgId                    String   @map("org_id") @db.Uuid
+  itemId                   String   @map("item_id") @db.Uuid
+  item                     Item     @relation(fields: [orgId, itemId], references: [orgId, id])
+  warehouseId              String   @map("warehouse_id") @db.Uuid
+  warehouse                Warehouse @relation(fields: [orgId, warehouseId], references: [orgId, id])
+  quantity                 Decimal  @default(0) @db.Decimal(14, 4)
+  averageUnitCost          Decimal? @map("average_unit_cost") @db.Decimal(14, 4)
+  averageUnitCostCurrency  String?  @map("average_unit_cost_currency") @db.Char(3)
+  updatedAt                DateTime @default(now()) @map("updated_at")
+
+  @@id([itemId, warehouseId])
+  @@map("stock_balance")
+}
+
+// ---------------------------------------------------------------------------
+// COSTING                                               — LATER PHASE (design)
+// ---------------------------------------------------------------------------
+
+model JobCostEstimate {
+  orgId                 String   @map("org_id") @db.Uuid
+  jobId                 String   @id @map("job_id") @db.Uuid
+  job                   ProductionJob @relation(fields: [orgId, jobId], references: [orgId, id])
+  estimatedMaterialCost Decimal  @map("estimated_material_cost") @db.Decimal(14, 4)
+  estimatedLabourCost   Decimal? @map("estimated_labour_cost") @db.Decimal(14, 4)
+  estimatedOverheadCost Decimal? @map("estimated_overhead_cost") @db.Decimal(14, 4)
+  currency              String   @db.Char(3)
+  computedAt            DateTime @default(now()) @map("computed_at")
+
+  @@map("job_cost_estimate")
+}
+
+// gross_profit deliberately NOT modeled here — see header. Every other field
+// is written exactly ONCE, at job completion, and never updated again; the
+// immutability trigger on this table (schema.sql) enforces that at the DB
+// level too, not just by repository-layer discipline.
+model JobCostActual {
+  orgId               String   @map("org_id") @db.Uuid
+  jobId               String   @id @map("job_id") @db.Uuid
+  job                 ProductionJob @relation(fields: [orgId, jobId], references: [orgId, id])
+  actualMaterialCost  Decimal  @map("actual_material_cost") @db.Decimal(14, 4)
+  actualLabourCost    Decimal? @map("actual_labour_cost") @db.Decimal(14, 4)
+  actualOverheadCost  Decimal? @map("actual_overhead_cost") @db.Decimal(14, 4)
+  currency            String   @db.Char(3)
+  exchangeRateId      String?  @map("exchange_rate_id") @db.Uuid
+  revenue             Decimal? @db.Decimal(14, 4)
+  snapshottedAt       DateTime @default(now()) @map("snapshotted_at")
+
+  @@map("job_cost_actual")
+}
