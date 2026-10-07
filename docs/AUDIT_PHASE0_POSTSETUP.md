@@ -619,4 +619,42 @@ npx vitest run
 - [ ] `UPDATE audit_log ... WHERE false` fails with the immutable-table error
 - [ ] `npx vitest run` — all 23 existing tests still pass
 
+---
+
+## Structural Consolidation Addendum (Round 3, 2026-10-07)
+
+This section records a change to **file location only** — none of the findings
+above (including the file paths they cite under `src/app/api/v1/*`) describe
+the current repository layout anymore. They are left as originally written
+because this is a point-in-time audit report; this addendum is the pointer
+to what moved.
+
+**What changed:** the repository had both `app/` (the untouched
+create-next-app scaffold) and `src/app/api/v1/*` (all 9 real route handlers)
+at the same time. Per the Phase 1 architectural decision, `app/` is now the
+single Next.js App Router location. The 9 route handlers were moved:
+
+```
+src/app/api/v1/*  →  app/api/v1/*
+```
+
+with every relative import inside them rewritten to still resolve into
+`src/server/*` (same `../` depth, `src/` inserted immediately before
+`server/`), and no other change — same authentication, authorization,
+capability checks, tenant/branch isolation, request/response contracts,
+status codes, validation, audit logging, and service-layer behavior as
+before the move. `src/app/` no longer exists. `src/server/shared/*` and
+`src/server/modules/*` were not touched or relocated.
+
+The root `app/page.tsx` / `app/layout.tsx` scaffold (Geist fonts, default
+create-next-app boilerplate) was left exactly as it was — it was never a
+structural duplicate of anything under the old `src/app/` (which contained
+only `api/v1/*`, no page or layout), so there was nothing there to
+consolidate, and replacing scaffold UI is explicitly out of scope for this
+round (UI development starts in a later phase, once this foundation is
+verified).
+
+See the delivery report for this round (`app/` vs `src/` responsibilities,
+files moved, and verification results) for the full accounting.
+
 Only once every box is checked does Phase 1.5 start.

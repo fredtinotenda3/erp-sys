@@ -163,12 +163,20 @@ This is idempotent-safe to re-run (the function/trigger block it used to contain
 Sanity-check it worked — connect as `mops_runtime` and confirm it can insert but not update/delete the two tables that matter most (the inventory ledger, and the audit log — Finding 1 of the audit was specifically that `audit_log` had no enforcement here):
 ```powershell
 psql "<mops_runtime connection string>" -c "UPDATE stock_movement SET quantity = 1 WHERE false;"
-# expect: ERROR: UPDATE on stock_movement is not permitted — stock_movement is immutable/append-only.
+# expect: ERROR: permission denied for table stock_movement
 
 psql "<mops_runtime connection string>" -c "UPDATE audit_log SET reason = 'tampered' WHERE false;"
-# expect: ERROR: UPDATE on audit_log is not permitted — audit_log is immutable/append-only.
+# expect: ERROR: permission denied for table audit_log
 ```
-(`WHERE false` matches zero rows deliberately — this tests whether the trigger fires at all, without risking any real data even if it somehow didn't.)
+**CORRECTED 2026-10-07 (caught by actually running this against a real database, not just reading the SQL):** the error text above is `permission denied for table ...`, not the `prevent_mutation()` trigger's own message — and that is the GRANT layer blocking the statement, which Postgres checks before row-level triggers run at all. Stage 3 deliberately never grants `mops_runtime` UPDATE/DELETE on these tables, so that check fails first and the trigger is never reached for this role. `WHERE false` reinforces this: even if it matched a real row, a statement-level permission failure happens regardless of which rows would match.
+
+To see the `prevent_mutation()` trigger's own message fire — the second, independent layer, which exists so a future *accidental* `GRANT UPDATE` can't reopen these tables — you need a role that already has UPDATE/DELETE (e.g. `mops_migrator`, which owns every table) **and** a real matching row, since a `FOR EACH ROW` trigger body never runs over zero rows:
+```powershell
+psql "<mops_migrator connection string>" -c "INSERT INTO exchange_rate (base_currency, quote_currency, rate, as_of_date, source) VALUES ('USD','ZAR', 18.5, CURRENT_DATE, 'MANUAL');"
+psql "<mops_migrator connection string>" -c "UPDATE exchange_rate SET rate = 99 WHERE base_currency = 'USD';"
+# expect: ERROR: UPDATE on exchange_rate is not permitted — exchange_rate is immutable/append-only. Insert an offsetting or compensating row instead.
+```
+Both layers were verified for real during this hardening pass: the GRANT-level denial for `mops_runtime` above, and the trigger-level denial for `mops_migrator` against a real row, confirming the "belt and suspenders" design actually holds at both layers rather than only the one that happens to fire first.
 
 ---
 
@@ -183,7 +191,7 @@ psql -U mops_migrator -d mops_dev -c "INSERT INTO currency (code, name, decimals
 
 ## 8. Phase 1 — run and test the application code
 
-The Phase 1 deliverable (`src/server/shared/*`, `src/server/modules/iam/*`, `src/app/api/v1/*`) is included in this delivery. From your project root, with `.env` filled in as above:
+The Phase 1 deliverable (`src/server/shared/*`, `src/server/modules/iam/*`, `app/api/v1/*`) is included in this delivery. From your project root, with `.env` filled in as above:
 
 ```powershell
 npm run dev

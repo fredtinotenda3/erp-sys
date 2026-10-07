@@ -29,8 +29,10 @@ Two consequences:
 **Modular monolith inside the existing Next.js app**, with a hard internal boundary between HTTP transport and business logic:
 
 ```
+app/
+  api/v1/...                  → thin route handlers (parse, authn/z, call module, map response)
+  layout.tsx, page.tsx, ...   → Next.js App Router UI (routes/layouts/pages)
 src/
-  app/api/v1/...              → thin route handlers (parse, authn/z, call module, map response)
   server/
     modules/
       iam/                    → org, branch, user, role, session, audit
@@ -48,6 +50,8 @@ src/
 prisma/
   schema.prisma
 ```
+
+**Note on `app/` vs `src/`:** `app/` is the single Next.js App Router location — it holds both the API route handlers (`app/api/v1/...`) and all UI (layouts, pages, components) as the latter is built out in later phases. `src/server/` holds all business logic, authorization, database access, and module boundaries, and is deliberately *not* nested under `app/`: route handlers import from it, but it has zero Next.js imports in the other direction. There is exactly one App Router directory (`app/`); no `src/app/` exists or should be reintroduced.
 
 **Why not a separate API service:** nothing in the spec needs independent scaling, independent deployment cadence, or a different runtime from the web tier yet. A separate service buys you network hops, a second auth story, and double the deployment surface, for zero benefit at this stage — pure technical debt against your own "no scope creep" principle. Section 23 explicitly prefers a modular monolith unless there's a demonstrated reason, and there isn't one yet.
 
