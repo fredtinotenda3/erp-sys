@@ -98,6 +98,7 @@ export const OrganizationScalarFieldEnum = {
   id: 'id',
   name: 'name',
   baseCurrency: 'baseCurrency',
+  staleOrderThresholdDays: 'staleOrderThresholdDays',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -211,6 +212,7 @@ export const ItemScalarFieldEnum = {
   sellingPriceCurrency: 'sellingPriceCurrency',
   standardCost: 'standardCost',
   standardCostCurrency: 'standardCostCurrency',
+  reorderThreshold: 'reorderThreshold',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

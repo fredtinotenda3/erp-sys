@@ -29,11 +29,13 @@ export type AggregateItem = {
 export type ItemAvgAggregateOutputType = {
   sellingPrice: runtime.Decimal | null
   standardCost: runtime.Decimal | null
+  reorderThreshold: runtime.Decimal | null
 }
 
 export type ItemSumAggregateOutputType = {
   sellingPrice: runtime.Decimal | null
   standardCost: runtime.Decimal | null
+  reorderThreshold: runtime.Decimal | null
 }
 
 export type ItemMinAggregateOutputType = {
@@ -49,6 +51,7 @@ export type ItemMinAggregateOutputType = {
   sellingPriceCurrency: string | null
   standardCost: runtime.Decimal | null
   standardCostCurrency: string | null
+  reorderThreshold: runtime.Decimal | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -67,6 +70,7 @@ export type ItemMaxAggregateOutputType = {
   sellingPriceCurrency: string | null
   standardCost: runtime.Decimal | null
   standardCostCurrency: string | null
+  reorderThreshold: runtime.Decimal | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -85,6 +89,7 @@ export type ItemCountAggregateOutputType = {
   sellingPriceCurrency: number
   standardCost: number
   standardCostCurrency: number
+  reorderThreshold: number
   isActive: number
   createdAt: number
   updatedAt: number
@@ -95,11 +100,13 @@ export type ItemCountAggregateOutputType = {
 export type ItemAvgAggregateInputType = {
   sellingPrice?: true
   standardCost?: true
+  reorderThreshold?: true
 }
 
 export type ItemSumAggregateInputType = {
   sellingPrice?: true
   standardCost?: true
+  reorderThreshold?: true
 }
 
 export type ItemMinAggregateInputType = {
@@ -115,6 +122,7 @@ export type ItemMinAggregateInputType = {
   sellingPriceCurrency?: true
   standardCost?: true
   standardCostCurrency?: true
+  reorderThreshold?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -133,6 +141,7 @@ export type ItemMaxAggregateInputType = {
   sellingPriceCurrency?: true
   standardCost?: true
   standardCostCurrency?: true
+  reorderThreshold?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -151,6 +160,7 @@ export type ItemCountAggregateInputType = {
   sellingPriceCurrency?: true
   standardCost?: true
   standardCostCurrency?: true
+  reorderThreshold?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -256,6 +266,7 @@ export type ItemGroupByOutputType = {
   sellingPriceCurrency: string | null
   standardCost: runtime.Decimal | null
   standardCostCurrency: string | null
+  reorderThreshold: runtime.Decimal | null
   isActive: boolean
   createdAt: Date
   updatedAt: Date
@@ -297,6 +308,7 @@ export type ItemWhereInput = {
   sellingPriceCurrency?: Prisma.StringNullableFilter<"Item"> | string | null
   standardCost?: Prisma.DecimalNullableFilter<"Item"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.StringNullableFilter<"Item"> | string | null
+  reorderThreshold?: Prisma.DecimalNullableFilter<"Item"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFilter<"Item"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Item"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Item"> | Date | string
@@ -324,6 +336,7 @@ export type ItemOrderByWithRelationInput = {
   sellingPriceCurrency?: Prisma.SortOrderInput | Prisma.SortOrder
   standardCost?: Prisma.SortOrderInput | Prisma.SortOrder
   standardCostCurrency?: Prisma.SortOrderInput | Prisma.SortOrder
+  reorderThreshold?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -356,6 +369,7 @@ export type ItemWhereUniqueInput = Prisma.AtLeast<{
   sellingPriceCurrency?: Prisma.StringNullableFilter<"Item"> | string | null
   standardCost?: Prisma.DecimalNullableFilter<"Item"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.StringNullableFilter<"Item"> | string | null
+  reorderThreshold?: Prisma.DecimalNullableFilter<"Item"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFilter<"Item"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Item"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Item"> | Date | string
@@ -383,6 +397,7 @@ export type ItemOrderByWithAggregationInput = {
   sellingPriceCurrency?: Prisma.SortOrderInput | Prisma.SortOrder
   standardCost?: Prisma.SortOrderInput | Prisma.SortOrder
   standardCostCurrency?: Prisma.SortOrderInput | Prisma.SortOrder
+  reorderThreshold?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -409,6 +424,7 @@ export type ItemScalarWhereWithAggregatesInput = {
   sellingPriceCurrency?: Prisma.StringNullableWithAggregatesFilter<"Item"> | string | null
   standardCost?: Prisma.DecimalNullableWithAggregatesFilter<"Item"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.StringNullableWithAggregatesFilter<"Item"> | string | null
+  reorderThreshold?: Prisma.DecimalNullableWithAggregatesFilter<"Item"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolWithAggregatesFilter<"Item"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Item"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Item"> | Date | string
@@ -426,6 +442,7 @@ export type ItemCreateInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -453,6 +470,7 @@ export type ItemUncheckedCreateInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -478,6 +496,7 @@ export type ItemUpdateInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -505,6 +524,7 @@ export type ItemUncheckedUpdateInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -531,6 +551,7 @@ export type ItemCreateManyInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -548,6 +569,7 @@ export type ItemUpdateManyMutationInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -566,6 +588,7 @@ export type ItemUncheckedUpdateManyInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -604,6 +627,7 @@ export type ItemCountOrderByAggregateInput = {
   sellingPriceCurrency?: Prisma.SortOrder
   standardCost?: Prisma.SortOrder
   standardCostCurrency?: Prisma.SortOrder
+  reorderThreshold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -612,6 +636,7 @@ export type ItemCountOrderByAggregateInput = {
 export type ItemAvgOrderByAggregateInput = {
   sellingPrice?: Prisma.SortOrder
   standardCost?: Prisma.SortOrder
+  reorderThreshold?: Prisma.SortOrder
 }
 
 export type ItemMaxOrderByAggregateInput = {
@@ -627,6 +652,7 @@ export type ItemMaxOrderByAggregateInput = {
   sellingPriceCurrency?: Prisma.SortOrder
   standardCost?: Prisma.SortOrder
   standardCostCurrency?: Prisma.SortOrder
+  reorderThreshold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -645,6 +671,7 @@ export type ItemMinOrderByAggregateInput = {
   sellingPriceCurrency?: Prisma.SortOrder
   standardCost?: Prisma.SortOrder
   standardCostCurrency?: Prisma.SortOrder
+  reorderThreshold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -653,6 +680,7 @@ export type ItemMinOrderByAggregateInput = {
 export type ItemSumOrderByAggregateInput = {
   sellingPrice?: Prisma.SortOrder
   standardCost?: Prisma.SortOrder
+  reorderThreshold?: Prisma.SortOrder
 }
 
 export type ItemScalarRelationFilter = {
@@ -845,6 +873,7 @@ export type ItemCreateWithoutOrgInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -870,6 +899,7 @@ export type ItemUncheckedCreateWithoutOrgInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -925,6 +955,7 @@ export type ItemScalarWhereInput = {
   sellingPriceCurrency?: Prisma.StringNullableFilter<"Item"> | string | null
   standardCost?: Prisma.DecimalNullableFilter<"Item"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.StringNullableFilter<"Item"> | string | null
+  reorderThreshold?: Prisma.DecimalNullableFilter<"Item"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFilter<"Item"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Item"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Item"> | Date | string
@@ -942,6 +973,7 @@ export type ItemCreateWithoutBomsAsProductInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -968,6 +1000,7 @@ export type ItemUncheckedCreateWithoutBomsAsProductInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1008,6 +1041,7 @@ export type ItemUpdateWithoutBomsAsProductInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1034,6 +1068,7 @@ export type ItemUncheckedUpdateWithoutBomsAsProductInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1058,6 +1093,7 @@ export type ItemCreateWithoutBomLinesAsMaterialInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1084,6 +1120,7 @@ export type ItemUncheckedCreateWithoutBomLinesAsMaterialInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1124,6 +1161,7 @@ export type ItemUpdateWithoutBomLinesAsMaterialInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1150,6 +1188,7 @@ export type ItemUncheckedUpdateWithoutBomLinesAsMaterialInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1174,6 +1213,7 @@ export type ItemCreateWithoutSalesOrderLinesInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1200,6 +1240,7 @@ export type ItemUncheckedCreateWithoutSalesOrderLinesInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1240,6 +1281,7 @@ export type ItemUpdateWithoutSalesOrderLinesInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1266,6 +1308,7 @@ export type ItemUncheckedUpdateWithoutSalesOrderLinesInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1290,6 +1333,7 @@ export type ItemCreateWithoutProductionJobsInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1316,6 +1360,7 @@ export type ItemUncheckedCreateWithoutProductionJobsInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1356,6 +1401,7 @@ export type ItemUpdateWithoutProductionJobsInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1382,6 +1428,7 @@ export type ItemUncheckedUpdateWithoutProductionJobsInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1406,6 +1453,7 @@ export type ItemCreateWithoutMaterialRequirementsInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1432,6 +1480,7 @@ export type ItemUncheckedCreateWithoutMaterialRequirementsInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1472,6 +1521,7 @@ export type ItemUpdateWithoutMaterialRequirementsInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1498,6 +1548,7 @@ export type ItemUncheckedUpdateWithoutMaterialRequirementsInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1522,6 +1573,7 @@ export type ItemCreateWithoutStageTemplatesInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1548,6 +1600,7 @@ export type ItemUncheckedCreateWithoutStageTemplatesInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1588,6 +1641,7 @@ export type ItemUpdateWithoutStageTemplatesInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1614,6 +1668,7 @@ export type ItemUncheckedUpdateWithoutStageTemplatesInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1638,6 +1693,7 @@ export type ItemCreateWithoutStockMovementsInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1664,6 +1720,7 @@ export type ItemUncheckedCreateWithoutStockMovementsInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1704,6 +1761,7 @@ export type ItemUpdateWithoutStockMovementsInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1730,6 +1788,7 @@ export type ItemUncheckedUpdateWithoutStockMovementsInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1754,6 +1813,7 @@ export type ItemCreateWithoutStockBalancesInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1780,6 +1840,7 @@ export type ItemUncheckedCreateWithoutStockBalancesInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1820,6 +1881,7 @@ export type ItemUpdateWithoutStockBalancesInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1846,6 +1908,7 @@ export type ItemUncheckedUpdateWithoutStockBalancesInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1870,6 +1933,7 @@ export type ItemCreateManyOrgInput = {
   sellingPriceCurrency?: string | null
   standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1887,6 +1951,7 @@ export type ItemUpdateWithoutOrgInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1912,6 +1977,7 @@ export type ItemUncheckedUpdateWithoutOrgInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1937,6 +2003,7 @@ export type ItemUncheckedUpdateManyWithoutOrgInput = {
   sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2049,6 +2116,7 @@ export type ItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   sellingPriceCurrency?: boolean
   standardCost?: boolean
   standardCostCurrency?: boolean
+  reorderThreshold?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -2077,6 +2145,7 @@ export type ItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   sellingPriceCurrency?: boolean
   standardCost?: boolean
   standardCostCurrency?: boolean
+  reorderThreshold?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -2096,6 +2165,7 @@ export type ItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   sellingPriceCurrency?: boolean
   standardCost?: boolean
   standardCostCurrency?: boolean
+  reorderThreshold?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -2115,12 +2185,13 @@ export type ItemSelectScalar = {
   sellingPriceCurrency?: boolean
   standardCost?: boolean
   standardCostCurrency?: boolean
+  reorderThreshold?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orgId" | "sku" | "name" | "description" | "uom" | "itemType" | "isSellable" | "sellingPrice" | "sellingPriceCurrency" | "standardCost" | "standardCostCurrency" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["item"]>
+export type ItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orgId" | "sku" | "name" | "description" | "uom" | "itemType" | "isSellable" | "sellingPrice" | "sellingPriceCurrency" | "standardCost" | "standardCostCurrency" | "reorderThreshold" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["item"]>
 export type ItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   org?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   bomsAsProduct?: boolean | Prisma.Item$bomsAsProductArgs<ExtArgs>
@@ -2166,6 +2237,7 @@ export type $ItemPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     sellingPriceCurrency: string | null
     standardCost: runtime.Decimal | null
     standardCostCurrency: string | null
+    reorderThreshold: runtime.Decimal | null
     isActive: boolean
     createdAt: Date
     updatedAt: Date
@@ -2613,6 +2685,7 @@ export interface ItemFieldRefs {
   readonly sellingPriceCurrency: Prisma.FieldRef<"Item", 'String'>
   readonly standardCost: Prisma.FieldRef<"Item", 'Decimal'>
   readonly standardCostCurrency: Prisma.FieldRef<"Item", 'String'>
+  readonly reorderThreshold: Prisma.FieldRef<"Item", 'Decimal'>
   readonly isActive: Prisma.FieldRef<"Item", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Item", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Item", 'DateTime'>

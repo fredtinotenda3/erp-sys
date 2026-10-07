@@ -345,14 +345,6 @@ export type CurrencyUpdateOneRequiredWithoutOrganizationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CurrencyUpdateToOneWithWhereWithoutOrganizationsInput, Prisma.CurrencyUpdateWithoutOrganizationsInput>, Prisma.CurrencyUncheckedUpdateWithoutOrganizationsInput>
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type CurrencyCreateNestedOneWithoutExchangeRatesAsBaseInput = {
   create?: Prisma.XOR<Prisma.CurrencyCreateWithoutExchangeRatesAsBaseInput, Prisma.CurrencyUncheckedCreateWithoutExchangeRatesAsBaseInput>
   connectOrCreate?: Prisma.CurrencyCreateOrConnectWithoutExchangeRatesAsBaseInput

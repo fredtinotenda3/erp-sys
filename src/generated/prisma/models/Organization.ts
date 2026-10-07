@@ -20,14 +20,25 @@ export type OrganizationModel = runtime.Types.Result.DefaultSelection<Prisma.$Or
 
 export type AggregateOrganization = {
   _count: OrganizationCountAggregateOutputType | null
+  _avg: OrganizationAvgAggregateOutputType | null
+  _sum: OrganizationSumAggregateOutputType | null
   _min: OrganizationMinAggregateOutputType | null
   _max: OrganizationMaxAggregateOutputType | null
+}
+
+export type OrganizationAvgAggregateOutputType = {
+  staleOrderThresholdDays: number | null
+}
+
+export type OrganizationSumAggregateOutputType = {
+  staleOrderThresholdDays: number | null
 }
 
 export type OrganizationMinAggregateOutputType = {
   id: string | null
   name: string | null
   baseCurrency: string | null
+  staleOrderThresholdDays: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -36,6 +47,7 @@ export type OrganizationMaxAggregateOutputType = {
   id: string | null
   name: string | null
   baseCurrency: string | null
+  staleOrderThresholdDays: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -44,16 +56,26 @@ export type OrganizationCountAggregateOutputType = {
   id: number
   name: number
   baseCurrency: number
+  staleOrderThresholdDays: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
 
+export type OrganizationAvgAggregateInputType = {
+  staleOrderThresholdDays?: true
+}
+
+export type OrganizationSumAggregateInputType = {
+  staleOrderThresholdDays?: true
+}
+
 export type OrganizationMinAggregateInputType = {
   id?: true
   name?: true
   baseCurrency?: true
+  staleOrderThresholdDays?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -62,6 +84,7 @@ export type OrganizationMaxAggregateInputType = {
   id?: true
   name?: true
   baseCurrency?: true
+  staleOrderThresholdDays?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -70,6 +93,7 @@ export type OrganizationCountAggregateInputType = {
   id?: true
   name?: true
   baseCurrency?: true
+  staleOrderThresholdDays?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -113,6 +137,18 @@ export type OrganizationAggregateArgs<ExtArgs extends runtime.Types.Extensions.I
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: OrganizationAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: OrganizationSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: OrganizationMinAggregateInputType
@@ -143,6 +179,8 @@ export type OrganizationGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   _count?: OrganizationCountAggregateInputType | true
+  _avg?: OrganizationAvgAggregateInputType
+  _sum?: OrganizationSumAggregateInputType
   _min?: OrganizationMinAggregateInputType
   _max?: OrganizationMaxAggregateInputType
 }
@@ -151,9 +189,12 @@ export type OrganizationGroupByOutputType = {
   id: string
   name: string
   baseCurrency: string
+  staleOrderThresholdDays: number
   createdAt: Date
   updatedAt: Date
   _count: OrganizationCountAggregateOutputType | null
+  _avg: OrganizationAvgAggregateOutputType | null
+  _sum: OrganizationSumAggregateOutputType | null
   _min: OrganizationMinAggregateOutputType | null
   _max: OrganizationMaxAggregateOutputType | null
 }
@@ -180,6 +221,7 @@ export type OrganizationWhereInput = {
   id?: Prisma.UuidFilter<"Organization"> | string
   name?: Prisma.StringFilter<"Organization"> | string
   baseCurrency?: Prisma.StringFilter<"Organization"> | string
+  staleOrderThresholdDays?: Prisma.IntFilter<"Organization"> | number
   createdAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
   currency?: Prisma.XOR<Prisma.CurrencyScalarRelationFilter, Prisma.CurrencyWhereInput>
@@ -194,6 +236,7 @@ export type OrganizationOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   baseCurrency?: Prisma.SortOrder
+  staleOrderThresholdDays?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   currency?: Prisma.CurrencyOrderByWithRelationInput
@@ -211,6 +254,7 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.OrganizationWhereInput | Prisma.OrganizationWhereInput[]
   name?: Prisma.StringFilter<"Organization"> | string
   baseCurrency?: Prisma.StringFilter<"Organization"> | string
+  staleOrderThresholdDays?: Prisma.IntFilter<"Organization"> | number
   createdAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
   currency?: Prisma.XOR<Prisma.CurrencyScalarRelationFilter, Prisma.CurrencyWhereInput>
@@ -225,11 +269,14 @@ export type OrganizationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   baseCurrency?: Prisma.SortOrder
+  staleOrderThresholdDays?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.OrganizationCountOrderByAggregateInput
+  _avg?: Prisma.OrganizationAvgOrderByAggregateInput
   _max?: Prisma.OrganizationMaxOrderByAggregateInput
   _min?: Prisma.OrganizationMinOrderByAggregateInput
+  _sum?: Prisma.OrganizationSumOrderByAggregateInput
 }
 
 export type OrganizationScalarWhereWithAggregatesInput = {
@@ -239,6 +286,7 @@ export type OrganizationScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"Organization"> | string
   name?: Prisma.StringWithAggregatesFilter<"Organization"> | string
   baseCurrency?: Prisma.StringWithAggregatesFilter<"Organization"> | string
+  staleOrderThresholdDays?: Prisma.IntWithAggregatesFilter<"Organization"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Organization"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Organization"> | Date | string
 }
@@ -246,6 +294,7 @@ export type OrganizationScalarWhereWithAggregatesInput = {
 export type OrganizationCreateInput = {
   id?: string
   name: string
+  staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   currency: Prisma.CurrencyCreateNestedOneWithoutOrganizationsInput
@@ -260,6 +309,7 @@ export type OrganizationUncheckedCreateInput = {
   id?: string
   name: string
   baseCurrency: string
+  staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrgInput
@@ -272,6 +322,7 @@ export type OrganizationUncheckedCreateInput = {
 export type OrganizationUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currency?: Prisma.CurrencyUpdateOneRequiredWithoutOrganizationsNestedInput
@@ -286,6 +337,7 @@ export type OrganizationUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   baseCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branches?: Prisma.BranchUncheckedUpdateManyWithoutOrgNestedInput
@@ -299,6 +351,7 @@ export type OrganizationCreateManyInput = {
   id?: string
   name: string
   baseCurrency: string
+  staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -306,6 +359,7 @@ export type OrganizationCreateManyInput = {
 export type OrganizationUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -314,6 +368,7 @@ export type OrganizationUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   baseCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -322,14 +377,20 @@ export type OrganizationCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   baseCurrency?: Prisma.SortOrder
+  staleOrderThresholdDays?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type OrganizationAvgOrderByAggregateInput = {
+  staleOrderThresholdDays?: Prisma.SortOrder
 }
 
 export type OrganizationMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   baseCurrency?: Prisma.SortOrder
+  staleOrderThresholdDays?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -338,8 +399,13 @@ export type OrganizationMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   baseCurrency?: Prisma.SortOrder
+  staleOrderThresholdDays?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type OrganizationSumOrderByAggregateInput = {
+  staleOrderThresholdDays?: Prisma.SortOrder
 }
 
 export type OrganizationScalarRelationFilter = {
@@ -359,6 +425,14 @@ export type OrganizationOrderByRelationAggregateInput = {
 
 export type StringFieldUpdateOperationsInput = {
   set?: string
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -480,6 +554,7 @@ export type OrganizationUpdateOneRequiredWithoutCustomersNestedInput = {
 export type OrganizationCreateWithoutBranchesInput = {
   id?: string
   name: string
+  staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   currency: Prisma.CurrencyCreateNestedOneWithoutOrganizationsInput
@@ -493,6 +568,7 @@ export type OrganizationUncheckedCreateWithoutBranchesInput = {
   id?: string
   name: string
   baseCurrency: string
+  staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutOrgInput
@@ -520,6 +596,7 @@ export type OrganizationUpdateToOneWithWhereWithoutBranchesInput = {
 export type OrganizationUpdateWithoutBranchesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currency?: Prisma.CurrencyUpdateOneRequiredWithoutOrganizationsNestedInput
@@ -533,6 +610,7 @@ export type OrganizationUncheckedUpdateWithoutBranchesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   baseCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutOrgNestedInput
@@ -544,6 +622,7 @@ export type OrganizationUncheckedUpdateWithoutBranchesInput = {
 export type OrganizationCreateWithoutUsersInput = {
   id?: string
   name: string
+  staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   currency: Prisma.CurrencyCreateNestedOneWithoutOrganizationsInput
@@ -557,6 +636,7 @@ export type OrganizationUncheckedCreateWithoutUsersInput = {
   id?: string
   name: string
   baseCurrency: string
+  staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrgInput
@@ -584,6 +664,7 @@ export type OrganizationUpdateToOneWithWhereWithoutUsersInput = {
 export type OrganizationUpdateWithoutUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currency?: Prisma.CurrencyUpdateOneRequiredWithoutOrganizationsNestedInput
@@ -597,6 +678,7 @@ export type OrganizationUncheckedUpdateWithoutUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   baseCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branches?: Prisma.BranchUncheckedUpdateManyWithoutOrgNestedInput
@@ -608,6 +690,7 @@ export type OrganizationUncheckedUpdateWithoutUsersInput = {
 export type OrganizationCreateWithoutAuditLogsInput = {
   id?: string
   name: string
+  staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   currency: Prisma.CurrencyCreateNestedOneWithoutOrganizationsInput
@@ -621,6 +704,7 @@ export type OrganizationUncheckedCreateWithoutAuditLogsInput = {
   id?: string
   name: string
   baseCurrency: string
+  staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrgInput
@@ -648,6 +732,7 @@ export type OrganizationUpdateToOneWithWhereWithoutAuditLogsInput = {
 export type OrganizationUpdateWithoutAuditLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currency?: Prisma.CurrencyUpdateOneRequiredWithoutOrganizationsNestedInput
@@ -661,6 +746,7 @@ export type OrganizationUncheckedUpdateWithoutAuditLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   baseCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branches?: Prisma.BranchUncheckedUpdateManyWithoutOrgNestedInput
@@ -672,6 +758,7 @@ export type OrganizationUncheckedUpdateWithoutAuditLogsInput = {
 export type OrganizationCreateWithoutCurrencyInput = {
   id?: string
   name: string
+  staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   branches?: Prisma.BranchCreateNestedManyWithoutOrgInput
@@ -684,6 +771,7 @@ export type OrganizationCreateWithoutCurrencyInput = {
 export type OrganizationUncheckedCreateWithoutCurrencyInput = {
   id?: string
   name: string
+  staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrgInput
@@ -726,6 +814,7 @@ export type OrganizationScalarWhereInput = {
   id?: Prisma.UuidFilter<"Organization"> | string
   name?: Prisma.StringFilter<"Organization"> | string
   baseCurrency?: Prisma.StringFilter<"Organization"> | string
+  staleOrderThresholdDays?: Prisma.IntFilter<"Organization"> | number
   createdAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
 }
@@ -733,6 +822,7 @@ export type OrganizationScalarWhereInput = {
 export type OrganizationCreateWithoutItemsInput = {
   id?: string
   name: string
+  staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   currency: Prisma.CurrencyCreateNestedOneWithoutOrganizationsInput
@@ -746,6 +836,7 @@ export type OrganizationUncheckedCreateWithoutItemsInput = {
   id?: string
   name: string
   baseCurrency: string
+  staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrgInput
@@ -773,6 +864,7 @@ export type OrganizationUpdateToOneWithWhereWithoutItemsInput = {
 export type OrganizationUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currency?: Prisma.CurrencyUpdateOneRequiredWithoutOrganizationsNestedInput
@@ -786,6 +878,7 @@ export type OrganizationUncheckedUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   baseCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branches?: Prisma.BranchUncheckedUpdateManyWithoutOrgNestedInput
@@ -797,6 +890,7 @@ export type OrganizationUncheckedUpdateWithoutItemsInput = {
 export type OrganizationCreateWithoutCustomersInput = {
   id?: string
   name: string
+  staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   currency: Prisma.CurrencyCreateNestedOneWithoutOrganizationsInput
@@ -810,6 +904,7 @@ export type OrganizationUncheckedCreateWithoutCustomersInput = {
   id?: string
   name: string
   baseCurrency: string
+  staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrgInput
@@ -837,6 +932,7 @@ export type OrganizationUpdateToOneWithWhereWithoutCustomersInput = {
 export type OrganizationUpdateWithoutCustomersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currency?: Prisma.CurrencyUpdateOneRequiredWithoutOrganizationsNestedInput
@@ -850,6 +946,7 @@ export type OrganizationUncheckedUpdateWithoutCustomersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   baseCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branches?: Prisma.BranchUncheckedUpdateManyWithoutOrgNestedInput
@@ -861,6 +958,7 @@ export type OrganizationUncheckedUpdateWithoutCustomersInput = {
 export type OrganizationCreateManyCurrencyInput = {
   id?: string
   name: string
+  staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -868,6 +966,7 @@ export type OrganizationCreateManyCurrencyInput = {
 export type OrganizationUpdateWithoutCurrencyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branches?: Prisma.BranchUpdateManyWithoutOrgNestedInput
@@ -880,6 +979,7 @@ export type OrganizationUpdateWithoutCurrencyInput = {
 export type OrganizationUncheckedUpdateWithoutCurrencyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branches?: Prisma.BranchUncheckedUpdateManyWithoutOrgNestedInput
@@ -892,6 +992,7 @@ export type OrganizationUncheckedUpdateWithoutCurrencyInput = {
 export type OrganizationUncheckedUpdateManyWithoutCurrencyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -967,6 +1068,7 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   id?: boolean
   name?: boolean
   baseCurrency?: boolean
+  staleOrderThresholdDays?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   currency?: boolean | Prisma.CurrencyDefaultArgs<ExtArgs>
@@ -982,6 +1084,7 @@ export type OrganizationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   id?: boolean
   name?: boolean
   baseCurrency?: boolean
+  staleOrderThresholdDays?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   currency?: boolean | Prisma.CurrencyDefaultArgs<ExtArgs>
@@ -991,6 +1094,7 @@ export type OrganizationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   id?: boolean
   name?: boolean
   baseCurrency?: boolean
+  staleOrderThresholdDays?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   currency?: boolean | Prisma.CurrencyDefaultArgs<ExtArgs>
@@ -1000,11 +1104,12 @@ export type OrganizationSelectScalar = {
   id?: boolean
   name?: boolean
   baseCurrency?: boolean
+  staleOrderThresholdDays?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type OrganizationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "baseCurrency" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
+export type OrganizationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "baseCurrency" | "staleOrderThresholdDays" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
 export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   currency?: boolean | Prisma.CurrencyDefaultArgs<ExtArgs>
   branches?: boolean | Prisma.Organization$branchesArgs<ExtArgs>
@@ -1035,6 +1140,7 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     id: string
     name: string
     baseCurrency: string
+    staleOrderThresholdDays: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["organization"]>
@@ -1469,6 +1575,7 @@ export interface OrganizationFieldRefs {
   readonly id: Prisma.FieldRef<"Organization", 'String'>
   readonly name: Prisma.FieldRef<"Organization", 'String'>
   readonly baseCurrency: Prisma.FieldRef<"Organization", 'String'>
+  readonly staleOrderThresholdDays: Prisma.FieldRef<"Organization", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Organization", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Organization", 'DateTime'>
 }

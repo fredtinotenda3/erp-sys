@@ -1,26 +1,196 @@
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------------- *
+ * Theme tokens
+ *
+ * Two independent token sets, per docs/UX_UI_ARCHITECTURE.md §10.2/§10.3:
+ *
+ * 1. shadcn/ui's standard semantic set (background/foreground/primary/...)
+ *    — needed by every base component (Button, Input, DropdownMenu, ...)
+ *    regardless of this app's domain. Values below are shadcn's stock
+ *    "zinc" base color (§10.2: "Neutral base: zinc/slate greys for all
+ *    structural chrome... kept, extended, not replaced"), not invented
+ *    here.
+ *
+ * 2. This app's own §10.2 status palette (--status-*) and §5.2 label-chip
+ *    tokens, which the Badge component's two variant families (status
+ *    pill vs. data-provenance chip) consume. These are domain tokens, not
+ *    shadcn boilerplate — they exist because §10.2 mandates ONE fixed
+ *    semantic palette reused for every status concept app-wide (job
+ *    status, order status, stock level, quality result), not a different
+ *    ad-hoc palette per module. Every future status badge should reuse
+ *    these five tokens, never introduce a sixth color or a per-module
+ *    variant.
+ *
+ * Dark-mode variants for both sets sit in the `prefers-color-scheme: dark`
+ * block below, each re-picked for contrast at the same lightness-adjusted
+ * step — §10.2 explicitly calls out that amber/red in particular fail
+ * contrast if reused verbatim on a dark background, so these are not the
+ * same hex values with the background swapped.
+ * ---------------------------------------------------------------------- */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.141 0.005 285.823);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.141 0.005 285.823);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.141 0.005 285.823);
+  --primary: oklch(0.21 0.006 285.885);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.967 0.001 286.375);
+  --secondary-foreground: oklch(0.21 0.006 285.885);
+  --muted: oklch(0.967 0.001 286.375);
+  --muted-foreground: oklch(0.552 0.016 285.938);
+  --accent: oklch(0.967 0.001 286.375);
+  --accent-foreground: oklch(0.21 0.006 285.885);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.92 0.004 286.32);
+  --input: oklch(0.92 0.004 286.32);
+  --ring: oklch(0.705 0.015 286.067);
+  --radius: 0.5rem;
+
+  /* §10.2 status palette — semantic name is the contract, not the hex. */
+  --status-neutral: oklch(0.552 0.016 285.938); /* Zinc — draft, planned, PLANNED chip */
+  --status-neutral-bg: oklch(0.967 0.001 286.375);
+  --status-info: oklch(0.546 0.215 262.881); /* Blue — in_progress, confirmed, released */
+  --status-info-bg: oklch(0.932 0.032 255.585);
+  --status-warning: oklch(0.577 0.17 70); /* Amber — on_hold, low stock, over-issue */
+  --status-warning-bg: oklch(0.945 0.078 95);
+  --status-danger: oklch(0.577 0.245 27.325); /* Red — overdue, cancelled, shortage, rejects>0 */
+  --status-danger-bg: oklch(0.936 0.032 17.717);
+  --status-success: oklch(0.54 0.14 150); /* Green — completed, delivered, closed */
+  --status-success-bg: oklch(0.936 0.05 150);
+  /* Unavailable deliberately has no flat fill color — §10.2: "Hatched grey
+     (pattern, not just color)... deliberately not a flat color, so it's
+     distinguishable without relying on hue alone (WCAG 1.4.1)." The hatch
+     itself is the .provenance-unavailable utility class below, built from
+     these two greys via repeating-linear-gradient, not a solid --status-*
+     background. */
+  --status-unavailable-line: oklch(0.705 0.015 286.067);
+  --status-unavailable-bg: oklch(0.985 0 0);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: oklch(0.141 0.005 285.823);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.21 0.006 285.885);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.21 0.006 285.885);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.92 0.004 286.32);
+    --primary-foreground: oklch(0.21 0.006 285.885);
+    --secondary: oklch(0.274 0.006 286.033);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.274 0.006 286.033);
+    --muted-foreground: oklch(0.705 0.015 286.067);
+    --accent: oklch(0.274 0.006 286.033);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.552 0.016 285.938);
+
+    /* Re-picked for contrast on a dark background, not the light-mode hex
+       values reused as-is — see header comment. Amber and red in
+       particular need a lower-chroma, higher-lightness swing to stay
+       readable without blowing out. */
+    --status-neutral: oklch(0.705 0.015 286.067);
+    --status-neutral-bg: oklch(0.274 0.006 286.033);
+    --status-info: oklch(0.72 0.14 260);
+    --status-info-bg: oklch(0.3 0.08 262 / 40%);
+    --status-warning: oklch(0.79 0.14 80);
+    --status-warning-bg: oklch(0.3 0.08 70 / 40%);
+    --status-danger: oklch(0.75 0.17 25);
+    --status-danger-bg: oklch(0.32 0.1 25 / 40%);
+    --status-success: oklch(0.73 0.14 150);
+    --status-success-bg: oklch(0.3 0.07 150 / 40%);
+    --status-unavailable-line: oklch(0.552 0.016 285.938);
+    --status-unavailable-bg: oklch(0.21 0.006 285.885);
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-status-neutral: var(--status-neutral);
+  --color-status-neutral-bg: var(--status-neutral-bg);
+  --color-status-info: var(--status-info);
+  --color-status-info-bg: var(--status-info-bg);
+  --color-status-warning: var(--status-warning);
+  --color-status-warning-bg: var(--status-warning-bg);
+  --color-status-danger: var(--status-danger);
+  --color-status-danger-bg: var(--status-danger-bg);
+  --color-status-success: var(--status-success);
+  --color-status-success-bg: var(--status-success-bg);
+  --color-status-unavailable-line: var(--status-unavailable-line);
+  --color-status-unavailable-bg: var(--status-unavailable-bg);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    /* §10.1: "Single sans-serif family... Geist is already wired via
+       next/font; reuse it." The previous globals.css set a hardcoded
+       Arial/Helvetica stack here, which silently overrode the
+       --font-geist-sans variable layout.tsx already sets up — Geist was
+       wired but never actually rendered. Fixed here rather than carried
+       forward. */
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  }
+  /* §10.1: tabular-nums for every column of figures, non-negotiable. */
+  .tabular-nums,
+  table {
+    font-variant-numeric: tabular-nums;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  /* §10.2's "pattern, not just color" requirement for the UNAVAILABLE
+     label chip — a 45°, 4px-pitch diagonal hatch rather than a flat fill,
+     so the state reads correctly even for a viewer who can't distinguish
+     the grey from a neutral status chip by hue alone (WCAG 1.4.1). Used by
+     the Badge component's "unavailable" provenance variant once a screen
+     that renders real cost/quantity figures exists — see
+     ARCHITECTURE.md §9 / UX_UI_ARCHITECTURE.md §5.2 for why this state
+     must never be a plain "$0" or a blank cell. */
+  .provenance-unavailable-pattern {
+    background-image: repeating-linear-gradient(
+      45deg,
+      var(--status-unavailable-line) 0,
+      var(--status-unavailable-line) 1px,
+      transparent 1px,
+      transparent 5px
+    );
+    background-color: var(--status-unavailable-bg);
+  }
 }
