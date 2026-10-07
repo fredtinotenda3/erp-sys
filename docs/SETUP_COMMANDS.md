@@ -133,131 +133,13 @@ This connects using `MIGRATION_DATABASE_URL` (i.e. as `mops_migrator`), creates 
 
 ### 5a. Required manual SQL follow-up — objects Prisma can't express
 
-Six things in the verified design (listed in `schema.prisma`'s header comment) aren't expressible in Prisma's schema language and need a hand-written follow-up migration. Create one:
+**UPDATED 2026-10-07 — see `docs/AUDIT_PHASE0_POSTSETUP.md`'s Hardening Addendum for the full story.** The original version of this section said to create the `manual_constraints` migration and paste SQL into it. That migration was in fact created — and then, on the actual delivered database, left empty and applied as a no-op. The six-plus-eleven objects below were never applied anywhere. **Do not repeat that mistake by editing `prisma/migrations/20261007062213_manual_constraints/migration.sql` now that it's recorded as applied** — Prisma checksums each migration file at apply time, and editing an already-applied one makes `prisma migrate status`/`deploy` report it as "modified after it was applied," a migration-history inconsistency that's worse than the gap it would be fixing. Roll forward with a new migration instead:
 
 ```powershell
-npx prisma migrate dev --create-only --name manual_constraints
+npx prisma migrate dev --create-only --name harden_manual_constraints
 ```
 
-Open the new (empty) `prisma/migrations/<timestamp>_manual_constraints/migration.sql` and paste the following **exactly as written** — this is not new SQL, it's copied verbatim from `docs/schema.sql` and `docs/db-roles-and-security.sql`, both of which were verified end-to-end against a real `mops_runtime` connection during development (see `ARCHITECTURE.md` Phase 0 Addendum for what that verification caught):
-
-```sql
--- 1. Exactly one ACTIVE BillOfMaterial per product (schema.sql line ~218)
-CREATE UNIQUE INDEX uq_bom_one_active_per_product
-  ON bill_of_material (product_item_id) WHERE (status = 'active');
-
--- 2. email lowercase enforcement (schema.sql line ~92) — the app lowercases
---    on every write/lookup; this is the DB-level backstop, not the only guard.
-ALTER TABLE app_user ADD CONSTRAINT app_user_email_lowercase CHECK (email = lower(email));
-
--- 3. Stock balance maintenance trigger — weighted-average costing,
---    negative-stock blocking, currency-mix blocking, branch/warehouse
---    consistency. SECURITY DEFINER is load-bearing (see comment inline) —
---    do not remove it, mops_runtime only has SELECT on stock_balance.
-CREATE OR REPLACE FUNCTION trg_stock_movement_before_insert() RETURNS trigger
-SECURITY DEFINER SET search_path = public AS $$
-DECLARE
-  warehouse_branch_id uuid;
-  current_qty         numeric(14,4);
-  current_avg_cost    numeric(14,4);
-  current_avg_ccy     char(3);
-  new_qty             numeric(14,4);
-BEGIN
-  SELECT branch_id INTO warehouse_branch_id FROM warehouse WHERE id = NEW.warehouse_id;
-  IF warehouse_branch_id IS NULL THEN
-    RAISE EXCEPTION 'warehouse % does not exist', NEW.warehouse_id;
-  END IF;
-  IF NEW.branch_id IS DISTINCT FROM warehouse_branch_id THEN
-    RAISE EXCEPTION 'stock_movement.branch_id (%) does not match warehouse %''s branch (%)',
-      NEW.branch_id, NEW.warehouse_id, warehouse_branch_id;
-  END IF;
-
-  SELECT quantity, average_unit_cost, average_unit_cost_currency
-    INTO current_qty, current_avg_cost, current_avg_ccy
-  FROM stock_balance
-  WHERE item_id = NEW.item_id AND warehouse_id = NEW.warehouse_id
-  FOR UPDATE;
-
-  IF NOT FOUND THEN
-    current_qty := 0;
-    current_avg_cost := NULL;
-    current_avg_ccy := NULL;
-    INSERT INTO stock_balance (org_id, item_id, warehouse_id, quantity, average_unit_cost, average_unit_cost_currency)
-    VALUES (NEW.org_id, NEW.item_id, NEW.warehouse_id, 0, NULL, NULL);
-  END IF;
-
-  IF NEW.quantity > 0 THEN
-    IF NEW.unit_cost IS NULL THEN
-      RAISE EXCEPTION 'unit_cost is required for a positive stock_movement (movement_type=%)', NEW.movement_type;
-    END IF;
-    IF current_qty <= 0 OR current_avg_cost IS NULL THEN
-      current_avg_cost := NEW.unit_cost;
-      current_avg_ccy := NEW.currency;
-    ELSE
-      IF current_avg_ccy IS NOT NULL AND NEW.currency IS NOT NULL AND current_avg_ccy <> NEW.currency THEN
-        RAISE EXCEPTION 'item % in warehouse % has an existing % cost basis; a % receipt cannot be averaged into it — '
-          'convert to % using a recorded exchange rate before posting, or record this as a separate cost basis once '
-          'multi-currency valuation is supported', NEW.item_id, NEW.warehouse_id, current_avg_ccy, NEW.currency, current_avg_ccy;
-      END IF;
-      current_avg_cost := ((current_qty * current_avg_cost) + (NEW.quantity * NEW.unit_cost)) / (current_qty + NEW.quantity);
-    END IF;
-  ELSE
-    IF current_avg_cost IS NULL THEN
-      RAISE EXCEPTION 'cannot consume item % from warehouse %: no cost basis exists yet (no prior receipt recorded)',
-        NEW.item_id, NEW.warehouse_id;
-    END IF;
-    NEW.unit_cost := current_avg_cost;
-    NEW.currency := current_avg_ccy;
-  END IF;
-
-  new_qty := current_qty + NEW.quantity;
-
-  IF new_qty < 0 THEN
-    RAISE EXCEPTION 'movement would take item % in warehouse % negative (current %, movement % of type %): '
-      'negative stock is blocked', NEW.item_id, NEW.warehouse_id, current_qty, NEW.quantity, NEW.movement_type;
-  END IF;
-
-  UPDATE stock_balance
-  SET quantity = new_qty,
-      average_unit_cost = current_avg_cost,
-      average_unit_cost_currency = current_avg_ccy,
-      updated_at = now()
-  WHERE item_id = NEW.item_id AND warehouse_id = NEW.warehouse_id;
-
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER trg_stock_movement_before_insert
-  BEFORE INSERT ON stock_movement
-  FOR EACH ROW EXECUTE FUNCTION trg_stock_movement_before_insert();
-
--- 4. Generated column: gross profit on the immutable job-completion snapshot
-ALTER TABLE job_cost_actual
-  ADD COLUMN gross_profit numeric(14,4) GENERATED ALWAYS AS (
-    revenue - (actual_material_cost + coalesce(actual_labour_cost,0) + coalesce(actual_overhead_cost,0))
-  ) STORED;
-
--- 5. Live (in-progress) job cost views — ALWAYS grouped by currency, never
---    summed across currencies. Read via $queryRaw; not modeled in schema.prisma.
-CREATE VIEW job_material_cost_live AS
-SELECT
-  sm.reference_id AS job_id,
-  sm.currency,
-  SUM(sm.quantity * sm.unit_cost) * -1 AS material_cost
-FROM stock_movement sm
-WHERE sm.reference_type = 'production_job'
-  AND sm.movement_type = 'production_consumption'
-GROUP BY sm.reference_id, sm.currency;
-
-CREATE VIEW job_labour_cost_live AS
-SELECT
-  lr.job_id,
-  lr.rate_currency AS currency,
-  SUM(lr.hours * lr.rate) AS labour_cost
-FROM labour_record lr
-GROUP BY lr.job_id, lr.rate_currency;
-```
+This creates a fresh, empty `prisma/migrations/<timestamp>_harden_manual_constraints/migration.sql`. Open it and paste the SQL block below **exactly as written** (it is copied verbatim from `docs/schema.sql` and `docs/db-roles-and-security.sql`, both verified end-to-end against a real `mops_runtime` connection during development — see `ARCHITECTURE.md`'s Phase 0 Addendum). It now has **three** parts, not the original's one: the five objects originally specified here, the nine tables' worth of CHECK constraints (eleven individual constraints) the audit found were never flagged at all, and the four append-only immutability triggers that used to live in `docs/db-roles-and-security.sql` (moved here because they're pure schema DDL with no dependency on which role is connected — see that file's updated header for why). The full, current content of this migration is maintained in this repository at `prisma/migrations/20261007080000_harden_manual_constraints/migration.sql` — copy it from there rather than retyping it.
 
 Apply it:
 ```powershell
@@ -266,21 +148,27 @@ npx prisma migrate dev
 
 ---
 
-## 6. Stage 3 — runtime grants + immutability triggers
+## 6. Stage 3 — runtime grants
 
-Run **as the `postgres` superuser**, after Section 5's migrations have both been applied (the tables/views/trigger from Section 5 must already exist):
+**UPDATED 2026-10-07:** this file's title used to say "+ immutability triggers" — those moved into the `harden_manual_constraints` migration (Section 5a) since they're schema DDL, not role-targeted grants. This step is now grants only.
+
+Run **as your superuser-equivalent role** (on Neon: your project's default/owner role — see `docs/db-roles-and-security.sql`'s Neon note; there's no traditional `postgres` superuser login on Neon), after Section 5's migrations — including the hardening migration — have been applied:
 
 ```powershell
-psql -U postgres -d mops_dev -f docs/db-roles-and-security.sql
+psql "<your superuser-equivalent connection string>" -d mops_dev -f docs/db-roles-and-security.sql
 ```
 
-This is idempotent-safe to re-run (`CREATE OR REPLACE FUNCTION`), but note it does **not** re-run Stage 1 (role creation) — if you need to run it a second time after Stage 1 already succeeded, that's fine, the `GRANT`/`CREATE TRIGGER` statements will just reapply.
+This is idempotent-safe to re-run (the function/trigger block it used to contain is gone; what's left is plain `GRANT`, which Postgres allows re-running), but note it does **not** re-run Stage 1 (role creation) — if you need to run it a second time after Stage 1 already succeeded, that's fine.
 
-Sanity-check it worked — connect as `mops_runtime` and confirm it can insert but not update/delete the ledger:
+Sanity-check it worked — connect as `mops_runtime` and confirm it can insert but not update/delete the two tables that matter most (the inventory ledger, and the audit log — Finding 1 of the audit was specifically that `audit_log` had no enforcement here):
 ```powershell
-psql "postgresql://mops_runtime:change-me-runtime-password@localhost:5432/mops_dev" -c "UPDATE stock_movement SET quantity = 1 WHERE false;"
+psql "<mops_runtime connection string>" -c "UPDATE stock_movement SET quantity = 1 WHERE false;"
 # expect: ERROR: UPDATE on stock_movement is not permitted — stock_movement is immutable/append-only.
+
+psql "<mops_runtime connection string>" -c "UPDATE audit_log SET reason = 'tampered' WHERE false;"
+# expect: ERROR: UPDATE on audit_log is not permitted — audit_log is immutable/append-only.
 ```
+(`WHERE false` matches zero rows deliberately — this tests whether the trigger fires at all, without risking any real data even if it somehow didn't.)
 
 ---
 
@@ -334,3 +222,87 @@ Paste the text output back to me, or send me `audit-report.json`, and I'll tell 
 - Not touched your existing `package.json`, `tsconfig.json`, `next.config.*`, or any other file already in your project — nothing in this delivery modifies files I never received; only new files are added/changed, listed in the delivery zip.
 - Not run `npx prisma migrate dev` myself — confirmed network-blocked in my sandbox (see Section 5). Everything else in this file (the role setup, the manual-SQL follow-up, the grants script, the Vitest suite) **was** run and verified against a real local PostgreSQL 16 instance during development.
 - Not built any frontend/UI — Phase 1 scope per your instruction was auth, org/branch/user/role, audit log, and the module skeleton only.
+
+---
+
+## 11. Hardening verification — 2026-10-07, Phase 1.5 precondition
+
+Added after the post-setup audit found `20261007062213_manual_constraints` was applied empty (`docs/AUDIT_PHASE0_POSTSETUP.md`). Run this whole section after Sections 5a and 6 above, in order, before starting any catalog/BOM/production/costing code. Don't treat "the migration ran with no errors" as sufficient evidence by itself — the checks below confirm the actual objects exist.
+
+### 11.1 Confirm the migration state
+
+```powershell
+npx prisma migrate status
+```
+
+Expect `20261007061917_init`, `20261007062213_manual_constraints` (still empty — that's correct, it's the historical record of the gap, not a mistake to undo), and `20261007080000_harden_manual_constraints` all listed as applied, with no "modified after being applied" warnings.
+
+### 11.2 Confirm role state — do not assume
+
+Run as whichever role you're currently connecting with (reading role metadata needs no special privilege):
+
+```powershell
+psql "<any connection string that currently works>" -c "SELECT rolname, rolsuper, rolcreaterole, rolcreatedb, rolcanlogin FROM pg_roles WHERE rolname IN ('mops_migrator', 'mops_runtime');"
+```
+
+Zero rows means Section 2 (Stage 1) hasn't actually been run against this database yet — the app and the migrator are currently the same role. That's not catastrophic (everything in Section 5a's migration works correctly either way — see that migration's own header comment for why), but it means Stage 3's `GRANT`s have nothing to attach to and the `mops_runtime`-specific sanity checks below won't apply until you run Section 2.
+
+### 11.3 Confirm every hardened object actually exists
+
+```sql
+-- Partial unique BOM index
+SELECT indexname FROM pg_indexes WHERE indexname = 'uq_bom_one_active_per_product';
+-- expect 1 row
+
+-- Email lowercase CHECK
+SELECT conname FROM pg_constraint WHERE conname = 'app_user_email_lowercase';
+-- expect 1 row
+
+-- The 11 numeric/business-rule CHECK constraints (9 tables)
+SELECT conrelid::regclass AS table_name, conname, pg_get_constraintdef(oid) AS definition
+FROM pg_constraint
+WHERE conname IN (
+  'item_sellable_requires_price','bom_line_quantity_positive',
+  'sales_order_line_quantity_positive','sales_order_line_unit_price_nonnegative',
+  'production_job_planned_qty_positive','material_requirement_expected_qty_nonnegative',
+  'labour_record_hours_positive','labour_record_rate_nonnegative',
+  'quality_record_qty_consistency','stock_movement_quantity_nonzero',
+  'exchange_rate_rate_positive'
+)
+ORDER BY table_name;
+-- expect exactly 11 rows
+
+-- Stock movement costing trigger + function, and confirm SECURITY DEFINER
+SELECT tgname FROM pg_trigger WHERE tgname = 'trg_stock_movement_before_insert';
+SELECT proname, prosecdef FROM pg_proc WHERE proname = 'trg_stock_movement_before_insert';
+-- expect 1 row each; prosecdef must be true
+
+-- gross_profit generated column
+SELECT column_name, generation_expression FROM information_schema.columns
+WHERE table_name = 'job_cost_actual' AND column_name = 'gross_profit';
+-- expect 1 row, generation_expression non-null
+
+-- Live cost views
+SELECT table_name FROM information_schema.views
+WHERE table_name IN ('job_material_cost_live', 'job_labour_cost_live');
+-- expect 2 rows
+
+-- The four append-only immutability triggers
+SELECT tgrelid::regclass AS table_name, tgname FROM pg_trigger
+WHERE tgname IN ('trg_stock_movement_immutable', 'trg_audit_log_immutable',
+                  'trg_exchange_rate_immutable', 'trg_job_cost_actual_immutable')
+ORDER BY table_name;
+-- expect exactly 4 rows — this is the one that matters most (Finding 1)
+```
+
+### 11.4 Re-run the existing test suite
+
+```powershell
+npx vitest run
+```
+
+All 23 existing IAM tests should still pass — none of them touch the newly-constrained tables, so this is a cheap way to catch a typo in the migration before Phase 1.5 code gets written against it, not a test of the hardening itself (that's Section 11.3 and the sanity checks in Section 6).
+
+### 11.5 What "done" looks like
+
+Every query in 11.3 returns the expected row count, `npx prisma migrate status` shows no drift, both sanity-check `UPDATE`s in Section 6 fail with the expected error, and `npx vitest run` is still green. Only then start Phase 1.5.
