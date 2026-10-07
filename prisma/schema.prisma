@@ -64,11 +64,13 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("MIGRATION_DATABASE_URL") // mops_migrator — CLI/migrations ONLY.
-  // The running application NEVER uses this. Its Prisma Client is
-  // instantiated in src/server/shared/db.ts with a separately-configured
-  // @prisma/adapter-pg pointed at RUNTIME_DATABASE_URL (mops_runtime). These
-  // are two different env vars on purpose — see docs/SETUP_COMMANDS.md.
+  // Connection URL for Migrate lives in prisma.config.ts (datasource.url),
+  // not here — Prisma ORM 7 no longer accepts `url` inside schema files.
+  // mops_migrator role only. The running application NEVER uses this; its
+  // Prisma Client is instantiated in src/server/shared/db.ts with a
+  // separately-configured @prisma/adapter-pg pointed at RUNTIME_DATABASE_URL
+  // (mops_runtime). These are two different env vars on purpose — see
+  // docs/SETUP_COMMANDS.md.
 }
 
 // ---------------------------------------------------------------------------
@@ -421,7 +423,7 @@ model ProductionJob {
   branchId         String   @map("branch_id") @db.Uuid
   branch           Branch   @relation(fields: [orgId, branchId], references: [orgId, id])
   jobNumber        String   @map("job_number")
-  salesOrderLineId String?  @unique @map("sales_order_line_id") @db.Uuid
+  salesOrderLineId String?  @map("sales_order_line_id") @db.Uuid
   salesOrderLine   SalesOrderLine? @relation(fields: [orgId, salesOrderLineId], references: [orgId, id])
   customerId       String?  @map("customer_id") @db.Uuid
   customer         Customer? @relation(fields: [orgId, customerId], references: [orgId, id])
@@ -450,6 +452,7 @@ model ProductionJob {
 
   @@unique([orgId, jobNumber])
   @@unique([orgId, id])
+  @@unique([orgId, salesOrderLineId]) // backs the 1:1 FK above — a single-column @unique on salesOrderLineId isn't enough once the relation's fields list is composite
   @@index([branchId, status])
   @@map("production_job")
 }
@@ -651,6 +654,7 @@ model JobCostEstimate {
   currency              String   @db.Char(3)
   computedAt            DateTime @default(now()) @map("computed_at")
 
+  @@unique([orgId, jobId]) // jobId alone is @id (unique), but the composite relation needs the exact [orgId, jobId] pair declared
   @@map("job_cost_estimate")
 }
 
@@ -670,5 +674,6 @@ model JobCostActual {
   revenue             Decimal? @db.Decimal(14, 4)
   snapshottedAt       DateTime @default(now()) @map("snapshotted_at")
 
+  @@unique([orgId, jobId]) // same reasoning as JobCostEstimate above
   @@map("job_cost_actual")
 }
