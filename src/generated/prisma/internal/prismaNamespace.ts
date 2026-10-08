@@ -421,6 +421,8 @@ export const ModelName = {
   StockMovement: 'StockMovement',
   StockBalance: 'StockBalance',
   JobCostEstimate: 'JobCostEstimate',
+  JobCostEstimateLine: 'JobCostEstimateLine',
+  JobNumberCounter: 'JobNumberCounter',
   JobCostActual: 'JobCostActual'
 } as const
 
@@ -437,7 +439,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "organization" | "branch" | "user" | "userBranchAccess" | "userSession" | "auditLog" | "currency" | "exchangeRate" | "item" | "billOfMaterial" | "bomLine" | "customer" | "salesOrder" | "salesOrderLine" | "productionJob" | "materialRequirement" | "labourRecord" | "productionStageTemplate" | "productionJobStage" | "qualityRecord" | "warehouse" | "stockMovement" | "stockBalance" | "jobCostEstimate" | "jobCostActual"
+    modelProps: "organization" | "branch" | "user" | "userBranchAccess" | "userSession" | "auditLog" | "currency" | "exchangeRate" | "item" | "billOfMaterial" | "bomLine" | "customer" | "salesOrder" | "salesOrderLine" | "productionJob" | "materialRequirement" | "labourRecord" | "productionStageTemplate" | "productionJobStage" | "qualityRecord" | "warehouse" | "stockMovement" | "stockBalance" | "jobCostEstimate" | "jobCostEstimateLine" | "jobNumberCounter" | "jobCostActual"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2217,6 +2219,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    JobCostEstimateLine: {
+      payload: Prisma.$JobCostEstimateLinePayload<ExtArgs>
+      fields: Prisma.JobCostEstimateLineFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.JobCostEstimateLineFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobCostEstimateLinePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.JobCostEstimateLineFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobCostEstimateLinePayload>
+        }
+        findFirst: {
+          args: Prisma.JobCostEstimateLineFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobCostEstimateLinePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.JobCostEstimateLineFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobCostEstimateLinePayload>
+        }
+        findMany: {
+          args: Prisma.JobCostEstimateLineFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobCostEstimateLinePayload>[]
+        }
+        create: {
+          args: Prisma.JobCostEstimateLineCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobCostEstimateLinePayload>
+        }
+        createMany: {
+          args: Prisma.JobCostEstimateLineCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.JobCostEstimateLineCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobCostEstimateLinePayload>[]
+        }
+        delete: {
+          args: Prisma.JobCostEstimateLineDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobCostEstimateLinePayload>
+        }
+        update: {
+          args: Prisma.JobCostEstimateLineUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobCostEstimateLinePayload>
+        }
+        deleteMany: {
+          args: Prisma.JobCostEstimateLineDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.JobCostEstimateLineUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.JobCostEstimateLineUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobCostEstimateLinePayload>[]
+        }
+        upsert: {
+          args: Prisma.JobCostEstimateLineUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobCostEstimateLinePayload>
+        }
+        aggregate: {
+          args: Prisma.JobCostEstimateLineAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateJobCostEstimateLine>
+        }
+        groupBy: {
+          args: Prisma.JobCostEstimateLineGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JobCostEstimateLineGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.JobCostEstimateLineCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JobCostEstimateLineCountAggregateOutputType> | number
+        }
+      }
+    }
+    JobNumberCounter: {
+      payload: Prisma.$JobNumberCounterPayload<ExtArgs>
+      fields: Prisma.JobNumberCounterFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.JobNumberCounterFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobNumberCounterPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.JobNumberCounterFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobNumberCounterPayload>
+        }
+        findFirst: {
+          args: Prisma.JobNumberCounterFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobNumberCounterPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.JobNumberCounterFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobNumberCounterPayload>
+        }
+        findMany: {
+          args: Prisma.JobNumberCounterFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobNumberCounterPayload>[]
+        }
+        create: {
+          args: Prisma.JobNumberCounterCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobNumberCounterPayload>
+        }
+        createMany: {
+          args: Prisma.JobNumberCounterCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.JobNumberCounterCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobNumberCounterPayload>[]
+        }
+        delete: {
+          args: Prisma.JobNumberCounterDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobNumberCounterPayload>
+        }
+        update: {
+          args: Prisma.JobNumberCounterUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobNumberCounterPayload>
+        }
+        deleteMany: {
+          args: Prisma.JobNumberCounterDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.JobNumberCounterUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.JobNumberCounterUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobNumberCounterPayload>[]
+        }
+        upsert: {
+          args: Prisma.JobNumberCounterUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobNumberCounterPayload>
+        }
+        aggregate: {
+          args: Prisma.JobNumberCounterAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateJobNumberCounter>
+        }
+        groupBy: {
+          args: Prisma.JobNumberCounterGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JobNumberCounterGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.JobNumberCounterCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JobNumberCounterCountAggregateOutputType> | number
+        }
+      }
+    }
     JobCostActual: {
       payload: Prisma.$JobCostActualPayload<ExtArgs>
       fields: Prisma.JobCostActualFieldRefs
@@ -2333,6 +2483,7 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const OrganizationScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  slug: 'slug',
   baseCurrency: 'baseCurrency',
   staleOrderThresholdDays: 'staleOrderThresholdDays',
   createdAt: 'createdAt',
@@ -2558,7 +2709,9 @@ export const MaterialRequirementScalarFieldEnum = {
   jobId: 'jobId',
   materialItemId: 'materialItemId',
   expectedQty: 'expectedQty',
-  uom: 'uom'
+  uom: 'uom',
+  standardUnitCost: 'standardUnitCost',
+  standardUnitCostCurrency: 'standardUnitCostCurrency'
 } as const
 
 export type MaterialRequirementScalarFieldEnum = (typeof MaterialRequirementScalarFieldEnum)[keyof typeof MaterialRequirementScalarFieldEnum]
@@ -2676,14 +2829,31 @@ export type StockBalanceScalarFieldEnum = (typeof StockBalanceScalarFieldEnum)[k
 export const JobCostEstimateScalarFieldEnum = {
   orgId: 'orgId',
   jobId: 'jobId',
-  estimatedMaterialCost: 'estimatedMaterialCost',
-  estimatedLabourCost: 'estimatedLabourCost',
-  estimatedOverheadCost: 'estimatedOverheadCost',
-  currency: 'currency',
+  unpricedMaterials: 'unpricedMaterials',
   computedAt: 'computedAt'
 } as const
 
 export type JobCostEstimateScalarFieldEnum = (typeof JobCostEstimateScalarFieldEnum)[keyof typeof JobCostEstimateScalarFieldEnum]
+
+
+export const JobCostEstimateLineScalarFieldEnum = {
+  orgId: 'orgId',
+  jobId: 'jobId',
+  currency: 'currency',
+  estimatedMaterialCost: 'estimatedMaterialCost',
+  estimatedLabourCost: 'estimatedLabourCost',
+  estimatedOverheadCost: 'estimatedOverheadCost'
+} as const
+
+export type JobCostEstimateLineScalarFieldEnum = (typeof JobCostEstimateLineScalarFieldEnum)[keyof typeof JobCostEstimateLineScalarFieldEnum]
+
+
+export const JobNumberCounterScalarFieldEnum = {
+  orgId: 'orgId',
+  lastNumber: 'lastNumber'
+} as const
+
+export type JobNumberCounterScalarFieldEnum = (typeof JobNumberCounterScalarFieldEnum)[keyof typeof JobNumberCounterScalarFieldEnum]
 
 
 export const JobCostActualScalarFieldEnum = {
@@ -2715,6 +2885,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -3195,6 +3372,8 @@ export type GlobalOmitConfig = {
   stockMovement?: Prisma.StockMovementOmit
   stockBalance?: Prisma.StockBalanceOmit
   jobCostEstimate?: Prisma.JobCostEstimateOmit
+  jobCostEstimateLine?: Prisma.JobCostEstimateLineOmit
+  jobNumberCounter?: Prisma.JobNumberCounterOmit
   jobCostActual?: Prisma.JobCostActualOmit
 }
 

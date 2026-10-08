@@ -52,6 +52,7 @@ enum Role {
 model Organization {
   id                      String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name                    String
+  slug                    String   @unique // login handle; format CHECK is manual SQL (migration 20261008100000)
   baseCurrency            String   @map("base_currency") @db.Char(3)
   currency                Currency @relation(fields: [baseCurrency], references: [code])
   staleOrderThresholdDays Int      @default(3) @map("stale_order_threshold_days")
@@ -63,6 +64,7 @@ model Organization {
   auditLogs AuditLog[]
   items     Item[]
   customers Customer[]
+  jobCounter JobNumberCounter?
 
   @@map("organization")
 }
@@ -409,6 +411,7 @@ model ProductionJob {
   materialRequirements MaterialRequirement[]
   labourRecords        LabourRecord[]
   costEstimate         JobCostEstimate?
+  costEstimateLines    JobCostEstimateLine[]
   costActual           JobCostActual?
   stages               ProductionJobStage[]
   qualityRecords       QualityRecord[]
@@ -429,6 +432,10 @@ model MaterialRequirement {
   materialItem   Item          @relation(fields: [orgId, materialItemId], references: [orgId, id])
   expectedQty    Decimal       @map("expected_qty") @db.Decimal(14, 4)
   uom            String
+  // Snapshot of the item's standard cost when the job was created. Null =
+  // the item had no standard cost ("unpriced") -- never a guessed number.
+  standardUnitCost         Decimal? @map("standard_unit_cost") @db.Decimal(14, 4)
+  standardUnitCostCurrency String?  @map("standard_unit_cost_currency") @db.Char(3)
 
   @@index([jobId])
   @@map("material_requirement")
@@ -606,18 +613,41 @@ model StockBalance {
 // COSTING
 // ---------------------------------------------------------------------------
 
+// Header only. Amounts live in JobCostEstimateLine, one row per currency, so an
+// estimate can never silently mix currencies. unpricedMaterials lists the
+// materials that could not be priced and why:
+//   [{ materialItemId, reason: "no_standard_cost" | "uom_mismatch" }]
 model JobCostEstimate {
-  orgId                 String        @map("org_id") @db.Uuid
-  jobId                 String        @id @map("job_id") @db.Uuid
-  job                   ProductionJob @relation(fields: [orgId, jobId], references: [orgId, id])
-  estimatedMaterialCost Decimal       @map("estimated_material_cost") @db.Decimal(14, 4)
-  estimatedLabourCost   Decimal?      @map("estimated_labour_cost") @db.Decimal(14, 4)
-  estimatedOverheadCost Decimal?      @map("estimated_overhead_cost") @db.Decimal(14, 4)
-  currency              String        @db.Char(3)
-  computedAt            DateTime      @default(now()) @map("computed_at")
+  orgId             String        @map("org_id") @db.Uuid
+  jobId             String        @id @map("job_id") @db.Uuid
+  job               ProductionJob @relation(fields: [orgId, jobId], references: [orgId, id])
+  unpricedMaterials Json          @default("[]") @map("unpriced_materials")
+  computedAt        DateTime      @default(now()) @map("computed_at")
 
   @@unique([orgId, jobId])
   @@map("job_cost_estimate")
+}
+
+model JobCostEstimateLine {
+  orgId                 String        @map("org_id") @db.Uuid
+  jobId                 String        @map("job_id") @db.Uuid
+  job                   ProductionJob @relation(fields: [orgId, jobId], references: [orgId, id])
+  currency              String        @db.Char(3)
+  estimatedMaterialCost Decimal       @map("estimated_material_cost") @db.Decimal(14, 4)
+  estimatedLabourCost   Decimal?      @map("estimated_labour_cost") @db.Decimal(14, 4)
+  estimatedOverheadCost Decimal?      @map("estimated_overhead_cost") @db.Decimal(14, 4)
+
+  @@id([jobId, currency])
+  @@map("job_cost_estimate_line")
+}
+
+// One row per organization; incremented inside the job-creation transaction.
+model JobNumberCounter {
+  orgId      String       @id @map("org_id") @db.Uuid
+  org        Organization @relation(fields: [orgId], references: [id])
+  lastNumber Int          @default(0) @map("last_number")
+
+  @@map("job_number_counter")
 }
 
 // gross_profit deliberately NOT modeled — see header. Written once at job

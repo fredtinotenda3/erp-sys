@@ -75,6 +75,8 @@ export const ModelName = {
   StockMovement: 'StockMovement',
   StockBalance: 'StockBalance',
   JobCostEstimate: 'JobCostEstimate',
+  JobCostEstimateLine: 'JobCostEstimateLine',
+  JobNumberCounter: 'JobNumberCounter',
   JobCostActual: 'JobCostActual'
 } as const
 
@@ -97,6 +99,7 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const OrganizationScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  slug: 'slug',
   baseCurrency: 'baseCurrency',
   staleOrderThresholdDays: 'staleOrderThresholdDays',
   createdAt: 'createdAt',
@@ -322,7 +325,9 @@ export const MaterialRequirementScalarFieldEnum = {
   jobId: 'jobId',
   materialItemId: 'materialItemId',
   expectedQty: 'expectedQty',
-  uom: 'uom'
+  uom: 'uom',
+  standardUnitCost: 'standardUnitCost',
+  standardUnitCostCurrency: 'standardUnitCostCurrency'
 } as const
 
 export type MaterialRequirementScalarFieldEnum = (typeof MaterialRequirementScalarFieldEnum)[keyof typeof MaterialRequirementScalarFieldEnum]
@@ -440,14 +445,31 @@ export type StockBalanceScalarFieldEnum = (typeof StockBalanceScalarFieldEnum)[k
 export const JobCostEstimateScalarFieldEnum = {
   orgId: 'orgId',
   jobId: 'jobId',
-  estimatedMaterialCost: 'estimatedMaterialCost',
-  estimatedLabourCost: 'estimatedLabourCost',
-  estimatedOverheadCost: 'estimatedOverheadCost',
-  currency: 'currency',
+  unpricedMaterials: 'unpricedMaterials',
   computedAt: 'computedAt'
 } as const
 
 export type JobCostEstimateScalarFieldEnum = (typeof JobCostEstimateScalarFieldEnum)[keyof typeof JobCostEstimateScalarFieldEnum]
+
+
+export const JobCostEstimateLineScalarFieldEnum = {
+  orgId: 'orgId',
+  jobId: 'jobId',
+  currency: 'currency',
+  estimatedMaterialCost: 'estimatedMaterialCost',
+  estimatedLabourCost: 'estimatedLabourCost',
+  estimatedOverheadCost: 'estimatedOverheadCost'
+} as const
+
+export type JobCostEstimateLineScalarFieldEnum = (typeof JobCostEstimateLineScalarFieldEnum)[keyof typeof JobCostEstimateLineScalarFieldEnum]
+
+
+export const JobNumberCounterScalarFieldEnum = {
+  orgId: 'orgId',
+  lastNumber: 'lastNumber'
+} as const
+
+export type JobNumberCounterScalarFieldEnum = (typeof JobNumberCounterScalarFieldEnum)[keyof typeof JobNumberCounterScalarFieldEnum]
 
 
 export const JobCostActualScalarFieldEnum = {
@@ -479,6 +501,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

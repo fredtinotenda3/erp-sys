@@ -20,95 +20,47 @@ export type JobCostEstimateModel = runtime.Types.Result.DefaultSelection<Prisma.
 
 export type AggregateJobCostEstimate = {
   _count: JobCostEstimateCountAggregateOutputType | null
-  _avg: JobCostEstimateAvgAggregateOutputType | null
-  _sum: JobCostEstimateSumAggregateOutputType | null
   _min: JobCostEstimateMinAggregateOutputType | null
   _max: JobCostEstimateMaxAggregateOutputType | null
-}
-
-export type JobCostEstimateAvgAggregateOutputType = {
-  estimatedMaterialCost: runtime.Decimal | null
-  estimatedLabourCost: runtime.Decimal | null
-  estimatedOverheadCost: runtime.Decimal | null
-}
-
-export type JobCostEstimateSumAggregateOutputType = {
-  estimatedMaterialCost: runtime.Decimal | null
-  estimatedLabourCost: runtime.Decimal | null
-  estimatedOverheadCost: runtime.Decimal | null
 }
 
 export type JobCostEstimateMinAggregateOutputType = {
   orgId: string | null
   jobId: string | null
-  estimatedMaterialCost: runtime.Decimal | null
-  estimatedLabourCost: runtime.Decimal | null
-  estimatedOverheadCost: runtime.Decimal | null
-  currency: string | null
   computedAt: Date | null
 }
 
 export type JobCostEstimateMaxAggregateOutputType = {
   orgId: string | null
   jobId: string | null
-  estimatedMaterialCost: runtime.Decimal | null
-  estimatedLabourCost: runtime.Decimal | null
-  estimatedOverheadCost: runtime.Decimal | null
-  currency: string | null
   computedAt: Date | null
 }
 
 export type JobCostEstimateCountAggregateOutputType = {
   orgId: number
   jobId: number
-  estimatedMaterialCost: number
-  estimatedLabourCost: number
-  estimatedOverheadCost: number
-  currency: number
+  unpricedMaterials: number
   computedAt: number
   _all: number
 }
 
 
-export type JobCostEstimateAvgAggregateInputType = {
-  estimatedMaterialCost?: true
-  estimatedLabourCost?: true
-  estimatedOverheadCost?: true
-}
-
-export type JobCostEstimateSumAggregateInputType = {
-  estimatedMaterialCost?: true
-  estimatedLabourCost?: true
-  estimatedOverheadCost?: true
-}
-
 export type JobCostEstimateMinAggregateInputType = {
   orgId?: true
   jobId?: true
-  estimatedMaterialCost?: true
-  estimatedLabourCost?: true
-  estimatedOverheadCost?: true
-  currency?: true
   computedAt?: true
 }
 
 export type JobCostEstimateMaxAggregateInputType = {
   orgId?: true
   jobId?: true
-  estimatedMaterialCost?: true
-  estimatedLabourCost?: true
-  estimatedOverheadCost?: true
-  currency?: true
   computedAt?: true
 }
 
 export type JobCostEstimateCountAggregateInputType = {
   orgId?: true
   jobId?: true
-  estimatedMaterialCost?: true
-  estimatedLabourCost?: true
-  estimatedOverheadCost?: true
-  currency?: true
+  unpricedMaterials?: true
   computedAt?: true
   _all?: true
 }
@@ -151,18 +103,6 @@ export type JobCostEstimateAggregateArgs<ExtArgs extends runtime.Types.Extension
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: JobCostEstimateAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: JobCostEstimateSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: JobCostEstimateMinAggregateInputType
@@ -193,8 +133,6 @@ export type JobCostEstimateGroupByArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   _count?: JobCostEstimateCountAggregateInputType | true
-  _avg?: JobCostEstimateAvgAggregateInputType
-  _sum?: JobCostEstimateSumAggregateInputType
   _min?: JobCostEstimateMinAggregateInputType
   _max?: JobCostEstimateMaxAggregateInputType
 }
@@ -202,14 +140,9 @@ export type JobCostEstimateGroupByArgs<ExtArgs extends runtime.Types.Extensions.
 export type JobCostEstimateGroupByOutputType = {
   orgId: string
   jobId: string
-  estimatedMaterialCost: runtime.Decimal
-  estimatedLabourCost: runtime.Decimal | null
-  estimatedOverheadCost: runtime.Decimal | null
-  currency: string
+  unpricedMaterials: runtime.JsonValue
   computedAt: Date
   _count: JobCostEstimateCountAggregateOutputType | null
-  _avg: JobCostEstimateAvgAggregateOutputType | null
-  _sum: JobCostEstimateSumAggregateOutputType | null
   _min: JobCostEstimateMinAggregateOutputType | null
   _max: JobCostEstimateMaxAggregateOutputType | null
 }
@@ -235,10 +168,7 @@ export type JobCostEstimateWhereInput = {
   NOT?: Prisma.JobCostEstimateWhereInput | Prisma.JobCostEstimateWhereInput[]
   orgId?: Prisma.UuidFilter<"JobCostEstimate"> | string
   jobId?: Prisma.UuidFilter<"JobCostEstimate"> | string
-  estimatedMaterialCost?: Prisma.DecimalFilter<"JobCostEstimate"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  estimatedLabourCost?: Prisma.DecimalNullableFilter<"JobCostEstimate"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  estimatedOverheadCost?: Prisma.DecimalNullableFilter<"JobCostEstimate"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.StringFilter<"JobCostEstimate"> | string
+  unpricedMaterials?: Prisma.JsonFilter<"JobCostEstimate">
   computedAt?: Prisma.DateTimeFilter<"JobCostEstimate"> | Date | string
   job?: Prisma.XOR<Prisma.ProductionJobScalarRelationFilter, Prisma.ProductionJobWhereInput>
 }
@@ -246,10 +176,7 @@ export type JobCostEstimateWhereInput = {
 export type JobCostEstimateOrderByWithRelationInput = {
   orgId?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
-  estimatedMaterialCost?: Prisma.SortOrder
-  estimatedLabourCost?: Prisma.SortOrderInput | Prisma.SortOrder
-  estimatedOverheadCost?: Prisma.SortOrderInput | Prisma.SortOrder
-  currency?: Prisma.SortOrder
+  unpricedMaterials?: Prisma.SortOrder
   computedAt?: Prisma.SortOrder
   job?: Prisma.ProductionJobOrderByWithRelationInput
 }
@@ -261,10 +188,7 @@ export type JobCostEstimateWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.JobCostEstimateWhereInput[]
   NOT?: Prisma.JobCostEstimateWhereInput | Prisma.JobCostEstimateWhereInput[]
   orgId?: Prisma.UuidFilter<"JobCostEstimate"> | string
-  estimatedMaterialCost?: Prisma.DecimalFilter<"JobCostEstimate"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  estimatedLabourCost?: Prisma.DecimalNullableFilter<"JobCostEstimate"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  estimatedOverheadCost?: Prisma.DecimalNullableFilter<"JobCostEstimate"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.StringFilter<"JobCostEstimate"> | string
+  unpricedMaterials?: Prisma.JsonFilter<"JobCostEstimate">
   computedAt?: Prisma.DateTimeFilter<"JobCostEstimate"> | Date | string
   job?: Prisma.XOR<Prisma.ProductionJobScalarRelationFilter, Prisma.ProductionJobWhereInput>
 }, "jobId" | "orgId_jobId">
@@ -272,16 +196,11 @@ export type JobCostEstimateWhereUniqueInput = Prisma.AtLeast<{
 export type JobCostEstimateOrderByWithAggregationInput = {
   orgId?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
-  estimatedMaterialCost?: Prisma.SortOrder
-  estimatedLabourCost?: Prisma.SortOrderInput | Prisma.SortOrder
-  estimatedOverheadCost?: Prisma.SortOrderInput | Prisma.SortOrder
-  currency?: Prisma.SortOrder
+  unpricedMaterials?: Prisma.SortOrder
   computedAt?: Prisma.SortOrder
   _count?: Prisma.JobCostEstimateCountOrderByAggregateInput
-  _avg?: Prisma.JobCostEstimateAvgOrderByAggregateInput
   _max?: Prisma.JobCostEstimateMaxOrderByAggregateInput
   _min?: Prisma.JobCostEstimateMinOrderByAggregateInput
-  _sum?: Prisma.JobCostEstimateSumOrderByAggregateInput
 }
 
 export type JobCostEstimateScalarWhereWithAggregatesInput = {
@@ -290,18 +209,12 @@ export type JobCostEstimateScalarWhereWithAggregatesInput = {
   NOT?: Prisma.JobCostEstimateScalarWhereWithAggregatesInput | Prisma.JobCostEstimateScalarWhereWithAggregatesInput[]
   orgId?: Prisma.UuidWithAggregatesFilter<"JobCostEstimate"> | string
   jobId?: Prisma.UuidWithAggregatesFilter<"JobCostEstimate"> | string
-  estimatedMaterialCost?: Prisma.DecimalWithAggregatesFilter<"JobCostEstimate"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  estimatedLabourCost?: Prisma.DecimalNullableWithAggregatesFilter<"JobCostEstimate"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  estimatedOverheadCost?: Prisma.DecimalNullableWithAggregatesFilter<"JobCostEstimate"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.StringWithAggregatesFilter<"JobCostEstimate"> | string
+  unpricedMaterials?: Prisma.JsonWithAggregatesFilter<"JobCostEstimate">
   computedAt?: Prisma.DateTimeWithAggregatesFilter<"JobCostEstimate"> | Date | string
 }
 
 export type JobCostEstimateCreateInput = {
-  estimatedMaterialCost: runtime.Decimal | runtime.DecimalJsLike | number | string
-  estimatedLabourCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  estimatedOverheadCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency: string
+  unpricedMaterials?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   computedAt?: Date | string
   job: Prisma.ProductionJobCreateNestedOneWithoutCostEstimateInput
 }
@@ -309,18 +222,12 @@ export type JobCostEstimateCreateInput = {
 export type JobCostEstimateUncheckedCreateInput = {
   orgId: string
   jobId: string
-  estimatedMaterialCost: runtime.Decimal | runtime.DecimalJsLike | number | string
-  estimatedLabourCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  estimatedOverheadCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency: string
+  unpricedMaterials?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   computedAt?: Date | string
 }
 
 export type JobCostEstimateUpdateInput = {
-  estimatedMaterialCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  estimatedLabourCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  estimatedOverheadCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  unpricedMaterials?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   computedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   job?: Prisma.ProductionJobUpdateOneRequiredWithoutCostEstimateNestedInput
 }
@@ -328,38 +235,26 @@ export type JobCostEstimateUpdateInput = {
 export type JobCostEstimateUncheckedUpdateInput = {
   orgId?: Prisma.StringFieldUpdateOperationsInput | string
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
-  estimatedMaterialCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  estimatedLabourCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  estimatedOverheadCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  unpricedMaterials?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   computedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type JobCostEstimateCreateManyInput = {
   orgId: string
   jobId: string
-  estimatedMaterialCost: runtime.Decimal | runtime.DecimalJsLike | number | string
-  estimatedLabourCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  estimatedOverheadCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency: string
+  unpricedMaterials?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   computedAt?: Date | string
 }
 
 export type JobCostEstimateUpdateManyMutationInput = {
-  estimatedMaterialCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  estimatedLabourCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  estimatedOverheadCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  unpricedMaterials?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   computedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type JobCostEstimateUncheckedUpdateManyInput = {
   orgId?: Prisma.StringFieldUpdateOperationsInput | string
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
-  estimatedMaterialCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  estimatedLabourCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  estimatedOverheadCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  unpricedMaterials?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   computedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -376,43 +271,20 @@ export type JobCostEstimateOrgIdJobIdCompoundUniqueInput = {
 export type JobCostEstimateCountOrderByAggregateInput = {
   orgId?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
-  estimatedMaterialCost?: Prisma.SortOrder
-  estimatedLabourCost?: Prisma.SortOrder
-  estimatedOverheadCost?: Prisma.SortOrder
-  currency?: Prisma.SortOrder
+  unpricedMaterials?: Prisma.SortOrder
   computedAt?: Prisma.SortOrder
-}
-
-export type JobCostEstimateAvgOrderByAggregateInput = {
-  estimatedMaterialCost?: Prisma.SortOrder
-  estimatedLabourCost?: Prisma.SortOrder
-  estimatedOverheadCost?: Prisma.SortOrder
 }
 
 export type JobCostEstimateMaxOrderByAggregateInput = {
   orgId?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
-  estimatedMaterialCost?: Prisma.SortOrder
-  estimatedLabourCost?: Prisma.SortOrder
-  estimatedOverheadCost?: Prisma.SortOrder
-  currency?: Prisma.SortOrder
   computedAt?: Prisma.SortOrder
 }
 
 export type JobCostEstimateMinOrderByAggregateInput = {
   orgId?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
-  estimatedMaterialCost?: Prisma.SortOrder
-  estimatedLabourCost?: Prisma.SortOrder
-  estimatedOverheadCost?: Prisma.SortOrder
-  currency?: Prisma.SortOrder
   computedAt?: Prisma.SortOrder
-}
-
-export type JobCostEstimateSumOrderByAggregateInput = {
-  estimatedMaterialCost?: Prisma.SortOrder
-  estimatedLabourCost?: Prisma.SortOrder
-  estimatedOverheadCost?: Prisma.SortOrder
 }
 
 export type JobCostEstimateCreateNestedOneWithoutJobInput = {
@@ -448,18 +320,12 @@ export type JobCostEstimateUncheckedUpdateOneWithoutJobNestedInput = {
 }
 
 export type JobCostEstimateCreateWithoutJobInput = {
-  estimatedMaterialCost: runtime.Decimal | runtime.DecimalJsLike | number | string
-  estimatedLabourCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  estimatedOverheadCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency: string
+  unpricedMaterials?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   computedAt?: Date | string
 }
 
 export type JobCostEstimateUncheckedCreateWithoutJobInput = {
-  estimatedMaterialCost: runtime.Decimal | runtime.DecimalJsLike | number | string
-  estimatedLabourCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  estimatedOverheadCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency: string
+  unpricedMaterials?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   computedAt?: Date | string
 }
 
@@ -480,18 +346,12 @@ export type JobCostEstimateUpdateToOneWithWhereWithoutJobInput = {
 }
 
 export type JobCostEstimateUpdateWithoutJobInput = {
-  estimatedMaterialCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  estimatedLabourCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  estimatedOverheadCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  unpricedMaterials?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   computedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type JobCostEstimateUncheckedUpdateWithoutJobInput = {
-  estimatedMaterialCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  estimatedLabourCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  estimatedOverheadCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  unpricedMaterials?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   computedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -500,10 +360,7 @@ export type JobCostEstimateUncheckedUpdateWithoutJobInput = {
 export type JobCostEstimateSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   orgId?: boolean
   jobId?: boolean
-  estimatedMaterialCost?: boolean
-  estimatedLabourCost?: boolean
-  estimatedOverheadCost?: boolean
-  currency?: boolean
+  unpricedMaterials?: boolean
   computedAt?: boolean
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["jobCostEstimate"]>
@@ -511,10 +368,7 @@ export type JobCostEstimateSelect<ExtArgs extends runtime.Types.Extensions.Inter
 export type JobCostEstimateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   orgId?: boolean
   jobId?: boolean
-  estimatedMaterialCost?: boolean
-  estimatedLabourCost?: boolean
-  estimatedOverheadCost?: boolean
-  currency?: boolean
+  unpricedMaterials?: boolean
   computedAt?: boolean
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["jobCostEstimate"]>
@@ -522,10 +376,7 @@ export type JobCostEstimateSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
 export type JobCostEstimateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   orgId?: boolean
   jobId?: boolean
-  estimatedMaterialCost?: boolean
-  estimatedLabourCost?: boolean
-  estimatedOverheadCost?: boolean
-  currency?: boolean
+  unpricedMaterials?: boolean
   computedAt?: boolean
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["jobCostEstimate"]>
@@ -533,14 +384,11 @@ export type JobCostEstimateSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
 export type JobCostEstimateSelectScalar = {
   orgId?: boolean
   jobId?: boolean
-  estimatedMaterialCost?: boolean
-  estimatedLabourCost?: boolean
-  estimatedOverheadCost?: boolean
-  currency?: boolean
+  unpricedMaterials?: boolean
   computedAt?: boolean
 }
 
-export type JobCostEstimateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"orgId" | "jobId" | "estimatedMaterialCost" | "estimatedLabourCost" | "estimatedOverheadCost" | "currency" | "computedAt", ExtArgs["result"]["jobCostEstimate"]>
+export type JobCostEstimateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"orgId" | "jobId" | "unpricedMaterials" | "computedAt", ExtArgs["result"]["jobCostEstimate"]>
 export type JobCostEstimateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
 }
@@ -559,10 +407,7 @@ export type $JobCostEstimatePayload<ExtArgs extends runtime.Types.Extensions.Int
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     orgId: string
     jobId: string
-    estimatedMaterialCost: runtime.Decimal
-    estimatedLabourCost: runtime.Decimal | null
-    estimatedOverheadCost: runtime.Decimal | null
-    currency: string
+    unpricedMaterials: runtime.JsonValue
     computedAt: Date
   }, ExtArgs["result"]["jobCostEstimate"]>
   composites: {}
@@ -990,10 +835,7 @@ export interface Prisma__JobCostEstimateClient<T, Null = never, ExtArgs extends 
 export interface JobCostEstimateFieldRefs {
   readonly orgId: Prisma.FieldRef<"JobCostEstimate", 'String'>
   readonly jobId: Prisma.FieldRef<"JobCostEstimate", 'String'>
-  readonly estimatedMaterialCost: Prisma.FieldRef<"JobCostEstimate", 'Decimal'>
-  readonly estimatedLabourCost: Prisma.FieldRef<"JobCostEstimate", 'Decimal'>
-  readonly estimatedOverheadCost: Prisma.FieldRef<"JobCostEstimate", 'Decimal'>
-  readonly currency: Prisma.FieldRef<"JobCostEstimate", 'String'>
+  readonly unpricedMaterials: Prisma.FieldRef<"JobCostEstimate", 'Json'>
   readonly computedAt: Prisma.FieldRef<"JobCostEstimate", 'DateTime'>
 }
     

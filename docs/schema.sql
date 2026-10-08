@@ -57,6 +57,8 @@ $$ LANGUAGE plpgsql;
 CREATE TABLE organization (
   id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   name          text NOT NULL,
+  slug          text NOT NULL UNIQUE
+                CHECK (slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$' AND char_length(slug) BETWEEN 3 AND 50), -- login handle
   base_currency char(3) NOT NULL,            -- FK added after currency table exists
   created_at    timestamptz NOT NULL DEFAULT now(),
   updated_at    timestamptz NOT NULL DEFAULT now()

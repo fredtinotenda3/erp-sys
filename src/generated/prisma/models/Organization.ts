@@ -37,6 +37,7 @@ export type OrganizationSumAggregateOutputType = {
 export type OrganizationMinAggregateOutputType = {
   id: string | null
   name: string | null
+  slug: string | null
   baseCurrency: string | null
   staleOrderThresholdDays: number | null
   createdAt: Date | null
@@ -46,6 +47,7 @@ export type OrganizationMinAggregateOutputType = {
 export type OrganizationMaxAggregateOutputType = {
   id: string | null
   name: string | null
+  slug: string | null
   baseCurrency: string | null
   staleOrderThresholdDays: number | null
   createdAt: Date | null
@@ -55,6 +57,7 @@ export type OrganizationMaxAggregateOutputType = {
 export type OrganizationCountAggregateOutputType = {
   id: number
   name: number
+  slug: number
   baseCurrency: number
   staleOrderThresholdDays: number
   createdAt: number
@@ -74,6 +77,7 @@ export type OrganizationSumAggregateInputType = {
 export type OrganizationMinAggregateInputType = {
   id?: true
   name?: true
+  slug?: true
   baseCurrency?: true
   staleOrderThresholdDays?: true
   createdAt?: true
@@ -83,6 +87,7 @@ export type OrganizationMinAggregateInputType = {
 export type OrganizationMaxAggregateInputType = {
   id?: true
   name?: true
+  slug?: true
   baseCurrency?: true
   staleOrderThresholdDays?: true
   createdAt?: true
@@ -92,6 +97,7 @@ export type OrganizationMaxAggregateInputType = {
 export type OrganizationCountAggregateInputType = {
   id?: true
   name?: true
+  slug?: true
   baseCurrency?: true
   staleOrderThresholdDays?: true
   createdAt?: true
@@ -188,6 +194,7 @@ export type OrganizationGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 export type OrganizationGroupByOutputType = {
   id: string
   name: string
+  slug: string
   baseCurrency: string
   staleOrderThresholdDays: number
   createdAt: Date
@@ -220,6 +227,7 @@ export type OrganizationWhereInput = {
   NOT?: Prisma.OrganizationWhereInput | Prisma.OrganizationWhereInput[]
   id?: Prisma.UuidFilter<"Organization"> | string
   name?: Prisma.StringFilter<"Organization"> | string
+  slug?: Prisma.StringFilter<"Organization"> | string
   baseCurrency?: Prisma.StringFilter<"Organization"> | string
   staleOrderThresholdDays?: Prisma.IntFilter<"Organization"> | number
   createdAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
@@ -230,11 +238,13 @@ export type OrganizationWhereInput = {
   auditLogs?: Prisma.AuditLogListRelationFilter
   items?: Prisma.ItemListRelationFilter
   customers?: Prisma.CustomerListRelationFilter
+  jobCounter?: Prisma.XOR<Prisma.JobNumberCounterNullableScalarRelationFilter, Prisma.JobNumberCounterWhereInput> | null
 }
 
 export type OrganizationOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   baseCurrency?: Prisma.SortOrder
   staleOrderThresholdDays?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -245,10 +255,12 @@ export type OrganizationOrderByWithRelationInput = {
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
   items?: Prisma.ItemOrderByRelationAggregateInput
   customers?: Prisma.CustomerOrderByRelationAggregateInput
+  jobCounter?: Prisma.JobNumberCounterOrderByWithRelationInput
 }
 
 export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  slug?: string
   AND?: Prisma.OrganizationWhereInput | Prisma.OrganizationWhereInput[]
   OR?: Prisma.OrganizationWhereInput[]
   NOT?: Prisma.OrganizationWhereInput | Prisma.OrganizationWhereInput[]
@@ -263,11 +275,13 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   auditLogs?: Prisma.AuditLogListRelationFilter
   items?: Prisma.ItemListRelationFilter
   customers?: Prisma.CustomerListRelationFilter
-}, "id">
+  jobCounter?: Prisma.XOR<Prisma.JobNumberCounterNullableScalarRelationFilter, Prisma.JobNumberCounterWhereInput> | null
+}, "id" | "slug">
 
 export type OrganizationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   baseCurrency?: Prisma.SortOrder
   staleOrderThresholdDays?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -285,6 +299,7 @@ export type OrganizationScalarWhereWithAggregatesInput = {
   NOT?: Prisma.OrganizationScalarWhereWithAggregatesInput | Prisma.OrganizationScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"Organization"> | string
   name?: Prisma.StringWithAggregatesFilter<"Organization"> | string
+  slug?: Prisma.StringWithAggregatesFilter<"Organization"> | string
   baseCurrency?: Prisma.StringWithAggregatesFilter<"Organization"> | string
   staleOrderThresholdDays?: Prisma.IntWithAggregatesFilter<"Organization"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Organization"> | Date | string
@@ -294,6 +309,7 @@ export type OrganizationScalarWhereWithAggregatesInput = {
 export type OrganizationCreateInput = {
   id?: string
   name: string
+  slug: string
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -303,11 +319,13 @@ export type OrganizationCreateInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerCreateNestedManyWithoutOrgInput
+  jobCounter?: Prisma.JobNumberCounterCreateNestedOneWithoutOrgInput
 }
 
 export type OrganizationUncheckedCreateInput = {
   id?: string
   name: string
+  slug: string
   baseCurrency: string
   staleOrderThresholdDays?: number
   createdAt?: Date | string
@@ -317,11 +335,13 @@ export type OrganizationUncheckedCreateInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutOrgInput
+  jobCounter?: Prisma.JobNumberCounterUncheckedCreateNestedOneWithoutOrgInput
 }
 
 export type OrganizationUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -331,11 +351,13 @@ export type OrganizationUpdateInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutOrgNestedInput
+  jobCounter?: Prisma.JobNumberCounterUpdateOneWithoutOrgNestedInput
 }
 
 export type OrganizationUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   baseCurrency?: Prisma.StringFieldUpdateOperationsInput | string
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -345,11 +367,13 @@ export type OrganizationUncheckedUpdateInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutOrgNestedInput
+  jobCounter?: Prisma.JobNumberCounterUncheckedUpdateOneWithoutOrgNestedInput
 }
 
 export type OrganizationCreateManyInput = {
   id?: string
   name: string
+  slug: string
   baseCurrency: string
   staleOrderThresholdDays?: number
   createdAt?: Date | string
@@ -359,6 +383,7 @@ export type OrganizationCreateManyInput = {
 export type OrganizationUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -367,6 +392,7 @@ export type OrganizationUpdateManyMutationInput = {
 export type OrganizationUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   baseCurrency?: Prisma.StringFieldUpdateOperationsInput | string
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -376,6 +402,7 @@ export type OrganizationUncheckedUpdateManyInput = {
 export type OrganizationCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   baseCurrency?: Prisma.SortOrder
   staleOrderThresholdDays?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -389,6 +416,7 @@ export type OrganizationAvgOrderByAggregateInput = {
 export type OrganizationMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   baseCurrency?: Prisma.SortOrder
   staleOrderThresholdDays?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -398,6 +426,7 @@ export type OrganizationMaxOrderByAggregateInput = {
 export type OrganizationMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
   baseCurrency?: Prisma.SortOrder
   staleOrderThresholdDays?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -551,9 +580,24 @@ export type OrganizationUpdateOneRequiredWithoutCustomersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutCustomersInput, Prisma.OrganizationUpdateWithoutCustomersInput>, Prisma.OrganizationUncheckedUpdateWithoutCustomersInput>
 }
 
+export type OrganizationCreateNestedOneWithoutJobCounterInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutJobCounterInput, Prisma.OrganizationUncheckedCreateWithoutJobCounterInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutJobCounterInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutJobCounterNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutJobCounterInput, Prisma.OrganizationUncheckedCreateWithoutJobCounterInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutJobCounterInput
+  upsert?: Prisma.OrganizationUpsertWithoutJobCounterInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutJobCounterInput, Prisma.OrganizationUpdateWithoutJobCounterInput>, Prisma.OrganizationUncheckedUpdateWithoutJobCounterInput>
+}
+
 export type OrganizationCreateWithoutBranchesInput = {
   id?: string
   name: string
+  slug: string
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -562,11 +606,13 @@ export type OrganizationCreateWithoutBranchesInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerCreateNestedManyWithoutOrgInput
+  jobCounter?: Prisma.JobNumberCounterCreateNestedOneWithoutOrgInput
 }
 
 export type OrganizationUncheckedCreateWithoutBranchesInput = {
   id?: string
   name: string
+  slug: string
   baseCurrency: string
   staleOrderThresholdDays?: number
   createdAt?: Date | string
@@ -575,6 +621,7 @@ export type OrganizationUncheckedCreateWithoutBranchesInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutOrgInput
+  jobCounter?: Prisma.JobNumberCounterUncheckedCreateNestedOneWithoutOrgInput
 }
 
 export type OrganizationCreateOrConnectWithoutBranchesInput = {
@@ -596,6 +643,7 @@ export type OrganizationUpdateToOneWithWhereWithoutBranchesInput = {
 export type OrganizationUpdateWithoutBranchesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -604,11 +652,13 @@ export type OrganizationUpdateWithoutBranchesInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutOrgNestedInput
+  jobCounter?: Prisma.JobNumberCounterUpdateOneWithoutOrgNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutBranchesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   baseCurrency?: Prisma.StringFieldUpdateOperationsInput | string
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -617,11 +667,13 @@ export type OrganizationUncheckedUpdateWithoutBranchesInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutOrgNestedInput
+  jobCounter?: Prisma.JobNumberCounterUncheckedUpdateOneWithoutOrgNestedInput
 }
 
 export type OrganizationCreateWithoutUsersInput = {
   id?: string
   name: string
+  slug: string
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -630,11 +682,13 @@ export type OrganizationCreateWithoutUsersInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerCreateNestedManyWithoutOrgInput
+  jobCounter?: Prisma.JobNumberCounterCreateNestedOneWithoutOrgInput
 }
 
 export type OrganizationUncheckedCreateWithoutUsersInput = {
   id?: string
   name: string
+  slug: string
   baseCurrency: string
   staleOrderThresholdDays?: number
   createdAt?: Date | string
@@ -643,6 +697,7 @@ export type OrganizationUncheckedCreateWithoutUsersInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutOrgInput
+  jobCounter?: Prisma.JobNumberCounterUncheckedCreateNestedOneWithoutOrgInput
 }
 
 export type OrganizationCreateOrConnectWithoutUsersInput = {
@@ -664,6 +719,7 @@ export type OrganizationUpdateToOneWithWhereWithoutUsersInput = {
 export type OrganizationUpdateWithoutUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -672,11 +728,13 @@ export type OrganizationUpdateWithoutUsersInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutOrgNestedInput
+  jobCounter?: Prisma.JobNumberCounterUpdateOneWithoutOrgNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   baseCurrency?: Prisma.StringFieldUpdateOperationsInput | string
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -685,11 +743,13 @@ export type OrganizationUncheckedUpdateWithoutUsersInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutOrgNestedInput
+  jobCounter?: Prisma.JobNumberCounterUncheckedUpdateOneWithoutOrgNestedInput
 }
 
 export type OrganizationCreateWithoutAuditLogsInput = {
   id?: string
   name: string
+  slug: string
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -698,11 +758,13 @@ export type OrganizationCreateWithoutAuditLogsInput = {
   users?: Prisma.UserCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerCreateNestedManyWithoutOrgInput
+  jobCounter?: Prisma.JobNumberCounterCreateNestedOneWithoutOrgInput
 }
 
 export type OrganizationUncheckedCreateWithoutAuditLogsInput = {
   id?: string
   name: string
+  slug: string
   baseCurrency: string
   staleOrderThresholdDays?: number
   createdAt?: Date | string
@@ -711,6 +773,7 @@ export type OrganizationUncheckedCreateWithoutAuditLogsInput = {
   users?: Prisma.UserUncheckedCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutOrgInput
+  jobCounter?: Prisma.JobNumberCounterUncheckedCreateNestedOneWithoutOrgInput
 }
 
 export type OrganizationCreateOrConnectWithoutAuditLogsInput = {
@@ -732,6 +795,7 @@ export type OrganizationUpdateToOneWithWhereWithoutAuditLogsInput = {
 export type OrganizationUpdateWithoutAuditLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -740,11 +804,13 @@ export type OrganizationUpdateWithoutAuditLogsInput = {
   users?: Prisma.UserUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutOrgNestedInput
+  jobCounter?: Prisma.JobNumberCounterUpdateOneWithoutOrgNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutAuditLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   baseCurrency?: Prisma.StringFieldUpdateOperationsInput | string
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -753,11 +819,13 @@ export type OrganizationUncheckedUpdateWithoutAuditLogsInput = {
   users?: Prisma.UserUncheckedUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutOrgNestedInput
+  jobCounter?: Prisma.JobNumberCounterUncheckedUpdateOneWithoutOrgNestedInput
 }
 
 export type OrganizationCreateWithoutCurrencyInput = {
   id?: string
   name: string
+  slug: string
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -766,11 +834,13 @@ export type OrganizationCreateWithoutCurrencyInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerCreateNestedManyWithoutOrgInput
+  jobCounter?: Prisma.JobNumberCounterCreateNestedOneWithoutOrgInput
 }
 
 export type OrganizationUncheckedCreateWithoutCurrencyInput = {
   id?: string
   name: string
+  slug: string
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -779,6 +849,7 @@ export type OrganizationUncheckedCreateWithoutCurrencyInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutOrgInput
+  jobCounter?: Prisma.JobNumberCounterUncheckedCreateNestedOneWithoutOrgInput
 }
 
 export type OrganizationCreateOrConnectWithoutCurrencyInput = {
@@ -813,6 +884,7 @@ export type OrganizationScalarWhereInput = {
   NOT?: Prisma.OrganizationScalarWhereInput | Prisma.OrganizationScalarWhereInput[]
   id?: Prisma.UuidFilter<"Organization"> | string
   name?: Prisma.StringFilter<"Organization"> | string
+  slug?: Prisma.StringFilter<"Organization"> | string
   baseCurrency?: Prisma.StringFilter<"Organization"> | string
   staleOrderThresholdDays?: Prisma.IntFilter<"Organization"> | number
   createdAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
@@ -822,6 +894,7 @@ export type OrganizationScalarWhereInput = {
 export type OrganizationCreateWithoutItemsInput = {
   id?: string
   name: string
+  slug: string
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -830,11 +903,13 @@ export type OrganizationCreateWithoutItemsInput = {
   users?: Prisma.UserCreateNestedManyWithoutOrgInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerCreateNestedManyWithoutOrgInput
+  jobCounter?: Prisma.JobNumberCounterCreateNestedOneWithoutOrgInput
 }
 
 export type OrganizationUncheckedCreateWithoutItemsInput = {
   id?: string
   name: string
+  slug: string
   baseCurrency: string
   staleOrderThresholdDays?: number
   createdAt?: Date | string
@@ -843,6 +918,7 @@ export type OrganizationUncheckedCreateWithoutItemsInput = {
   users?: Prisma.UserUncheckedCreateNestedManyWithoutOrgInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutOrgInput
+  jobCounter?: Prisma.JobNumberCounterUncheckedCreateNestedOneWithoutOrgInput
 }
 
 export type OrganizationCreateOrConnectWithoutItemsInput = {
@@ -864,6 +940,7 @@ export type OrganizationUpdateToOneWithWhereWithoutItemsInput = {
 export type OrganizationUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -872,11 +949,13 @@ export type OrganizationUpdateWithoutItemsInput = {
   users?: Prisma.UserUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutOrgNestedInput
+  jobCounter?: Prisma.JobNumberCounterUpdateOneWithoutOrgNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   baseCurrency?: Prisma.StringFieldUpdateOperationsInput | string
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -885,11 +964,13 @@ export type OrganizationUncheckedUpdateWithoutItemsInput = {
   users?: Prisma.UserUncheckedUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutOrgNestedInput
+  jobCounter?: Prisma.JobNumberCounterUncheckedUpdateOneWithoutOrgNestedInput
 }
 
 export type OrganizationCreateWithoutCustomersInput = {
   id?: string
   name: string
+  slug: string
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -898,11 +979,13 @@ export type OrganizationCreateWithoutCustomersInput = {
   users?: Prisma.UserCreateNestedManyWithoutOrgInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemCreateNestedManyWithoutOrgInput
+  jobCounter?: Prisma.JobNumberCounterCreateNestedOneWithoutOrgInput
 }
 
 export type OrganizationUncheckedCreateWithoutCustomersInput = {
   id?: string
   name: string
+  slug: string
   baseCurrency: string
   staleOrderThresholdDays?: number
   createdAt?: Date | string
@@ -911,6 +994,7 @@ export type OrganizationUncheckedCreateWithoutCustomersInput = {
   users?: Prisma.UserUncheckedCreateNestedManyWithoutOrgInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutOrgInput
+  jobCounter?: Prisma.JobNumberCounterUncheckedCreateNestedOneWithoutOrgInput
 }
 
 export type OrganizationCreateOrConnectWithoutCustomersInput = {
@@ -932,6 +1016,7 @@ export type OrganizationUpdateToOneWithWhereWithoutCustomersInput = {
 export type OrganizationUpdateWithoutCustomersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -940,11 +1025,13 @@ export type OrganizationUpdateWithoutCustomersInput = {
   users?: Prisma.UserUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUpdateManyWithoutOrgNestedInput
+  jobCounter?: Prisma.JobNumberCounterUpdateOneWithoutOrgNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutCustomersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   baseCurrency?: Prisma.StringFieldUpdateOperationsInput | string
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -953,22 +1040,63 @@ export type OrganizationUncheckedUpdateWithoutCustomersInput = {
   users?: Prisma.UserUncheckedUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutOrgNestedInput
+  jobCounter?: Prisma.JobNumberCounterUncheckedUpdateOneWithoutOrgNestedInput
 }
 
-export type OrganizationCreateManyCurrencyInput = {
+export type OrganizationCreateWithoutJobCounterInput = {
   id?: string
   name: string
+  slug: string
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  currency: Prisma.CurrencyCreateNestedOneWithoutOrganizationsInput
+  branches?: Prisma.BranchCreateNestedManyWithoutOrgInput
+  users?: Prisma.UserCreateNestedManyWithoutOrgInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutOrgInput
+  items?: Prisma.ItemCreateNestedManyWithoutOrgInput
+  customers?: Prisma.CustomerCreateNestedManyWithoutOrgInput
 }
 
-export type OrganizationUpdateWithoutCurrencyInput = {
+export type OrganizationUncheckedCreateWithoutJobCounterInput = {
+  id?: string
+  name: string
+  slug: string
+  baseCurrency: string
+  staleOrderThresholdDays?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrgInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrgInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
+  items?: Prisma.ItemUncheckedCreateNestedManyWithoutOrgInput
+  customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutOrgInput
+}
+
+export type OrganizationCreateOrConnectWithoutJobCounterInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutJobCounterInput, Prisma.OrganizationUncheckedCreateWithoutJobCounterInput>
+}
+
+export type OrganizationUpsertWithoutJobCounterInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutJobCounterInput, Prisma.OrganizationUncheckedUpdateWithoutJobCounterInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutJobCounterInput, Prisma.OrganizationUncheckedCreateWithoutJobCounterInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutJobCounterInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutJobCounterInput, Prisma.OrganizationUncheckedUpdateWithoutJobCounterInput>
+}
+
+export type OrganizationUpdateWithoutJobCounterInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currency?: Prisma.CurrencyUpdateOneRequiredWithoutOrganizationsNestedInput
   branches?: Prisma.BranchUpdateManyWithoutOrgNestedInput
   users?: Prisma.UserUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutOrgNestedInput
@@ -976,9 +1104,11 @@ export type OrganizationUpdateWithoutCurrencyInput = {
   customers?: Prisma.CustomerUpdateManyWithoutOrgNestedInput
 }
 
-export type OrganizationUncheckedUpdateWithoutCurrencyInput = {
+export type OrganizationUncheckedUpdateWithoutJobCounterInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  baseCurrency?: Prisma.StringFieldUpdateOperationsInput | string
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -989,9 +1119,49 @@ export type OrganizationUncheckedUpdateWithoutCurrencyInput = {
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutOrgNestedInput
 }
 
+export type OrganizationCreateManyCurrencyInput = {
+  id?: string
+  name: string
+  slug: string
+  staleOrderThresholdDays?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type OrganizationUpdateWithoutCurrencyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUpdateManyWithoutOrgNestedInput
+  users?: Prisma.UserUpdateManyWithoutOrgNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutOrgNestedInput
+  items?: Prisma.ItemUpdateManyWithoutOrgNestedInput
+  customers?: Prisma.CustomerUpdateManyWithoutOrgNestedInput
+  jobCounter?: Prisma.JobNumberCounterUpdateOneWithoutOrgNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutCurrencyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUncheckedUpdateManyWithoutOrgNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrgNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
+  items?: Prisma.ItemUncheckedUpdateManyWithoutOrgNestedInput
+  customers?: Prisma.CustomerUncheckedUpdateManyWithoutOrgNestedInput
+  jobCounter?: Prisma.JobNumberCounterUncheckedUpdateOneWithoutOrgNestedInput
+}
+
 export type OrganizationUncheckedUpdateManyWithoutCurrencyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1067,6 +1237,7 @@ export type OrganizationCountOutputTypeCountCustomersArgs<ExtArgs extends runtim
 export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  slug?: boolean
   baseCurrency?: boolean
   staleOrderThresholdDays?: boolean
   createdAt?: boolean
@@ -1077,12 +1248,14 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   auditLogs?: boolean | Prisma.Organization$auditLogsArgs<ExtArgs>
   items?: boolean | Prisma.Organization$itemsArgs<ExtArgs>
   customers?: boolean | Prisma.Organization$customersArgs<ExtArgs>
+  jobCounter?: boolean | Prisma.Organization$jobCounterArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["organization"]>
 
 export type OrganizationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  slug?: boolean
   baseCurrency?: boolean
   staleOrderThresholdDays?: boolean
   createdAt?: boolean
@@ -1093,6 +1266,7 @@ export type OrganizationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
 export type OrganizationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  slug?: boolean
   baseCurrency?: boolean
   staleOrderThresholdDays?: boolean
   createdAt?: boolean
@@ -1103,13 +1277,14 @@ export type OrganizationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
 export type OrganizationSelectScalar = {
   id?: boolean
   name?: boolean
+  slug?: boolean
   baseCurrency?: boolean
   staleOrderThresholdDays?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type OrganizationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "baseCurrency" | "staleOrderThresholdDays" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
+export type OrganizationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "baseCurrency" | "staleOrderThresholdDays" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
 export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   currency?: boolean | Prisma.CurrencyDefaultArgs<ExtArgs>
   branches?: boolean | Prisma.Organization$branchesArgs<ExtArgs>
@@ -1117,6 +1292,7 @@ export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   auditLogs?: boolean | Prisma.Organization$auditLogsArgs<ExtArgs>
   items?: boolean | Prisma.Organization$itemsArgs<ExtArgs>
   customers?: boolean | Prisma.Organization$customersArgs<ExtArgs>
+  jobCounter?: boolean | Prisma.Organization$jobCounterArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1135,10 +1311,12 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
     items: Prisma.$ItemPayload<ExtArgs>[]
     customers: Prisma.$CustomerPayload<ExtArgs>[]
+    jobCounter: Prisma.$JobNumberCounterPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
+    slug: string
     baseCurrency: string
     staleOrderThresholdDays: number
     createdAt: Date
@@ -1543,6 +1721,7 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
   auditLogs<T extends Prisma.Organization$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   items<T extends Prisma.Organization$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   customers<T extends Prisma.Organization$customersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$customersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  jobCounter<T extends Prisma.Organization$jobCounterArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$jobCounterArgs<ExtArgs>>): Prisma.Prisma__JobNumberCounterClient<runtime.Types.Result.GetResult<Prisma.$JobNumberCounterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1574,6 +1753,7 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
 export interface OrganizationFieldRefs {
   readonly id: Prisma.FieldRef<"Organization", 'String'>
   readonly name: Prisma.FieldRef<"Organization", 'String'>
+  readonly slug: Prisma.FieldRef<"Organization", 'String'>
   readonly baseCurrency: Prisma.FieldRef<"Organization", 'String'>
   readonly staleOrderThresholdDays: Prisma.FieldRef<"Organization", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Organization", 'DateTime'>
@@ -2096,6 +2276,25 @@ export type Organization$customersArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.CustomerScalarFieldEnum | Prisma.CustomerScalarFieldEnum[]
+}
+
+/**
+ * Organization.jobCounter
+ */
+export type Organization$jobCounterArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JobNumberCounter
+   */
+  select?: Prisma.JobNumberCounterSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JobNumberCounter
+   */
+  omit?: Prisma.JobNumberCounterOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobNumberCounterInclude<ExtArgs> | null
+  where?: Prisma.JobNumberCounterWhereInput
 }
 
 /**

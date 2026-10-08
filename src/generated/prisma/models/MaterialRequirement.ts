@@ -28,10 +28,12 @@ export type AggregateMaterialRequirement = {
 
 export type MaterialRequirementAvgAggregateOutputType = {
   expectedQty: runtime.Decimal | null
+  standardUnitCost: runtime.Decimal | null
 }
 
 export type MaterialRequirementSumAggregateOutputType = {
   expectedQty: runtime.Decimal | null
+  standardUnitCost: runtime.Decimal | null
 }
 
 export type MaterialRequirementMinAggregateOutputType = {
@@ -41,6 +43,8 @@ export type MaterialRequirementMinAggregateOutputType = {
   materialItemId: string | null
   expectedQty: runtime.Decimal | null
   uom: string | null
+  standardUnitCost: runtime.Decimal | null
+  standardUnitCostCurrency: string | null
 }
 
 export type MaterialRequirementMaxAggregateOutputType = {
@@ -50,6 +54,8 @@ export type MaterialRequirementMaxAggregateOutputType = {
   materialItemId: string | null
   expectedQty: runtime.Decimal | null
   uom: string | null
+  standardUnitCost: runtime.Decimal | null
+  standardUnitCostCurrency: string | null
 }
 
 export type MaterialRequirementCountAggregateOutputType = {
@@ -59,16 +65,20 @@ export type MaterialRequirementCountAggregateOutputType = {
   materialItemId: number
   expectedQty: number
   uom: number
+  standardUnitCost: number
+  standardUnitCostCurrency: number
   _all: number
 }
 
 
 export type MaterialRequirementAvgAggregateInputType = {
   expectedQty?: true
+  standardUnitCost?: true
 }
 
 export type MaterialRequirementSumAggregateInputType = {
   expectedQty?: true
+  standardUnitCost?: true
 }
 
 export type MaterialRequirementMinAggregateInputType = {
@@ -78,6 +88,8 @@ export type MaterialRequirementMinAggregateInputType = {
   materialItemId?: true
   expectedQty?: true
   uom?: true
+  standardUnitCost?: true
+  standardUnitCostCurrency?: true
 }
 
 export type MaterialRequirementMaxAggregateInputType = {
@@ -87,6 +99,8 @@ export type MaterialRequirementMaxAggregateInputType = {
   materialItemId?: true
   expectedQty?: true
   uom?: true
+  standardUnitCost?: true
+  standardUnitCostCurrency?: true
 }
 
 export type MaterialRequirementCountAggregateInputType = {
@@ -96,6 +110,8 @@ export type MaterialRequirementCountAggregateInputType = {
   materialItemId?: true
   expectedQty?: true
   uom?: true
+  standardUnitCost?: true
+  standardUnitCostCurrency?: true
   _all?: true
 }
 
@@ -192,6 +208,8 @@ export type MaterialRequirementGroupByOutputType = {
   materialItemId: string
   expectedQty: runtime.Decimal
   uom: string
+  standardUnitCost: runtime.Decimal | null
+  standardUnitCostCurrency: string | null
   _count: MaterialRequirementCountAggregateOutputType | null
   _avg: MaterialRequirementAvgAggregateOutputType | null
   _sum: MaterialRequirementSumAggregateOutputType | null
@@ -224,6 +242,8 @@ export type MaterialRequirementWhereInput = {
   materialItemId?: Prisma.UuidFilter<"MaterialRequirement"> | string
   expectedQty?: Prisma.DecimalFilter<"MaterialRequirement"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFilter<"MaterialRequirement"> | string
+  standardUnitCost?: Prisma.DecimalNullableFilter<"MaterialRequirement"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: Prisma.StringNullableFilter<"MaterialRequirement"> | string | null
   job?: Prisma.XOR<Prisma.ProductionJobScalarRelationFilter, Prisma.ProductionJobWhereInput>
   materialItem?: Prisma.XOR<Prisma.ItemScalarRelationFilter, Prisma.ItemWhereInput>
 }
@@ -235,6 +255,8 @@ export type MaterialRequirementOrderByWithRelationInput = {
   materialItemId?: Prisma.SortOrder
   expectedQty?: Prisma.SortOrder
   uom?: Prisma.SortOrder
+  standardUnitCost?: Prisma.SortOrderInput | Prisma.SortOrder
+  standardUnitCostCurrency?: Prisma.SortOrderInput | Prisma.SortOrder
   job?: Prisma.ProductionJobOrderByWithRelationInput
   materialItem?: Prisma.ItemOrderByWithRelationInput
 }
@@ -249,6 +271,8 @@ export type MaterialRequirementWhereUniqueInput = Prisma.AtLeast<{
   materialItemId?: Prisma.UuidFilter<"MaterialRequirement"> | string
   expectedQty?: Prisma.DecimalFilter<"MaterialRequirement"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFilter<"MaterialRequirement"> | string
+  standardUnitCost?: Prisma.DecimalNullableFilter<"MaterialRequirement"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: Prisma.StringNullableFilter<"MaterialRequirement"> | string | null
   job?: Prisma.XOR<Prisma.ProductionJobScalarRelationFilter, Prisma.ProductionJobWhereInput>
   materialItem?: Prisma.XOR<Prisma.ItemScalarRelationFilter, Prisma.ItemWhereInput>
 }, "id">
@@ -260,6 +284,8 @@ export type MaterialRequirementOrderByWithAggregationInput = {
   materialItemId?: Prisma.SortOrder
   expectedQty?: Prisma.SortOrder
   uom?: Prisma.SortOrder
+  standardUnitCost?: Prisma.SortOrderInput | Prisma.SortOrder
+  standardUnitCostCurrency?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.MaterialRequirementCountOrderByAggregateInput
   _avg?: Prisma.MaterialRequirementAvgOrderByAggregateInput
   _max?: Prisma.MaterialRequirementMaxOrderByAggregateInput
@@ -277,12 +303,16 @@ export type MaterialRequirementScalarWhereWithAggregatesInput = {
   materialItemId?: Prisma.UuidWithAggregatesFilter<"MaterialRequirement"> | string
   expectedQty?: Prisma.DecimalWithAggregatesFilter<"MaterialRequirement"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringWithAggregatesFilter<"MaterialRequirement"> | string
+  standardUnitCost?: Prisma.DecimalNullableWithAggregatesFilter<"MaterialRequirement"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: Prisma.StringNullableWithAggregatesFilter<"MaterialRequirement"> | string | null
 }
 
 export type MaterialRequirementCreateInput = {
   id?: string
   expectedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
   uom: string
+  standardUnitCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: string | null
   job: Prisma.ProductionJobCreateNestedOneWithoutMaterialRequirementsInput
   materialItem: Prisma.ItemCreateNestedOneWithoutMaterialRequirementsInput
 }
@@ -294,12 +324,16 @@ export type MaterialRequirementUncheckedCreateInput = {
   materialItemId: string
   expectedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
   uom: string
+  standardUnitCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: string | null
 }
 
 export type MaterialRequirementUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   expectedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFieldUpdateOperationsInput | string
+  standardUnitCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   job?: Prisma.ProductionJobUpdateOneRequiredWithoutMaterialRequirementsNestedInput
   materialItem?: Prisma.ItemUpdateOneRequiredWithoutMaterialRequirementsNestedInput
 }
@@ -311,6 +345,8 @@ export type MaterialRequirementUncheckedUpdateInput = {
   materialItemId?: Prisma.StringFieldUpdateOperationsInput | string
   expectedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFieldUpdateOperationsInput | string
+  standardUnitCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MaterialRequirementCreateManyInput = {
@@ -320,12 +356,16 @@ export type MaterialRequirementCreateManyInput = {
   materialItemId: string
   expectedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
   uom: string
+  standardUnitCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: string | null
 }
 
 export type MaterialRequirementUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   expectedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFieldUpdateOperationsInput | string
+  standardUnitCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MaterialRequirementUncheckedUpdateManyInput = {
@@ -335,6 +375,8 @@ export type MaterialRequirementUncheckedUpdateManyInput = {
   materialItemId?: Prisma.StringFieldUpdateOperationsInput | string
   expectedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFieldUpdateOperationsInput | string
+  standardUnitCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MaterialRequirementListRelationFilter = {
@@ -354,10 +396,13 @@ export type MaterialRequirementCountOrderByAggregateInput = {
   materialItemId?: Prisma.SortOrder
   expectedQty?: Prisma.SortOrder
   uom?: Prisma.SortOrder
+  standardUnitCost?: Prisma.SortOrder
+  standardUnitCostCurrency?: Prisma.SortOrder
 }
 
 export type MaterialRequirementAvgOrderByAggregateInput = {
   expectedQty?: Prisma.SortOrder
+  standardUnitCost?: Prisma.SortOrder
 }
 
 export type MaterialRequirementMaxOrderByAggregateInput = {
@@ -367,6 +412,8 @@ export type MaterialRequirementMaxOrderByAggregateInput = {
   materialItemId?: Prisma.SortOrder
   expectedQty?: Prisma.SortOrder
   uom?: Prisma.SortOrder
+  standardUnitCost?: Prisma.SortOrder
+  standardUnitCostCurrency?: Prisma.SortOrder
 }
 
 export type MaterialRequirementMinOrderByAggregateInput = {
@@ -376,10 +423,13 @@ export type MaterialRequirementMinOrderByAggregateInput = {
   materialItemId?: Prisma.SortOrder
   expectedQty?: Prisma.SortOrder
   uom?: Prisma.SortOrder
+  standardUnitCost?: Prisma.SortOrder
+  standardUnitCostCurrency?: Prisma.SortOrder
 }
 
 export type MaterialRequirementSumOrderByAggregateInput = {
   expectedQty?: Prisma.SortOrder
+  standardUnitCost?: Prisma.SortOrder
 }
 
 export type MaterialRequirementCreateNestedManyWithoutMaterialItemInput = {
@@ -470,6 +520,8 @@ export type MaterialRequirementCreateWithoutMaterialItemInput = {
   id?: string
   expectedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
   uom: string
+  standardUnitCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: string | null
   job: Prisma.ProductionJobCreateNestedOneWithoutMaterialRequirementsInput
 }
 
@@ -478,6 +530,8 @@ export type MaterialRequirementUncheckedCreateWithoutMaterialItemInput = {
   jobId: string
   expectedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
   uom: string
+  standardUnitCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: string | null
 }
 
 export type MaterialRequirementCreateOrConnectWithoutMaterialItemInput = {
@@ -516,12 +570,16 @@ export type MaterialRequirementScalarWhereInput = {
   materialItemId?: Prisma.UuidFilter<"MaterialRequirement"> | string
   expectedQty?: Prisma.DecimalFilter<"MaterialRequirement"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFilter<"MaterialRequirement"> | string
+  standardUnitCost?: Prisma.DecimalNullableFilter<"MaterialRequirement"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: Prisma.StringNullableFilter<"MaterialRequirement"> | string | null
 }
 
 export type MaterialRequirementCreateWithoutJobInput = {
   id?: string
   expectedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
   uom: string
+  standardUnitCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: string | null
   materialItem: Prisma.ItemCreateNestedOneWithoutMaterialRequirementsInput
 }
 
@@ -530,6 +588,8 @@ export type MaterialRequirementUncheckedCreateWithoutJobInput = {
   materialItemId: string
   expectedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
   uom: string
+  standardUnitCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: string | null
 }
 
 export type MaterialRequirementCreateOrConnectWithoutJobInput = {
@@ -563,12 +623,16 @@ export type MaterialRequirementCreateManyMaterialItemInput = {
   jobId: string
   expectedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
   uom: string
+  standardUnitCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: string | null
 }
 
 export type MaterialRequirementUpdateWithoutMaterialItemInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   expectedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFieldUpdateOperationsInput | string
+  standardUnitCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   job?: Prisma.ProductionJobUpdateOneRequiredWithoutMaterialRequirementsNestedInput
 }
 
@@ -577,6 +641,8 @@ export type MaterialRequirementUncheckedUpdateWithoutMaterialItemInput = {
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
   expectedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFieldUpdateOperationsInput | string
+  standardUnitCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MaterialRequirementUncheckedUpdateManyWithoutMaterialItemInput = {
@@ -584,6 +650,8 @@ export type MaterialRequirementUncheckedUpdateManyWithoutMaterialItemInput = {
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
   expectedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFieldUpdateOperationsInput | string
+  standardUnitCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MaterialRequirementCreateManyJobInput = {
@@ -591,12 +659,16 @@ export type MaterialRequirementCreateManyJobInput = {
   materialItemId: string
   expectedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
   uom: string
+  standardUnitCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: string | null
 }
 
 export type MaterialRequirementUpdateWithoutJobInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   expectedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFieldUpdateOperationsInput | string
+  standardUnitCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   materialItem?: Prisma.ItemUpdateOneRequiredWithoutMaterialRequirementsNestedInput
 }
 
@@ -605,6 +677,8 @@ export type MaterialRequirementUncheckedUpdateWithoutJobInput = {
   materialItemId?: Prisma.StringFieldUpdateOperationsInput | string
   expectedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFieldUpdateOperationsInput | string
+  standardUnitCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MaterialRequirementUncheckedUpdateManyWithoutJobInput = {
@@ -612,6 +686,8 @@ export type MaterialRequirementUncheckedUpdateManyWithoutJobInput = {
   materialItemId?: Prisma.StringFieldUpdateOperationsInput | string
   expectedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFieldUpdateOperationsInput | string
+  standardUnitCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardUnitCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -623,6 +699,8 @@ export type MaterialRequirementSelect<ExtArgs extends runtime.Types.Extensions.I
   materialItemId?: boolean
   expectedQty?: boolean
   uom?: boolean
+  standardUnitCost?: boolean
+  standardUnitCostCurrency?: boolean
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
   materialItem?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["materialRequirement"]>
@@ -634,6 +712,8 @@ export type MaterialRequirementSelectCreateManyAndReturn<ExtArgs extends runtime
   materialItemId?: boolean
   expectedQty?: boolean
   uom?: boolean
+  standardUnitCost?: boolean
+  standardUnitCostCurrency?: boolean
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
   materialItem?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["materialRequirement"]>
@@ -645,6 +725,8 @@ export type MaterialRequirementSelectUpdateManyAndReturn<ExtArgs extends runtime
   materialItemId?: boolean
   expectedQty?: boolean
   uom?: boolean
+  standardUnitCost?: boolean
+  standardUnitCostCurrency?: boolean
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
   materialItem?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["materialRequirement"]>
@@ -656,9 +738,11 @@ export type MaterialRequirementSelectScalar = {
   materialItemId?: boolean
   expectedQty?: boolean
   uom?: boolean
+  standardUnitCost?: boolean
+  standardUnitCostCurrency?: boolean
 }
 
-export type MaterialRequirementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orgId" | "jobId" | "materialItemId" | "expectedQty" | "uom", ExtArgs["result"]["materialRequirement"]>
+export type MaterialRequirementOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orgId" | "jobId" | "materialItemId" | "expectedQty" | "uom" | "standardUnitCost" | "standardUnitCostCurrency", ExtArgs["result"]["materialRequirement"]>
 export type MaterialRequirementInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
   materialItem?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
@@ -685,6 +769,8 @@ export type $MaterialRequirementPayload<ExtArgs extends runtime.Types.Extensions
     materialItemId: string
     expectedQty: runtime.Decimal
     uom: string
+    standardUnitCost: runtime.Decimal | null
+    standardUnitCostCurrency: string | null
   }, ExtArgs["result"]["materialRequirement"]>
   composites: {}
 }
@@ -1116,6 +1202,8 @@ export interface MaterialRequirementFieldRefs {
   readonly materialItemId: Prisma.FieldRef<"MaterialRequirement", 'String'>
   readonly expectedQty: Prisma.FieldRef<"MaterialRequirement", 'Decimal'>
   readonly uom: Prisma.FieldRef<"MaterialRequirement", 'String'>
+  readonly standardUnitCost: Prisma.FieldRef<"MaterialRequirement", 'Decimal'>
+  readonly standardUnitCostCurrency: Prisma.FieldRef<"MaterialRequirement", 'String'>
 }
     
 

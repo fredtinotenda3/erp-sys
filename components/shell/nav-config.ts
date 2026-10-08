@@ -39,15 +39,8 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { label: "Inventory", href: "/inventory/stock", capabilities: ["stock:read"], implemented: false },
   { label: "Catalog", href: "/catalog/items", capabilities: ["item:read", "bom:read"], implemented: false },
   { label: "Customers", href: "/customers", capabilities: ["customer:read"], implemented: false },
-  // Quality has no dedicated read capability in authz.ts today — only
-  // "quality:record" (a write) exists, so there is currently no capability
-  // that correctly gates a read-only Quality nav item for e.g. Finance
-  // Manager or Viewer. Left in with an empty capabilities array would
-  // wrongly show it to everyone; gated on "quality:record" would wrongly
-  // hide it from roles that should be able to view results without
-  // recording them. Flagging this as an authz.ts gap to resolve before
-  // this item's `implemented` flips to true, not deciding it here.
-  { label: "Quality", href: "/quality", capabilities: ["quality:record"], implemented: false },
+  // Gated on quality:read (added to authz.ts alongside quality:record).
+  { label: "Quality", href: "/quality", capabilities: ["quality:read"], implemented: false },
   { label: "Reports", href: "/reports/profitability", capabilities: ["cost:read"], implemented: false },
   { label: "Settings — Users", href: "/settings/users", capabilities: ["user:read"], implemented: false },
   { label: "Settings — Branches", href: "/settings/branches", capabilities: ["branch:read"], implemented: false },

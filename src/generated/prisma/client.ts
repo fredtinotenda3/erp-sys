@@ -162,6 +162,16 @@ export type StockBalance = Prisma.StockBalanceModel
  */
 export type JobCostEstimate = Prisma.JobCostEstimateModel
 /**
+ * Model JobCostEstimateLine
+ * 
+ */
+export type JobCostEstimateLine = Prisma.JobCostEstimateLineModel
+/**
+ * Model JobNumberCounter
+ * 
+ */
+export type JobNumberCounter = Prisma.JobNumberCounterModel
+/**
  * Model JobCostActual
  * 
  */

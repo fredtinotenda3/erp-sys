@@ -99,6 +99,11 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON
   production_stage_template, production_job_stage, quality_record,
   warehouse, job_cost_estimate
 TO mops_runtime;
+
+-- Production module tables (migration 20261008110000_production_job_foundations
+-- also grants these itself, guarded on the role existing).
+GRANT SELECT, INSERT, UPDATE ON job_number_counter TO mops_runtime;
+GRANT SELECT, INSERT ON job_cost_estimate_line TO mops_runtime;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO mops_runtime;
 
 -- Immutable / append-only tables: SELECT + INSERT only. No UPDATE, no

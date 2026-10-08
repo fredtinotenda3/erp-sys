@@ -7,22 +7,10 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 
-// KNOWN GAP, flagged rather than silently worked around: session-service.ts
-// login() requires {organizationId, email, password} because app_user.email
-// is only unique PER ORGANIZATION, not platform-wide (see that file's
-// header comment) — the same email can legitimately exist in two unrelated
-// orgs, so the client has to know which org it's logging into before
-// calling login. There is no "find my organization by name" endpoint and
-// Organization.name has no unique constraint in schema.prisma to build one
-// against safely yet, so this form asks for the raw organization ID — the
-// literal field the API accepts today. That is not a decision I'm making
-// on your behalf; it's a placeholder for whichever real flow you pick
-// (a login subdomain, a slug field + lookup endpoint, or a server-set
-// "last used org" cookie from the bootstrap response). The localStorage
-// remember-last-org-id below is a minor, non-security convenience only
-// (so a returning user doesn't retype a UUID every time), not a substitute
-// for that decision.
-const LAST_ORG_ID_KEY = "operis.lastOrganizationId";
+// Users identify their organization with a short login handle (slug), e.g.
+// "acme-furniture", not a UUID. The last handle used on this device is
+// remembered in localStorage purely as a convenience (never security-relevant).
+const LAST_ORG_SLUG_KEY = "operis.lastOrganizationSlug";
 
 interface LoginErrorBody {
   error?: { code?: string; message?: string };
@@ -37,10 +25,10 @@ interface LoginErrorBody {
 // where `window` doesn't exist — guarded below, same as the try/catch for
 // private-browsing/blocked-storage, so it degrades to an empty field in
 // both cases rather than throwing.
-function readRememberedOrgId(): string {
+function readRememberedOrgSlug(): string {
   if (typeof window === "undefined") return "";
   try {
-    return window.localStorage.getItem(LAST_ORG_ID_KEY) ?? "";
+    return window.localStorage.getItem(LAST_ORG_SLUG_KEY) ?? "";
   } catch {
     return "";
   }
@@ -48,7 +36,7 @@ function readRememberedOrgId(): string {
 
 export default function LoginPage() {
   const router = useRouter();
-  const [organizationId, setOrganizationId] = useState(readRememberedOrgId);
+  const [organizationSlug, setOrganizationSlug] = useState(readRememberedOrgSlug);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -63,7 +51,7 @@ export default function LoginPage() {
       const response = await fetch("/api/v1/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ organizationId: organizationId.trim(), email: email.trim(), password }),
+        body: JSON.stringify({ organizationSlug: organizationSlug.trim().toLowerCase(), email: email.trim(), password }),
       });
 
       if (!response.ok) {
@@ -73,7 +61,7 @@ export default function LoginPage() {
       }
 
       try {
-        window.localStorage.setItem(LAST_ORG_ID_KEY, organizationId.trim());
+        window.localStorage.setItem(LAST_ORG_SLUG_KEY, organizationSlug.trim().toLowerCase());
       } catch {
         // Same as above — a failed write here never blocks a successful login.
       }
@@ -102,14 +90,17 @@ export default function LoginPage() {
         ) : null}
 
         <div className="space-y-1.5">
-          <Label htmlFor="organizationId">Organization ID</Label>
+          <Label htmlFor="organizationSlug">Organization</Label>
           <Input
-            id="organizationId"
-            name="organizationId"
-            autoComplete="off"
+            id="organizationSlug"
+            name="organizationSlug"
+            autoComplete="organization"
+            autoCapitalize="none"
+            spellCheck={false}
+            placeholder="e.g. acme-furniture"
             required
-            value={organizationId}
-            onChange={(e) => setOrganizationId(e.target.value)}
+            value={organizationSlug}
+            onChange={(e) => setOrganizationSlug(e.target.value)}
             aria-invalid={Boolean(error)}
           />
         </div>

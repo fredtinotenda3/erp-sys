@@ -8,14 +8,45 @@
 // behind an invite code or an operator-only deployment flag; that's a
 // deployment/product decision, not something this service layer should
 // assume either way.
+import { randomBytes } from "node:crypto";
 import { z } from "zod";
-import { prisma } from "../../shared/db";
-import { ValidationError } from "../../shared/errors";
+import { prisma, isUniqueConstraintError } from "../../shared/db";
+import { ConflictError, ValidationError } from "../../shared/errors";
 import { hashPassword } from "../../shared/password";
 import { recordAudit } from "./audit-service";
 
+// Login handle format. Mirrors the CHECK constraint in migration
+// 20261008100000_add_organization_slug: 3-50 chars, lowercase letters and
+// digits, single hyphens between groups.
+export const SLUG_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+
+export const slugSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .min(3, "slug must be at least 3 characters")
+  .max(50, "slug must be at most 50 characters")
+  .regex(SLUG_PATTERN, "slug may only contain lowercase letters, digits, and single hyphens between them");
+
+// Used only when the caller doesn't supply a slug: slugified organization
+// name plus a short random suffix, so two orgs with the same name never
+// collide and the caller never has to retry.
+export function generateSlug(organizationName: string): string {
+  const base = organizationName
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 36)
+    .replace(/-+$/g, "");
+  const suffix = randomBytes(3).toString("hex");
+  return `${base || "org"}-${suffix}`;
+}
+
 const bootstrapSchema = z.object({
   organizationName: z.string().trim().min(2).max(200),
+  // Optional: the login handle the owner will type, e.g. "acme-furniture".
+  // If omitted a unique one is generated from the name.
+  organizationSlug: slugSchema.optional(),
   baseCurrency: z
     .string()
     .trim()
@@ -33,6 +64,7 @@ const bootstrapSchema = z.object({
 
 export interface BootstrapOrganizationResult {
   organizationId: string;
+  organizationSlug: string;
   branchId: string;
   ownerUserId: string;
 }
@@ -57,9 +89,33 @@ export async function bootstrapOrganization(input: unknown): Promise<BootstrapOr
   // itself fast.
   const passwordHash = await hashPassword(data.ownerPassword);
 
+  const slug = data.organizationSlug ?? generateSlug(data.organizationName);
+  if (data.organizationSlug) {
+    // Friendly early check for a caller-chosen slug; the UNIQUE constraint
+    // is still the real guard (the create below also maps a race to the
+    // same ConflictError).
+    const taken = await prisma.organization.findUnique({ where: { slug }, select: { id: true } });
+    if (taken) throw new ConflictError(`The organization handle "${slug}" is already taken`);
+  }
+
+  try {
+    return await createOrganizationTx(data, slug, passwordHash);
+  } catch (err) {
+    if (isUniqueConstraintError(err) && data.organizationSlug) {
+      throw new ConflictError(`The organization handle "${slug}" is already taken`);
+    }
+    throw err;
+  }
+}
+
+async function createOrganizationTx(
+  data: z.infer<typeof bootstrapSchema>,
+  slug: string,
+  passwordHash: string,
+): Promise<BootstrapOrganizationResult> {
   return prisma.$transaction(async (tx) => {
     const org = await tx.organization.create({
-      data: { name: data.organizationName, baseCurrency: data.baseCurrency },
+      data: { name: data.organizationName, slug, baseCurrency: data.baseCurrency },
     });
 
     const branch = await tx.branch.create({
@@ -85,7 +141,7 @@ export async function bootstrapOrganization(input: unknown): Promise<BootstrapOr
       entityType: "organization",
       entityId: org.id,
       action: "create",
-      afterValue: { name: org.name, baseCurrency: org.baseCurrency },
+      afterValue: { name: org.name, slug: org.slug, baseCurrency: org.baseCurrency },
       reason: "organization bootstrap",
     });
     await recordAudit(tx, {
@@ -108,6 +164,6 @@ export async function bootstrapOrganization(input: unknown): Promise<BootstrapOr
       reason: "organization bootstrap",
     });
 
-    return { organizationId: org.id, branchId: branch.id, ownerUserId: owner.id };
+    return { organizationId: org.id, organizationSlug: org.slug, branchId: branch.id, ownerUserId: owner.id };
   });
 }

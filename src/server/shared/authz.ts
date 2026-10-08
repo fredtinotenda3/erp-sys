@@ -73,6 +73,7 @@ export type Capability =
   | "material:issue"
   | "labour:record"
   | "quality:record"
+  | "quality:read"
   // Inventory
   | "stock:receive"
   | "stock:adjust"
@@ -135,6 +136,7 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "material:issue",
     "labour:record",
     "quality:record",
+    "quality:read",
     "stock:receive",
     "stock:adjust",
     "stock:read",
@@ -173,6 +175,7 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "material:issue",
     "labour:record",
     "quality:record",
+    "quality:read",
     "stock:receive",
     "stock:adjust",
     "stock:read",
@@ -197,6 +200,7 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "material:issue",
     "labour:record",
     "quality:record",
+    "quality:read",
     "stock:read",
     "cost:read",
   ]),
@@ -208,6 +212,7 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "item:update",
     "bom:read",
     "production_job:read",
+    "quality:read",
     "material:issue",
     "stock:receive",
     "stock:adjust",
@@ -224,6 +229,7 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "material:issue",
     "labour:record",
     "quality:record",
+    "quality:read",
   ]),
   FINANCE_MANAGER: new Set<Capability>([
     "branch:read",
@@ -234,6 +240,7 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "customer:read",
     "sales_order:read",
     "production_job:read",
+    "quality:read",
     "stock:read",
     "cost:read",
     "exchange_rate:create",
@@ -246,6 +253,7 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "customer:read",
     "sales_order:read",
     "production_job:read",
+    "quality:read",
     "stock:read",
     // cost:read intentionally omitted — approved choice, docs/UX_UI_ARCHITECTURE.md
     // §15.1: Viewer sees every module read-only except cost/margin data.

@@ -19,18 +19,22 @@ import { recordAudit } from "./audit-service";
 // (e.g. 8h to match a single shift) or sliding instead of fixed.
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 
-const loginSchema = z.object({
-  // Login is scoped to one organization per request because app_user.email
-  // is only unique PER ORGANIZATION (org_id, email), not platform-wide — the
-  // same email can legitimately exist in two unrelated orgs. This means the
-  // client must know/select which organization it's logging into before
-  // calling this (e.g. a per-org login link, or an org picker screen) — a
-  // genuine product decision for the actual login UI, not assumed away here.
-  // Flag if you'd rather make email globally unique and drop this field.
-  organizationId: z.string().uuid(),
-  email: z.string().trim().toLowerCase().email(),
-  password: z.string().min(1),
-});
+// Login is scoped to one organization per request because app_user.email is
+// only unique PER ORGANIZATION (org_id, email). The user identifies their
+// organization with its short login handle (organizationSlug, e.g.
+// "acme-furniture"). organizationId (UUID) is still accepted for internal
+// callers and tests; exactly one of the two must be supplied.
+const loginSchema = z
+  .object({
+    organizationSlug: z.string().trim().toLowerCase().min(1).max(50).optional(),
+    organizationId: z.string().uuid().optional(),
+    email: z.string().trim().toLowerCase().email(),
+    password: z.string().min(1),
+  })
+  .refine((v) => Boolean(v.organizationSlug) !== Boolean(v.organizationId), {
+    message: "Provide exactly one of organizationSlug or organizationId",
+    path: ["organizationSlug"],
+  });
 
 export interface AuthenticatedSession {
   readonly sessionId: string;
@@ -70,7 +74,18 @@ async function loadBranchIds(orgId: string, userId: string): Promise<string[]> {
 export async function login(input: unknown, context: LoginContext = {}): Promise<LoginResult> {
   const parsed = loginSchema.safeParse(input);
   if (!parsed.success) throw new ValidationError("Invalid login payload", parsed.error.issues);
-  const { organizationId, email, password } = parsed.data;
+  const { organizationSlug, email, password } = parsed.data;
+
+  // Resolve the organization. An unknown slug produces the SAME generic
+  // error as a wrong password so the login form can't be used to discover
+  // which organization handles exist.
+  let organizationId = parsed.data.organizationId;
+  if (organizationSlug) {
+    const org = await prisma.organization.findUnique({ where: { slug: organizationSlug }, select: { id: true } });
+    if (!org) throw new UnauthorizedError("Invalid email or password");
+    organizationId = org.id;
+  }
+  if (!organizationId) throw new UnauthorizedError("Invalid email or password");
 
   const user = await prisma.user.findFirst({ where: { orgId: organizationId, email } });
 
