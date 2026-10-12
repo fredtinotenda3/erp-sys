@@ -77,6 +77,7 @@ export type Capability =
   // Inventory
   | "stock:receive"
   | "stock:adjust"
+  | "warehouse:create"
   | "stock:read"
   // Costing / currency
   | "cost:read"
@@ -139,6 +140,7 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "quality:read",
     "stock:receive",
     "stock:adjust",
+    "warehouse:create",
     "stock:read",
     "cost:read",
     "exchange_rate:create",
@@ -178,6 +180,7 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "quality:read",
     "stock:receive",
     "stock:adjust",
+    "warehouse:create",
     "stock:read",
     "cost:read",
     // exchange_rate:create intentionally omitted — see note above the map.
@@ -216,6 +219,7 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "material:issue",
     "stock:receive",
     "stock:adjust",
+    "warehouse:create",
     "stock:read",
   ]),
   PRODUCTION_OPERATOR: new Set<Capability>([
