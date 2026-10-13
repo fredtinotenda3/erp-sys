@@ -89,6 +89,14 @@ GRANT USAGE ON SCHEMA public TO mops_runtime;
 -- applied)
 -- ----------------------------------------------------------------------------
 
+-- Stale-grant repair: re-running this stage must leave the runtime role with
+-- exactly the privileges below, even if an older run (or a manual fix) gave it
+-- more. Harmless on a clean database. (Tables created by later migrations are
+-- skipped by the IF EXISTS guards.)
+REVOKE INSERT, UPDATE, DELETE ON stock_balance FROM mops_runtime;
+REVOKE UPDATE, DELETE ON stock_movement, audit_log, exchange_rate, job_cost_actual FROM mops_runtime;
+REVOKE UPDATE, DELETE ON job_cost_actual_line FROM mops_runtime;
+
 -- Tables mops_runtime may fully read/write (ordinary CRUD, Phase 1 tables
 -- plus later-phase tables listed for completeness — grant only the ones
 -- that actually exist in your database at the time you run this):

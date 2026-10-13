@@ -4,6 +4,7 @@ export default defineConfig({
   test: {
     environment: "node",
     include: ["src/**/*.test.ts"],
+    globalSetup: ["./vitest.global-setup.ts"],
     setupFiles: ["./vitest.setup.ts"],
     // Real Postgres round-trips (including intentionally-slow argon2id
     // hashing per shared/password.ts) are slower than in-memory unit tests.

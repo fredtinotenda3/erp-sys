@@ -172,8 +172,11 @@ psql "<mops_runtime connection string>" -c "UPDATE audit_log SET reason = 'tampe
 
 To see the `prevent_mutation()` trigger's own message fire — the second, independent layer, which exists so a future *accidental* `GRANT UPDATE` can't reopen these tables — you need a role that already has UPDATE/DELETE (e.g. `mops_migrator`, which owns every table) **and** a real matching row, since a `FOR EACH ROW` trigger body never runs over zero rows:
 ```powershell
-psql "<mops_migrator connection string>" -c "INSERT INTO exchange_rate (base_currency, quote_currency, rate, as_of_date, source) VALUES ('USD','ZAR', 18.5, CURRENT_DATE, 'MANUAL');"
-psql "<mops_migrator connection string>" -c "UPDATE exchange_rate SET rate = 99 WHERE base_currency = 'USD';"
+# Run this AFTER migration 20261008120000 (exchange_rate is organization-scoped from then on). Both statements
+# go in ONE -c string so they run in a single implicit transaction: the UPDATE fails, the whole thing rolls back,
+# and NO row is left behind. (exchange_rate is append-only, so a stray row can never be deleted afterwards — an
+# earlier version of this step committed one, and that row blocked the costing migration.)
+psql "<mops_migrator connection string>" -c "INSERT INTO exchange_rate (org_id, base_currency, quote_currency, rate, as_of_date, source) SELECT id, 'USD','ZAR', 18.5, CURRENT_DATE, 'MANUAL' FROM organization LIMIT 1; UPDATE exchange_rate SET rate = 99;"
 # expect: ERROR: UPDATE on exchange_rate is not permitted — exchange_rate is immutable/append-only. Insert an offsetting or compensating row instead.
 ```
 Both layers were verified for real during this hardening pass: the GRANT-level denial for `mops_runtime` above, and the trigger-level denial for `mops_migrator` against a real row, confirming the "belt and suspenders" design actually holds at both layers rather than only the one that happens to fire first.
@@ -314,3 +317,30 @@ All 23 existing IAM tests should still pass — none of them touch the newly-con
 ### 11.5 What "done" looks like
 
 Every query in 11.3 returns the expected row count, `npx prisma migrate status` shows no drift, both sanity-check `UPDATE`s in Section 6 fail with the expected error, and `npx vitest run` is still green. Only then start Phase 1.5.
+
+---
+
+## 9. Bringing an existing database up to date (and what the test pre-flight tells you)
+
+`npm test` runs a pre-flight check (`vitest.global-setup.ts`) before any test. If it stops with
+"DATABASE IS NOT UP TO DATE", the code is newer than your database. Fix it in this order:
+
+```powershell
+# 1. Apply every pending migration (as mops_migrator, via MIGRATION_DATABASE_URL)
+npx prisma migrate deploy
+
+# 2. Re-run Stage 3 as your superuser-equivalent role (idempotent; it also REVOKEs stale write grants)
+psql "<superuser connection string>" -d mops_dev -f docs/db-roles-and-security.sql
+#    ...or, if Stage 1 already ran and re-running it errors on "role already exists", run only the Stage 3 part.
+```
+
+**If `migrate deploy` stops on `20261008120000_costing_and_exchange_rates`** because `exchange_rate` already has rows
+(the old Section 6 demo left one behind), clear that throwaway row and retry:
+
+```powershell
+psql "<MIGRATION_DATABASE_URL>" -f scripts/clear-legacy-exchange-rates.sql
+npx prisma migrate resolve --rolled-back 20261008120000_costing_and_exchange_rates
+npx prisma migrate deploy
+```
+
+The script refuses to delete anything except that exact demo row.

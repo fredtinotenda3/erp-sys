@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run",
+    "db:deploy": "prisma migrate deploy",
+    "create-admin": "tsx scripts/create-admin.ts"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.2.2",

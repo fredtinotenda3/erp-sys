@@ -25,7 +25,7 @@
 DO $$
 BEGIN
   IF EXISTS (SELECT 1 FROM exchange_rate) THEN
-    RAISE EXCEPTION 'exchange_rate already contains rows; cannot add org_id automatically. Assign them to an organization manually first.';
+    RAISE EXCEPTION 'exchange_rate already contains rows, so org_id cannot be added automatically. These are almost always the throwaway row from the old docs/SETUP_COMMANDS.md trigger demo (the table is append-only, so it can never be cleaned up by hand). If they are disposable, run scripts/clear-legacy-exchange-rates.sql as mops_migrator, then re-run this migration (if Prisma marked it failed: npx prisma migrate resolve --rolled-back 20261008120000_costing_and_exchange_rates). If they are real rates, assign them to an organization manually first.';
   END IF;
   IF EXISTS (SELECT 1 FROM job_cost_actual) THEN
     RAISE EXCEPTION 'job_cost_actual already contains rows; refusing to drop its single-currency columns.';

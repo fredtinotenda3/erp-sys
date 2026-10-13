@@ -45,7 +45,6 @@ export function errorResponse(err: unknown): NextResponse {
   if (err instanceof AppError) {
     return NextResponse.json({ error: { code: err.code, message: err.message } }, { status: err.httpStatus });
   }
-  // eslint-disable-next-line no-console
   console.error("Unhandled error in API route:", err);
   return NextResponse.json(
     { error: { code: "INTERNAL_ERROR", message: "An unexpected error occurred" } },

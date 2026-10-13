@@ -38,7 +38,6 @@ if (!RUNTIME_DATABASE_URL) {
 // footgun). Not needed in production, where the module is loaded exactly
 // once per server process.
 declare global {
-  // eslint-disable-next-line no-var
   var __mopsPrismaClient: PrismaClient | undefined;
 }
 
@@ -50,7 +49,16 @@ function createPrismaClient(): PrismaClient {
     connectionTimeoutMillis: 5_000,
   });
   const adapter = new PrismaPg(pool);
-  return new PrismaClient({ adapter });
+  return new PrismaClient({
+    adapter,
+    // Prisma's interactive-transaction defaults (2s to acquire a connection,
+    // 5s to finish) are too tight for multi-statement service transactions on
+    // a busy or remote database: createJob serialises on the per-org job
+    // counter row, so concurrent creates queue behind each other and the
+    // later ones were expiring ("A commit cannot be executed on an expired
+    // transaction"). Generous limits cost nothing when the database is fast.
+    transactionOptions: { maxWait: 10_000, timeout: 30_000 },
+  });
 }
 
 export const prisma: PrismaClient = globalThis.__mopsPrismaClient ?? createPrismaClient();
