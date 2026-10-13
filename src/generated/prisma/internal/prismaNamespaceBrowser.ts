@@ -77,7 +77,8 @@ export const ModelName = {
   JobCostEstimate: 'JobCostEstimate',
   JobCostEstimateLine: 'JobCostEstimateLine',
   JobNumberCounter: 'JobNumberCounter',
-  JobCostActual: 'JobCostActual'
+  JobCostActual: 'JobCostActual',
+  JobCostActualLine: 'JobCostActualLine'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -190,6 +191,7 @@ export type CurrencyScalarFieldEnum = (typeof CurrencyScalarFieldEnum)[keyof typ
 
 export const ExchangeRateScalarFieldEnum = {
   id: 'id',
+  orgId: 'orgId',
   baseCurrency: 'baseCurrency',
   quoteCurrency: 'quoteCurrency',
   rate: 'rate',
@@ -475,16 +477,24 @@ export type JobNumberCounterScalarFieldEnum = (typeof JobNumberCounterScalarFiel
 export const JobCostActualScalarFieldEnum = {
   orgId: 'orgId',
   jobId: 'jobId',
-  actualMaterialCost: 'actualMaterialCost',
-  actualLabourCost: 'actualLabourCost',
-  actualOverheadCost: 'actualOverheadCost',
-  currency: 'currency',
-  exchangeRateId: 'exchangeRateId',
   revenue: 'revenue',
+  revenueCurrency: 'revenueCurrency',
   snapshottedAt: 'snapshottedAt'
 } as const
 
 export type JobCostActualScalarFieldEnum = (typeof JobCostActualScalarFieldEnum)[keyof typeof JobCostActualScalarFieldEnum]
+
+
+export const JobCostActualLineScalarFieldEnum = {
+  orgId: 'orgId',
+  jobId: 'jobId',
+  currency: 'currency',
+  actualMaterialCost: 'actualMaterialCost',
+  actualLabourCost: 'actualLabourCost',
+  actualOverheadCost: 'actualOverheadCost'
+} as const
+
+export type JobCostActualLineScalarFieldEnum = (typeof JobCostActualLineScalarFieldEnum)[keyof typeof JobCostActualLineScalarFieldEnum]
 
 
 export const SortOrder = {

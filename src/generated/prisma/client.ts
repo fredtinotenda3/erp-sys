@@ -176,3 +176,8 @@ export type JobNumberCounter = Prisma.JobNumberCounterModel
  * 
  */
 export type JobCostActual = Prisma.JobCostActualModel
+/**
+ * Model JobCostActualLine
+ * 
+ */
+export type JobCostActualLine = Prisma.JobCostActualLineModel

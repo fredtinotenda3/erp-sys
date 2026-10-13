@@ -268,6 +268,11 @@ export function hasCapability(role: Role, capability: Capability): boolean {
   return CAPABILITIES_BY_ROLE[role].has(capability);
 }
 
+/** Every capability a role holds (used by GET /auth/me so the UI can filter navigation). */
+export function capabilitiesFor(role: Role): Capability[] {
+  return [...CAPABILITIES_BY_ROLE[role]].sort();
+}
+
 export function assertCapability(role: Role, capability: Capability): void {
   if (!hasCapability(role, capability)) {
     throw new ForbiddenError(`Role ${role} does not have the "${capability}" capability`);

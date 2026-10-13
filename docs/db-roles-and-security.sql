@@ -104,6 +104,7 @@ TO mops_runtime;
 -- also grants these itself, guarded on the role existing).
 GRANT SELECT, INSERT, UPDATE ON job_number_counter TO mops_runtime;
 GRANT SELECT, INSERT ON job_cost_estimate_line TO mops_runtime;
+GRANT SELECT, INSERT ON job_cost_actual_line TO mops_runtime; -- migration 20261008120000
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO mops_runtime;
 
 -- Immutable / append-only tables: SELECT + INSERT only. No UPDATE, no

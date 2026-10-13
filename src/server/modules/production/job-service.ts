@@ -15,17 +15,17 @@
 //    inside the creating transaction (row-locked => concurrency-safe, and
 //    rolled back with the transaction if creation fails).
 //
-// Job completion currently records status + actualEnd only. The immutable
-// JobCostActual snapshot is written by the Costing module (it needs stock
-// movements and multi-currency actual lines, neither of which exist yet).
-// Nothing is lost by that ordering: actual cost is derived from the
-// immutable ledger, so the snapshot can be produced later for any job.
+// Completing a job freezes its actual cost: in the SAME transaction as the
+// status change, the per-currency actual cost (derived from the immutable
+// stock ledger and labour records) is written to job_cost_actual /
+// job_cost_actual_line, which the database then refuses to ever modify.
 import { z } from "zod";
 import { Prisma } from "../../../generated/prisma/client";
 import { prisma } from "../../shared/db";
 import { assertCapability, assertBranchAccess, hasBranchAccess, type Capability } from "../../shared/authz";
 import { ConflictError, NotFoundError, ValidationError } from "../../shared/errors";
 import { recordAudit } from "../iam/audit-service";
+import { computeActualCostLines } from "../costing/actual-cost";
 import type { AuthenticatedSession } from "../iam/session-service";
 import { canTransition, JOB_STATUS_VALUES, type JobStatus } from "./job-state";
 import { toJobView, type JobRow } from "./job-view";
@@ -305,6 +305,43 @@ async function applyTransition(
       },
     });
     if (result.count !== 1) throw new ConflictError("The job was changed by someone else — reload and retry");
+
+    if (target === "completed") {
+      const actual = (await computeActualCostLines(tx, session.orgId, [job.id])).get(job.id) ?? [];
+      await tx.jobCostActual.create({
+        data: {
+          orgId: session.orgId,
+          jobId: job.id,
+          revenue: job.quotedAmount,
+          revenueCurrency: job.quotedCurrency,
+        },
+      });
+      if (actual.length > 0) {
+        await tx.jobCostActualLine.createMany({
+          data: actual.map((l) => ({
+            orgId: session.orgId,
+            jobId: job.id,
+            currency: l.currency,
+            actualMaterialCost: l.materialCost,
+            actualLabourCost: l.labourCost,
+            actualOverheadCost: null, // unavailable: no allocation method approved
+          })),
+        });
+      }
+      await recordAudit(tx, {
+        orgId: session.orgId,
+        branchId: job.branchId,
+        actorUserId: session.userId,
+        entityType: "job_cost_actual",
+        entityId: job.id,
+        action: "create",
+        afterValue: {
+          currencies: actual.map((l) => l.currency),
+          revenueCurrency: job.quotedCurrency,
+        },
+      });
+    }
+
     await recordAudit(tx, {
       orgId: session.orgId,
       branchId: job.branchId,
@@ -338,4 +375,90 @@ export async function transitionJob(session: AuthenticatedSession, id: string, i
 export async function completeJob(session: AuthenticatedSession, id: string) {
   assertCapability(session.role, "production_job:complete");
   return applyTransition(session, id, "completed", undefined);
+}
+
+// ----------------------------------------------------------------------------
+// Editing a job's schedule, customer and quote. The product, quantity and BOM
+// snapshot are NOT editable: they define the material requirements and the
+// estimate, and changing them would silently rewrite history. To change those,
+// cancel the job and create a new one.
+// ----------------------------------------------------------------------------
+const updateJobSchema = z
+  .object({
+    plannedStart: z.coerce.date().nullable(),
+    plannedEnd: z.coerce.date().nullable(),
+    customerId: z.string().uuid().nullable(),
+    quotedAmount: z.number().finite().nonnegative().max(9_999_999_999).nullable(),
+    quotedCurrency: z.string().trim().toUpperCase().length(3).nullable(),
+  })
+  .partial()
+  .strict() // product, quantity and BOM are deliberately not editable: unknown keys are rejected, not ignored
+  .refine((d) => Object.keys(d).length > 0, "Provide at least one field to update");
+
+const EDITABLE: JobStatus[] = ["planned", "released", "in_progress", "on_hold"];
+
+export async function updateJob(session: AuthenticatedSession, id: string, input: unknown) {
+  assertCapability(session.role, "production_job:update");
+  const parsed = updateJobSchema.safeParse(input);
+  if (!parsed.success) throw new ValidationError("Invalid job update", parsed.error.issues);
+  const d = parsed.data;
+
+  const job = await findJobInScope(session, id);
+  if (!job) throw new NotFoundError("Production job");
+  if (!EDITABLE.includes(job.status as JobStatus)) {
+    throw new ConflictError(`A job that is "${job.status}" can no longer be edited`);
+  }
+
+  const plannedStart = d.plannedStart !== undefined ? d.plannedStart : job.plannedStart;
+  const plannedEnd = d.plannedEnd !== undefined ? d.plannedEnd : job.plannedEnd;
+  if (plannedStart && plannedEnd && plannedEnd < plannedStart) {
+    throw new ValidationError("plannedEnd cannot be before plannedStart");
+  }
+  const quotedAmount = d.quotedAmount !== undefined ? d.quotedAmount : job.quotedAmount === null ? null : Number(job.quotedAmount);
+  const quotedCurrency = d.quotedCurrency !== undefined ? d.quotedCurrency : job.quotedCurrency;
+  if ((quotedAmount === null) !== (quotedCurrency === null)) {
+    throw new ValidationError("quotedAmount and quotedCurrency must be set or cleared together");
+  }
+  if (d.quotedCurrency) {
+    const c = await prisma.currency.findUnique({ where: { code: d.quotedCurrency } });
+    if (!c) throw new ValidationError(`Unknown currency code "${d.quotedCurrency}"`);
+  }
+  if (d.customerId) {
+    const customer = await prisma.customer.findFirst({ where: { orgId: session.orgId, id: d.customerId } });
+    if (!customer) throw new ValidationError("customerId does not belong to this organization");
+    if (customer.status !== "active") throw new ValidationError("Cannot assign an inactive customer");
+  }
+
+  const data: Prisma.ProductionJobUncheckedUpdateInput = {};
+  const before: Record<string, unknown> = {};
+  const after: Record<string, unknown> = {};
+  const set = <K extends keyof typeof d>(key: K, column: string, value: unknown, current: unknown) => {
+    before[key as string] = current ?? null;
+    after[key as string] = value;
+    (data as Record<string, unknown>)[column] = value;
+  };
+  if (d.plannedStart !== undefined) set("plannedStart", "plannedStart", d.plannedStart, job.plannedStart);
+  if (d.plannedEnd !== undefined) set("plannedEnd", "plannedEnd", d.plannedEnd, job.plannedEnd);
+  if (d.customerId !== undefined) set("customerId", "customerId", d.customerId, job.customerId);
+  if (d.quotedAmount !== undefined) set("quotedAmount", "quotedAmount", d.quotedAmount, job.quotedAmount === null ? null : String(job.quotedAmount));
+  if (d.quotedCurrency !== undefined) set("quotedCurrency", "quotedCurrency", d.quotedCurrency, job.quotedCurrency);
+
+  await prisma.$transaction(async (tx) => {
+    const res = await tx.productionJob.updateMany({
+      where: { id: job.id, orgId: session.orgId, status: job.status },
+      data,
+    });
+    if (res.count !== 1) throw new ConflictError("The job was changed by someone else — reload and retry");
+    await recordAudit(tx, {
+      orgId: session.orgId,
+      branchId: job.branchId,
+      actorUserId: session.userId,
+      entityType: "production_job",
+      entityId: job.id,
+      action: "update",
+      beforeValue: before,
+      afterValue: after,
+    });
+  });
+  return getJob(session, job.id);
 }

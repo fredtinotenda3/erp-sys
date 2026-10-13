@@ -27,104 +27,68 @@ export type AggregateJobCostActual = {
 }
 
 export type JobCostActualAvgAggregateOutputType = {
-  actualMaterialCost: runtime.Decimal | null
-  actualLabourCost: runtime.Decimal | null
-  actualOverheadCost: runtime.Decimal | null
   revenue: runtime.Decimal | null
 }
 
 export type JobCostActualSumAggregateOutputType = {
-  actualMaterialCost: runtime.Decimal | null
-  actualLabourCost: runtime.Decimal | null
-  actualOverheadCost: runtime.Decimal | null
   revenue: runtime.Decimal | null
 }
 
 export type JobCostActualMinAggregateOutputType = {
   orgId: string | null
   jobId: string | null
-  actualMaterialCost: runtime.Decimal | null
-  actualLabourCost: runtime.Decimal | null
-  actualOverheadCost: runtime.Decimal | null
-  currency: string | null
-  exchangeRateId: string | null
   revenue: runtime.Decimal | null
+  revenueCurrency: string | null
   snapshottedAt: Date | null
 }
 
 export type JobCostActualMaxAggregateOutputType = {
   orgId: string | null
   jobId: string | null
-  actualMaterialCost: runtime.Decimal | null
-  actualLabourCost: runtime.Decimal | null
-  actualOverheadCost: runtime.Decimal | null
-  currency: string | null
-  exchangeRateId: string | null
   revenue: runtime.Decimal | null
+  revenueCurrency: string | null
   snapshottedAt: Date | null
 }
 
 export type JobCostActualCountAggregateOutputType = {
   orgId: number
   jobId: number
-  actualMaterialCost: number
-  actualLabourCost: number
-  actualOverheadCost: number
-  currency: number
-  exchangeRateId: number
   revenue: number
+  revenueCurrency: number
   snapshottedAt: number
   _all: number
 }
 
 
 export type JobCostActualAvgAggregateInputType = {
-  actualMaterialCost?: true
-  actualLabourCost?: true
-  actualOverheadCost?: true
   revenue?: true
 }
 
 export type JobCostActualSumAggregateInputType = {
-  actualMaterialCost?: true
-  actualLabourCost?: true
-  actualOverheadCost?: true
   revenue?: true
 }
 
 export type JobCostActualMinAggregateInputType = {
   orgId?: true
   jobId?: true
-  actualMaterialCost?: true
-  actualLabourCost?: true
-  actualOverheadCost?: true
-  currency?: true
-  exchangeRateId?: true
   revenue?: true
+  revenueCurrency?: true
   snapshottedAt?: true
 }
 
 export type JobCostActualMaxAggregateInputType = {
   orgId?: true
   jobId?: true
-  actualMaterialCost?: true
-  actualLabourCost?: true
-  actualOverheadCost?: true
-  currency?: true
-  exchangeRateId?: true
   revenue?: true
+  revenueCurrency?: true
   snapshottedAt?: true
 }
 
 export type JobCostActualCountAggregateInputType = {
   orgId?: true
   jobId?: true
-  actualMaterialCost?: true
-  actualLabourCost?: true
-  actualOverheadCost?: true
-  currency?: true
-  exchangeRateId?: true
   revenue?: true
+  revenueCurrency?: true
   snapshottedAt?: true
   _all?: true
 }
@@ -218,12 +182,8 @@ export type JobCostActualGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
 export type JobCostActualGroupByOutputType = {
   orgId: string
   jobId: string
-  actualMaterialCost: runtime.Decimal
-  actualLabourCost: runtime.Decimal | null
-  actualOverheadCost: runtime.Decimal | null
-  currency: string
-  exchangeRateId: string | null
   revenue: runtime.Decimal | null
+  revenueCurrency: string | null
   snapshottedAt: Date
   _count: JobCostActualCountAggregateOutputType | null
   _avg: JobCostActualAvgAggregateOutputType | null
@@ -253,12 +213,8 @@ export type JobCostActualWhereInput = {
   NOT?: Prisma.JobCostActualWhereInput | Prisma.JobCostActualWhereInput[]
   orgId?: Prisma.UuidFilter<"JobCostActual"> | string
   jobId?: Prisma.UuidFilter<"JobCostActual"> | string
-  actualMaterialCost?: Prisma.DecimalFilter<"JobCostActual"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  actualLabourCost?: Prisma.DecimalNullableFilter<"JobCostActual"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  actualOverheadCost?: Prisma.DecimalNullableFilter<"JobCostActual"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.StringFilter<"JobCostActual"> | string
-  exchangeRateId?: Prisma.UuidNullableFilter<"JobCostActual"> | string | null
   revenue?: Prisma.DecimalNullableFilter<"JobCostActual"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  revenueCurrency?: Prisma.StringNullableFilter<"JobCostActual"> | string | null
   snapshottedAt?: Prisma.DateTimeFilter<"JobCostActual"> | Date | string
   job?: Prisma.XOR<Prisma.ProductionJobScalarRelationFilter, Prisma.ProductionJobWhereInput>
 }
@@ -266,12 +222,8 @@ export type JobCostActualWhereInput = {
 export type JobCostActualOrderByWithRelationInput = {
   orgId?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
-  actualMaterialCost?: Prisma.SortOrder
-  actualLabourCost?: Prisma.SortOrderInput | Prisma.SortOrder
-  actualOverheadCost?: Prisma.SortOrderInput | Prisma.SortOrder
-  currency?: Prisma.SortOrder
-  exchangeRateId?: Prisma.SortOrderInput | Prisma.SortOrder
   revenue?: Prisma.SortOrderInput | Prisma.SortOrder
+  revenueCurrency?: Prisma.SortOrderInput | Prisma.SortOrder
   snapshottedAt?: Prisma.SortOrder
   job?: Prisma.ProductionJobOrderByWithRelationInput
 }
@@ -283,12 +235,8 @@ export type JobCostActualWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.JobCostActualWhereInput[]
   NOT?: Prisma.JobCostActualWhereInput | Prisma.JobCostActualWhereInput[]
   orgId?: Prisma.UuidFilter<"JobCostActual"> | string
-  actualMaterialCost?: Prisma.DecimalFilter<"JobCostActual"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  actualLabourCost?: Prisma.DecimalNullableFilter<"JobCostActual"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  actualOverheadCost?: Prisma.DecimalNullableFilter<"JobCostActual"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.StringFilter<"JobCostActual"> | string
-  exchangeRateId?: Prisma.UuidNullableFilter<"JobCostActual"> | string | null
   revenue?: Prisma.DecimalNullableFilter<"JobCostActual"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  revenueCurrency?: Prisma.StringNullableFilter<"JobCostActual"> | string | null
   snapshottedAt?: Prisma.DateTimeFilter<"JobCostActual"> | Date | string
   job?: Prisma.XOR<Prisma.ProductionJobScalarRelationFilter, Prisma.ProductionJobWhereInput>
 }, "jobId" | "orgId_jobId">
@@ -296,12 +244,8 @@ export type JobCostActualWhereUniqueInput = Prisma.AtLeast<{
 export type JobCostActualOrderByWithAggregationInput = {
   orgId?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
-  actualMaterialCost?: Prisma.SortOrder
-  actualLabourCost?: Prisma.SortOrderInput | Prisma.SortOrder
-  actualOverheadCost?: Prisma.SortOrderInput | Prisma.SortOrder
-  currency?: Prisma.SortOrder
-  exchangeRateId?: Prisma.SortOrderInput | Prisma.SortOrder
   revenue?: Prisma.SortOrderInput | Prisma.SortOrder
+  revenueCurrency?: Prisma.SortOrderInput | Prisma.SortOrder
   snapshottedAt?: Prisma.SortOrder
   _count?: Prisma.JobCostActualCountOrderByAggregateInput
   _avg?: Prisma.JobCostActualAvgOrderByAggregateInput
@@ -316,22 +260,14 @@ export type JobCostActualScalarWhereWithAggregatesInput = {
   NOT?: Prisma.JobCostActualScalarWhereWithAggregatesInput | Prisma.JobCostActualScalarWhereWithAggregatesInput[]
   orgId?: Prisma.UuidWithAggregatesFilter<"JobCostActual"> | string
   jobId?: Prisma.UuidWithAggregatesFilter<"JobCostActual"> | string
-  actualMaterialCost?: Prisma.DecimalWithAggregatesFilter<"JobCostActual"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  actualLabourCost?: Prisma.DecimalNullableWithAggregatesFilter<"JobCostActual"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  actualOverheadCost?: Prisma.DecimalNullableWithAggregatesFilter<"JobCostActual"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.StringWithAggregatesFilter<"JobCostActual"> | string
-  exchangeRateId?: Prisma.UuidNullableWithAggregatesFilter<"JobCostActual"> | string | null
   revenue?: Prisma.DecimalNullableWithAggregatesFilter<"JobCostActual"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  revenueCurrency?: Prisma.StringNullableWithAggregatesFilter<"JobCostActual"> | string | null
   snapshottedAt?: Prisma.DateTimeWithAggregatesFilter<"JobCostActual"> | Date | string
 }
 
 export type JobCostActualCreateInput = {
-  actualMaterialCost: runtime.Decimal | runtime.DecimalJsLike | number | string
-  actualLabourCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  actualOverheadCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency: string
-  exchangeRateId?: string | null
   revenue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  revenueCurrency?: string | null
   snapshottedAt?: Date | string
   job: Prisma.ProductionJobCreateNestedOneWithoutCostActualInput
 }
@@ -339,22 +275,14 @@ export type JobCostActualCreateInput = {
 export type JobCostActualUncheckedCreateInput = {
   orgId: string
   jobId: string
-  actualMaterialCost: runtime.Decimal | runtime.DecimalJsLike | number | string
-  actualLabourCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  actualOverheadCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency: string
-  exchangeRateId?: string | null
   revenue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  revenueCurrency?: string | null
   snapshottedAt?: Date | string
 }
 
 export type JobCostActualUpdateInput = {
-  actualMaterialCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  actualLabourCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  actualOverheadCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
-  exchangeRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   revenue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  revenueCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snapshottedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   job?: Prisma.ProductionJobUpdateOneRequiredWithoutCostActualNestedInput
 }
@@ -362,46 +290,30 @@ export type JobCostActualUpdateInput = {
 export type JobCostActualUncheckedUpdateInput = {
   orgId?: Prisma.StringFieldUpdateOperationsInput | string
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
-  actualMaterialCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  actualLabourCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  actualOverheadCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
-  exchangeRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   revenue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  revenueCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snapshottedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type JobCostActualCreateManyInput = {
   orgId: string
   jobId: string
-  actualMaterialCost: runtime.Decimal | runtime.DecimalJsLike | number | string
-  actualLabourCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  actualOverheadCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency: string
-  exchangeRateId?: string | null
   revenue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  revenueCurrency?: string | null
   snapshottedAt?: Date | string
 }
 
 export type JobCostActualUpdateManyMutationInput = {
-  actualMaterialCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  actualLabourCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  actualOverheadCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
-  exchangeRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   revenue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  revenueCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snapshottedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type JobCostActualUncheckedUpdateManyInput = {
   orgId?: Prisma.StringFieldUpdateOperationsInput | string
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
-  actualMaterialCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  actualLabourCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  actualOverheadCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
-  exchangeRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   revenue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  revenueCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snapshottedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -418,50 +330,32 @@ export type JobCostActualOrgIdJobIdCompoundUniqueInput = {
 export type JobCostActualCountOrderByAggregateInput = {
   orgId?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
-  actualMaterialCost?: Prisma.SortOrder
-  actualLabourCost?: Prisma.SortOrder
-  actualOverheadCost?: Prisma.SortOrder
-  currency?: Prisma.SortOrder
-  exchangeRateId?: Prisma.SortOrder
   revenue?: Prisma.SortOrder
+  revenueCurrency?: Prisma.SortOrder
   snapshottedAt?: Prisma.SortOrder
 }
 
 export type JobCostActualAvgOrderByAggregateInput = {
-  actualMaterialCost?: Prisma.SortOrder
-  actualLabourCost?: Prisma.SortOrder
-  actualOverheadCost?: Prisma.SortOrder
   revenue?: Prisma.SortOrder
 }
 
 export type JobCostActualMaxOrderByAggregateInput = {
   orgId?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
-  actualMaterialCost?: Prisma.SortOrder
-  actualLabourCost?: Prisma.SortOrder
-  actualOverheadCost?: Prisma.SortOrder
-  currency?: Prisma.SortOrder
-  exchangeRateId?: Prisma.SortOrder
   revenue?: Prisma.SortOrder
+  revenueCurrency?: Prisma.SortOrder
   snapshottedAt?: Prisma.SortOrder
 }
 
 export type JobCostActualMinOrderByAggregateInput = {
   orgId?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
-  actualMaterialCost?: Prisma.SortOrder
-  actualLabourCost?: Prisma.SortOrder
-  actualOverheadCost?: Prisma.SortOrder
-  currency?: Prisma.SortOrder
-  exchangeRateId?: Prisma.SortOrder
   revenue?: Prisma.SortOrder
+  revenueCurrency?: Prisma.SortOrder
   snapshottedAt?: Prisma.SortOrder
 }
 
 export type JobCostActualSumOrderByAggregateInput = {
-  actualMaterialCost?: Prisma.SortOrder
-  actualLabourCost?: Prisma.SortOrder
-  actualOverheadCost?: Prisma.SortOrder
   revenue?: Prisma.SortOrder
 }
 
@@ -498,22 +392,14 @@ export type JobCostActualUncheckedUpdateOneWithoutJobNestedInput = {
 }
 
 export type JobCostActualCreateWithoutJobInput = {
-  actualMaterialCost: runtime.Decimal | runtime.DecimalJsLike | number | string
-  actualLabourCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  actualOverheadCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency: string
-  exchangeRateId?: string | null
   revenue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  revenueCurrency?: string | null
   snapshottedAt?: Date | string
 }
 
 export type JobCostActualUncheckedCreateWithoutJobInput = {
-  actualMaterialCost: runtime.Decimal | runtime.DecimalJsLike | number | string
-  actualLabourCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  actualOverheadCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency: string
-  exchangeRateId?: string | null
   revenue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  revenueCurrency?: string | null
   snapshottedAt?: Date | string
 }
 
@@ -534,22 +420,14 @@ export type JobCostActualUpdateToOneWithWhereWithoutJobInput = {
 }
 
 export type JobCostActualUpdateWithoutJobInput = {
-  actualMaterialCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  actualLabourCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  actualOverheadCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
-  exchangeRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   revenue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  revenueCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snapshottedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type JobCostActualUncheckedUpdateWithoutJobInput = {
-  actualMaterialCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  actualLabourCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  actualOverheadCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
-  exchangeRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   revenue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  revenueCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   snapshottedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -558,12 +436,8 @@ export type JobCostActualUncheckedUpdateWithoutJobInput = {
 export type JobCostActualSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   orgId?: boolean
   jobId?: boolean
-  actualMaterialCost?: boolean
-  actualLabourCost?: boolean
-  actualOverheadCost?: boolean
-  currency?: boolean
-  exchangeRateId?: boolean
   revenue?: boolean
+  revenueCurrency?: boolean
   snapshottedAt?: boolean
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["jobCostActual"]>
@@ -571,12 +445,8 @@ export type JobCostActualSelect<ExtArgs extends runtime.Types.Extensions.Interna
 export type JobCostActualSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   orgId?: boolean
   jobId?: boolean
-  actualMaterialCost?: boolean
-  actualLabourCost?: boolean
-  actualOverheadCost?: boolean
-  currency?: boolean
-  exchangeRateId?: boolean
   revenue?: boolean
+  revenueCurrency?: boolean
   snapshottedAt?: boolean
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["jobCostActual"]>
@@ -584,12 +454,8 @@ export type JobCostActualSelectCreateManyAndReturn<ExtArgs extends runtime.Types
 export type JobCostActualSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   orgId?: boolean
   jobId?: boolean
-  actualMaterialCost?: boolean
-  actualLabourCost?: boolean
-  actualOverheadCost?: boolean
-  currency?: boolean
-  exchangeRateId?: boolean
   revenue?: boolean
+  revenueCurrency?: boolean
   snapshottedAt?: boolean
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["jobCostActual"]>
@@ -597,16 +463,12 @@ export type JobCostActualSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
 export type JobCostActualSelectScalar = {
   orgId?: boolean
   jobId?: boolean
-  actualMaterialCost?: boolean
-  actualLabourCost?: boolean
-  actualOverheadCost?: boolean
-  currency?: boolean
-  exchangeRateId?: boolean
   revenue?: boolean
+  revenueCurrency?: boolean
   snapshottedAt?: boolean
 }
 
-export type JobCostActualOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"orgId" | "jobId" | "actualMaterialCost" | "actualLabourCost" | "actualOverheadCost" | "currency" | "exchangeRateId" | "revenue" | "snapshottedAt", ExtArgs["result"]["jobCostActual"]>
+export type JobCostActualOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"orgId" | "jobId" | "revenue" | "revenueCurrency" | "snapshottedAt", ExtArgs["result"]["jobCostActual"]>
 export type JobCostActualInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
 }
@@ -625,12 +487,8 @@ export type $JobCostActualPayload<ExtArgs extends runtime.Types.Extensions.Inter
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     orgId: string
     jobId: string
-    actualMaterialCost: runtime.Decimal
-    actualLabourCost: runtime.Decimal | null
-    actualOverheadCost: runtime.Decimal | null
-    currency: string
-    exchangeRateId: string | null
     revenue: runtime.Decimal | null
+    revenueCurrency: string | null
     snapshottedAt: Date
   }, ExtArgs["result"]["jobCostActual"]>
   composites: {}
@@ -1058,12 +916,8 @@ export interface Prisma__JobCostActualClient<T, Null = never, ExtArgs extends ru
 export interface JobCostActualFieldRefs {
   readonly orgId: Prisma.FieldRef<"JobCostActual", 'String'>
   readonly jobId: Prisma.FieldRef<"JobCostActual", 'String'>
-  readonly actualMaterialCost: Prisma.FieldRef<"JobCostActual", 'Decimal'>
-  readonly actualLabourCost: Prisma.FieldRef<"JobCostActual", 'Decimal'>
-  readonly actualOverheadCost: Prisma.FieldRef<"JobCostActual", 'Decimal'>
-  readonly currency: Prisma.FieldRef<"JobCostActual", 'String'>
-  readonly exchangeRateId: Prisma.FieldRef<"JobCostActual", 'String'>
   readonly revenue: Prisma.FieldRef<"JobCostActual", 'Decimal'>
+  readonly revenueCurrency: Prisma.FieldRef<"JobCostActual", 'String'>
   readonly snapshottedAt: Prisma.FieldRef<"JobCostActual", 'DateTime'>
 }
     

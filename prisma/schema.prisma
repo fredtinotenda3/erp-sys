@@ -65,6 +65,7 @@ model Organization {
   items     Item[]
   customers Customer[]
   jobCounter JobNumberCounter?
+  exchangeRates ExchangeRate[]
 
   @@map("organization")
 }
@@ -192,8 +193,13 @@ model Currency {
   @@map("currency")
 }
 
+// Org-scoped: a rate is something an organization's finance team recorded and
+// stands behind (source RBZ_OFFICIAL / MARKET / MANUAL). Rates are NOT shared
+// between tenants -- one org's rate must never change another org's figures.
 model ExchangeRate {
   id            String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId         String     @map("org_id") @db.Uuid
+  org           Organization @relation(fields: [orgId], references: [id])
   baseCurrency  String     @map("base_currency") @db.Char(3)
   base          Currency   @relation("baseCurrency", fields: [baseCurrency], references: [code])
   quoteCurrency String     @map("quote_currency") @db.Char(3)
@@ -204,7 +210,7 @@ model ExchangeRate {
   recordedById  String?    @map("recorded_by") @db.Uuid
   recordedAt    DateTime   @default(now()) @map("recorded_at")
 
-  @@index([baseCurrency, quoteCurrency, source, asOfDate])
+  @@index([orgId, baseCurrency, quoteCurrency, source, asOfDate])
   @@map("exchange_rate")
 }
 
@@ -412,6 +418,7 @@ model ProductionJob {
   labourRecords        LabourRecord[]
   costEstimate         JobCostEstimate?
   costEstimateLines    JobCostEstimateLine[]
+  costActualLines      JobCostActualLine[]
   costActual           JobCostActual?
   stages               ProductionJobStage[]
   qualityRecords       QualityRecord[]
@@ -650,20 +657,34 @@ model JobNumberCounter {
   @@map("job_number_counter")
 }
 
-// gross_profit deliberately NOT modeled — see header. Written once at job
-// completion; the immutability trigger enforces that at the DB level.
+// Completion snapshot, written ONCE when a job completes and never changed
+// (DB immutability trigger). Header = revenue basis (the job's quote at
+// completion); amounts live in JobCostActualLine, one row per currency, so an
+// actual cost can never silently mix currencies. Gross profit is derived on
+// read (only when all cost is in the revenue currency), never stored.
 model JobCostActual {
-  orgId              String        @map("org_id") @db.Uuid
-  jobId              String        @id @map("job_id") @db.Uuid
-  job                ProductionJob @relation(fields: [orgId, jobId], references: [orgId, id])
-  actualMaterialCost Decimal       @map("actual_material_cost") @db.Decimal(14, 4)
-  actualLabourCost   Decimal?      @map("actual_labour_cost") @db.Decimal(14, 4)
-  actualOverheadCost Decimal?      @map("actual_overhead_cost") @db.Decimal(14, 4)
-  currency           String        @db.Char(3)
-  exchangeRateId     String?       @map("exchange_rate_id") @db.Uuid
-  revenue            Decimal?      @db.Decimal(14, 4)
-  snapshottedAt      DateTime      @default(now()) @map("snapshotted_at")
+  orgId           String        @map("org_id") @db.Uuid
+  jobId           String        @id @map("job_id") @db.Uuid
+  job             ProductionJob @relation(fields: [orgId, jobId], references: [orgId, id])
+  revenue         Decimal?      @db.Decimal(14, 4)
+  revenueCurrency String?       @map("revenue_currency") @db.Char(3)
+  snapshottedAt   DateTime      @default(now()) @map("snapshotted_at")
 
   @@unique([orgId, jobId])
   @@map("job_cost_actual")
+}
+
+model JobCostActualLine {
+  orgId              String        @map("org_id") @db.Uuid
+  jobId              String        @map("job_id") @db.Uuid
+  job                ProductionJob @relation(fields: [orgId, jobId], references: [orgId, id])
+  currency           String        @db.Char(3)
+  actualMaterialCost Decimal       @map("actual_material_cost") @db.Decimal(14, 4)
+  // null = no labour was recorded in this currency (not "zero").
+  actualLabourCost   Decimal?      @map("actual_labour_cost") @db.Decimal(14, 4)
+  // null = unavailable until an overhead allocation method is approved.
+  actualOverheadCost Decimal?      @map("actual_overhead_cost") @db.Decimal(14, 4)
+
+  @@id([jobId, currency])
+  @@map("job_cost_actual_line")
 }

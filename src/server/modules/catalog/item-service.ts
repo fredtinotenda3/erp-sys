@@ -65,6 +65,9 @@ const baseItemFields = {
   sellingPriceCurrency: z.string().trim().toUpperCase().length(3).optional(),
   standardCost: z.number().finite().nonnegative().optional(),
   standardCostCurrency: z.string().trim().toUpperCase().length(3).optional(),
+  // Stock level below which the item shows as "Low" (UX spec §6.4). Optional:
+  // with no threshold an item never shows Low -- no default is invented.
+  reorderThreshold: z.number().finite().nonnegative().max(1_000_000_000).optional(),
 };
 
 // itemType and sku are create-only — see updateItemSchema's header comment
@@ -118,6 +121,7 @@ export async function createItem(session: AuthenticatedSession, input: unknown) 
         sellingPriceCurrency: data.sellingPriceCurrency ?? null,
         standardCost: data.standardCost ?? null,
         standardCostCurrency: data.standardCostCurrency ?? null,
+        reorderThreshold: data.reorderThreshold ?? null,
       },
     });
     await recordAudit(prisma, {
@@ -185,6 +189,7 @@ export async function getItemById(session: AuthenticatedSession, itemId: string)
 const updateItemSchema = z
   .object({
     ...baseItemFields,
+    reorderThreshold: z.number().finite().nonnegative().max(1_000_000_000).nullable(), // null clears it
     isSellable: z.boolean(), // no default — see baseItemFields' header comment
     isActive: z.boolean(),
   })
