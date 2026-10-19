@@ -420,6 +420,7 @@ model ProductionJob {
   costEstimateLines    JobCostEstimateLine[]
   costActualLines      JobCostActualLine[]
   costActual           JobCostActual?
+  costAdjustments      JobCostAdjustment[]
   stages               ProductionJobStage[]
   qualityRecords       QualityRecord[]
 
@@ -669,6 +670,11 @@ model JobCostActual {
   revenue         Decimal?      @db.Decimal(14, 4)
   revenueCurrency String?       @map("revenue_currency") @db.Char(3)
   snapshottedAt   DateTime      @default(now()) @map("snapshotted_at")
+  // What was and was not known at completion (missing components, unpriced
+  // materials...) and which records were counted. Frozen with the snapshot.
+  // {"legacy": true} marks snapshots written before these columns existed.
+  completeness    Json          @default("{\"legacy\": true}")
+  evidence        Json          @default("{}")
 
   @@unique([orgId, jobId])
   @@map("job_cost_actual")
@@ -687,4 +693,25 @@ model JobCostActualLine {
 
   @@id([jobId, currency])
   @@map("job_cost_actual_line")
+}
+
+// Explicit, append-only correction to a FROZEN job cost. The snapshot is never
+// edited; effective actual cost = snapshot + adjustments. Only against a job
+// that has a snapshot (DB trigger), always with a reason (>= 10 chars).
+model JobCostAdjustment {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId           String        @map("org_id") @db.Uuid
+  jobId           String        @map("job_id") @db.Uuid
+  job             ProductionJob @relation(fields: [orgId, jobId], references: [orgId, id])
+  currency        String        @db.Char(3)
+  component       String // "material" | "labour" (CHECK in the database)
+  amount          Decimal       @db.Decimal(14, 4)
+  reason          String
+  clientRequestId String?       @map("client_request_id") @db.Uuid
+  createdById     String?       @map("created_by") @db.Uuid
+  createdAt       DateTime      @default(now()) @map("created_at")
+
+  @@unique([orgId, clientRequestId])
+  @@index([jobId])
+  @@map("job_cost_adjustment")
 }

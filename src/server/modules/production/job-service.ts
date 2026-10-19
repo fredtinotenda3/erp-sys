@@ -25,7 +25,7 @@ import { prisma } from "../../shared/db";
 import { assertCapability, assertBranchAccess, hasBranchAccess, type Capability } from "../../shared/authz";
 import { ConflictError, NotFoundError, ValidationError } from "../../shared/errors";
 import { recordAudit } from "../iam/audit-service";
-import { computeActualCostLines } from "../costing/actual-cost";
+import { createCompletionSnapshot, lockJobForCompletion } from "../costing/completion-snapshot";
 import type { AuthenticatedSession } from "../iam/session-service";
 import { canTransition, JOB_STATUS_VALUES, type JobStatus } from "./job-state";
 import { toJobView, type JobRow } from "./job-view";
@@ -294,6 +294,10 @@ async function applyTransition(
 
   const now = new Date();
   await prisma.$transaction(async (tx) => {
+    // Completion takes the job's exclusive advisory lock FIRST: in-flight issue/
+    // labour postings (shared lock, DB trigger) finish before the snapshot is
+    // computed, and later ones are refused, so the snapshot is complete.
+    if (target === "completed") await lockJobForCompletion(tx, job.id);
     // Compare-and-set on the status we validated against: if another request
     // moved the job in between, nothing is written.
     const result = await tx.productionJob.updateMany({
@@ -307,27 +311,11 @@ async function applyTransition(
     if (result.count !== 1) throw new ConflictError("The job was changed by someone else — reload and retry");
 
     if (target === "completed") {
-      const actual = (await computeActualCostLines(tx, session.orgId, [job.id])).get(job.id) ?? [];
-      await tx.jobCostActual.create({
-        data: {
-          orgId: session.orgId,
-          jobId: job.id,
-          revenue: job.quotedAmount,
-          revenueCurrency: job.quotedCurrency,
-        },
+      const { actual, completeness } = await createCompletionSnapshot(tx, session.orgId, {
+        id: job.id,
+        quotedAmount: job.quotedAmount,
+        quotedCurrency: job.quotedCurrency,
       });
-      if (actual.length > 0) {
-        await tx.jobCostActualLine.createMany({
-          data: actual.map((l) => ({
-            orgId: session.orgId,
-            jobId: job.id,
-            currency: l.currency,
-            actualMaterialCost: l.materialCost,
-            actualLabourCost: l.labourCost,
-            actualOverheadCost: null, // unavailable: no allocation method approved
-          })),
-        });
-      }
       await recordAudit(tx, {
         orgId: session.orgId,
         branchId: job.branchId,
@@ -338,6 +326,9 @@ async function applyTransition(
         afterValue: {
           currencies: actual.map((l) => l.currency),
           revenueCurrency: job.quotedCurrency,
+          // What the snapshot did NOT know, frozen alongside it.
+          missing: completeness.missing.map((m) => m.code),
+          marginBlockers: completeness.marginBlockers,
         },
       });
     }

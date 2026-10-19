@@ -3,7 +3,7 @@ import { getJobCost } from "../../../../../../src/server/modules/costing/cost-se
 import { requireSession } from "../../../../../../src/server/modules/iam/session-guard";
 import { errorResponse } from "../../../../../../src/server/shared/http";
 
-// ?convertTo=USD&rateSource=MANUAL is optional; without it figures stay grouped by currency.
+// ?convertTo=USD&rateSource=MANUAL&asOf=2026-10-01 are optional; without it figures stay grouped by currency.
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await requireSession(req);
@@ -12,6 +12,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const data = await getJobCost(session, id, {
       convertTo: p.get("convertTo") ?? undefined,
       rateSource: p.get("rateSource") ?? undefined,
+      asOf: p.get("asOf") ?? undefined,
     });
     return NextResponse.json({ data });
   } catch (err) {

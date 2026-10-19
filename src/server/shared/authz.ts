@@ -81,6 +81,7 @@ export type Capability =
   | "stock:read"
   // Costing / currency
   | "cost:read"
+  | "cost:adjust"
   | "exchange_rate:create"
   | "exchange_rate:read";
 
@@ -143,6 +144,7 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "warehouse:create",
     "stock:read",
     "cost:read",
+    "cost:adjust",
     "exchange_rate:create",
     "exchange_rate:read",
   ]),
@@ -247,6 +249,7 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "quality:read",
     "stock:read",
     "cost:read",
+    "cost:adjust",
     "exchange_rate:create",
     "exchange_rate:read",
   ]),

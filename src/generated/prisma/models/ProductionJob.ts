@@ -343,6 +343,7 @@ export type ProductionJobWhereInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineListRelationFilter
   costActualLines?: Prisma.JobCostActualLineListRelationFilter
   costActual?: Prisma.XOR<Prisma.JobCostActualNullableScalarRelationFilter, Prisma.JobCostActualWhereInput> | null
+  costAdjustments?: Prisma.JobCostAdjustmentListRelationFilter
   stages?: Prisma.ProductionJobStageListRelationFilter
   qualityRecords?: Prisma.QualityRecordListRelationFilter
 }
@@ -378,6 +379,7 @@ export type ProductionJobOrderByWithRelationInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineOrderByRelationAggregateInput
   costActualLines?: Prisma.JobCostActualLineOrderByRelationAggregateInput
   costActual?: Prisma.JobCostActualOrderByWithRelationInput
+  costAdjustments?: Prisma.JobCostAdjustmentOrderByRelationAggregateInput
   stages?: Prisma.ProductionJobStageOrderByRelationAggregateInput
   qualityRecords?: Prisma.QualityRecordOrderByRelationAggregateInput
 }
@@ -419,6 +421,7 @@ export type ProductionJobWhereUniqueInput = Prisma.AtLeast<{
   costEstimateLines?: Prisma.JobCostEstimateLineListRelationFilter
   costActualLines?: Prisma.JobCostActualLineListRelationFilter
   costActual?: Prisma.XOR<Prisma.JobCostActualNullableScalarRelationFilter, Prisma.JobCostActualWhereInput> | null
+  costAdjustments?: Prisma.JobCostAdjustmentListRelationFilter
   stages?: Prisma.ProductionJobStageListRelationFilter
   qualityRecords?: Prisma.QualityRecordListRelationFilter
 }, "id" | "orgId_jobNumber" | "orgId_id" | "orgId_salesOrderLineId">
@@ -500,6 +503,7 @@ export type ProductionJobCreateInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobInput
 }
@@ -530,6 +534,7 @@ export type ProductionJobUncheckedCreateInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineUncheckedCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualUncheckedCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageUncheckedCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobInput
 }
@@ -559,6 +564,7 @@ export type ProductionJobUpdateInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobNestedInput
 }
@@ -589,6 +595,7 @@ export type ProductionJobUncheckedUpdateInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUncheckedUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUncheckedUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUncheckedUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobNestedInput
 }
@@ -1080,6 +1087,20 @@ export type ProductionJobUpdateOneRequiredWithoutCostActualLinesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProductionJobUpdateToOneWithWhereWithoutCostActualLinesInput, Prisma.ProductionJobUpdateWithoutCostActualLinesInput>, Prisma.ProductionJobUncheckedUpdateWithoutCostActualLinesInput>
 }
 
+export type ProductionJobCreateNestedOneWithoutCostAdjustmentsInput = {
+  create?: Prisma.XOR<Prisma.ProductionJobCreateWithoutCostAdjustmentsInput, Prisma.ProductionJobUncheckedCreateWithoutCostAdjustmentsInput>
+  connectOrCreate?: Prisma.ProductionJobCreateOrConnectWithoutCostAdjustmentsInput
+  connect?: Prisma.ProductionJobWhereUniqueInput
+}
+
+export type ProductionJobUpdateOneRequiredWithoutCostAdjustmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProductionJobCreateWithoutCostAdjustmentsInput, Prisma.ProductionJobUncheckedCreateWithoutCostAdjustmentsInput>
+  connectOrCreate?: Prisma.ProductionJobCreateOrConnectWithoutCostAdjustmentsInput
+  upsert?: Prisma.ProductionJobUpsertWithoutCostAdjustmentsInput
+  connect?: Prisma.ProductionJobWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProductionJobUpdateToOneWithWhereWithoutCostAdjustmentsInput, Prisma.ProductionJobUpdateWithoutCostAdjustmentsInput>, Prisma.ProductionJobUncheckedUpdateWithoutCostAdjustmentsInput>
+}
+
 export type ProductionJobCreateWithoutBranchInput = {
   id?: string
   jobNumber: string
@@ -1104,6 +1125,7 @@ export type ProductionJobCreateWithoutBranchInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobInput
 }
@@ -1132,6 +1154,7 @@ export type ProductionJobUncheckedCreateWithoutBranchInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineUncheckedCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualUncheckedCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageUncheckedCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobInput
 }
@@ -1211,6 +1234,7 @@ export type ProductionJobCreateWithoutProductItemInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobInput
 }
@@ -1239,6 +1263,7 @@ export type ProductionJobUncheckedCreateWithoutProductItemInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineUncheckedCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualUncheckedCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageUncheckedCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobInput
 }
@@ -1293,6 +1318,7 @@ export type ProductionJobCreateWithoutBomInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobInput
 }
@@ -1321,6 +1347,7 @@ export type ProductionJobUncheckedCreateWithoutBomInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineUncheckedCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualUncheckedCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageUncheckedCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobInput
 }
@@ -1375,6 +1402,7 @@ export type ProductionJobCreateWithoutCustomerInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobInput
 }
@@ -1403,6 +1431,7 @@ export type ProductionJobUncheckedCreateWithoutCustomerInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineUncheckedCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualUncheckedCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageUncheckedCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobInput
 }
@@ -1457,6 +1486,7 @@ export type ProductionJobCreateWithoutSalesOrderLineInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobInput
 }
@@ -1485,6 +1515,7 @@ export type ProductionJobUncheckedCreateWithoutSalesOrderLineInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineUncheckedCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualUncheckedCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageUncheckedCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobInput
 }
@@ -1529,6 +1560,7 @@ export type ProductionJobUpdateWithoutSalesOrderLineInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobNestedInput
 }
@@ -1557,6 +1589,7 @@ export type ProductionJobUncheckedUpdateWithoutSalesOrderLineInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUncheckedUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUncheckedUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUncheckedUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobNestedInput
 }
@@ -1585,6 +1618,7 @@ export type ProductionJobCreateWithoutMaterialRequirementsInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobInput
 }
@@ -1614,6 +1648,7 @@ export type ProductionJobUncheckedCreateWithoutMaterialRequirementsInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineUncheckedCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualUncheckedCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageUncheckedCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobInput
 }
@@ -1658,6 +1693,7 @@ export type ProductionJobUpdateWithoutMaterialRequirementsInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobNestedInput
 }
@@ -1687,6 +1723,7 @@ export type ProductionJobUncheckedUpdateWithoutMaterialRequirementsInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUncheckedUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUncheckedUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUncheckedUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobNestedInput
 }
@@ -1715,6 +1752,7 @@ export type ProductionJobCreateWithoutLabourRecordsInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobInput
 }
@@ -1744,6 +1782,7 @@ export type ProductionJobUncheckedCreateWithoutLabourRecordsInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineUncheckedCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualUncheckedCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageUncheckedCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobInput
 }
@@ -1788,6 +1827,7 @@ export type ProductionJobUpdateWithoutLabourRecordsInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobNestedInput
 }
@@ -1817,6 +1857,7 @@ export type ProductionJobUncheckedUpdateWithoutLabourRecordsInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUncheckedUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUncheckedUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUncheckedUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobNestedInput
 }
@@ -1846,6 +1887,7 @@ export type ProductionJobCreateWithoutStagesInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobInput
 }
 
@@ -1875,6 +1917,7 @@ export type ProductionJobUncheckedCreateWithoutStagesInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineUncheckedCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualUncheckedCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobInput
 }
 
@@ -1919,6 +1962,7 @@ export type ProductionJobUpdateWithoutStagesInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobNestedInput
 }
 
@@ -1948,6 +1992,7 @@ export type ProductionJobUncheckedUpdateWithoutStagesInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUncheckedUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUncheckedUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobNestedInput
 }
 
@@ -1976,6 +2021,7 @@ export type ProductionJobCreateWithoutQualityRecordsInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageCreateNestedManyWithoutJobInput
 }
 
@@ -2005,6 +2051,7 @@ export type ProductionJobUncheckedCreateWithoutQualityRecordsInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineUncheckedCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualUncheckedCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageUncheckedCreateNestedManyWithoutJobInput
 }
 
@@ -2049,6 +2096,7 @@ export type ProductionJobUpdateWithoutQualityRecordsInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUpdateManyWithoutJobNestedInput
 }
 
@@ -2078,6 +2126,7 @@ export type ProductionJobUncheckedUpdateWithoutQualityRecordsInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUncheckedUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUncheckedUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUncheckedUpdateManyWithoutJobNestedInput
 }
 
@@ -2105,6 +2154,7 @@ export type ProductionJobCreateWithoutCostEstimateInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobInput
 }
@@ -2134,6 +2184,7 @@ export type ProductionJobUncheckedCreateWithoutCostEstimateInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineUncheckedCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualUncheckedCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageUncheckedCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobInput
 }
@@ -2178,6 +2229,7 @@ export type ProductionJobUpdateWithoutCostEstimateInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobNestedInput
 }
@@ -2207,6 +2259,7 @@ export type ProductionJobUncheckedUpdateWithoutCostEstimateInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUncheckedUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUncheckedUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUncheckedUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobNestedInput
 }
@@ -2235,6 +2288,7 @@ export type ProductionJobCreateWithoutCostEstimateLinesInput = {
   costEstimate?: Prisma.JobCostEstimateCreateNestedOneWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobInput
 }
@@ -2264,6 +2318,7 @@ export type ProductionJobUncheckedCreateWithoutCostEstimateLinesInput = {
   costEstimate?: Prisma.JobCostEstimateUncheckedCreateNestedOneWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineUncheckedCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualUncheckedCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageUncheckedCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobInput
 }
@@ -2308,6 +2363,7 @@ export type ProductionJobUpdateWithoutCostEstimateLinesInput = {
   costEstimate?: Prisma.JobCostEstimateUpdateOneWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobNestedInput
 }
@@ -2337,6 +2393,7 @@ export type ProductionJobUncheckedUpdateWithoutCostEstimateLinesInput = {
   costEstimate?: Prisma.JobCostEstimateUncheckedUpdateOneWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUncheckedUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUncheckedUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUncheckedUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobNestedInput
 }
@@ -2365,6 +2422,7 @@ export type ProductionJobCreateWithoutCostActualInput = {
   costEstimate?: Prisma.JobCostEstimateCreateNestedOneWithoutJobInput
   costEstimateLines?: Prisma.JobCostEstimateLineCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineCreateNestedManyWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobInput
 }
@@ -2394,6 +2452,7 @@ export type ProductionJobUncheckedCreateWithoutCostActualInput = {
   costEstimate?: Prisma.JobCostEstimateUncheckedCreateNestedOneWithoutJobInput
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedCreateNestedManyWithoutJobInput
   costActualLines?: Prisma.JobCostActualLineUncheckedCreateNestedManyWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageUncheckedCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobInput
 }
@@ -2438,6 +2497,7 @@ export type ProductionJobUpdateWithoutCostActualInput = {
   costEstimate?: Prisma.JobCostEstimateUpdateOneWithoutJobNestedInput
   costEstimateLines?: Prisma.JobCostEstimateLineUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUpdateManyWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobNestedInput
 }
@@ -2467,6 +2527,7 @@ export type ProductionJobUncheckedUpdateWithoutCostActualInput = {
   costEstimate?: Prisma.JobCostEstimateUncheckedUpdateOneWithoutJobNestedInput
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUncheckedUpdateManyWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUncheckedUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobNestedInput
 }
@@ -2495,6 +2556,7 @@ export type ProductionJobCreateWithoutCostActualLinesInput = {
   costEstimate?: Prisma.JobCostEstimateCreateNestedOneWithoutJobInput
   costEstimateLines?: Prisma.JobCostEstimateLineCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobInput
 }
@@ -2524,6 +2586,7 @@ export type ProductionJobUncheckedCreateWithoutCostActualLinesInput = {
   costEstimate?: Prisma.JobCostEstimateUncheckedCreateNestedOneWithoutJobInput
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedCreateNestedManyWithoutJobInput
   costActual?: Prisma.JobCostActualUncheckedCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedCreateNestedManyWithoutJobInput
   stages?: Prisma.ProductionJobStageUncheckedCreateNestedManyWithoutJobInput
   qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobInput
 }
@@ -2568,6 +2631,7 @@ export type ProductionJobUpdateWithoutCostActualLinesInput = {
   costEstimate?: Prisma.JobCostEstimateUpdateOneWithoutJobNestedInput
   costEstimateLines?: Prisma.JobCostEstimateLineUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobNestedInput
 }
@@ -2596,6 +2660,141 @@ export type ProductionJobUncheckedUpdateWithoutCostActualLinesInput = {
   labourRecords?: Prisma.LabourRecordUncheckedUpdateManyWithoutJobNestedInput
   costEstimate?: Prisma.JobCostEstimateUncheckedUpdateOneWithoutJobNestedInput
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedUpdateManyWithoutJobNestedInput
+  costActual?: Prisma.JobCostActualUncheckedUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedUpdateManyWithoutJobNestedInput
+  stages?: Prisma.ProductionJobStageUncheckedUpdateManyWithoutJobNestedInput
+  qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobNestedInput
+}
+
+export type ProductionJobCreateWithoutCostAdjustmentsInput = {
+  id?: string
+  jobNumber: string
+  plannedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
+  plannedStart?: Date | string | null
+  plannedEnd?: Date | string | null
+  actualStart?: Date | string | null
+  actualEnd?: Date | string | null
+  status?: $Enums.ProductionJobStatus
+  quotedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quotedCurrency?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branch: Prisma.BranchCreateNestedOneWithoutProductionJobsInput
+  salesOrderLine?: Prisma.SalesOrderLineCreateNestedOneWithoutProductionJobInput
+  customer?: Prisma.CustomerCreateNestedOneWithoutProductionJobsInput
+  productItem: Prisma.ItemCreateNestedOneWithoutProductionJobsInput
+  bom: Prisma.BillOfMaterialCreateNestedOneWithoutProductionJobsInput
+  materialRequirements?: Prisma.MaterialRequirementCreateNestedManyWithoutJobInput
+  labourRecords?: Prisma.LabourRecordCreateNestedManyWithoutJobInput
+  costEstimate?: Prisma.JobCostEstimateCreateNestedOneWithoutJobInput
+  costEstimateLines?: Prisma.JobCostEstimateLineCreateNestedManyWithoutJobInput
+  costActualLines?: Prisma.JobCostActualLineCreateNestedManyWithoutJobInput
+  costActual?: Prisma.JobCostActualCreateNestedOneWithoutJobInput
+  stages?: Prisma.ProductionJobStageCreateNestedManyWithoutJobInput
+  qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobInput
+}
+
+export type ProductionJobUncheckedCreateWithoutCostAdjustmentsInput = {
+  id?: string
+  orgId: string
+  branchId: string
+  jobNumber: string
+  salesOrderLineId?: string | null
+  customerId?: string | null
+  productItemId: string
+  bomId: string
+  plannedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
+  plannedStart?: Date | string | null
+  plannedEnd?: Date | string | null
+  actualStart?: Date | string | null
+  actualEnd?: Date | string | null
+  status?: $Enums.ProductionJobStatus
+  quotedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quotedCurrency?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  materialRequirements?: Prisma.MaterialRequirementUncheckedCreateNestedManyWithoutJobInput
+  labourRecords?: Prisma.LabourRecordUncheckedCreateNestedManyWithoutJobInput
+  costEstimate?: Prisma.JobCostEstimateUncheckedCreateNestedOneWithoutJobInput
+  costEstimateLines?: Prisma.JobCostEstimateLineUncheckedCreateNestedManyWithoutJobInput
+  costActualLines?: Prisma.JobCostActualLineUncheckedCreateNestedManyWithoutJobInput
+  costActual?: Prisma.JobCostActualUncheckedCreateNestedOneWithoutJobInput
+  stages?: Prisma.ProductionJobStageUncheckedCreateNestedManyWithoutJobInput
+  qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobInput
+}
+
+export type ProductionJobCreateOrConnectWithoutCostAdjustmentsInput = {
+  where: Prisma.ProductionJobWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProductionJobCreateWithoutCostAdjustmentsInput, Prisma.ProductionJobUncheckedCreateWithoutCostAdjustmentsInput>
+}
+
+export type ProductionJobUpsertWithoutCostAdjustmentsInput = {
+  update: Prisma.XOR<Prisma.ProductionJobUpdateWithoutCostAdjustmentsInput, Prisma.ProductionJobUncheckedUpdateWithoutCostAdjustmentsInput>
+  create: Prisma.XOR<Prisma.ProductionJobCreateWithoutCostAdjustmentsInput, Prisma.ProductionJobUncheckedCreateWithoutCostAdjustmentsInput>
+  where?: Prisma.ProductionJobWhereInput
+}
+
+export type ProductionJobUpdateToOneWithWhereWithoutCostAdjustmentsInput = {
+  where?: Prisma.ProductionJobWhereInput
+  data: Prisma.XOR<Prisma.ProductionJobUpdateWithoutCostAdjustmentsInput, Prisma.ProductionJobUncheckedUpdateWithoutCostAdjustmentsInput>
+}
+
+export type ProductionJobUpdateWithoutCostAdjustmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  jobNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  plannedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  plannedStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  plannedEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actualStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actualEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumProductionJobStatusFieldUpdateOperationsInput | $Enums.ProductionJobStatus
+  quotedAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quotedCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneRequiredWithoutProductionJobsNestedInput
+  salesOrderLine?: Prisma.SalesOrderLineUpdateOneWithoutProductionJobNestedInput
+  customer?: Prisma.CustomerUpdateOneWithoutProductionJobsNestedInput
+  productItem?: Prisma.ItemUpdateOneRequiredWithoutProductionJobsNestedInput
+  bom?: Prisma.BillOfMaterialUpdateOneRequiredWithoutProductionJobsNestedInput
+  materialRequirements?: Prisma.MaterialRequirementUpdateManyWithoutJobNestedInput
+  labourRecords?: Prisma.LabourRecordUpdateManyWithoutJobNestedInput
+  costEstimate?: Prisma.JobCostEstimateUpdateOneWithoutJobNestedInput
+  costEstimateLines?: Prisma.JobCostEstimateLineUpdateManyWithoutJobNestedInput
+  costActualLines?: Prisma.JobCostActualLineUpdateManyWithoutJobNestedInput
+  costActual?: Prisma.JobCostActualUpdateOneWithoutJobNestedInput
+  stages?: Prisma.ProductionJobStageUpdateManyWithoutJobNestedInput
+  qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobNestedInput
+}
+
+export type ProductionJobUncheckedUpdateWithoutCostAdjustmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.StringFieldUpdateOperationsInput | string
+  jobNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  salesOrderLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  productItemId?: Prisma.StringFieldUpdateOperationsInput | string
+  bomId?: Prisma.StringFieldUpdateOperationsInput | string
+  plannedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  plannedStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  plannedEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actualStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actualEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumProductionJobStatusFieldUpdateOperationsInput | $Enums.ProductionJobStatus
+  quotedAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quotedCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  materialRequirements?: Prisma.MaterialRequirementUncheckedUpdateManyWithoutJobNestedInput
+  labourRecords?: Prisma.LabourRecordUncheckedUpdateManyWithoutJobNestedInput
+  costEstimate?: Prisma.JobCostEstimateUncheckedUpdateOneWithoutJobNestedInput
+  costEstimateLines?: Prisma.JobCostEstimateLineUncheckedUpdateManyWithoutJobNestedInput
+  costActualLines?: Prisma.JobCostActualLineUncheckedUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUncheckedUpdateOneWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUncheckedUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobNestedInput
@@ -2645,6 +2844,7 @@ export type ProductionJobUpdateWithoutBranchInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobNestedInput
 }
@@ -2673,6 +2873,7 @@ export type ProductionJobUncheckedUpdateWithoutBranchInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUncheckedUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUncheckedUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUncheckedUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobNestedInput
 }
@@ -2741,6 +2942,7 @@ export type ProductionJobUpdateWithoutProductItemInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobNestedInput
 }
@@ -2769,6 +2971,7 @@ export type ProductionJobUncheckedUpdateWithoutProductItemInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUncheckedUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUncheckedUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUncheckedUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobNestedInput
 }
@@ -2837,6 +3040,7 @@ export type ProductionJobUpdateWithoutBomInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobNestedInput
 }
@@ -2865,6 +3069,7 @@ export type ProductionJobUncheckedUpdateWithoutBomInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUncheckedUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUncheckedUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUncheckedUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobNestedInput
 }
@@ -2933,6 +3138,7 @@ export type ProductionJobUpdateWithoutCustomerInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobNestedInput
 }
@@ -2961,6 +3167,7 @@ export type ProductionJobUncheckedUpdateWithoutCustomerInput = {
   costEstimateLines?: Prisma.JobCostEstimateLineUncheckedUpdateManyWithoutJobNestedInput
   costActualLines?: Prisma.JobCostActualLineUncheckedUpdateManyWithoutJobNestedInput
   costActual?: Prisma.JobCostActualUncheckedUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedUpdateManyWithoutJobNestedInput
   stages?: Prisma.ProductionJobStageUncheckedUpdateManyWithoutJobNestedInput
   qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobNestedInput
 }
@@ -2995,6 +3202,7 @@ export type ProductionJobCountOutputType = {
   labourRecords: number
   costEstimateLines: number
   costActualLines: number
+  costAdjustments: number
   stages: number
   qualityRecords: number
 }
@@ -3004,6 +3212,7 @@ export type ProductionJobCountOutputTypeSelect<ExtArgs extends runtime.Types.Ext
   labourRecords?: boolean | ProductionJobCountOutputTypeCountLabourRecordsArgs
   costEstimateLines?: boolean | ProductionJobCountOutputTypeCountCostEstimateLinesArgs
   costActualLines?: boolean | ProductionJobCountOutputTypeCountCostActualLinesArgs
+  costAdjustments?: boolean | ProductionJobCountOutputTypeCountCostAdjustmentsArgs
   stages?: boolean | ProductionJobCountOutputTypeCountStagesArgs
   qualityRecords?: boolean | ProductionJobCountOutputTypeCountQualityRecordsArgs
 }
@@ -3044,6 +3253,13 @@ export type ProductionJobCountOutputTypeCountCostEstimateLinesArgs<ExtArgs exten
  */
 export type ProductionJobCountOutputTypeCountCostActualLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.JobCostActualLineWhereInput
+}
+
+/**
+ * ProductionJobCountOutputType without action
+ */
+export type ProductionJobCountOutputTypeCountCostAdjustmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JobCostAdjustmentWhereInput
 }
 
 /**
@@ -3092,6 +3308,7 @@ export type ProductionJobSelect<ExtArgs extends runtime.Types.Extensions.Interna
   costEstimateLines?: boolean | Prisma.ProductionJob$costEstimateLinesArgs<ExtArgs>
   costActualLines?: boolean | Prisma.ProductionJob$costActualLinesArgs<ExtArgs>
   costActual?: boolean | Prisma.ProductionJob$costActualArgs<ExtArgs>
+  costAdjustments?: boolean | Prisma.ProductionJob$costAdjustmentsArgs<ExtArgs>
   stages?: boolean | Prisma.ProductionJob$stagesArgs<ExtArgs>
   qualityRecords?: boolean | Prisma.ProductionJob$qualityRecordsArgs<ExtArgs>
   _count?: boolean | Prisma.ProductionJobCountOutputTypeDefaultArgs<ExtArgs>
@@ -3186,6 +3403,7 @@ export type ProductionJobInclude<ExtArgs extends runtime.Types.Extensions.Intern
   costEstimateLines?: boolean | Prisma.ProductionJob$costEstimateLinesArgs<ExtArgs>
   costActualLines?: boolean | Prisma.ProductionJob$costActualLinesArgs<ExtArgs>
   costActual?: boolean | Prisma.ProductionJob$costActualArgs<ExtArgs>
+  costAdjustments?: boolean | Prisma.ProductionJob$costAdjustmentsArgs<ExtArgs>
   stages?: boolean | Prisma.ProductionJob$stagesArgs<ExtArgs>
   qualityRecords?: boolean | Prisma.ProductionJob$qualityRecordsArgs<ExtArgs>
   _count?: boolean | Prisma.ProductionJobCountOutputTypeDefaultArgs<ExtArgs>
@@ -3219,6 +3437,7 @@ export type $ProductionJobPayload<ExtArgs extends runtime.Types.Extensions.Inter
     costEstimateLines: Prisma.$JobCostEstimateLinePayload<ExtArgs>[]
     costActualLines: Prisma.$JobCostActualLinePayload<ExtArgs>[]
     costActual: Prisma.$JobCostActualPayload<ExtArgs> | null
+    costAdjustments: Prisma.$JobCostAdjustmentPayload<ExtArgs>[]
     stages: Prisma.$ProductionJobStagePayload<ExtArgs>[]
     qualityRecords: Prisma.$QualityRecordPayload<ExtArgs>[]
   }
@@ -3647,6 +3866,7 @@ export interface Prisma__ProductionJobClient<T, Null = never, ExtArgs extends ru
   costEstimateLines<T extends Prisma.ProductionJob$costEstimateLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductionJob$costEstimateLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobCostEstimateLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   costActualLines<T extends Prisma.ProductionJob$costActualLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductionJob$costActualLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobCostActualLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   costActual<T extends Prisma.ProductionJob$costActualArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductionJob$costActualArgs<ExtArgs>>): Prisma.Prisma__JobCostActualClient<runtime.Types.Result.GetResult<Prisma.$JobCostActualPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  costAdjustments<T extends Prisma.ProductionJob$costAdjustmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductionJob$costAdjustmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobCostAdjustmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   stages<T extends Prisma.ProductionJob$stagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductionJob$stagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductionJobStagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   qualityRecords<T extends Prisma.ProductionJob$qualityRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductionJob$qualityRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QualityRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -4267,6 +4487,30 @@ export type ProductionJob$costActualArgs<ExtArgs extends runtime.Types.Extension
    */
   include?: Prisma.JobCostActualInclude<ExtArgs> | null
   where?: Prisma.JobCostActualWhereInput
+}
+
+/**
+ * ProductionJob.costAdjustments
+ */
+export type ProductionJob$costAdjustmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JobCostAdjustment
+   */
+  select?: Prisma.JobCostAdjustmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JobCostAdjustment
+   */
+  omit?: Prisma.JobCostAdjustmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobCostAdjustmentInclude<ExtArgs> | null
+  where?: Prisma.JobCostAdjustmentWhereInput
+  orderBy?: Prisma.JobCostAdjustmentOrderByWithRelationInput | Prisma.JobCostAdjustmentOrderByWithRelationInput[]
+  cursor?: Prisma.JobCostAdjustmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JobCostAdjustmentScalarFieldEnum | Prisma.JobCostAdjustmentScalarFieldEnum[]
 }
 
 /**

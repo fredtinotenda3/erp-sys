@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createItem, listItems, ITEM_TYPE_VALUES } from "../../../../src/server/modules/catalog/item-service";
+import { toItemView, toItemViews } from "../../../../src/server/modules/catalog/item-view";
 import { requireSession } from "../../../../src/server/modules/iam/session-guard";
 import { errorResponse } from "../../../../src/server/shared/http";
 import { ValidationError } from "../../../../src/server/shared/errors";
@@ -30,7 +31,7 @@ export async function GET(req: NextRequest) {
       isActive: parsed.data.isActive === undefined ? undefined : parsed.data.isActive === "true",
       search: parsed.data.search,
     });
-    return NextResponse.json({ data: items });
+    return NextResponse.json({ data: toItemViews(session.role, items) });
   } catch (err) {
     return errorResponse(err);
   }
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
     const session = await requireSession(req);
     const body = await req.json();
     const item = await createItem(session, body);
-    return NextResponse.json({ data: item }, { status: 201 });
+    return NextResponse.json({ data: toItemView(session.role, item) }, { status: 201 });
   } catch (err) {
     return errorResponse(err);
   }

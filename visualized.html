@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Algorithm Atlas 3D</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080d19;color:#e5edff;font:14px Arial,sans-serif}
+#app{display:flex;height:100vh;min-height:500px}
+aside{width:310px;flex-shrink:0;background:#10192b;padding:20px;overflow:auto;border-right:1px solid #293853}
+h1{font-size:23px;margin:0 0 8px}
+p{color:#9eafcc;line-height:1.5}
+label{display:block;margin:17px 0 7px;color:#bdcbe2}
+select,button,input{width:100%;padding:10px;border-radius:7px;border:1px solid #344563;background:#19263d;color:#eef4ff;font-size:14px}
+button{cursor:pointer}
+button:hover{background:#2a3e60}
+.primary{background:#2563eb;border-color:#3b82f6}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:20px}
+.stat{padding:11px;background:#19263d;border-radius:8px;overflow-wrap:anywhere}
+.stat span{font-size:12px;color:#9eafcc}
+.stat strong{display:block;font-size:21px;margin-top:6px}
+#explanation{margin-top:8px;padding:12px;background:#19263d;border-left:3px solid #60a5fa;border-radius:5px;line-height:1.5;min-height:100px}
+.legend{margin-top:20px;display:grid;gap:10px;color:#bdcbe2}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px}
+main{flex:1;position:relative;min-width:0;min-height:300px}
+#scene{display:block;width:100%;height:100%;touch-action:none}
+#hud,#hint,#error{position:absolute;padding:11px 14px;border-radius:8px;background:#10192be8;border:1px solid #344563}
+#hud{top:14px;left:14px;pointer-events:none}
+#hint{bottom:14px;left:14px;color:#9eafcc;pointer-events:none}
+#error{display:none;top:65px;left:14px;right:14px;color:#fecaca;white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:700px){
+#app{height:auto;min-height:100vh;flex-direction:column}
+aside{width:100%;max-height:none}
+main{height:55vh;min-height:350px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+<aside>
+<h1>Algorithm Atlas 3D</h1>
+<p>Watch algorithms explore a three-dimensional network, one decision at a time.</p>
+
+<label for="algorithm">Choose an algorithm</label>
+<select id="algorithm">
+<option value="bfs">Breadth-First Search (BFS)</option>
+<option value="dfs">Depth-First Search (DFS)</option>
+<option value="dijkstra">Dijkstra's Shortest Path</option>
+<option value="astar">A* Search</option>
+<option value="prim">Prim's Minimum Spanning Tree</option>
+</select>
+
+<label for="speed">Animation speed</label>
+<input id="speed" type="range" min="1" max="10" value="5">
+
+<div class="actions">
+<button class="primary" id="run">▶ Run</button>
+<button id="step">Step →</button>
+<button id="reset">↺ Reset</button>
+<button id="random">New graph</button>
+</div>
+
+<div class="stats">
+<div class="stat"><span>Visited nodes</span><strong id="visited">0</strong></div>
+<div class="stat"><span>Path/tree cost</span><strong id="cost">—</strong></div>
+<div class="stat"><span>Current node</span><strong id="current">—</strong></div>
+<div class="stat"><span>Steps</span><strong id="steps">0</strong></div>
+</div>
+
+<label>What's happening?</label>
+<div id="explanation">Initializing the 3D network...</div>
+
+<div class="legend">
+<div><span class="dot" style="background:#60a5fa"></span>Start node</div>
+<div><span class="dot" style="background:#fb7185"></span>Goal node</div>
+<div><span class="dot" style="background:#fbbf24"></span>Current node</div>
+<div><span class="dot" style="background:#34d399"></span>Visited node</div>
+<div><span class="dot" style="background:#c084fc"></span>Path / tree</div>
+</div>
+</aside>
+
+<main id="viewport">
+<canvas id="scene"></canvas>
+<div id="hud">3D Network · <span id="nodeCount">0</span> nodes</div>
+<div id="error"></div>
+<div id="hint">Drag to rotate · Scroll to zoom</div>
+</main>
+</div>
+
+<!-- Classic script: avoids JavaScript module/import compatibility problems. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+ onerror="window.showError('Three.js could not load. Check your internet connection, then reload this page.')"></script>
+
+<script>
+(function(){
+"use strict";
+
+const $ = id => document.getElementById(id);
+const canvas = $("scene");
+const viewport = $("viewport");
+let THREE = window.THREE;
+let renderer, scene, camera, nodeGroup, edgeGroup;
+let nodes=[], edges=[], trace=[], traceIndex=0;
+let timer=null, running=false;
+let yaw=0.45, pitch=0.28, zoom=22;
+let dragging=false, lastX=0, lastY=0;
+let currentState=null;
+
+const C={
+ normal:0x536987, start:0x60a5fa, goal:0xfb7185,
+ current:0xfbbf24, visited:0x34d399,
+ frontier:0x38bdf8, path:0xc084fc
+};
+
+/* FIX: must be global — it is called from the <script onerror> attribute,
+   which runs in global scope, not inside this IIFE. */
+function showError(message){
+ const el=$("error");
+ if(el){el.style.display="block";el.textContent=message;}
+ const exp=$("explanation");
+ if(exp)exp.textContent=message;
+}
+window.showError = showError;
+
+function init(){
+ if(!window.THREE){
+   showError("Three.js did not load. Connect to the internet and reload the page.");
+   return;
+ }
+ try{
+   THREE=window.THREE;
+   renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
+   renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+   renderer.setClearColor(0x080d19);
+
+   scene=new THREE.Scene();
+   scene.fog=new THREE.Fog(0x080d19,27,65);
+   camera=new THREE.PerspectiveCamera(55,1,0.1,150);
+
+   scene.add(new THREE.AmbientLight(0xb9d0ff,1.2));
+   const light=new THREE.PointLight(0x6ba5ff,2.2);
+   light.position.set(4,10,8);
+   scene.add(light);
+
+   const grid=new THREE.GridHelper(28,28,0x293c5b,0x17253c);
+   grid.position.y=-5;
+   scene.add(grid);
+
+   nodeGroup=new THREE.Group();
+   edgeGroup=new THREE.Group();
+   scene.add(edgeGroup,nodeGroup);
+
+   setupControls();
+   resize();
+   makeGraph();
+   animate();
+ }catch(e){
+   showError("3D initialization failed: "+e.message);
+   console.error(e);
+ }
+}
+
+function setupControls(){
+ canvas.addEventListener("pointerdown",e=>{
+   dragging=true;lastX=e.clientX;lastY=e.clientY;
+   if(canvas.setPointerCapture)canvas.setPointerCapture(e.pointerId);
+ });
+ canvas.addEventListener("pointermove",e=>{
+   if(!dragging)return;
+   const dx=e.clientX-lastX,dy=e.clientY-lastY;
+   yaw-=dx*0.008;
+   pitch=Math.max(-1.2,Math.min(1.2,pitch+dy*0.008));
+   lastX=e.clientX;lastY=e.clientY;
+ });
+ canvas.addEventListener("pointerup",()=>dragging=false);
+ canvas.addEventListener("pointercancel",()=>dragging=false);
+ canvas.addEventListener("wheel",e=>{
+   e.preventDefault();
+   zoom=Math.max(10,Math.min(42,zoom+e.deltaY*0.025));
+ },{passive:false});
+
+ window.addEventListener("resize",resize);
+ if(window.ResizeObserver){
+   new ResizeObserver(resize).observe(viewport);
+ }
+}
+
+function resize(){
+ if(!renderer||!camera)return;
+ const w=Math.max(1,viewport.clientWidth);
+ const h=Math.max(1,viewport.clientHeight);
+ renderer.setSize(w,h,false);
+ camera.aspect=w/h;
+ camera.updateProjectionMatrix();
+}
+
+/* FIX: previous version used group.children.pop(), which left objects
+   parented to the group and leaked geometries, materials and textures. */
+function clearGroup(group){
+ while(group.children.length){
+   const obj=group.children[0];
+   group.remove(obj);
+   if(obj.geometry)obj.geometry.dispose();
+   if(obj.material){
+     const mats=Array.isArray(obj.material)?obj.material:[obj.material];
+     for(const m of mats){
+       if(m.map)m.map.dispose();
+       m.dispose();
+     }
+   }
+ }
+}
+
+function makeGraph(){
+ stop();
+ clearGroup(nodeGroup);
+ clearGroup(edgeGroup);
+ nodes=[];edges=[];trace=[];traceIndex=0;currentState=null;
+
+ // Three connected layers with 8 nodes per layer.
+ const count=24;
+ for(let i=0;i<count;i++){
+   const layer=Math.floor(i/8);
+   const slot=i%8;
+   const angle=slot*Math.PI*2/8+layer*0.22;
+   const radius=layer===1?7.1:5.2;
+   nodes.push({
+     id:i,
+     pos:new THREE.Vector3(
+       Math.cos(angle)*radius+(Math.random()-.5)*.6,
+       (1-layer)*3.1+(Math.random()-.5)*.6,
+       Math.sin(angle)*radius+(Math.random()-.5)*.6
+     ),
+     neighbors:[],mesh:null
+   });
+ }
+
+ const pairSet=new Set();
+ function addEdge(a,b){
+   if(a===b)return;
+   const key=Math.min(a,b)+"-"+Math.max(a,b);
+   if(pairSet.has(key))return;
+   pairSet.add(key);
+   const weight=nodes[a].pos.distanceTo(nodes[b].pos);
+   edges.push({a,b,weight,line:null});
+   nodes[a].neighbors.push({id:b,weight});
+   nodes[b].neighbors.push({id:a,weight});
+ }
+
+ // Ring edges guarantee every layer is connected.
+ for(let layer=0;layer<3;layer++){
+   const base=layer*8;
+   for(let j=0;j<8;j++)addEdge(base+j,base+(j+1)%8);
+ }
+ // Join adjacent layers.
+ for(let j=0;j<8;j++){
+   addEdge(j,8+j);
+   addEdge(8+j,16+j);
+   addEdge(j,8+(j+1)%8);
+   addEdge(8+j,16+(j+2)%8);
+ }
+ // Additional links make route choices more interesting.
+ for(let i=0;i<18;i++){
+   const a=Math.floor(Math.random()*count);
+   const b=Math.floor(Math.random()*count);
+   if(nodes[a].pos.distanceTo(nodes[b].pos)<10)addEdge(a,b);
+ }
+
+ // Draw edges first.
+ for(const edge of edges){
+   const geometry=new THREE.BufferGeometry().setFromPoints([
+     nodes[edge.a].pos,nodes[edge.b].pos
+   ]);
+   const material=new THREE.LineBasicMaterial({
+     color:0x314663,transparent:true,opacity:.7
+   });
+   edge.line=new THREE.Line(geometry,material);
+   /* FIX: was edgeLayer.add(...) — edgeLayer was never defined, which threw
+      a ReferenceError and killed the whole 3D setup. */
+   edgeGroup.add(edge.line);
+ }
+
+ // Draw nodes and their labels.
+ for(const node of nodes){
+   const material=new THREE.MeshStandardMaterial({
+     color:C.normal,emissive:C.normal,emissiveIntensity:.25,
+     roughness:.38
+   });
+   const mesh=new THREE.Mesh(
+     new THREE.SphereGeometry(.25,18,14),material
+   );
+   mesh.position.copy(node.pos);
+   node.mesh=mesh;
+   nodeGroup.add(mesh);
+
+   const c=document.createElement("canvas");
+   c.width=128;c.height=64;
+   const ctx=c.getContext("2d");
+   ctx.fillStyle="#f0f5ff";
+   ctx.font="bold 34px Arial";
+   ctx.textAlign="center";
+   ctx.fillText(String(node.id),64,43);
+   const texture=new THREE.CanvasTexture(c);
+   const sprite=new THREE.Sprite(new THREE.SpriteMaterial({
+     map:texture,transparent:true,depthTest:false
+   }));
+   sprite.position.copy(node.pos);
+   sprite.position.y+=.48;
+   sprite.scale.set(.7,.35,1);
+   nodeGroup.add(sprite);
+ }
+
+ $("nodeCount").textContent=nodes.length;
+ $("explanation").textContent=
+   "Graph ready. Start: node 0. Goal: node 23. Choose an algorithm and press Run.";
+ $("visited").textContent="0";
+ $("current").textContent="—";
+ $("steps").textContent="0";
+ $("cost").textContent="—";
+ drawState(null);
+}
+
+function stop(){
+ running=false;
+ if(timer!==null)clearTimeout(timer);
+ timer=null;
+ $("run").textContent="▶ Run";
+}
+
+function reconstruct(parent,goal){
+ const path=[];
+ let v=goal,guard=0;
+ while(v!==undefined&&v!==null&&guard++<=nodes.length){
+   path.unshift(v);
+   v=parent.get(v);
+ }
+ return path;
+}
+
+function buildTrace(){
+ trace=[];traceIndex=0;
+ const type=$("algorithm").value;
+ const start=0,goal=nodes.length-1;
+ const visited=new Set(),frontier=new Set(),closed=new Set();
+ const parent=new Map();
+ const dist=new Map(nodes.map(n=>[n.id,Infinity]));
+ let count=0;
+
+ function record(current,message,extra={}){
+   trace.push({
+     current,
+     visited:[...visited],
+     frontier:[...frontier],
+     parent:[...parent.entries()],
+     dist:[...dist.entries()],
+     closed:[...closed],
+     message,
+     count:++count,
+     ...extra
+   });
+ }
+
+ if(type==="bfs"||type==="dfs"){
+   const work=[start];
+   frontier.add(start);
+   parent.set(start,null);
+   record(start,type.toUpperCase()+" starts at node 0.");
+
+   let found=false;
+   while(work.length){
+     const v=type==="bfs"?work.shift():work.pop();
+     frontier.delete(v);
+     if(visited.has(v))continue;
+     visited.add(v);
+
+     if(v===goal){
+       record(v,"Goal found! The search reached node "+goal+".");
+       found=true;
+       break;
+     }
+
+     record(v,"Visit node "+v+". "+
+       (type==="bfs"
+       ?"BFS explores using a queue, generally level by level."
+       :"DFS explores using a stack, following a branch deeply."));
+
+     const neighbors=[...nodes[v].neighbors].sort((a,b)=>a.id-b.id);
+     for(const n of neighbors){
+       if(!visited.has(n.id)&&!frontier.has(n.id)){
+         parent.set(n.id,v);
+         frontier.add(n.id);
+         work.push(n.id);
+       }
+     }
+     record(v,"Examined node "+v+"'s neighbors. Frontier: "+frontier.size+" nodes.");
+   }
+
+   if(found){
+     record(goal,"Search complete. Reconstructing the discovered route.",{
+       finalPath:reconstruct(parent,goal)
+     });
+   }
+ }
+ else if(type==="dijkstra"||type==="astar"){
+   const open=new Set([start]);
+   dist.set(start,0);
+   parent.set(start,null);
+   frontier.add(start);
+   const heuristic=id=>nodes[id].pos.distanceTo(nodes[goal].pos);
+
+   record(start,type==="astar"
+     ?"A* starts. It uses path cost plus estimated remaining distance."
+     :"Dijkstra starts. It expands the node with the lowest known path cost.");
+
+   while(open.size){
+     let v=null,best=Infinity;
+     for(const id of open){
+       const score=dist.get(id)+(type==="astar"?heuristic(id):0);
+       if(score<best){best=score;v=id;}
+     }
+     open.delete(v);
+     frontier.delete(v);
+     if(closed.has(v))continue;
+     closed.add(v);visited.add(v);
+
+     if(v===goal){
+       record(v,"Goal reached. The shortest route has been found.",{
+         finalPath:reconstruct(parent,goal)
+       });
+       break;
+     }
+
+     record(v,"Process node "+v+". Current known path cost: "+dist.get(v).toFixed(2)+".");
+
+     for(const n of nodes[v].neighbors){
+       if(closed.has(n.id))continue;
+       const candidate=dist.get(v)+n.weight;
+       if(candidate<dist.get(n.id)){
+         dist.set(n.id,candidate);
+         parent.set(n.id,v);
+         open.add(n.id);
+         frontier.add(n.id);
+       }
+     }
+     record(v,"Relax adjacent edges: keep improved path estimates and update the frontier.");
+   }
+ }
+ else if(type==="prim"){
+   const selected=new Set([start]);
+   visited.add(start);
+   parent.set(start,null);
+   dist.set(start,0);
+   record(start,"Prim starts with node 0 and grows a minimum spanning tree.");
+
+   while(selected.size<nodes.length){
+     let best=null;
+     for(const from of selected){
+       for(const n of nodes[from].neighbors){
+         if(selected.has(n.id))continue;
+         if(!best||n.weight<best.weight){
+           best={from,id:n.id,weight:n.weight};
+         }
+       }
+     }
+     if(!best)break;
+     selected.add(best.id);
+     visited.add(best.id);
+     parent.set(best.id,best.from);
+     dist.set(best.id,best.weight);
+     record(best.id,"Add edge "+best.from+" — "+best.id+
+       " with weight "+best.weight.toFixed(2)+" to the tree.");
+   }
+   record(null,"Minimum spanning tree complete: "+selected.size+" nodes.",{
+     finalTree:[...parent.entries()].filter(([id,p])=>p!==null)
+   });
+ }
+ if(!trace.length)record(null,"No steps were generated.");
+}
+
+function edgeKey(a,b){return Math.min(a,b)+"-"+Math.max(a,b);}
+
+function drawState(state){
+ currentState=state;
+ const visited=new Set(state?.visited||[]);
+ const frontier=new Set(state?.frontier||[]);
+ const parent=new Map(state?.parent||[]);
+ const path=state?.finalPath||[];
+ const pathEdges=new Set();
+
+ for(let i=1;i<path.length;i++){
+   pathEdges.add(edgeKey(path[i-1],path[i]));
+ }
+ const treeEdges=new Set();
+ for(const [id,p] of (state?.finalTree||[])){
+   treeEdges.add(edgeKey(id,p));
+ }
+
+ for(const node of nodes){
+   let color=C.normal;
+   if(visited.has(node.id))color=C.visited;
+   if(frontier.has(node.id))color=C.frontier;
+   if(node.id===0)color=C.start;
+   if(node.id===nodes.length-1)color=C.goal;
+   if(state&&node.id===state.current)color=C.current;
+   node.mesh.material.color.setHex(color);
+   node.mesh.material.emissive.setHex(color);
+   node.mesh.scale.setScalar(state&&node.id===state.current?1.6:1);
+ }
+
+ for(const edge of edges){
+   const key=edgeKey(edge.a,edge.b);
+   const isParent=parent.get(edge.a)===edge.b||parent.get(edge.b)===edge.a;
+   const isFinal=pathEdges.has(key)||treeEdges.has(key);
+   edge.line.material.color.setHex(isFinal?C.path:(isParent?C.path:0x314663));
+   edge.line.material.opacity=isFinal?1:(isParent?.85:.65);
+ }
+
+ $("visited").textContent=visited.size;
+ $("current").textContent=state&&state.current!==null&&state.current!==undefined
+   ?state.current:"—";
+ $("steps").textContent=state?.count||0;
+ $("explanation").textContent=state?.message||
+   "Ready. Press Run to animate the algorithm or Step to advance once.";
+
+ let cost="—";
+ if(state?.finalPath){
+   let total=0;
+   for(let i=1;i<state.finalPath.length;i++){
+     const e=edges.find(e=>edgeKey(e.a,e.b)===edgeKey(state.finalPath[i-1],state.finalPath[i]));
+     if(e)total+=e.weight;
+   }
+   cost=total.toFixed(2);
+ }else if(state?.finalTree){
+   cost=state.finalTree.reduce((sum,[id,p])=>{
+     const e=edges.find(e=>edgeKey(e.a,e.b)===edgeKey(id,p));
+     return sum+(e?e.weight:0);
+   },0).toFixed(2);
+ }else if(state?.dist){
+   const d=new Map(state.dist);
+   const goalCost=d.get(nodes.length-1);
+   if(Number.isFinite(goalCost))cost=goalCost.toFixed(2);
+ }
+ $("cost").textContent=cost;
+}
+
+function nextStep(){
+ if(traceIndex>=trace.length)return false;
+ drawState(trace[traceIndex++]);
+ return true;
+}
+
+function run(){
+ if(running){stop();return;}
+ if(!trace.length||traceIndex>=trace.length){
+   buildTrace();
+   drawState(null);
+ }
+ if(!trace.length)return;
+ running=true;
+ $("run").textContent="Ⅱ Pause";
+
+ function tick(){
+   if(!running)return;
+   if(!nextStep()){stop();return;}
+   if(traceIndex>=trace.length){stop();return;}
+   timer=setTimeout(tick,1100-Number($("speed").value)*95);
+ }
+ tick();
+}
+
+$("run").addEventListener("click",run);
+$("step").addEventListener("click",()=>{
+ stop();
+ if(!trace.length||traceIndex>=trace.length){
+   buildTrace();
+   traceIndex=0;
+ }
+ nextStep();
+});
+$("reset").addEventListener("click",()=>{
+ stop();
+ buildTrace();
+ traceIndex=0;
+ drawState(null);
+ $("explanation").textContent="Reset complete. Press Run or Step to begin.";
+});
+$("random").addEventListener("click",makeGraph);
+$("algorithm").addEventListener("change",()=>{
+ stop();
+ buildTrace();
+ traceIndex=0;
+ drawState(null);
+});
+
+function animate(){
+ requestAnimationFrame(animate);
+ if(!renderer||!camera||!scene)return;
+ const target=new THREE.Vector3(0,0,0);
+ const cp=Math.cos(pitch);
+ camera.position.set(
+   target.x+zoom*Math.sin(yaw)*cp,
+   target.y+zoom*Math.sin(pitch),
+   target.z+zoom*Math.cos(yaw)*cp
+ );
+ camera.lookAt(target);
+ renderer.render(scene,camera);
+}
+
+init();
+})();
+</script>
+</body>
+</html>

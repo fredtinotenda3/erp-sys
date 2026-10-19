@@ -10,7 +10,8 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "db:deploy": "prisma migrate deploy",
-    "create-admin": "tsx scripts/create-admin.ts"
+    "create-admin": "tsx scripts/create-admin.ts",
+    "test:ui": "vitest run --config vitest.ui.config.ts"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.2.2",

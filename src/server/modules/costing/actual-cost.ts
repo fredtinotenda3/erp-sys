@@ -68,3 +68,58 @@ export async function computeActualCostLines(
   for (const arr of out.values()) arr.sort((a, b) => a.currency.localeCompare(b.currency));
   return out;
 }
+
+// ---------------------------------------------------------------------------
+// Completeness evidence. computeActualCostLines only sums rows that carry a
+// cost and a currency; a consumption row WITHOUT them would otherwise vanish
+// from the total (an unknown cost silently becoming "nothing"). These counts
+// let callers see, name and refuse to hide that case.
+// ---------------------------------------------------------------------------
+export interface ConsumptionEvidence {
+  costedMovements: number;
+  uncostedMovements: number;
+  lastMovementAt: Date | null;
+  labourRecords: number;
+  labourHours: string;
+}
+
+export async function computeConsumptionEvidence(db: Raw, orgId: string, jobId: string): Promise<ConsumptionEvidence> {
+  const [m] = await db.$queryRaw<{ costed: number; uncosted: number; last_at: Date | null }[]>(Prisma.sql`
+    SELECT count(*) FILTER (WHERE currency IS NOT NULL AND unit_cost IS NOT NULL)::int AS costed,
+           count(*) FILTER (WHERE currency IS NULL OR unit_cost IS NULL)::int AS uncosted,
+           max(occurred_at) AS last_at
+    FROM stock_movement
+    WHERE org_id = ${orgId}::uuid AND reference_type = 'production_job' AND reference_id = ${jobId}::uuid
+      AND movement_type IN ('production_consumption', 'material_return')`);
+  const [l] = await db.$queryRaw<{ n: number; hours: string | null }[]>(Prisma.sql`
+    SELECT count(*)::int AS n, sum(hours)::text AS hours FROM labour_record
+    WHERE org_id = ${orgId}::uuid AND job_id = ${jobId}::uuid`);
+  return {
+    costedMovements: m?.costed ?? 0,
+    uncostedMovements: m?.uncosted ?? 0,
+    lastMovementAt: m?.last_at ?? null,
+    labourRecords: l?.n ?? 0,
+    labourHours: l?.hours ?? "0",
+  };
+}
+
+// Net consumed quantity and cost per material per currency, for explaining a
+// material variance (usage vs price). Same ledger rows and sign convention as
+// computeActualCostLines.
+export interface MaterialActualRow {
+  itemId: string;
+  currency: string;
+  quantity: Prisma.Decimal;
+  cost: Prisma.Decimal;
+}
+
+export async function computeActualMaterialByItem(db: Raw, orgId: string, jobId: string): Promise<MaterialActualRow[]> {
+  const rows = await db.$queryRaw<{ item_id: string; currency: string; qty: string; cost: string }[]>(Prisma.sql`
+    SELECT item_id::text AS item_id, currency, (-SUM(quantity))::text AS qty, round(-SUM(quantity * unit_cost), 4)::text AS cost
+    FROM stock_movement
+    WHERE org_id = ${orgId}::uuid AND reference_type = 'production_job' AND reference_id = ${jobId}::uuid
+      AND movement_type IN ('production_consumption', 'material_return')
+      AND currency IS NOT NULL AND unit_cost IS NOT NULL
+    GROUP BY item_id, currency`);
+  return rows.map((r) => ({ itemId: r.item_id, currency: r.currency.trim(), quantity: new Prisma.Decimal(r.qty), cost: new Prisma.Decimal(r.cost) }));
+}

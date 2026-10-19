@@ -1,54 +1,32 @@
 import Link from "next/link";
 
-import type { Role } from "../../src/server/shared/authz";
-import { getVisibleNavItems } from "./nav-config";
+import type { VisibleNavItem } from "./nav-config";
+import { NavList } from "./nav-list";
 
-// Server Component — no client-side state needed for a static, role-filtered
-// link list. §11.1's icon-only/flyout collapse at the `md` breakpoint is
-// pure CSS (Tailwind responsive classes below); it doesn't need JS state
-// either, so this stays a Server Component rather than paying for a client
-// bundle it doesn't need. If a future revision adds a user-toggled collapse
-// (as opposed to the breakpoint-driven one), that toggle alone would need
-// to move into a small client wrapper — the link list itself still
-// wouldn't.
-export function Sidebar({ role }: { role: Role }) {
-  const items = getVisibleNavItems(role);
-
+// Desktop/tablet sidebar. UX spec §11.1: icon-only at md, icon + label at lg;
+// below md the MobileNav drawer in the top bar takes over. The item list is
+// computed on the server from the user's capabilities and passed as plain data.
+export function Sidebar({ items, orgName }: { items: VisibleNavItem[]; orgName: string }) {
   return (
-    <nav
-      aria-label="Primary"
-      className="flex h-full w-16 flex-col border-r border-border bg-card py-4 md:w-16 lg:w-56"
-    >
-      <div className="mb-4 px-3 lg:px-4">
-        <span className="hidden text-sm font-semibold tracking-wide lg:inline">OPERIS</span>
-        <span className="block text-sm font-semibold lg:hidden" aria-hidden="true">
-          O
-        </span>
+    <aside className="hidden shrink-0 border-r border-sidebar-border bg-sidebar text-sidebar-foreground md:block md:w-16 lg:w-60">
+      <div className="sticky top-0 flex h-screen flex-col">
+        <Link
+          href="/dashboard"
+          className="flex h-14 items-center gap-2.5 border-b border-sidebar-border px-4 outline-none focus-visible:ring-2 focus-visible:ring-sidebar-marker"
+          aria-label="Operis — Command Centre"
+        >
+          <span aria-hidden="true" className="flex size-7 shrink-0 items-center justify-center rounded-md bg-sidebar-accent text-sm font-semibold">
+            O
+          </span>
+          <span className="hidden min-w-0 lg:block">
+            <span className="block text-sm font-semibold leading-tight">Operis</span>
+            <span className="block truncate text-xs text-sidebar-muted">{orgName}</span>
+          </span>
+        </Link>
+        <nav aria-label="Primary" className="flex-1 overflow-y-auto p-2">
+          <NavList items={items} compact />
+        </nav>
       </div>
-      <ul className="flex flex-1 flex-col gap-0.5 px-2">
-        {items.map((item) => (
-          <li key={item.href}>
-            <Link
-              href={item.href}
-              className="flex items-center justify-center rounded-md px-2 py-2 text-sm text-foreground/80 hover:bg-accent hover:text-accent-foreground lg:justify-start lg:px-3"
-              title={item.label}
-            >
-              {/* §11.1: icon-only at md, icon+label at lg. No icon set has
-                  been chosen yet for these specific modules (that's a
-                  per-item design pass once each module's real screen is
-                  built, not a shell-framework concern) — the first letter
-                  stands in for now rather than leaving a blank tap target. */}
-              <span
-                className="flex size-6 shrink-0 items-center justify-center rounded bg-muted text-xs font-medium lg:mr-2"
-                aria-hidden="true"
-              >
-                {item.label.charAt(0)}
-              </span>
-              <span className="hidden lg:inline">{item.label}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    </aside>
   );
 }

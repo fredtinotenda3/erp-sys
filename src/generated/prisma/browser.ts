@@ -157,3 +157,8 @@ export type JobCostActual = Prisma.JobCostActualModel
  * 
  */
 export type JobCostActualLine = Prisma.JobCostActualLineModel
+/**
+ * Model JobCostAdjustment
+ * 
+ */
+export type JobCostAdjustment = Prisma.JobCostAdjustmentModel

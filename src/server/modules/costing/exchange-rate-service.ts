@@ -100,6 +100,32 @@ export async function findLatestRate(orgId: string, q: RateLookup) {
   });
 }
 
+// Rate in force for a PAST question: "what rate would we have used on `asOf`,
+// knowing only what had been recorded by `recordedAtOrBefore`?". Both bounds
+// matter. asOfDate stops a later-dated rate being applied to earlier costs;
+// recordedAt stops a rate that was entered (even if back-dated) AFTER the
+// result was produced from changing that result. Because rows are append-only,
+// the same inputs therefore always return the same row -- historical financial
+// results cannot drift when new rates are recorded.
+export interface RateAsOfLookup extends RateLookup {
+  asOf?: Date;
+  recordedAtOrBefore?: Date;
+}
+
+export async function findRateAsOf(orgId: string, q: RateAsOfLookup) {
+  return prisma.exchangeRate.findFirst({
+    where: {
+      orgId,
+      baseCurrency: q.baseCurrency,
+      quoteCurrency: q.quoteCurrency,
+      ...(q.source ? { source: q.source } : {}),
+      ...(q.asOf ? { asOfDate: { lte: new Date(Date.UTC(q.asOf.getUTCFullYear(), q.asOf.getUTCMonth(), q.asOf.getUTCDate())) } } : {}),
+      ...(q.recordedAtOrBefore ? { recordedAt: { lte: q.recordedAtOrBefore } } : {}),
+    },
+    orderBy: [{ asOfDate: "desc" }, { recordedAt: "desc" }],
+  });
+}
+
 const lookupSchema = z.object({
   baseCurrency: currency,
   quoteCurrency: currency,
