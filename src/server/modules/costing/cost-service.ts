@@ -21,6 +21,8 @@ import { computeActualCostLines, computeActualMaterialByItem, computeConsumption
 import { findLatestRate, findRateAsOf, type RateSourceValue } from "./exchange-rate-service";
 import { applyAdjustments, assessCompleteness, computeVariance, explainMaterialVariance, type AdjustmentLike, type Completeness } from "./cost-completeness";
 import { listAdjustments, adjustmentToView } from "./cost-adjustment-service";
+import { loadShopfloor } from "../production/shopfloor-data";
+import { jobTotals } from "../production/shopfloor-math";
 
 const D = (v: unknown) => new Prisma.Decimal(String(v));
 const Z = new Prisma.Decimal(0);
@@ -161,6 +163,29 @@ async function evidenceFor(orgId: string, jobId: string, actual: { basis: string
   return { costed: live.costedMovements, uncosted: live.uncostedMovements, labour: live.labourRecords };
 }
 
+
+// Cost per good unit: actual cost (material + labour, snapshot + adjustments) divided
+// by EFFECTIVE good units. Because the cost of scrapped and reworked units is already
+// inside the issued material and recorded labour, dividing by good units is what makes
+// scrap and rework visible as a higher unit cost -- no separate "cost of scrap" is
+// invented or allocated. It is subject to the same completeness gate as margin and is
+// never stated across currencies. Overhead is excluded (unavailable).
+export function costPerGoodUnit(effective: { currency: string; materialCost: Prisma.Decimal; labourCost: Prisma.Decimal | null }[], blockers: string[], effectiveGood: Prisma.Decimal) {
+  if (effectiveGood.lte(0)) return { available: false as const, reason: "no_good_output" };
+  if (effective.length === 0) return { available: false as const, reason: "no_actual_cost" };
+  if (effective.length > 1) return { available: false as const, reason: "mixed_currencies" };
+  if (blockers.length > 0) return { available: false as const, reason: blockers[0] };
+  const a = effective[0];
+  return {
+    available: true as const,
+    currency: a.currency,
+    amount: a.materialCost.add(a.labourCost ?? Z).div(effectiveGood).toDecimalPlaces(4).toString(),
+    basis: "calculated" as const,
+    excludesOverhead: true as const,
+    includesScrapAndRework: true as const,
+  };
+}
+
 export async function getJobCost(session: AuthenticatedSession, jobId: string, query: unknown = {}) {
   assertCapability(session.role, "production_job:read");
   assertCapability(session.role, "cost:read");
@@ -245,6 +270,9 @@ export async function getJobCost(session: AuthenticatedSession, jobId: string, q
     },
     adjustments: adjustmentRows.map(adjustmentToView),
     materialBreakdown: await materialBreakdown(session.orgId, detail, unpriced),
+    // Quantities from the shop floor (no money). Scrap/rework cost is already inside the
+    // issued material and recorded labour above; it is NOT added again.
+    output: await outputSummary(session.orgId, detail.id, effective, completeness.marginBlockers),
     // Profit uses the EFFECTIVE actual (snapshot + adjustments) and the completeness gate.
     profit: computeProfit(revenue, effective, { blockers: completeness.marginBlockers }),
   };
@@ -255,6 +283,16 @@ export async function getJobCost(session: AuthenticatedSession, jobId: string, q
     result.conversion = await convert(session, parsed.data.convertTo, parsed.data.rateSource, parsed.data.asOf, actual.snapshotAt, lines, estimateByCurrency(detail.costEstimateLines));
   }
   return result;
+}
+
+async function outputSummary(orgId: string, jobId: string, effective: Parameters<typeof costPerGoodUnit>[0], blockers: string[]) {
+  const sf = await loadShopfloor(prisma, orgId, jobId);
+  const totals = jobTotals(sf.stages, sf.outputs);
+  return {
+    ...totals,
+    stages: { total: sf.stages.length, completed: sf.stages.filter((x) => x.status === "completed").length },
+    costPerGoodUnit: costPerGoodUnit(effective, blockers, D(totals.effectiveGood)),
+  };
 }
 
 const estimateByCurrency = (rows: EstimateRow[]) => new Map(rows.map((r) => [r.currency.trim(), D(r.estimatedMaterialCost)]));

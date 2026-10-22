@@ -104,7 +104,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON
   organization, branch, app_user, user_branch_access, user_session,
   item, bill_of_material, bom_line, customer, sales_order, sales_order_line,
   production_job, material_requirement, labour_record,
-  production_stage_template, production_job_stage, quality_record,
+  production_stage_template, production_job_stage,
   warehouse, job_cost_estimate
 TO mops_runtime;
 
@@ -120,6 +120,9 @@ GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO mops_runtime;
 -- the triggers now in the hardening migration, so a future grant mistake
 -- alone can't reopen them.
 GRANT SELECT, INSERT ON stock_movement, audit_log, exchange_rate, job_cost_actual TO mops_runtime;
+-- Phase 2 / 3 append-only tables (migrations 20261015100000 and 20261022100000 also
+-- grant these themselves, guarded on the role existing). quality_record is append-only now.
+GRANT SELECT, INSERT ON job_cost_adjustment, production_output, production_output_void, quality_record, quality_disposition TO mops_runtime;
 
 -- stock_balance: SELECT only. It is written exclusively by
 -- trg_stock_movement_before_insert, which is declared SECURITY DEFINER (see

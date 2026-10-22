@@ -186,3 +186,18 @@ export type JobCostActualLine = Prisma.JobCostActualLineModel
  * 
  */
 export type JobCostAdjustment = Prisma.JobCostAdjustmentModel
+/**
+ * Model ProductionOutput
+ * 
+ */
+export type ProductionOutput = Prisma.ProductionOutputModel
+/**
+ * Model ProductionOutputVoid
+ * 
+ */
+export type ProductionOutputVoid = Prisma.ProductionOutputVoidModel
+/**
+ * Model QualityDisposition
+ * 
+ */
+export type QualityDisposition = Prisma.QualityDispositionModel

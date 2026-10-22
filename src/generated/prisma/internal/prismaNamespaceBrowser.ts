@@ -79,7 +79,10 @@ export const ModelName = {
   JobNumberCounter: 'JobNumberCounter',
   JobCostActual: 'JobCostActual',
   JobCostActualLine: 'JobCostActualLine',
-  JobCostAdjustment: 'JobCostAdjustment'
+  JobCostAdjustment: 'JobCostAdjustment',
+  ProductionOutput: 'ProductionOutput',
+  ProductionOutputVoid: 'ProductionOutputVoid',
+  QualityDisposition: 'QualityDisposition'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -375,7 +378,15 @@ export const ProductionJobStageScalarFieldEnum = {
   qtyProcessed: 'qtyProcessed',
   qtyRejected: 'qtyRejected',
   notes: 'notes',
-  clientRequestId: 'clientRequestId'
+  clientRequestId: 'clientRequestId',
+  plannedStart: 'plannedStart',
+  plannedEnd: 'plannedEnd',
+  workCentre: 'workCentre',
+  requiresInspection: 'requiresInspection',
+  blockedReason: 'blockedReason',
+  blockedAt: 'blockedAt',
+  blockedById: 'blockedById',
+  createdAt: 'createdAt'
 } as const
 
 export type ProductionJobStageScalarFieldEnum = (typeof ProductionJobStageScalarFieldEnum)[keyof typeof ProductionJobStageScalarFieldEnum]
@@ -393,7 +404,10 @@ export const QualityRecordScalarFieldEnum = {
   notes: 'notes',
   evidenceRef: 'evidenceRef',
   clientRequestId: 'clientRequestId',
-  recordedAt: 'recordedAt'
+  recordedAt: 'recordedAt',
+  inspectorUserId: 'inspectorUserId',
+  outcome: 'outcome',
+  uom: 'uom'
 } as const
 
 export type QualityRecordScalarFieldEnum = (typeof QualityRecordScalarFieldEnum)[keyof typeof QualityRecordScalarFieldEnum]
@@ -514,6 +528,59 @@ export const JobCostAdjustmentScalarFieldEnum = {
 } as const
 
 export type JobCostAdjustmentScalarFieldEnum = (typeof JobCostAdjustmentScalarFieldEnum)[keyof typeof JobCostAdjustmentScalarFieldEnum]
+
+
+export const ProductionOutputScalarFieldEnum = {
+  id: 'id',
+  orgId: 'orgId',
+  jobId: 'jobId',
+  jobStageId: 'jobStageId',
+  goodQty: 'goodQty',
+  scrapQty: 'scrapQty',
+  reworkQty: 'reworkQty',
+  reworkGoodQty: 'reworkGoodQty',
+  reworkScrapQty: 'reworkScrapQty',
+  reclassifiedFromGoodQty: 'reclassifiedFromGoodQty',
+  uom: 'uom',
+  reason: 'reason',
+  notes: 'notes',
+  source: 'source',
+  inspectionId: 'inspectionId',
+  operatorUserId: 'operatorUserId',
+  recordedAt: 'recordedAt',
+  clientRequestId: 'clientRequestId'
+} as const
+
+export type ProductionOutputScalarFieldEnum = (typeof ProductionOutputScalarFieldEnum)[keyof typeof ProductionOutputScalarFieldEnum]
+
+
+export const ProductionOutputVoidScalarFieldEnum = {
+  id: 'id',
+  orgId: 'orgId',
+  jobId: 'jobId',
+  outputId: 'outputId',
+  reason: 'reason',
+  voidedBy: 'voidedBy',
+  voidedAt: 'voidedAt'
+} as const
+
+export type ProductionOutputVoidScalarFieldEnum = (typeof ProductionOutputVoidScalarFieldEnum)[keyof typeof ProductionOutputVoidScalarFieldEnum]
+
+
+export const QualityDispositionScalarFieldEnum = {
+  id: 'id',
+  orgId: 'orgId',
+  jobId: 'jobId',
+  inspectionId: 'inspectionId',
+  kind: 'kind',
+  qty: 'qty',
+  reason: 'reason',
+  decidedBy: 'decidedBy',
+  decidedAt: 'decidedAt',
+  clientRequestId: 'clientRequestId'
+} as const
+
+export type QualityDispositionScalarFieldEnum = (typeof QualityDispositionScalarFieldEnum)[keyof typeof QualityDispositionScalarFieldEnum]
 
 
 export const SortOrder = {

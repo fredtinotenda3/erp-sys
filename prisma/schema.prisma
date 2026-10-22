@@ -423,6 +423,9 @@ model ProductionJob {
   costAdjustments      JobCostAdjustment[]
   stages               ProductionJobStage[]
   qualityRecords       QualityRecord[]
+  outputs              ProductionOutput[]
+  outputVoids          ProductionOutputVoid[]
+  dispositions         QualityDisposition[]
 
   @@unique([orgId, jobNumber])
   @@unique([orgId, id])
@@ -499,11 +502,22 @@ model ProductionJobStage {
   qtyRejected     Decimal?                 @map("qty_rejected") @db.Decimal(14, 4)
   notes           String?
   clientRequestId String?                  @map("client_request_id") @db.Uuid
+  // Phase 3
+  plannedStart       DateTime? @map("planned_start")
+  plannedEnd         DateTime? @map("planned_end")
+  workCentre         String?   @map("work_centre")
+  requiresInspection Boolean   @default(false) @map("requires_inspection")
+  blockedReason      String?   @map("blocked_reason")
+  blockedAt          DateTime? @map("blocked_at")
+  blockedById        String?   @map("blocked_by") @db.Uuid
+  createdAt          DateTime  @default(now()) @map("created_at")
 
   qualityRecords QualityRecord[]
+  outputs        ProductionOutput[]
 
   @@unique([orgId, id])
   @@unique([orgId, clientRequestId])
+  @@unique([jobId, sequence])
   @@map("production_job_stage")
 }
 
@@ -530,7 +544,16 @@ model QualityRecord {
   evidenceRef     String?             @map("evidence_ref")
   clientRequestId String?             @map("client_request_id") @db.Uuid
   recordedAt      DateTime            @default(now()) @map("recorded_at")
+  // Phase 3: an inspection RESULT. produced_qty = units inspected;
+  // accepted + rejected = produced; outcome = 'pass' iff nothing rejected.
+  inspectorUserId String?             @map("inspector_user_id") @db.Uuid
+  outcome         String?
+  uom             String?
 
+  dispositions QualityDisposition[]
+  outputs      ProductionOutput[]
+
+  @@unique([orgId, id])
   @@unique([orgId, clientRequestId])
   @@map("quality_record")
 }
@@ -714,4 +737,76 @@ model JobCostAdjustment {
   @@unique([orgId, clientRequestId])
   @@index([jobId])
   @@map("job_cost_adjustment")
+}
+
+// ---------------------------------------------------------------------------
+// SHOP FLOOR (Phase 3). All append-only; see migration 20261022100000.
+// ---------------------------------------------------------------------------
+
+// Good / scrap / rework quantities recorded against a job (and stage).
+model ProductionOutput {
+  id                      String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId                   String              @map("org_id") @db.Uuid
+  jobId                   String              @map("job_id") @db.Uuid
+  job                     ProductionJob       @relation(fields: [orgId, jobId], references: [orgId, id])
+  jobStageId              String?             @map("job_stage_id") @db.Uuid
+  jobStage                ProductionJobStage? @relation(fields: [orgId, jobStageId], references: [orgId, id])
+  goodQty                 Decimal             @default(0) @map("good_qty") @db.Decimal(14, 4)
+  scrapQty                Decimal             @default(0) @map("scrap_qty") @db.Decimal(14, 4)
+  reworkQty               Decimal             @default(0) @map("rework_qty") @db.Decimal(14, 4)
+  reworkGoodQty           Decimal             @default(0) @map("rework_good_qty") @db.Decimal(14, 4)
+  reworkScrapQty          Decimal             @default(0) @map("rework_scrap_qty") @db.Decimal(14, 4)
+  reclassifiedFromGoodQty Decimal             @default(0) @map("reclassified_from_good_qty") @db.Decimal(14, 4)
+  uom                     String
+  reason                  RejectReason?
+  notes                   String?
+  source                  String              @default("operator")
+  inspectionId            String?             @map("inspection_id") @db.Uuid
+  inspection              QualityRecord?      @relation(fields: [orgId, inspectionId], references: [orgId, id])
+  operatorUserId          String?             @map("operator_user_id") @db.Uuid
+  recordedAt              DateTime            @default(now()) @map("recorded_at")
+  clientRequestId         String?             @map("client_request_id") @db.Uuid
+
+  void ProductionOutputVoid?
+
+  @@unique([orgId, id])
+  @@unique([orgId, clientRequestId])
+  @@index([jobId])
+  @@map("production_output")
+}
+
+// A reasoned reversal of one output entry. The entry itself is never edited.
+model ProductionOutputVoid {
+  id       String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId    String           @map("org_id") @db.Uuid
+  jobId    String           @map("job_id") @db.Uuid
+  job      ProductionJob    @relation(fields: [orgId, jobId], references: [orgId, id])
+  outputId String           @map("output_id") @db.Uuid
+  output   ProductionOutput @relation(fields: [orgId, outputId], references: [orgId, id])
+  reason   String
+  voidedBy String?          @map("voided_by") @db.Uuid
+  voidedAt DateTime         @default(now()) @map("voided_at")
+
+  @@unique([orgId, outputId])
+  @@map("production_output_void")
+}
+
+// An authorised decision on rejected units of one inspection.
+model QualityDisposition {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId           String        @map("org_id") @db.Uuid
+  jobId           String        @map("job_id") @db.Uuid
+  job             ProductionJob @relation(fields: [orgId, jobId], references: [orgId, id])
+  inspectionId    String        @map("inspection_id") @db.Uuid
+  inspection      QualityRecord @relation(fields: [orgId, inspectionId], references: [orgId, id])
+  kind            String // scrap | rework | use_as_is (CHECK in the database)
+  qty             Decimal       @db.Decimal(14, 4)
+  reason          String
+  decidedBy       String        @map("decided_by") @db.Uuid
+  decidedAt       DateTime      @default(now()) @map("decided_at")
+  clientRequestId String?       @map("client_request_id") @db.Uuid
+
+  @@unique([orgId, clientRequestId])
+  @@index([inspectionId])
+  @@map("quality_disposition")
 }

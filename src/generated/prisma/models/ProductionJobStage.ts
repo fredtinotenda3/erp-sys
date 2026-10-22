@@ -52,6 +52,14 @@ export type ProductionJobStageMinAggregateOutputType = {
   qtyRejected: runtime.Decimal | null
   notes: string | null
   clientRequestId: string | null
+  plannedStart: Date | null
+  plannedEnd: Date | null
+  workCentre: string | null
+  requiresInspection: boolean | null
+  blockedReason: string | null
+  blockedAt: Date | null
+  blockedById: string | null
+  createdAt: Date | null
 }
 
 export type ProductionJobStageMaxAggregateOutputType = {
@@ -68,6 +76,14 @@ export type ProductionJobStageMaxAggregateOutputType = {
   qtyRejected: runtime.Decimal | null
   notes: string | null
   clientRequestId: string | null
+  plannedStart: Date | null
+  plannedEnd: Date | null
+  workCentre: string | null
+  requiresInspection: boolean | null
+  blockedReason: string | null
+  blockedAt: Date | null
+  blockedById: string | null
+  createdAt: Date | null
 }
 
 export type ProductionJobStageCountAggregateOutputType = {
@@ -84,6 +100,14 @@ export type ProductionJobStageCountAggregateOutputType = {
   qtyRejected: number
   notes: number
   clientRequestId: number
+  plannedStart: number
+  plannedEnd: number
+  workCentre: number
+  requiresInspection: number
+  blockedReason: number
+  blockedAt: number
+  blockedById: number
+  createdAt: number
   _all: number
 }
 
@@ -114,6 +138,14 @@ export type ProductionJobStageMinAggregateInputType = {
   qtyRejected?: true
   notes?: true
   clientRequestId?: true
+  plannedStart?: true
+  plannedEnd?: true
+  workCentre?: true
+  requiresInspection?: true
+  blockedReason?: true
+  blockedAt?: true
+  blockedById?: true
+  createdAt?: true
 }
 
 export type ProductionJobStageMaxAggregateInputType = {
@@ -130,6 +162,14 @@ export type ProductionJobStageMaxAggregateInputType = {
   qtyRejected?: true
   notes?: true
   clientRequestId?: true
+  plannedStart?: true
+  plannedEnd?: true
+  workCentre?: true
+  requiresInspection?: true
+  blockedReason?: true
+  blockedAt?: true
+  blockedById?: true
+  createdAt?: true
 }
 
 export type ProductionJobStageCountAggregateInputType = {
@@ -146,6 +186,14 @@ export type ProductionJobStageCountAggregateInputType = {
   qtyRejected?: true
   notes?: true
   clientRequestId?: true
+  plannedStart?: true
+  plannedEnd?: true
+  workCentre?: true
+  requiresInspection?: true
+  blockedReason?: true
+  blockedAt?: true
+  blockedById?: true
+  createdAt?: true
   _all?: true
 }
 
@@ -249,6 +297,14 @@ export type ProductionJobStageGroupByOutputType = {
   qtyRejected: runtime.Decimal | null
   notes: string | null
   clientRequestId: string | null
+  plannedStart: Date | null
+  plannedEnd: Date | null
+  workCentre: string | null
+  requiresInspection: boolean
+  blockedReason: string | null
+  blockedAt: Date | null
+  blockedById: string | null
+  createdAt: Date
   _count: ProductionJobStageCountAggregateOutputType | null
   _avg: ProductionJobStageAvgAggregateOutputType | null
   _sum: ProductionJobStageSumAggregateOutputType | null
@@ -288,8 +344,17 @@ export type ProductionJobStageWhereInput = {
   qtyRejected?: Prisma.DecimalNullableFilter<"ProductionJobStage"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.StringNullableFilter<"ProductionJobStage"> | string | null
   clientRequestId?: Prisma.UuidNullableFilter<"ProductionJobStage"> | string | null
+  plannedStart?: Prisma.DateTimeNullableFilter<"ProductionJobStage"> | Date | string | null
+  plannedEnd?: Prisma.DateTimeNullableFilter<"ProductionJobStage"> | Date | string | null
+  workCentre?: Prisma.StringNullableFilter<"ProductionJobStage"> | string | null
+  requiresInspection?: Prisma.BoolFilter<"ProductionJobStage"> | boolean
+  blockedReason?: Prisma.StringNullableFilter<"ProductionJobStage"> | string | null
+  blockedAt?: Prisma.DateTimeNullableFilter<"ProductionJobStage"> | Date | string | null
+  blockedById?: Prisma.UuidNullableFilter<"ProductionJobStage"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"ProductionJobStage"> | Date | string
   job?: Prisma.XOR<Prisma.ProductionJobScalarRelationFilter, Prisma.ProductionJobWhereInput>
   qualityRecords?: Prisma.QualityRecordListRelationFilter
+  outputs?: Prisma.ProductionOutputListRelationFilter
 }
 
 export type ProductionJobStageOrderByWithRelationInput = {
@@ -306,14 +371,24 @@ export type ProductionJobStageOrderByWithRelationInput = {
   qtyRejected?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   clientRequestId?: Prisma.SortOrderInput | Prisma.SortOrder
+  plannedStart?: Prisma.SortOrderInput | Prisma.SortOrder
+  plannedEnd?: Prisma.SortOrderInput | Prisma.SortOrder
+  workCentre?: Prisma.SortOrderInput | Prisma.SortOrder
+  requiresInspection?: Prisma.SortOrder
+  blockedReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  blockedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  blockedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
   job?: Prisma.ProductionJobOrderByWithRelationInput
   qualityRecords?: Prisma.QualityRecordOrderByRelationAggregateInput
+  outputs?: Prisma.ProductionOutputOrderByRelationAggregateInput
 }
 
 export type ProductionJobStageWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   orgId_id?: Prisma.ProductionJobStageOrgIdIdCompoundUniqueInput
   orgId_clientRequestId?: Prisma.ProductionJobStageOrgIdClientRequestIdCompoundUniqueInput
+  jobId_sequence?: Prisma.ProductionJobStageJobIdSequenceCompoundUniqueInput
   AND?: Prisma.ProductionJobStageWhereInput | Prisma.ProductionJobStageWhereInput[]
   OR?: Prisma.ProductionJobStageWhereInput[]
   NOT?: Prisma.ProductionJobStageWhereInput | Prisma.ProductionJobStageWhereInput[]
@@ -329,9 +404,18 @@ export type ProductionJobStageWhereUniqueInput = Prisma.AtLeast<{
   qtyRejected?: Prisma.DecimalNullableFilter<"ProductionJobStage"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.StringNullableFilter<"ProductionJobStage"> | string | null
   clientRequestId?: Prisma.UuidNullableFilter<"ProductionJobStage"> | string | null
+  plannedStart?: Prisma.DateTimeNullableFilter<"ProductionJobStage"> | Date | string | null
+  plannedEnd?: Prisma.DateTimeNullableFilter<"ProductionJobStage"> | Date | string | null
+  workCentre?: Prisma.StringNullableFilter<"ProductionJobStage"> | string | null
+  requiresInspection?: Prisma.BoolFilter<"ProductionJobStage"> | boolean
+  blockedReason?: Prisma.StringNullableFilter<"ProductionJobStage"> | string | null
+  blockedAt?: Prisma.DateTimeNullableFilter<"ProductionJobStage"> | Date | string | null
+  blockedById?: Prisma.UuidNullableFilter<"ProductionJobStage"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"ProductionJobStage"> | Date | string
   job?: Prisma.XOR<Prisma.ProductionJobScalarRelationFilter, Prisma.ProductionJobWhereInput>
   qualityRecords?: Prisma.QualityRecordListRelationFilter
-}, "id" | "orgId_id" | "orgId_clientRequestId">
+  outputs?: Prisma.ProductionOutputListRelationFilter
+}, "id" | "orgId_id" | "orgId_clientRequestId" | "jobId_sequence">
 
 export type ProductionJobStageOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -347,6 +431,14 @@ export type ProductionJobStageOrderByWithAggregationInput = {
   qtyRejected?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   clientRequestId?: Prisma.SortOrderInput | Prisma.SortOrder
+  plannedStart?: Prisma.SortOrderInput | Prisma.SortOrder
+  plannedEnd?: Prisma.SortOrderInput | Prisma.SortOrder
+  workCentre?: Prisma.SortOrderInput | Prisma.SortOrder
+  requiresInspection?: Prisma.SortOrder
+  blockedReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  blockedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  blockedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
   _count?: Prisma.ProductionJobStageCountOrderByAggregateInput
   _avg?: Prisma.ProductionJobStageAvgOrderByAggregateInput
   _max?: Prisma.ProductionJobStageMaxOrderByAggregateInput
@@ -371,6 +463,14 @@ export type ProductionJobStageScalarWhereWithAggregatesInput = {
   qtyRejected?: Prisma.DecimalNullableWithAggregatesFilter<"ProductionJobStage"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"ProductionJobStage"> | string | null
   clientRequestId?: Prisma.UuidNullableWithAggregatesFilter<"ProductionJobStage"> | string | null
+  plannedStart?: Prisma.DateTimeNullableWithAggregatesFilter<"ProductionJobStage"> | Date | string | null
+  plannedEnd?: Prisma.DateTimeNullableWithAggregatesFilter<"ProductionJobStage"> | Date | string | null
+  workCentre?: Prisma.StringNullableWithAggregatesFilter<"ProductionJobStage"> | string | null
+  requiresInspection?: Prisma.BoolWithAggregatesFilter<"ProductionJobStage"> | boolean
+  blockedReason?: Prisma.StringNullableWithAggregatesFilter<"ProductionJobStage"> | string | null
+  blockedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ProductionJobStage"> | Date | string | null
+  blockedById?: Prisma.UuidNullableWithAggregatesFilter<"ProductionJobStage"> | string | null
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"ProductionJobStage"> | Date | string
 }
 
 export type ProductionJobStageCreateInput = {
@@ -385,8 +485,17 @@ export type ProductionJobStageCreateInput = {
   qtyRejected?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: string | null
   clientRequestId?: string | null
+  plannedStart?: Date | string | null
+  plannedEnd?: Date | string | null
+  workCentre?: string | null
+  requiresInspection?: boolean
+  blockedReason?: string | null
+  blockedAt?: Date | string | null
+  blockedById?: string | null
+  createdAt?: Date | string
   job: Prisma.ProductionJobCreateNestedOneWithoutStagesInput
   qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobStageInput
+  outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobStageInput
 }
 
 export type ProductionJobStageUncheckedCreateInput = {
@@ -403,7 +512,16 @@ export type ProductionJobStageUncheckedCreateInput = {
   qtyRejected?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: string | null
   clientRequestId?: string | null
+  plannedStart?: Date | string | null
+  plannedEnd?: Date | string | null
+  workCentre?: string | null
+  requiresInspection?: boolean
+  blockedReason?: string | null
+  blockedAt?: Date | string | null
+  blockedById?: string | null
+  createdAt?: Date | string
   qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobStageInput
+  outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobStageInput
 }
 
 export type ProductionJobStageUpdateInput = {
@@ -418,8 +536,17 @@ export type ProductionJobStageUpdateInput = {
   qtyRejected?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plannedStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  plannedEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  workCentre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiresInspection?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blockedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  blockedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   job?: Prisma.ProductionJobUpdateOneRequiredWithoutStagesNestedInput
   qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobStageNestedInput
+  outputs?: Prisma.ProductionOutputUpdateManyWithoutJobStageNestedInput
 }
 
 export type ProductionJobStageUncheckedUpdateInput = {
@@ -436,7 +563,16 @@ export type ProductionJobStageUncheckedUpdateInput = {
   qtyRejected?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plannedStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  plannedEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  workCentre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiresInspection?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blockedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  blockedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobStageNestedInput
+  outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobStageNestedInput
 }
 
 export type ProductionJobStageCreateManyInput = {
@@ -453,6 +589,14 @@ export type ProductionJobStageCreateManyInput = {
   qtyRejected?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: string | null
   clientRequestId?: string | null
+  plannedStart?: Date | string | null
+  plannedEnd?: Date | string | null
+  workCentre?: string | null
+  requiresInspection?: boolean
+  blockedReason?: string | null
+  blockedAt?: Date | string | null
+  blockedById?: string | null
+  createdAt?: Date | string
 }
 
 export type ProductionJobStageUpdateManyMutationInput = {
@@ -467,6 +611,14 @@ export type ProductionJobStageUpdateManyMutationInput = {
   qtyRejected?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plannedStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  plannedEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  workCentre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiresInspection?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blockedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  blockedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ProductionJobStageUncheckedUpdateManyInput = {
@@ -483,6 +635,14 @@ export type ProductionJobStageUncheckedUpdateManyInput = {
   qtyRejected?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plannedStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  plannedEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  workCentre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiresInspection?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blockedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  blockedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ProductionJobStageListRelationFilter = {
@@ -505,6 +665,11 @@ export type ProductionJobStageOrgIdClientRequestIdCompoundUniqueInput = {
   clientRequestId: string
 }
 
+export type ProductionJobStageJobIdSequenceCompoundUniqueInput = {
+  jobId: string
+  sequence: number
+}
+
 export type ProductionJobStageCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orgId?: Prisma.SortOrder
@@ -519,6 +684,14 @@ export type ProductionJobStageCountOrderByAggregateInput = {
   qtyRejected?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   clientRequestId?: Prisma.SortOrder
+  plannedStart?: Prisma.SortOrder
+  plannedEnd?: Prisma.SortOrder
+  workCentre?: Prisma.SortOrder
+  requiresInspection?: Prisma.SortOrder
+  blockedReason?: Prisma.SortOrder
+  blockedAt?: Prisma.SortOrder
+  blockedById?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type ProductionJobStageAvgOrderByAggregateInput = {
@@ -541,6 +714,14 @@ export type ProductionJobStageMaxOrderByAggregateInput = {
   qtyRejected?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   clientRequestId?: Prisma.SortOrder
+  plannedStart?: Prisma.SortOrder
+  plannedEnd?: Prisma.SortOrder
+  workCentre?: Prisma.SortOrder
+  requiresInspection?: Prisma.SortOrder
+  blockedReason?: Prisma.SortOrder
+  blockedAt?: Prisma.SortOrder
+  blockedById?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type ProductionJobStageMinOrderByAggregateInput = {
@@ -557,6 +738,14 @@ export type ProductionJobStageMinOrderByAggregateInput = {
   qtyRejected?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   clientRequestId?: Prisma.SortOrder
+  plannedStart?: Prisma.SortOrder
+  plannedEnd?: Prisma.SortOrder
+  workCentre?: Prisma.SortOrder
+  requiresInspection?: Prisma.SortOrder
+  blockedReason?: Prisma.SortOrder
+  blockedAt?: Prisma.SortOrder
+  blockedById?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
 }
 
 export type ProductionJobStageSumOrderByAggregateInput = {
@@ -632,6 +821,22 @@ export type ProductionJobStageUpdateOneWithoutQualityRecordsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProductionJobStageUpdateToOneWithWhereWithoutQualityRecordsInput, Prisma.ProductionJobStageUpdateWithoutQualityRecordsInput>, Prisma.ProductionJobStageUncheckedUpdateWithoutQualityRecordsInput>
 }
 
+export type ProductionJobStageCreateNestedOneWithoutOutputsInput = {
+  create?: Prisma.XOR<Prisma.ProductionJobStageCreateWithoutOutputsInput, Prisma.ProductionJobStageUncheckedCreateWithoutOutputsInput>
+  connectOrCreate?: Prisma.ProductionJobStageCreateOrConnectWithoutOutputsInput
+  connect?: Prisma.ProductionJobStageWhereUniqueInput
+}
+
+export type ProductionJobStageUpdateOneWithoutOutputsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProductionJobStageCreateWithoutOutputsInput, Prisma.ProductionJobStageUncheckedCreateWithoutOutputsInput>
+  connectOrCreate?: Prisma.ProductionJobStageCreateOrConnectWithoutOutputsInput
+  upsert?: Prisma.ProductionJobStageUpsertWithoutOutputsInput
+  disconnect?: Prisma.ProductionJobStageWhereInput | boolean
+  delete?: Prisma.ProductionJobStageWhereInput | boolean
+  connect?: Prisma.ProductionJobStageWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProductionJobStageUpdateToOneWithWhereWithoutOutputsInput, Prisma.ProductionJobStageUpdateWithoutOutputsInput>, Prisma.ProductionJobStageUncheckedUpdateWithoutOutputsInput>
+}
+
 export type ProductionJobStageCreateWithoutJobInput = {
   id?: string
   stageName: string
@@ -644,7 +849,16 @@ export type ProductionJobStageCreateWithoutJobInput = {
   qtyRejected?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: string | null
   clientRequestId?: string | null
+  plannedStart?: Date | string | null
+  plannedEnd?: Date | string | null
+  workCentre?: string | null
+  requiresInspection?: boolean
+  blockedReason?: string | null
+  blockedAt?: Date | string | null
+  blockedById?: string | null
+  createdAt?: Date | string
   qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobStageInput
+  outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobStageInput
 }
 
 export type ProductionJobStageUncheckedCreateWithoutJobInput = {
@@ -659,7 +873,16 @@ export type ProductionJobStageUncheckedCreateWithoutJobInput = {
   qtyRejected?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: string | null
   clientRequestId?: string | null
+  plannedStart?: Date | string | null
+  plannedEnd?: Date | string | null
+  workCentre?: string | null
+  requiresInspection?: boolean
+  blockedReason?: string | null
+  blockedAt?: Date | string | null
+  blockedById?: string | null
+  createdAt?: Date | string
   qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobStageInput
+  outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobStageInput
 }
 
 export type ProductionJobStageCreateOrConnectWithoutJobInput = {
@@ -705,6 +928,14 @@ export type ProductionJobStageScalarWhereInput = {
   qtyRejected?: Prisma.DecimalNullableFilter<"ProductionJobStage"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.StringNullableFilter<"ProductionJobStage"> | string | null
   clientRequestId?: Prisma.UuidNullableFilter<"ProductionJobStage"> | string | null
+  plannedStart?: Prisma.DateTimeNullableFilter<"ProductionJobStage"> | Date | string | null
+  plannedEnd?: Prisma.DateTimeNullableFilter<"ProductionJobStage"> | Date | string | null
+  workCentre?: Prisma.StringNullableFilter<"ProductionJobStage"> | string | null
+  requiresInspection?: Prisma.BoolFilter<"ProductionJobStage"> | boolean
+  blockedReason?: Prisma.StringNullableFilter<"ProductionJobStage"> | string | null
+  blockedAt?: Prisma.DateTimeNullableFilter<"ProductionJobStage"> | Date | string | null
+  blockedById?: Prisma.UuidNullableFilter<"ProductionJobStage"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"ProductionJobStage"> | Date | string
 }
 
 export type ProductionJobStageCreateWithoutQualityRecordsInput = {
@@ -719,7 +950,16 @@ export type ProductionJobStageCreateWithoutQualityRecordsInput = {
   qtyRejected?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: string | null
   clientRequestId?: string | null
+  plannedStart?: Date | string | null
+  plannedEnd?: Date | string | null
+  workCentre?: string | null
+  requiresInspection?: boolean
+  blockedReason?: string | null
+  blockedAt?: Date | string | null
+  blockedById?: string | null
+  createdAt?: Date | string
   job: Prisma.ProductionJobCreateNestedOneWithoutStagesInput
+  outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobStageInput
 }
 
 export type ProductionJobStageUncheckedCreateWithoutQualityRecordsInput = {
@@ -736,6 +976,15 @@ export type ProductionJobStageUncheckedCreateWithoutQualityRecordsInput = {
   qtyRejected?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: string | null
   clientRequestId?: string | null
+  plannedStart?: Date | string | null
+  plannedEnd?: Date | string | null
+  workCentre?: string | null
+  requiresInspection?: boolean
+  blockedReason?: string | null
+  blockedAt?: Date | string | null
+  blockedById?: string | null
+  createdAt?: Date | string
+  outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobStageInput
 }
 
 export type ProductionJobStageCreateOrConnectWithoutQualityRecordsInput = {
@@ -766,7 +1015,16 @@ export type ProductionJobStageUpdateWithoutQualityRecordsInput = {
   qtyRejected?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plannedStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  plannedEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  workCentre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiresInspection?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blockedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  blockedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   job?: Prisma.ProductionJobUpdateOneRequiredWithoutStagesNestedInput
+  outputs?: Prisma.ProductionOutputUpdateManyWithoutJobStageNestedInput
 }
 
 export type ProductionJobStageUncheckedUpdateWithoutQualityRecordsInput = {
@@ -783,6 +1041,129 @@ export type ProductionJobStageUncheckedUpdateWithoutQualityRecordsInput = {
   qtyRejected?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plannedStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  plannedEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  workCentre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiresInspection?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blockedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  blockedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobStageNestedInput
+}
+
+export type ProductionJobStageCreateWithoutOutputsInput = {
+  id?: string
+  stageName: string
+  sequence: number
+  status?: $Enums.ProductionJobStageStatus
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  operatorUserId?: string | null
+  qtyProcessed?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  qtyRejected?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  notes?: string | null
+  clientRequestId?: string | null
+  plannedStart?: Date | string | null
+  plannedEnd?: Date | string | null
+  workCentre?: string | null
+  requiresInspection?: boolean
+  blockedReason?: string | null
+  blockedAt?: Date | string | null
+  blockedById?: string | null
+  createdAt?: Date | string
+  job: Prisma.ProductionJobCreateNestedOneWithoutStagesInput
+  qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobStageInput
+}
+
+export type ProductionJobStageUncheckedCreateWithoutOutputsInput = {
+  id?: string
+  orgId: string
+  jobId: string
+  stageName: string
+  sequence: number
+  status?: $Enums.ProductionJobStageStatus
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  operatorUserId?: string | null
+  qtyProcessed?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  qtyRejected?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  notes?: string | null
+  clientRequestId?: string | null
+  plannedStart?: Date | string | null
+  plannedEnd?: Date | string | null
+  workCentre?: string | null
+  requiresInspection?: boolean
+  blockedReason?: string | null
+  blockedAt?: Date | string | null
+  blockedById?: string | null
+  createdAt?: Date | string
+  qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobStageInput
+}
+
+export type ProductionJobStageCreateOrConnectWithoutOutputsInput = {
+  where: Prisma.ProductionJobStageWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProductionJobStageCreateWithoutOutputsInput, Prisma.ProductionJobStageUncheckedCreateWithoutOutputsInput>
+}
+
+export type ProductionJobStageUpsertWithoutOutputsInput = {
+  update: Prisma.XOR<Prisma.ProductionJobStageUpdateWithoutOutputsInput, Prisma.ProductionJobStageUncheckedUpdateWithoutOutputsInput>
+  create: Prisma.XOR<Prisma.ProductionJobStageCreateWithoutOutputsInput, Prisma.ProductionJobStageUncheckedCreateWithoutOutputsInput>
+  where?: Prisma.ProductionJobStageWhereInput
+}
+
+export type ProductionJobStageUpdateToOneWithWhereWithoutOutputsInput = {
+  where?: Prisma.ProductionJobStageWhereInput
+  data: Prisma.XOR<Prisma.ProductionJobStageUpdateWithoutOutputsInput, Prisma.ProductionJobStageUncheckedUpdateWithoutOutputsInput>
+}
+
+export type ProductionJobStageUpdateWithoutOutputsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  stageName?: Prisma.StringFieldUpdateOperationsInput | string
+  sequence?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumProductionJobStageStatusFieldUpdateOperationsInput | $Enums.ProductionJobStageStatus
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  operatorUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qtyProcessed?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  qtyRejected?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plannedStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  plannedEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  workCentre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiresInspection?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blockedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  blockedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  job?: Prisma.ProductionJobUpdateOneRequiredWithoutStagesNestedInput
+  qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobStageNestedInput
+}
+
+export type ProductionJobStageUncheckedUpdateWithoutOutputsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  jobId?: Prisma.StringFieldUpdateOperationsInput | string
+  stageName?: Prisma.StringFieldUpdateOperationsInput | string
+  sequence?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumProductionJobStageStatusFieldUpdateOperationsInput | $Enums.ProductionJobStageStatus
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  operatorUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qtyProcessed?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  qtyRejected?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plannedStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  plannedEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  workCentre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiresInspection?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blockedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  blockedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobStageNestedInput
 }
 
 export type ProductionJobStageCreateManyJobInput = {
@@ -797,6 +1178,14 @@ export type ProductionJobStageCreateManyJobInput = {
   qtyRejected?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: string | null
   clientRequestId?: string | null
+  plannedStart?: Date | string | null
+  plannedEnd?: Date | string | null
+  workCentre?: string | null
+  requiresInspection?: boolean
+  blockedReason?: string | null
+  blockedAt?: Date | string | null
+  blockedById?: string | null
+  createdAt?: Date | string
 }
 
 export type ProductionJobStageUpdateWithoutJobInput = {
@@ -811,7 +1200,16 @@ export type ProductionJobStageUpdateWithoutJobInput = {
   qtyRejected?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plannedStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  plannedEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  workCentre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiresInspection?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blockedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  blockedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobStageNestedInput
+  outputs?: Prisma.ProductionOutputUpdateManyWithoutJobStageNestedInput
 }
 
 export type ProductionJobStageUncheckedUpdateWithoutJobInput = {
@@ -826,7 +1224,16 @@ export type ProductionJobStageUncheckedUpdateWithoutJobInput = {
   qtyRejected?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plannedStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  plannedEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  workCentre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiresInspection?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blockedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  blockedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobStageNestedInput
+  outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobStageNestedInput
 }
 
 export type ProductionJobStageUncheckedUpdateManyWithoutJobInput = {
@@ -841,6 +1248,14 @@ export type ProductionJobStageUncheckedUpdateManyWithoutJobInput = {
   qtyRejected?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plannedStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  plannedEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  workCentre?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiresInspection?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blockedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  blockedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -850,10 +1265,12 @@ export type ProductionJobStageUncheckedUpdateManyWithoutJobInput = {
 
 export type ProductionJobStageCountOutputType = {
   qualityRecords: number
+  outputs: number
 }
 
 export type ProductionJobStageCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   qualityRecords?: boolean | ProductionJobStageCountOutputTypeCountQualityRecordsArgs
+  outputs?: boolean | ProductionJobStageCountOutputTypeCountOutputsArgs
 }
 
 /**
@@ -873,6 +1290,13 @@ export type ProductionJobStageCountOutputTypeCountQualityRecordsArgs<ExtArgs ext
   where?: Prisma.QualityRecordWhereInput
 }
 
+/**
+ * ProductionJobStageCountOutputType without action
+ */
+export type ProductionJobStageCountOutputTypeCountOutputsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProductionOutputWhereInput
+}
+
 
 export type ProductionJobStageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -888,8 +1312,17 @@ export type ProductionJobStageSelect<ExtArgs extends runtime.Types.Extensions.In
   qtyRejected?: boolean
   notes?: boolean
   clientRequestId?: boolean
+  plannedStart?: boolean
+  plannedEnd?: boolean
+  workCentre?: boolean
+  requiresInspection?: boolean
+  blockedReason?: boolean
+  blockedAt?: boolean
+  blockedById?: boolean
+  createdAt?: boolean
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
   qualityRecords?: boolean | Prisma.ProductionJobStage$qualityRecordsArgs<ExtArgs>
+  outputs?: boolean | Prisma.ProductionJobStage$outputsArgs<ExtArgs>
   _count?: boolean | Prisma.ProductionJobStageCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["productionJobStage"]>
 
@@ -907,6 +1340,14 @@ export type ProductionJobStageSelectCreateManyAndReturn<ExtArgs extends runtime.
   qtyRejected?: boolean
   notes?: boolean
   clientRequestId?: boolean
+  plannedStart?: boolean
+  plannedEnd?: boolean
+  workCentre?: boolean
+  requiresInspection?: boolean
+  blockedReason?: boolean
+  blockedAt?: boolean
+  blockedById?: boolean
+  createdAt?: boolean
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["productionJobStage"]>
 
@@ -924,6 +1365,14 @@ export type ProductionJobStageSelectUpdateManyAndReturn<ExtArgs extends runtime.
   qtyRejected?: boolean
   notes?: boolean
   clientRequestId?: boolean
+  plannedStart?: boolean
+  plannedEnd?: boolean
+  workCentre?: boolean
+  requiresInspection?: boolean
+  blockedReason?: boolean
+  blockedAt?: boolean
+  blockedById?: boolean
+  createdAt?: boolean
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["productionJobStage"]>
 
@@ -941,12 +1390,21 @@ export type ProductionJobStageSelectScalar = {
   qtyRejected?: boolean
   notes?: boolean
   clientRequestId?: boolean
+  plannedStart?: boolean
+  plannedEnd?: boolean
+  workCentre?: boolean
+  requiresInspection?: boolean
+  blockedReason?: boolean
+  blockedAt?: boolean
+  blockedById?: boolean
+  createdAt?: boolean
 }
 
-export type ProductionJobStageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orgId" | "jobId" | "stageName" | "sequence" | "status" | "startedAt" | "completedAt" | "operatorUserId" | "qtyProcessed" | "qtyRejected" | "notes" | "clientRequestId", ExtArgs["result"]["productionJobStage"]>
+export type ProductionJobStageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orgId" | "jobId" | "stageName" | "sequence" | "status" | "startedAt" | "completedAt" | "operatorUserId" | "qtyProcessed" | "qtyRejected" | "notes" | "clientRequestId" | "plannedStart" | "plannedEnd" | "workCentre" | "requiresInspection" | "blockedReason" | "blockedAt" | "blockedById" | "createdAt", ExtArgs["result"]["productionJobStage"]>
 export type ProductionJobStageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
   qualityRecords?: boolean | Prisma.ProductionJobStage$qualityRecordsArgs<ExtArgs>
+  outputs?: boolean | Prisma.ProductionJobStage$outputsArgs<ExtArgs>
   _count?: boolean | Prisma.ProductionJobStageCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProductionJobStageIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -961,6 +1419,7 @@ export type $ProductionJobStagePayload<ExtArgs extends runtime.Types.Extensions.
   objects: {
     job: Prisma.$ProductionJobPayload<ExtArgs>
     qualityRecords: Prisma.$QualityRecordPayload<ExtArgs>[]
+    outputs: Prisma.$ProductionOutputPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -976,6 +1435,14 @@ export type $ProductionJobStagePayload<ExtArgs extends runtime.Types.Extensions.
     qtyRejected: runtime.Decimal | null
     notes: string | null
     clientRequestId: string | null
+    plannedStart: Date | null
+    plannedEnd: Date | null
+    workCentre: string | null
+    requiresInspection: boolean
+    blockedReason: string | null
+    blockedAt: Date | null
+    blockedById: string | null
+    createdAt: Date
   }, ExtArgs["result"]["productionJobStage"]>
   composites: {}
 }
@@ -1372,6 +1839,7 @@ export interface Prisma__ProductionJobStageClient<T, Null = never, ExtArgs exten
   readonly [Symbol.toStringTag]: "PrismaPromise"
   job<T extends Prisma.ProductionJobDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductionJobDefaultArgs<ExtArgs>>): Prisma.Prisma__ProductionJobClient<runtime.Types.Result.GetResult<Prisma.$ProductionJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   qualityRecords<T extends Prisma.ProductionJobStage$qualityRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductionJobStage$qualityRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QualityRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  outputs<T extends Prisma.ProductionJobStage$outputsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductionJobStage$outputsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductionOutputPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1414,6 +1882,14 @@ export interface ProductionJobStageFieldRefs {
   readonly qtyRejected: Prisma.FieldRef<"ProductionJobStage", 'Decimal'>
   readonly notes: Prisma.FieldRef<"ProductionJobStage", 'String'>
   readonly clientRequestId: Prisma.FieldRef<"ProductionJobStage", 'String'>
+  readonly plannedStart: Prisma.FieldRef<"ProductionJobStage", 'DateTime'>
+  readonly plannedEnd: Prisma.FieldRef<"ProductionJobStage", 'DateTime'>
+  readonly workCentre: Prisma.FieldRef<"ProductionJobStage", 'String'>
+  readonly requiresInspection: Prisma.FieldRef<"ProductionJobStage", 'Boolean'>
+  readonly blockedReason: Prisma.FieldRef<"ProductionJobStage", 'String'>
+  readonly blockedAt: Prisma.FieldRef<"ProductionJobStage", 'DateTime'>
+  readonly blockedById: Prisma.FieldRef<"ProductionJobStage", 'String'>
+  readonly createdAt: Prisma.FieldRef<"ProductionJobStage", 'DateTime'>
 }
     
 
@@ -1836,6 +2312,30 @@ export type ProductionJobStage$qualityRecordsArgs<ExtArgs extends runtime.Types.
   take?: number
   skip?: number
   distinct?: Prisma.QualityRecordScalarFieldEnum | Prisma.QualityRecordScalarFieldEnum[]
+}
+
+/**
+ * ProductionJobStage.outputs
+ */
+export type ProductionJobStage$outputsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProductionOutput
+   */
+  select?: Prisma.ProductionOutputSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProductionOutput
+   */
+  omit?: Prisma.ProductionOutputOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductionOutputInclude<ExtArgs> | null
+  where?: Prisma.ProductionOutputWhereInput
+  orderBy?: Prisma.ProductionOutputOrderByWithRelationInput | Prisma.ProductionOutputOrderByWithRelationInput[]
+  cursor?: Prisma.ProductionOutputWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProductionOutputScalarFieldEnum | Prisma.ProductionOutputScalarFieldEnum[]
 }
 
 /**

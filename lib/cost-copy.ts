@@ -4,6 +4,7 @@ export const PROFIT_REASON: Record<string, string> = {
   no_revenue: "this job has no quote to measure against",
   mixed_currencies: "costs are in more than one currency, and margin is never blended across currencies",
   no_actual_cost: "no cost has been recorded against this job",
+  no_good_output: "no good output has been recorded, so there is nothing to divide the cost by",
   job_not_completed: "margin is only stated once the job is completed; until then cost is still accumulating",
   uncosted_issues: "some material movements have no recorded cost",
   no_material_cost: "no material cost has been recorded",

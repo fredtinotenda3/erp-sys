@@ -21,7 +21,7 @@ export type ApiResult<T> =
 
 export async function apiRequest<T = unknown>(
   path: string,
-  init: { method?: "GET" | "POST" | "PATCH" | "DELETE"; body?: unknown; signal?: AbortSignal } = {},
+  init: { method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE"; body?: unknown; signal?: AbortSignal } = {},
 ): Promise<ApiResult<T>> {
   let response: Response;
   try {

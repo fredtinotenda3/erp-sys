@@ -73,6 +73,8 @@ export type Capability =
   | "material:issue"
   | "labour:record"
   | "quality:record"
+  | "quality:approve"
+  | "output:record"
   | "quality:read"
   // Inventory
   | "stock:receive"
@@ -138,6 +140,8 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "material:issue",
     "labour:record",
     "quality:record",
+    "quality:approve",
+    "output:record",
     "quality:read",
     "stock:receive",
     "stock:adjust",
@@ -179,6 +183,8 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "material:issue",
     "labour:record",
     "quality:record",
+    "quality:approve",
+    "output:record",
     "quality:read",
     "stock:receive",
     "stock:adjust",
@@ -205,6 +211,8 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "material:issue",
     "labour:record",
     "quality:record",
+    "quality:approve",
+    "output:record",
     "quality:read",
     "stock:read",
     "cost:read",
@@ -235,6 +243,7 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "material:issue",
     "labour:record",
     "quality:record",
+    "output:record",
     "quality:read",
   ]),
   FINANCE_MANAGER: new Set<Capability>([

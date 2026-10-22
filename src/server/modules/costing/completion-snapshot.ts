@@ -19,6 +19,7 @@
 import { Prisma } from "../../../generated/prisma/client";
 import { computeActualCostLines, computeConsumptionEvidence } from "./actual-cost";
 import { assessCompleteness, type Completeness } from "./cost-completeness";
+import { summarizeShopfloor } from "../production/shopfloor-data";
 
 type Tx = Prisma.TransactionClient;
 
@@ -37,6 +38,7 @@ export async function createCompletionSnapshot(tx: Tx, orgId: string, job: Snaps
   const actual = (await computeActualCostLines(tx, orgId, [job.id])).get(job.id) ?? [];
   const evidence = await computeConsumptionEvidence(tx, orgId, job.id);
   const estimate = await tx.jobCostEstimate.findUnique({ where: { jobId: job.id } });
+  const shopfloor = await summarizeShopfloor(tx, orgId, job.id);
   const unpriced = Array.isArray(estimate?.unpricedMaterials) ? (estimate!.unpricedMaterials as { materialItemId: string; reason: string }[]) : [];
 
   const completeness: Completeness = assessCompleteness({
@@ -63,6 +65,8 @@ export async function createCompletionSnapshot(tx: Tx, orgId: string, job: Snaps
         labourHours: evidence.labourHours,
         estimateComputedAt: estimate ? estimate.computedAt.toISOString() : null,
         unpricedMaterials: unpriced,
+        // Quantities only (no money): output, yield and inspections as they stood at completion.
+        shopfloor: shopfloor as unknown as Prisma.InputJsonValue,
         source: "ledger_and_labour_records_at_completion",
       },
     },

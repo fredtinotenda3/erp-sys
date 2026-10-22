@@ -197,6 +197,26 @@ export interface CostAdjustment {
   createdAt: string;
 }
 
+export interface OutputTotals {
+  grossGood: Dec;
+  effectiveGood: Dec;
+  scrap: Dec;
+  rework: Dec;
+  reworkOpen: Dec;
+  reclassified: Dec;
+  processed: Dec;
+  yieldPercent: Dec | null;
+}
+
+export type CostPerGoodUnit =
+  | { available: false; reason: string }
+  | { available: true; currency: string; amount: Dec; basis: "calculated"; excludesOverhead: true; includesScrapAndRework: true };
+
+export interface JobOutputCost extends OutputTotals {
+  stages: { total: number; completed: number };
+  costPerGoodUnit: CostPerGoodUnit;
+}
+
 export interface JobCost {
   jobId: string;
   jobNumber: string;
@@ -213,6 +233,7 @@ export interface JobCost {
   completeness: Completeness;
   snapshot: { status: "frozen" | "not_frozen"; snapshottedAt: string | null; completenessAtCompletion: unknown; evidence: Record<string, unknown> | null };
   adjustments: CostAdjustment[];
+  output: JobOutputCost;
   materialBreakdown: MaterialBreakdownRow[];
   profit: JobProfit;
   conversion?: {
@@ -323,4 +344,92 @@ export interface Currency {
   code: string;
   name: string;
   decimals: number;
+}
+
+// ---------------------------------------------------------------------------
+// Shop floor (Phase 3)
+// ---------------------------------------------------------------------------
+export type RejectReason = "wrong_dimensions" | "damaged" | "paint_defect" | "missing_component" | "other";
+
+export interface StageView {
+  id: string;
+  sequence: number;
+  name: string;
+  status: "pending" | "in_progress" | "completed";
+  plannedStart: string | null;
+  plannedEnd: string | null;
+  startedAt: string | null;
+  completedAt: string | null;
+  workCentre: string | null;
+  operatorUserId: string | null;
+  requiresInspection: boolean;
+  blockedReason: string | null;
+  blockedAt: string | null;
+  notes: string | null;
+  isDelayed: boolean;
+  output: OutputTotals;
+  inspection: { state: "not_required" | "pending" | "passed" | "failed_open" | "failed_resolved"; inspected: Dec; rejected: Dec; openRejected: Dec };
+  completionBlockers: string[];
+}
+
+export interface OutputEntry {
+  id: string;
+  jobStageId: string | null;
+  goodQty: Dec;
+  scrapQty: Dec;
+  reworkQty: Dec;
+  reworkGoodQty: Dec;
+  reworkScrapQty: Dec;
+  reclassifiedFromGoodQty: Dec;
+  uom: string;
+  reason: RejectReason | null;
+  notes: string | null;
+  source: "operator" | "quality_disposition";
+  inspectionId: string | null;
+  operatorUserId: string | null;
+  recordedAt: string;
+  voided: { reason: string; voidedBy: string | null; voidedAt: string } | null;
+}
+
+export interface OutputList {
+  jobId: string;
+  uom: string | null;
+  entries: OutputEntry[];
+  totals: OutputTotals;
+  byStage: Record<string, OutputTotals>;
+  plannedQty: Dec;
+  exceedsPlan: boolean;
+}
+
+export interface InspectionView {
+  id: string;
+  jobStageId: string | null;
+  inspectedQty: Dec;
+  acceptedQty: Dec;
+  rejectedQty: Dec;
+  outcome: "pass" | "fail";
+  defectCategory: RejectReason | null;
+  notes: string | null;
+  evidenceRef: string | null;
+  uom: string | null;
+  inspectorUserId: string | null;
+  inspectedAt: string;
+  disposition: "not_needed" | "open" | "resolved";
+  openRejectedQty: Dec;
+  dispositions: { id: string; kind: "scrap" | "rework" | "use_as_is"; qty: Dec; reason: string; decidedBy: string; decidedAt: string }[];
+}
+
+export interface InspectionList {
+  jobId: string;
+  inspections: InspectionView[];
+  summary: { total: number; passed: number; failed: number; inspectedUnits: Dec; rejectedUnits: Dec; openRejectedUnits: Dec };
+}
+
+export interface Readiness {
+  jobId: string;
+  status: JobStatus;
+  usesStages: boolean;
+  canComplete: boolean;
+  jobBlockers: string[];
+  stages: { id: string; sequence: number; name: string; completionBlockers: string[] }[];
 }

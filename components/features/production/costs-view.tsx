@@ -198,6 +198,33 @@ export function CostsView({
         </Card>
       ) : null}
 
+      {/* Output and unit cost */}
+      {c.output.processed !== "0" ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Output and unit cost</CardTitle>
+            <Provenance kind="calculated" />
+          </CardHeader>
+          <CardContent className="space-y-2 text-sm">
+            <dl className="grid grid-cols-[max-content_1fr] gap-x-6 gap-y-2">
+              <Row label="Good units">{c.output.effectiveGood} <span className="text-xs text-muted-foreground">({c.output.scrap} scrapped, {c.output.reworkOpen} still in rework)</span></Row>
+              <Row label="Yield">{c.output.yieldPercent ? `${c.output.yieldPercent}%` : <Unavailable />}</Row>
+              <Row label="Cost per good unit">
+                {c.output.costPerGoodUnit.available ? (
+                  <span>
+                    <Money amount={c.output.costPerGoodUnit.amount} currency={c.output.costPerGoodUnit.currency} />{" "}
+                    <span className="text-xs text-muted-foreground">material + labour ÷ good units, excluding overhead</span>
+                  </span>
+                ) : (
+                  <Unavailable reason={PROFIT_REASON[c.output.costPerGoodUnit.reason] ?? c.output.costPerGoodUnit.reason} />
+                )}
+              </Row>
+            </dl>
+            <p className="text-xs text-muted-foreground">Scrap and rework add no separate cost: their material and labour are already in the actuals above, so they raise the cost per good unit instead.</p>
+          </CardContent>
+        </Card>
+      ) : null}
+
       {/* Adjustments */}
       <Card>
         <CardHeader>

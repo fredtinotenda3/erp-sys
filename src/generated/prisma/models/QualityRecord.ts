@@ -51,6 +51,9 @@ export type QualityRecordMinAggregateOutputType = {
   evidenceRef: string | null
   clientRequestId: string | null
   recordedAt: Date | null
+  inspectorUserId: string | null
+  outcome: string | null
+  uom: string | null
 }
 
 export type QualityRecordMaxAggregateOutputType = {
@@ -66,6 +69,9 @@ export type QualityRecordMaxAggregateOutputType = {
   evidenceRef: string | null
   clientRequestId: string | null
   recordedAt: Date | null
+  inspectorUserId: string | null
+  outcome: string | null
+  uom: string | null
 }
 
 export type QualityRecordCountAggregateOutputType = {
@@ -81,6 +87,9 @@ export type QualityRecordCountAggregateOutputType = {
   evidenceRef: number
   clientRequestId: number
   recordedAt: number
+  inspectorUserId: number
+  outcome: number
+  uom: number
   _all: number
 }
 
@@ -110,6 +119,9 @@ export type QualityRecordMinAggregateInputType = {
   evidenceRef?: true
   clientRequestId?: true
   recordedAt?: true
+  inspectorUserId?: true
+  outcome?: true
+  uom?: true
 }
 
 export type QualityRecordMaxAggregateInputType = {
@@ -125,6 +137,9 @@ export type QualityRecordMaxAggregateInputType = {
   evidenceRef?: true
   clientRequestId?: true
   recordedAt?: true
+  inspectorUserId?: true
+  outcome?: true
+  uom?: true
 }
 
 export type QualityRecordCountAggregateInputType = {
@@ -140,6 +155,9 @@ export type QualityRecordCountAggregateInputType = {
   evidenceRef?: true
   clientRequestId?: true
   recordedAt?: true
+  inspectorUserId?: true
+  outcome?: true
+  uom?: true
   _all?: true
 }
 
@@ -242,6 +260,9 @@ export type QualityRecordGroupByOutputType = {
   evidenceRef: string | null
   clientRequestId: string | null
   recordedAt: Date
+  inspectorUserId: string | null
+  outcome: string | null
+  uom: string | null
   _count: QualityRecordCountAggregateOutputType | null
   _avg: QualityRecordAvgAggregateOutputType | null
   _sum: QualityRecordSumAggregateOutputType | null
@@ -280,8 +301,13 @@ export type QualityRecordWhereInput = {
   evidenceRef?: Prisma.StringNullableFilter<"QualityRecord"> | string | null
   clientRequestId?: Prisma.UuidNullableFilter<"QualityRecord"> | string | null
   recordedAt?: Prisma.DateTimeFilter<"QualityRecord"> | Date | string
+  inspectorUserId?: Prisma.UuidNullableFilter<"QualityRecord"> | string | null
+  outcome?: Prisma.StringNullableFilter<"QualityRecord"> | string | null
+  uom?: Prisma.StringNullableFilter<"QualityRecord"> | string | null
   job?: Prisma.XOR<Prisma.ProductionJobScalarRelationFilter, Prisma.ProductionJobWhereInput>
   jobStage?: Prisma.XOR<Prisma.ProductionJobStageNullableScalarRelationFilter, Prisma.ProductionJobStageWhereInput> | null
+  dispositions?: Prisma.QualityDispositionListRelationFilter
+  outputs?: Prisma.ProductionOutputListRelationFilter
 }
 
 export type QualityRecordOrderByWithRelationInput = {
@@ -297,12 +323,18 @@ export type QualityRecordOrderByWithRelationInput = {
   evidenceRef?: Prisma.SortOrderInput | Prisma.SortOrder
   clientRequestId?: Prisma.SortOrderInput | Prisma.SortOrder
   recordedAt?: Prisma.SortOrder
+  inspectorUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  outcome?: Prisma.SortOrderInput | Prisma.SortOrder
+  uom?: Prisma.SortOrderInput | Prisma.SortOrder
   job?: Prisma.ProductionJobOrderByWithRelationInput
   jobStage?: Prisma.ProductionJobStageOrderByWithRelationInput
+  dispositions?: Prisma.QualityDispositionOrderByRelationAggregateInput
+  outputs?: Prisma.ProductionOutputOrderByRelationAggregateInput
 }
 
 export type QualityRecordWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  orgId_id?: Prisma.QualityRecordOrgIdIdCompoundUniqueInput
   orgId_clientRequestId?: Prisma.QualityRecordOrgIdClientRequestIdCompoundUniqueInput
   AND?: Prisma.QualityRecordWhereInput | Prisma.QualityRecordWhereInput[]
   OR?: Prisma.QualityRecordWhereInput[]
@@ -318,9 +350,14 @@ export type QualityRecordWhereUniqueInput = Prisma.AtLeast<{
   evidenceRef?: Prisma.StringNullableFilter<"QualityRecord"> | string | null
   clientRequestId?: Prisma.UuidNullableFilter<"QualityRecord"> | string | null
   recordedAt?: Prisma.DateTimeFilter<"QualityRecord"> | Date | string
+  inspectorUserId?: Prisma.UuidNullableFilter<"QualityRecord"> | string | null
+  outcome?: Prisma.StringNullableFilter<"QualityRecord"> | string | null
+  uom?: Prisma.StringNullableFilter<"QualityRecord"> | string | null
   job?: Prisma.XOR<Prisma.ProductionJobScalarRelationFilter, Prisma.ProductionJobWhereInput>
   jobStage?: Prisma.XOR<Prisma.ProductionJobStageNullableScalarRelationFilter, Prisma.ProductionJobStageWhereInput> | null
-}, "id" | "orgId_clientRequestId">
+  dispositions?: Prisma.QualityDispositionListRelationFilter
+  outputs?: Prisma.ProductionOutputListRelationFilter
+}, "id" | "orgId_id" | "orgId_clientRequestId">
 
 export type QualityRecordOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -335,6 +372,9 @@ export type QualityRecordOrderByWithAggregationInput = {
   evidenceRef?: Prisma.SortOrderInput | Prisma.SortOrder
   clientRequestId?: Prisma.SortOrderInput | Prisma.SortOrder
   recordedAt?: Prisma.SortOrder
+  inspectorUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  outcome?: Prisma.SortOrderInput | Prisma.SortOrder
+  uom?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.QualityRecordCountOrderByAggregateInput
   _avg?: Prisma.QualityRecordAvgOrderByAggregateInput
   _max?: Prisma.QualityRecordMaxOrderByAggregateInput
@@ -358,6 +398,9 @@ export type QualityRecordScalarWhereWithAggregatesInput = {
   evidenceRef?: Prisma.StringNullableWithAggregatesFilter<"QualityRecord"> | string | null
   clientRequestId?: Prisma.UuidNullableWithAggregatesFilter<"QualityRecord"> | string | null
   recordedAt?: Prisma.DateTimeWithAggregatesFilter<"QualityRecord"> | Date | string
+  inspectorUserId?: Prisma.UuidNullableWithAggregatesFilter<"QualityRecord"> | string | null
+  outcome?: Prisma.StringNullableWithAggregatesFilter<"QualityRecord"> | string | null
+  uom?: Prisma.StringNullableWithAggregatesFilter<"QualityRecord"> | string | null
 }
 
 export type QualityRecordCreateInput = {
@@ -370,8 +413,13 @@ export type QualityRecordCreateInput = {
   evidenceRef?: string | null
   clientRequestId?: string | null
   recordedAt?: Date | string
+  inspectorUserId?: string | null
+  outcome?: string | null
+  uom?: string | null
   job: Prisma.ProductionJobCreateNestedOneWithoutQualityRecordsInput
   jobStage?: Prisma.ProductionJobStageCreateNestedOneWithoutQualityRecordsInput
+  dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutInspectionInput
+  outputs?: Prisma.ProductionOutputCreateNestedManyWithoutInspectionInput
 }
 
 export type QualityRecordUncheckedCreateInput = {
@@ -387,6 +435,11 @@ export type QualityRecordUncheckedCreateInput = {
   evidenceRef?: string | null
   clientRequestId?: string | null
   recordedAt?: Date | string
+  inspectorUserId?: string | null
+  outcome?: string | null
+  uom?: string | null
+  dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutInspectionInput
+  outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutInspectionInput
 }
 
 export type QualityRecordUpdateInput = {
@@ -399,8 +452,13 @@ export type QualityRecordUpdateInput = {
   evidenceRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inspectorUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   job?: Prisma.ProductionJobUpdateOneRequiredWithoutQualityRecordsNestedInput
   jobStage?: Prisma.ProductionJobStageUpdateOneWithoutQualityRecordsNestedInput
+  dispositions?: Prisma.QualityDispositionUpdateManyWithoutInspectionNestedInput
+  outputs?: Prisma.ProductionOutputUpdateManyWithoutInspectionNestedInput
 }
 
 export type QualityRecordUncheckedUpdateInput = {
@@ -416,6 +474,11 @@ export type QualityRecordUncheckedUpdateInput = {
   evidenceRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inspectorUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutInspectionNestedInput
+  outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutInspectionNestedInput
 }
 
 export type QualityRecordCreateManyInput = {
@@ -431,6 +494,9 @@ export type QualityRecordCreateManyInput = {
   evidenceRef?: string | null
   clientRequestId?: string | null
   recordedAt?: Date | string
+  inspectorUserId?: string | null
+  outcome?: string | null
+  uom?: string | null
 }
 
 export type QualityRecordUpdateManyMutationInput = {
@@ -443,6 +509,9 @@ export type QualityRecordUpdateManyMutationInput = {
   evidenceRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inspectorUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type QualityRecordUncheckedUpdateManyInput = {
@@ -458,6 +527,9 @@ export type QualityRecordUncheckedUpdateManyInput = {
   evidenceRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inspectorUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type QualityRecordListRelationFilter = {
@@ -468,6 +540,11 @@ export type QualityRecordListRelationFilter = {
 
 export type QualityRecordOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type QualityRecordOrgIdIdCompoundUniqueInput = {
+  orgId: string
+  id: string
 }
 
 export type QualityRecordOrgIdClientRequestIdCompoundUniqueInput = {
@@ -488,6 +565,9 @@ export type QualityRecordCountOrderByAggregateInput = {
   evidenceRef?: Prisma.SortOrder
   clientRequestId?: Prisma.SortOrder
   recordedAt?: Prisma.SortOrder
+  inspectorUserId?: Prisma.SortOrder
+  outcome?: Prisma.SortOrder
+  uom?: Prisma.SortOrder
 }
 
 export type QualityRecordAvgOrderByAggregateInput = {
@@ -509,6 +589,9 @@ export type QualityRecordMaxOrderByAggregateInput = {
   evidenceRef?: Prisma.SortOrder
   clientRequestId?: Prisma.SortOrder
   recordedAt?: Prisma.SortOrder
+  inspectorUserId?: Prisma.SortOrder
+  outcome?: Prisma.SortOrder
+  uom?: Prisma.SortOrder
 }
 
 export type QualityRecordMinOrderByAggregateInput = {
@@ -524,12 +607,25 @@ export type QualityRecordMinOrderByAggregateInput = {
   evidenceRef?: Prisma.SortOrder
   clientRequestId?: Prisma.SortOrder
   recordedAt?: Prisma.SortOrder
+  inspectorUserId?: Prisma.SortOrder
+  outcome?: Prisma.SortOrder
+  uom?: Prisma.SortOrder
 }
 
 export type QualityRecordSumOrderByAggregateInput = {
   producedQty?: Prisma.SortOrder
   acceptedQty?: Prisma.SortOrder
   rejectedQty?: Prisma.SortOrder
+}
+
+export type QualityRecordNullableScalarRelationFilter = {
+  is?: Prisma.QualityRecordWhereInput | null
+  isNot?: Prisma.QualityRecordWhereInput | null
+}
+
+export type QualityRecordScalarRelationFilter = {
+  is?: Prisma.QualityRecordWhereInput
+  isNot?: Prisma.QualityRecordWhereInput
 }
 
 export type QualityRecordCreateNestedManyWithoutJobInput = {
@@ -620,6 +716,36 @@ export type NullableEnumRejectReasonFieldUpdateOperationsInput = {
   set?: $Enums.RejectReason | null
 }
 
+export type QualityRecordCreateNestedOneWithoutOutputsInput = {
+  create?: Prisma.XOR<Prisma.QualityRecordCreateWithoutOutputsInput, Prisma.QualityRecordUncheckedCreateWithoutOutputsInput>
+  connectOrCreate?: Prisma.QualityRecordCreateOrConnectWithoutOutputsInput
+  connect?: Prisma.QualityRecordWhereUniqueInput
+}
+
+export type QualityRecordUpdateOneWithoutOutputsNestedInput = {
+  create?: Prisma.XOR<Prisma.QualityRecordCreateWithoutOutputsInput, Prisma.QualityRecordUncheckedCreateWithoutOutputsInput>
+  connectOrCreate?: Prisma.QualityRecordCreateOrConnectWithoutOutputsInput
+  upsert?: Prisma.QualityRecordUpsertWithoutOutputsInput
+  disconnect?: Prisma.QualityRecordWhereInput | boolean
+  delete?: Prisma.QualityRecordWhereInput | boolean
+  connect?: Prisma.QualityRecordWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.QualityRecordUpdateToOneWithWhereWithoutOutputsInput, Prisma.QualityRecordUpdateWithoutOutputsInput>, Prisma.QualityRecordUncheckedUpdateWithoutOutputsInput>
+}
+
+export type QualityRecordCreateNestedOneWithoutDispositionsInput = {
+  create?: Prisma.XOR<Prisma.QualityRecordCreateWithoutDispositionsInput, Prisma.QualityRecordUncheckedCreateWithoutDispositionsInput>
+  connectOrCreate?: Prisma.QualityRecordCreateOrConnectWithoutDispositionsInput
+  connect?: Prisma.QualityRecordWhereUniqueInput
+}
+
+export type QualityRecordUpdateOneRequiredWithoutDispositionsNestedInput = {
+  create?: Prisma.XOR<Prisma.QualityRecordCreateWithoutDispositionsInput, Prisma.QualityRecordUncheckedCreateWithoutDispositionsInput>
+  connectOrCreate?: Prisma.QualityRecordCreateOrConnectWithoutDispositionsInput
+  upsert?: Prisma.QualityRecordUpsertWithoutDispositionsInput
+  connect?: Prisma.QualityRecordWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.QualityRecordUpdateToOneWithWhereWithoutDispositionsInput, Prisma.QualityRecordUpdateWithoutDispositionsInput>, Prisma.QualityRecordUncheckedUpdateWithoutDispositionsInput>
+}
+
 export type QualityRecordCreateWithoutJobInput = {
   id?: string
   producedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -630,7 +756,12 @@ export type QualityRecordCreateWithoutJobInput = {
   evidenceRef?: string | null
   clientRequestId?: string | null
   recordedAt?: Date | string
+  inspectorUserId?: string | null
+  outcome?: string | null
+  uom?: string | null
   jobStage?: Prisma.ProductionJobStageCreateNestedOneWithoutQualityRecordsInput
+  dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutInspectionInput
+  outputs?: Prisma.ProductionOutputCreateNestedManyWithoutInspectionInput
 }
 
 export type QualityRecordUncheckedCreateWithoutJobInput = {
@@ -644,6 +775,11 @@ export type QualityRecordUncheckedCreateWithoutJobInput = {
   evidenceRef?: string | null
   clientRequestId?: string | null
   recordedAt?: Date | string
+  inspectorUserId?: string | null
+  outcome?: string | null
+  uom?: string | null
+  dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutInspectionInput
+  outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutInspectionInput
 }
 
 export type QualityRecordCreateOrConnectWithoutJobInput = {
@@ -688,6 +824,9 @@ export type QualityRecordScalarWhereInput = {
   evidenceRef?: Prisma.StringNullableFilter<"QualityRecord"> | string | null
   clientRequestId?: Prisma.UuidNullableFilter<"QualityRecord"> | string | null
   recordedAt?: Prisma.DateTimeFilter<"QualityRecord"> | Date | string
+  inspectorUserId?: Prisma.UuidNullableFilter<"QualityRecord"> | string | null
+  outcome?: Prisma.StringNullableFilter<"QualityRecord"> | string | null
+  uom?: Prisma.StringNullableFilter<"QualityRecord"> | string | null
 }
 
 export type QualityRecordCreateWithoutJobStageInput = {
@@ -700,7 +839,12 @@ export type QualityRecordCreateWithoutJobStageInput = {
   evidenceRef?: string | null
   clientRequestId?: string | null
   recordedAt?: Date | string
+  inspectorUserId?: string | null
+  outcome?: string | null
+  uom?: string | null
   job: Prisma.ProductionJobCreateNestedOneWithoutQualityRecordsInput
+  dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutInspectionInput
+  outputs?: Prisma.ProductionOutputCreateNestedManyWithoutInspectionInput
 }
 
 export type QualityRecordUncheckedCreateWithoutJobStageInput = {
@@ -714,6 +858,11 @@ export type QualityRecordUncheckedCreateWithoutJobStageInput = {
   evidenceRef?: string | null
   clientRequestId?: string | null
   recordedAt?: Date | string
+  inspectorUserId?: string | null
+  outcome?: string | null
+  uom?: string | null
+  dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutInspectionInput
+  outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutInspectionInput
 }
 
 export type QualityRecordCreateOrConnectWithoutJobStageInput = {
@@ -742,6 +891,186 @@ export type QualityRecordUpdateManyWithWhereWithoutJobStageInput = {
   data: Prisma.XOR<Prisma.QualityRecordUpdateManyMutationInput, Prisma.QualityRecordUncheckedUpdateManyWithoutJobStageInput>
 }
 
+export type QualityRecordCreateWithoutOutputsInput = {
+  id?: string
+  producedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
+  acceptedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
+  rejectedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
+  rejectReason?: $Enums.RejectReason | null
+  notes?: string | null
+  evidenceRef?: string | null
+  clientRequestId?: string | null
+  recordedAt?: Date | string
+  inspectorUserId?: string | null
+  outcome?: string | null
+  uom?: string | null
+  job: Prisma.ProductionJobCreateNestedOneWithoutQualityRecordsInput
+  jobStage?: Prisma.ProductionJobStageCreateNestedOneWithoutQualityRecordsInput
+  dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutInspectionInput
+}
+
+export type QualityRecordUncheckedCreateWithoutOutputsInput = {
+  id?: string
+  orgId: string
+  jobId: string
+  jobStageId?: string | null
+  producedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
+  acceptedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
+  rejectedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
+  rejectReason?: $Enums.RejectReason | null
+  notes?: string | null
+  evidenceRef?: string | null
+  clientRequestId?: string | null
+  recordedAt?: Date | string
+  inspectorUserId?: string | null
+  outcome?: string | null
+  uom?: string | null
+  dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutInspectionInput
+}
+
+export type QualityRecordCreateOrConnectWithoutOutputsInput = {
+  where: Prisma.QualityRecordWhereUniqueInput
+  create: Prisma.XOR<Prisma.QualityRecordCreateWithoutOutputsInput, Prisma.QualityRecordUncheckedCreateWithoutOutputsInput>
+}
+
+export type QualityRecordUpsertWithoutOutputsInput = {
+  update: Prisma.XOR<Prisma.QualityRecordUpdateWithoutOutputsInput, Prisma.QualityRecordUncheckedUpdateWithoutOutputsInput>
+  create: Prisma.XOR<Prisma.QualityRecordCreateWithoutOutputsInput, Prisma.QualityRecordUncheckedCreateWithoutOutputsInput>
+  where?: Prisma.QualityRecordWhereInput
+}
+
+export type QualityRecordUpdateToOneWithWhereWithoutOutputsInput = {
+  where?: Prisma.QualityRecordWhereInput
+  data: Prisma.XOR<Prisma.QualityRecordUpdateWithoutOutputsInput, Prisma.QualityRecordUncheckedUpdateWithoutOutputsInput>
+}
+
+export type QualityRecordUpdateWithoutOutputsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  producedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  acceptedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  rejectedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  rejectReason?: Prisma.NullableEnumRejectReasonFieldUpdateOperationsInput | $Enums.RejectReason | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  evidenceRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inspectorUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  job?: Prisma.ProductionJobUpdateOneRequiredWithoutQualityRecordsNestedInput
+  jobStage?: Prisma.ProductionJobStageUpdateOneWithoutQualityRecordsNestedInput
+  dispositions?: Prisma.QualityDispositionUpdateManyWithoutInspectionNestedInput
+}
+
+export type QualityRecordUncheckedUpdateWithoutOutputsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  jobId?: Prisma.StringFieldUpdateOperationsInput | string
+  jobStageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  producedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  acceptedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  rejectedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  rejectReason?: Prisma.NullableEnumRejectReasonFieldUpdateOperationsInput | $Enums.RejectReason | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  evidenceRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inspectorUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutInspectionNestedInput
+}
+
+export type QualityRecordCreateWithoutDispositionsInput = {
+  id?: string
+  producedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
+  acceptedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
+  rejectedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
+  rejectReason?: $Enums.RejectReason | null
+  notes?: string | null
+  evidenceRef?: string | null
+  clientRequestId?: string | null
+  recordedAt?: Date | string
+  inspectorUserId?: string | null
+  outcome?: string | null
+  uom?: string | null
+  job: Prisma.ProductionJobCreateNestedOneWithoutQualityRecordsInput
+  jobStage?: Prisma.ProductionJobStageCreateNestedOneWithoutQualityRecordsInput
+  outputs?: Prisma.ProductionOutputCreateNestedManyWithoutInspectionInput
+}
+
+export type QualityRecordUncheckedCreateWithoutDispositionsInput = {
+  id?: string
+  orgId: string
+  jobId: string
+  jobStageId?: string | null
+  producedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
+  acceptedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
+  rejectedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
+  rejectReason?: $Enums.RejectReason | null
+  notes?: string | null
+  evidenceRef?: string | null
+  clientRequestId?: string | null
+  recordedAt?: Date | string
+  inspectorUserId?: string | null
+  outcome?: string | null
+  uom?: string | null
+  outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutInspectionInput
+}
+
+export type QualityRecordCreateOrConnectWithoutDispositionsInput = {
+  where: Prisma.QualityRecordWhereUniqueInput
+  create: Prisma.XOR<Prisma.QualityRecordCreateWithoutDispositionsInput, Prisma.QualityRecordUncheckedCreateWithoutDispositionsInput>
+}
+
+export type QualityRecordUpsertWithoutDispositionsInput = {
+  update: Prisma.XOR<Prisma.QualityRecordUpdateWithoutDispositionsInput, Prisma.QualityRecordUncheckedUpdateWithoutDispositionsInput>
+  create: Prisma.XOR<Prisma.QualityRecordCreateWithoutDispositionsInput, Prisma.QualityRecordUncheckedCreateWithoutDispositionsInput>
+  where?: Prisma.QualityRecordWhereInput
+}
+
+export type QualityRecordUpdateToOneWithWhereWithoutDispositionsInput = {
+  where?: Prisma.QualityRecordWhereInput
+  data: Prisma.XOR<Prisma.QualityRecordUpdateWithoutDispositionsInput, Prisma.QualityRecordUncheckedUpdateWithoutDispositionsInput>
+}
+
+export type QualityRecordUpdateWithoutDispositionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  producedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  acceptedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  rejectedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  rejectReason?: Prisma.NullableEnumRejectReasonFieldUpdateOperationsInput | $Enums.RejectReason | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  evidenceRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inspectorUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  job?: Prisma.ProductionJobUpdateOneRequiredWithoutQualityRecordsNestedInput
+  jobStage?: Prisma.ProductionJobStageUpdateOneWithoutQualityRecordsNestedInput
+  outputs?: Prisma.ProductionOutputUpdateManyWithoutInspectionNestedInput
+}
+
+export type QualityRecordUncheckedUpdateWithoutDispositionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  jobId?: Prisma.StringFieldUpdateOperationsInput | string
+  jobStageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  producedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  acceptedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  rejectedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  rejectReason?: Prisma.NullableEnumRejectReasonFieldUpdateOperationsInput | $Enums.RejectReason | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  evidenceRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inspectorUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutInspectionNestedInput
+}
+
 export type QualityRecordCreateManyJobInput = {
   id?: string
   jobStageId?: string | null
@@ -753,6 +1082,9 @@ export type QualityRecordCreateManyJobInput = {
   evidenceRef?: string | null
   clientRequestId?: string | null
   recordedAt?: Date | string
+  inspectorUserId?: string | null
+  outcome?: string | null
+  uom?: string | null
 }
 
 export type QualityRecordUpdateWithoutJobInput = {
@@ -765,7 +1097,12 @@ export type QualityRecordUpdateWithoutJobInput = {
   evidenceRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inspectorUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobStage?: Prisma.ProductionJobStageUpdateOneWithoutQualityRecordsNestedInput
+  dispositions?: Prisma.QualityDispositionUpdateManyWithoutInspectionNestedInput
+  outputs?: Prisma.ProductionOutputUpdateManyWithoutInspectionNestedInput
 }
 
 export type QualityRecordUncheckedUpdateWithoutJobInput = {
@@ -779,6 +1116,11 @@ export type QualityRecordUncheckedUpdateWithoutJobInput = {
   evidenceRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inspectorUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutInspectionNestedInput
+  outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutInspectionNestedInput
 }
 
 export type QualityRecordUncheckedUpdateManyWithoutJobInput = {
@@ -792,6 +1134,9 @@ export type QualityRecordUncheckedUpdateManyWithoutJobInput = {
   evidenceRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inspectorUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type QualityRecordCreateManyJobStageInput = {
@@ -805,6 +1150,9 @@ export type QualityRecordCreateManyJobStageInput = {
   evidenceRef?: string | null
   clientRequestId?: string | null
   recordedAt?: Date | string
+  inspectorUserId?: string | null
+  outcome?: string | null
+  uom?: string | null
 }
 
 export type QualityRecordUpdateWithoutJobStageInput = {
@@ -817,7 +1165,12 @@ export type QualityRecordUpdateWithoutJobStageInput = {
   evidenceRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inspectorUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   job?: Prisma.ProductionJobUpdateOneRequiredWithoutQualityRecordsNestedInput
+  dispositions?: Prisma.QualityDispositionUpdateManyWithoutInspectionNestedInput
+  outputs?: Prisma.ProductionOutputUpdateManyWithoutInspectionNestedInput
 }
 
 export type QualityRecordUncheckedUpdateWithoutJobStageInput = {
@@ -831,6 +1184,11 @@ export type QualityRecordUncheckedUpdateWithoutJobStageInput = {
   evidenceRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inspectorUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutInspectionNestedInput
+  outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutInspectionNestedInput
 }
 
 export type QualityRecordUncheckedUpdateManyWithoutJobStageInput = {
@@ -844,8 +1202,49 @@ export type QualityRecordUncheckedUpdateManyWithoutJobStageInput = {
   evidenceRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inspectorUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
+
+/**
+ * Count Type QualityRecordCountOutputType
+ */
+
+export type QualityRecordCountOutputType = {
+  dispositions: number
+  outputs: number
+}
+
+export type QualityRecordCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  dispositions?: boolean | QualityRecordCountOutputTypeCountDispositionsArgs
+  outputs?: boolean | QualityRecordCountOutputTypeCountOutputsArgs
+}
+
+/**
+ * QualityRecordCountOutputType without action
+ */
+export type QualityRecordCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the QualityRecordCountOutputType
+   */
+  select?: Prisma.QualityRecordCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * QualityRecordCountOutputType without action
+ */
+export type QualityRecordCountOutputTypeCountDispositionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.QualityDispositionWhereInput
+}
+
+/**
+ * QualityRecordCountOutputType without action
+ */
+export type QualityRecordCountOutputTypeCountOutputsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProductionOutputWhereInput
+}
 
 
 export type QualityRecordSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -861,8 +1260,14 @@ export type QualityRecordSelect<ExtArgs extends runtime.Types.Extensions.Interna
   evidenceRef?: boolean
   clientRequestId?: boolean
   recordedAt?: boolean
+  inspectorUserId?: boolean
+  outcome?: boolean
+  uom?: boolean
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
   jobStage?: boolean | Prisma.QualityRecord$jobStageArgs<ExtArgs>
+  dispositions?: boolean | Prisma.QualityRecord$dispositionsArgs<ExtArgs>
+  outputs?: boolean | Prisma.QualityRecord$outputsArgs<ExtArgs>
+  _count?: boolean | Prisma.QualityRecordCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["qualityRecord"]>
 
 export type QualityRecordSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -878,6 +1283,9 @@ export type QualityRecordSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   evidenceRef?: boolean
   clientRequestId?: boolean
   recordedAt?: boolean
+  inspectorUserId?: boolean
+  outcome?: boolean
+  uom?: boolean
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
   jobStage?: boolean | Prisma.QualityRecord$jobStageArgs<ExtArgs>
 }, ExtArgs["result"]["qualityRecord"]>
@@ -895,6 +1303,9 @@ export type QualityRecordSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   evidenceRef?: boolean
   clientRequestId?: boolean
   recordedAt?: boolean
+  inspectorUserId?: boolean
+  outcome?: boolean
+  uom?: boolean
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
   jobStage?: boolean | Prisma.QualityRecord$jobStageArgs<ExtArgs>
 }, ExtArgs["result"]["qualityRecord"]>
@@ -912,12 +1323,18 @@ export type QualityRecordSelectScalar = {
   evidenceRef?: boolean
   clientRequestId?: boolean
   recordedAt?: boolean
+  inspectorUserId?: boolean
+  outcome?: boolean
+  uom?: boolean
 }
 
-export type QualityRecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orgId" | "jobId" | "jobStageId" | "producedQty" | "acceptedQty" | "rejectedQty" | "rejectReason" | "notes" | "evidenceRef" | "clientRequestId" | "recordedAt", ExtArgs["result"]["qualityRecord"]>
+export type QualityRecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orgId" | "jobId" | "jobStageId" | "producedQty" | "acceptedQty" | "rejectedQty" | "rejectReason" | "notes" | "evidenceRef" | "clientRequestId" | "recordedAt" | "inspectorUserId" | "outcome" | "uom", ExtArgs["result"]["qualityRecord"]>
 export type QualityRecordInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
   jobStage?: boolean | Prisma.QualityRecord$jobStageArgs<ExtArgs>
+  dispositions?: boolean | Prisma.QualityRecord$dispositionsArgs<ExtArgs>
+  outputs?: boolean | Prisma.QualityRecord$outputsArgs<ExtArgs>
+  _count?: boolean | Prisma.QualityRecordCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type QualityRecordIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
@@ -933,6 +1350,8 @@ export type $QualityRecordPayload<ExtArgs extends runtime.Types.Extensions.Inter
   objects: {
     job: Prisma.$ProductionJobPayload<ExtArgs>
     jobStage: Prisma.$ProductionJobStagePayload<ExtArgs> | null
+    dispositions: Prisma.$QualityDispositionPayload<ExtArgs>[]
+    outputs: Prisma.$ProductionOutputPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -947,6 +1366,9 @@ export type $QualityRecordPayload<ExtArgs extends runtime.Types.Extensions.Inter
     evidenceRef: string | null
     clientRequestId: string | null
     recordedAt: Date
+    inspectorUserId: string | null
+    outcome: string | null
+    uom: string | null
   }, ExtArgs["result"]["qualityRecord"]>
   composites: {}
 }
@@ -1343,6 +1765,8 @@ export interface Prisma__QualityRecordClient<T, Null = never, ExtArgs extends ru
   readonly [Symbol.toStringTag]: "PrismaPromise"
   job<T extends Prisma.ProductionJobDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductionJobDefaultArgs<ExtArgs>>): Prisma.Prisma__ProductionJobClient<runtime.Types.Result.GetResult<Prisma.$ProductionJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   jobStage<T extends Prisma.QualityRecord$jobStageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.QualityRecord$jobStageArgs<ExtArgs>>): Prisma.Prisma__ProductionJobStageClient<runtime.Types.Result.GetResult<Prisma.$ProductionJobStagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  dispositions<T extends Prisma.QualityRecord$dispositionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.QualityRecord$dispositionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QualityDispositionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  outputs<T extends Prisma.QualityRecord$outputsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.QualityRecord$outputsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductionOutputPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1384,6 +1808,9 @@ export interface QualityRecordFieldRefs {
   readonly evidenceRef: Prisma.FieldRef<"QualityRecord", 'String'>
   readonly clientRequestId: Prisma.FieldRef<"QualityRecord", 'String'>
   readonly recordedAt: Prisma.FieldRef<"QualityRecord", 'DateTime'>
+  readonly inspectorUserId: Prisma.FieldRef<"QualityRecord", 'String'>
+  readonly outcome: Prisma.FieldRef<"QualityRecord", 'String'>
+  readonly uom: Prisma.FieldRef<"QualityRecord", 'String'>
 }
     
 
@@ -1801,6 +2228,54 @@ export type QualityRecord$jobStageArgs<ExtArgs extends runtime.Types.Extensions.
    */
   include?: Prisma.ProductionJobStageInclude<ExtArgs> | null
   where?: Prisma.ProductionJobStageWhereInput
+}
+
+/**
+ * QualityRecord.dispositions
+ */
+export type QualityRecord$dispositionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the QualityDisposition
+   */
+  select?: Prisma.QualityDispositionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the QualityDisposition
+   */
+  omit?: Prisma.QualityDispositionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.QualityDispositionInclude<ExtArgs> | null
+  where?: Prisma.QualityDispositionWhereInput
+  orderBy?: Prisma.QualityDispositionOrderByWithRelationInput | Prisma.QualityDispositionOrderByWithRelationInput[]
+  cursor?: Prisma.QualityDispositionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.QualityDispositionScalarFieldEnum | Prisma.QualityDispositionScalarFieldEnum[]
+}
+
+/**
+ * QualityRecord.outputs
+ */
+export type QualityRecord$outputsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProductionOutput
+   */
+  select?: Prisma.ProductionOutputSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProductionOutput
+   */
+  omit?: Prisma.ProductionOutputOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductionOutputInclude<ExtArgs> | null
+  where?: Prisma.ProductionOutputWhereInput
+  orderBy?: Prisma.ProductionOutputOrderByWithRelationInput | Prisma.ProductionOutputOrderByWithRelationInput[]
+  cursor?: Prisma.ProductionOutputWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProductionOutputScalarFieldEnum | Prisma.ProductionOutputScalarFieldEnum[]
 }
 
 /**

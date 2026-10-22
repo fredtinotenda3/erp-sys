@@ -26,6 +26,7 @@ import { assertCapability, assertBranchAccess, hasBranchAccess, type Capability 
 import { ConflictError, NotFoundError, ValidationError } from "../../shared/errors";
 import { recordAudit } from "../iam/audit-service";
 import { createCompletionSnapshot, lockJobForCompletion } from "../costing/completion-snapshot";
+import { assertReadyToComplete } from "./readiness";
 import type { AuthenticatedSession } from "../iam/session-service";
 import { canTransition, JOB_STATUS_VALUES, type JobStatus } from "./job-state";
 import { toJobView, type JobRow } from "./job-view";
@@ -297,7 +298,13 @@ async function applyTransition(
     // Completion takes the job's exclusive advisory lock FIRST: in-flight issue/
     // labour postings (shared lock, DB trigger) finish before the snapshot is
     // computed, and later ones are refused, so the snapshot is complete.
-    if (target === "completed") await lockJobForCompletion(tx, job.id);
+    if (target === "completed") {
+      await lockJobForCompletion(tx, job.id);
+      // Shop-floor integrity: with the lock held no stage/output/quality write can
+      // interleave, so this answer is final for the snapshot that follows. Jobs that
+      // don't use stages/output/quality are always ready.
+      await assertReadyToComplete(tx, session.orgId, job.id);
+    }
     // Compare-and-set on the status we validated against: if another request
     // moved the job in between, nothing is written.
     const result = await tx.productionJob.updateMany({
