@@ -1,7 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { listAuditLog } from "../../../../src/server/modules/iam/audit-service";
+import { listAuditLog, type AuditAction } from "../../../../src/server/modules/iam/audit-service";
 import { requireSession } from "../../../../src/server/modules/iam/session-guard";
 import { errorResponse } from "../../../../src/server/shared/http";
+import { ValidationError } from "../../../../src/server/shared/errors";
+
+function parseDate(v: string | null, name: string): Date | undefined {
+  if (!v) return undefined;
+  const d = new Date(v);
+  if (Number.isNaN(d.getTime())) throw new ValidationError(`${name} is not a valid date`);
+  return d;
+}
+
+function parseCursor(v: string | null): bigint | undefined {
+  if (!v) return undefined;
+  if (!/^\d{1,18}$/.test(v)) throw new ValidationError("beforeId must be a whole number");
+  return BigInt(v);
+}
 
 export async function GET(req: NextRequest) {
   try {
@@ -13,6 +27,11 @@ export async function GET(req: NextRequest) {
       branchId: params.get("branchId") ?? undefined,
       entityType: params.get("entityType") ?? undefined,
       entityId: params.get("entityId") ?? undefined,
+      actorUserId: params.get("actorUserId") ?? undefined,
+      action: (params.get("action") as AuditAction | null) ?? undefined,
+      from: parseDate(params.get("from"), "from"),
+      to: parseDate(params.get("to"), "to"),
+      beforeId: parseCursor(params.get("beforeId")),
       limit: limitParam ? Number(limitParam) : undefined,
     });
 

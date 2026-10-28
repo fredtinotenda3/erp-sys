@@ -5,6 +5,7 @@ import { createUser, deactivateUser } from "../user-service";
 import { listAuditLog } from "../audit-service";
 import { login, logout } from "../session-service";
 import { ForbiddenError } from "../../../shared/errors";
+import { createCustomer } from "../../customers/customer-service";
 
 describe("audit log correctness", () => {
   it("records organization, branch, and owner-user creation on bootstrap", async () => {
@@ -74,5 +75,54 @@ describe("audit log correctness", () => {
 
     const { session } = await loginAs(org.organizationId, email);
     await expect(listAuditLog(session)).rejects.toBeInstanceOf(ForbiddenError);
+  });
+});
+
+// ---- Phase: audit-log viewer filters and branch scope ----
+
+describe("audit log viewer: filters, pagination and branch scope", () => {
+  it("filters by actor, action and date range, and pages with a keyset cursor", async () => {
+    const org = await createTestOrg("audit-filters");
+    const owner = await ownerSession(org);
+    const c1 = await createCustomer(owner, { name: "Audit Filter One" });
+    await createCustomer(owner, { name: "Audit Filter Two" });
+
+    const mine = await listAuditLog(owner, { actorUserId: owner.userId, action: "create", limit: 200 });
+    expect(mine.length).toBeGreaterThan(2);
+    expect(mine.every((e) => e.actorUserId === owner.userId && e.action === "create")).toBe(true);
+    expect(await listAuditLog(owner, { actorUserId: "00000000-0000-4000-8000-000000000000" })).toHaveLength(0);
+
+    const past = await listAuditLog(owner, { to: new Date("2000-01-01"), limit: 200 });
+    expect(past).toHaveLength(0);
+    const recent = await listAuditLog(owner, { from: new Date(Date.now() - 3_600_000), limit: 200 });
+    expect(recent.length).toBeGreaterThan(0);
+    await expect(listAuditLog(owner, { from: new Date("2030-01-02"), to: new Date("2030-01-01") })).rejects.toThrow(/start date is after/);
+
+    const page1 = await listAuditLog(owner, { limit: 2 });
+    const page2 = await listAuditLog(owner, { limit: 2, beforeId: page1[1].id });
+    expect(page1).toHaveLength(2);
+    expect(page2.every((e) => e.id < page1[1].id)).toBe(true);
+    expect(new Set([...page1, ...page2].map((e) => e.id)).size).toBe(page1.length + page2.length);
+
+    const byId = await listAuditLog(owner, { entityType: "customer", entityId: c1.id });
+    expect(byId).toHaveLength(1);
+    await expect(listAuditLog(owner, { entityId: "not-a-uuid" })).rejects.toThrow(/valid id/);
+    await expect(listAuditLog(owner, { action: "explode" as never })).rejects.toThrow(/Unknown audit action/);
+  });
+
+  it("limits a non-owner reader to org-wide entries plus their own branches", async () => {
+    const org = await createTestOrg("audit-scope");
+    const owner = await ownerSession(org);
+    const other = await createBranch(owner, { name: `Hidden ${Date.now()}` });
+    const email = testEmail("fin");
+    await createUser(owner, { email, fullName: "Finance", role: "FINANCE_MANAGER", password: TEST_PASSWORD, branchIds: [org.branchId] });
+    const { session: finance } = await loginAs(org.organizationId, email);
+
+    const visible = await listAuditLog(finance, { limit: 200 });
+    expect(visible.some((e) => e.branchId === other.id)).toBe(false); // the other branch's history is hidden
+    expect(visible.some((e) => e.branchId === null)).toBe(true); // org-wide entries remain
+    await expect(listAuditLog(finance, { branchId: other.id })).rejects.toThrow(/access to this branch/);
+    // The owner still sees everything.
+    expect((await listAuditLog(owner, { limit: 200 })).some((e) => e.branchId === other.id)).toBe(true);
   });
 });

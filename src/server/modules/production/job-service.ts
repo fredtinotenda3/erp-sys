@@ -41,6 +41,9 @@ const createJobSchema = z
     plannedStart: z.coerce.date().optional(),
     plannedEnd: z.coerce.date().optional(),
     customerId: z.string().uuid().optional(),
+    // Releases ONE confirmed sales-order line into production. The job then takes its
+    // customer and quote from the order, so those fields must not also be supplied.
+    salesOrderLineId: z.string().uuid().optional(),
     quotedAmount: z.number().finite().nonnegative().max(9_999_999_999).optional(),
     quotedCurrency: z.string().trim().toUpperCase().length(3).optional(),
   })
@@ -85,8 +88,40 @@ export async function createJob(session: AuthenticatedSession, input: unknown) {
     throw new ValidationError("Only finished_good or wip items can be produced");
   }
 
-  if (data.customerId) {
-    const customer = await prisma.customer.findFirst({ where: { orgId: session.orgId, id: data.customerId } });
+  // Work released from a sales order: the order line decides customer and quote.
+  let orderLink: { lineId: string; customerId: string; quotedAmount: Prisma.Decimal; quotedCurrency: string } | null = null;
+  if (data.salesOrderLineId) {
+    assertCapability(session.role, "sales_order:read");
+    if (data.customerId !== undefined || data.quotedAmount !== undefined) {
+      throw new ValidationError("A job released from a sales order takes its customer and quote from the order; don't supply them");
+    }
+    const line = await prisma.salesOrderLine.findFirst({
+      where: { orgId: session.orgId, id: data.salesOrderLineId },
+      include: { salesOrder: true, productionJob: { select: { jobNumber: true } } },
+    });
+    // Same disclosure rule as everywhere: another branch's order is "not valid", not "forbidden".
+    if (!line || !hasBranchAccess(session, line.salesOrder.branchId)) throw new ValidationError("salesOrderLineId does not belong to an order you can access");
+    if (line.salesOrder.status !== "confirmed") {
+      throw new ConflictError(`Work can only be released from a confirmed order; ${line.salesOrder.orderNumber} is "${line.salesOrder.status.replace(/_/g, " ")}"`);
+    }
+    if (line.salesOrder.branchId !== data.branchId) throw new ValidationError("The job's branch must be the order's branch");
+    if (line.itemId !== data.productItemId) throw new ValidationError("The job's product must be the product on the order line");
+    if (!new Prisma.Decimal(line.quantity).eq(new Prisma.Decimal(data.plannedQty))) {
+      throw new ValidationError(`Planned quantity must equal the order line quantity (${line.quantity.toString()})`);
+    }
+    if (line.productionJob) throw new ConflictError(`This order line already has job ${line.productionJob.jobNumber}`);
+    orderLink = {
+      lineId: line.id,
+      customerId: line.salesOrder.customerId,
+      quotedAmount: new Prisma.Decimal(line.quantity).mul(new Prisma.Decimal(line.unitPrice)).toDecimalPlaces(4),
+      quotedCurrency: line.currency.trim(),
+    };
+    if (orderLink.quotedAmount.gt(MAX_DECIMAL)) throw new ValidationError("Order line total is out of range for a job quote");
+  }
+
+  const jobCustomerId = orderLink?.customerId ?? data.customerId;
+  if (jobCustomerId) {
+    const customer = await prisma.customer.findFirst({ where: { orgId: session.orgId, id: jobCustomerId } });
     if (!customer) throw new ValidationError("customerId does not belong to this organization");
     if (customer.status !== "active") throw new ValidationError("Cannot create a job for an inactive customer");
   }
@@ -147,6 +182,16 @@ export async function createJob(session: AuthenticatedSession, input: unknown) {
   let jobId: string;
   try {
     jobId = await prisma.$transaction(async (tx) => {
+      if (orderLink) {
+        // Share-lock the order row: a concurrent cancel (which takes it FOR UPDATE) either
+        // finishes first, and we see "cancelled", or waits until this job is committed.
+        const locked = await tx.$queryRaw<{ status: string }[]>`
+          SELECT so.status::text AS status FROM sales_order so
+            JOIN sales_order_line sl ON sl.sales_order_id = so.id AND sl.org_id = so.org_id
+           WHERE sl.id = ${orderLink.lineId}::uuid AND sl.org_id = ${session.orgId}::uuid
+             FOR SHARE OF so`;
+        if (locked[0]?.status !== "confirmed") throw new ConflictError("The sales order is no longer confirmed");
+      }
       const counter = await tx.$queryRaw<{ last_number: number }[]>`
         INSERT INTO job_number_counter (org_id, last_number)
         VALUES (${session.orgId}::uuid, 1)
@@ -159,15 +204,16 @@ export async function createJob(session: AuthenticatedSession, input: unknown) {
           orgId: session.orgId,
           branchId: data.branchId,
           jobNumber,
-          customerId: data.customerId ?? null,
+          customerId: jobCustomerId ?? null,
+          salesOrderLineId: orderLink?.lineId ?? null,
           productItemId: product.id,
           bomId: bom.id,
           plannedQty,
           plannedStart: data.plannedStart ?? null,
           plannedEnd: data.plannedEnd ?? null,
           status: "planned",
-          quotedAmount: data.quotedAmount ?? null,
-          quotedCurrency: data.quotedCurrency ?? null,
+          quotedAmount: orderLink ? orderLink.quotedAmount : (data.quotedAmount ?? null),
+          quotedCurrency: orderLink ? orderLink.quotedCurrency : (data.quotedCurrency ?? null),
           createdById: session.userId,
         },
       });
@@ -206,6 +252,7 @@ export async function createJob(session: AuthenticatedSession, input: unknown) {
           bomId: bom.id,
           bomVersion: bom.version,
           plannedQty: plannedQty.toString(),
+          ...(orderLink ? { salesOrderLineId: orderLink.lineId } : {}),
           requirementCount: requirementRows.length,
           unpricedMaterialCount: unpriced.length,
         },
@@ -214,6 +261,7 @@ export async function createJob(session: AuthenticatedSession, input: unknown) {
     });
   } catch (err) {
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
+      if (orderLink) throw new ConflictError("This order line already has a production job");
       throw new ConflictError("A job with this number already exists — retry the request");
     }
     throw err;
@@ -243,6 +291,8 @@ export async function getJob(session: AuthenticatedSession, id: string) {
 
 export interface ListJobsFilter {
   branchId?: string;
+  /** Needs customer:read: an operator must not be able to probe which jobs belong to a customer. */
+  customerId?: string;
   status?: JobStatus;
   overdueOnly?: boolean;
   limit?: number;
@@ -258,6 +308,11 @@ export async function listJobs(session: AuthenticatedSession, filter: ListJobsFi
   } else if (session.role !== "OWNER_ADMIN") {
     // No fallback to org-wide: a non-owner only ever sees granted branches.
     where.branchId = { in: [...session.branchIds] };
+  }
+  if (filter.customerId) {
+    assertCapability(session.role, "customer:read");
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(filter.customerId)) throw new ValidationError("Invalid customerId");
+    where.customerId = filter.customerId;
   }
   if (filter.status) where.status = filter.status;
   if (filter.overdueOnly) {

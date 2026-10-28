@@ -5,7 +5,7 @@
 // transition.
 import { z } from "zod";
 import { prisma, isUniqueConstraintError, type Db } from "../../shared/db";
-import { assertCapability, ROLE_VALUES, type Role } from "../../shared/authz";
+import { assertCapability, hasBranchAccess, ROLE_VALUES, type Role } from "../../shared/authz";
 import { ConflictError, ForbiddenError, NotFoundError, ValidationError } from "../../shared/errors";
 import { hashPassword } from "../../shared/password";
 import { recordAudit } from "./audit-service";
@@ -114,6 +114,11 @@ export async function createUser(session: AuthenticatedSession, input: unknown):
   // P2002, which the catch block below would otherwise misreport as an
   // email collision).
   const branchIds = [...new Set(data.branchIds)];
+
+  // An actor can only hand out branches they hold themselves (OWNER_ADMIN: all).
+  if (branchIds.some((b) => !hasBranchAccess(session, b))) {
+    throw new ForbiddenError("You can only assign branches you have access to yourself");
+  }
 
   if (branchIds.length > 0) {
     const validBranches = await prisma.branch.findMany({
@@ -226,6 +231,11 @@ export async function deactivateUser(session: AuthenticatedSession, targetUserId
   if (!target) throw new NotFoundError("User");
   if (!target.isActive) return toSafeUser(target);
 
+  // A lower role must not be able to switch off a higher one (that would be a way to take
+  // over an organization by locking its owners out).
+  if (target.role === "OWNER_ADMIN" && session.role !== "OWNER_ADMIN") {
+    throw new ForbiddenError("Only an OWNER_ADMIN can deactivate an OWNER_ADMIN");
+  }
   if (target.role === "OWNER_ADMIN") {
     await assertNotLastActiveOwnerAdmin(prisma, session.orgId, target.id);
   }
@@ -249,4 +259,24 @@ export async function deactivateUser(session: AuthenticatedSession, targetUserId
   });
 
   return toSafeUser(updated);
+}
+
+// One user plus the branches they hold explicit grants for. The branch list is limited to
+// branches the CALLER can see, so reading a user never reveals a branch the caller has no
+// access to. OWNER_ADMIN users have implicit access to everything and no grant rows.
+export async function getUser(session: AuthenticatedSession, targetUserId: string) {
+  assertCapability(session.role, "user:read");
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(targetUserId)) throw new NotFoundError("User");
+  const row = await prisma.user.findFirst({ where: { orgId: session.orgId, id: targetUserId }, select: SAFE_USER_SELECT });
+  if (!row) throw new NotFoundError("User");
+  const grants = await prisma.userBranchAccess.findMany({
+    where: { orgId: session.orgId, userId: row.id },
+    include: { branch: { select: { id: true, name: true, isActive: true } } },
+    orderBy: { grantedAt: "asc" },
+  });
+  return {
+    ...toSafeUser(row),
+    implicitAllBranches: row.role === "OWNER_ADMIN",
+    branchAccess: grants.filter((g) => hasBranchAccess(session, g.branchId)).map((g) => ({ branchId: g.branchId, name: g.branch.name, isActive: g.branch.isActive, grantedAt: g.grantedAt })),
+  };
 }

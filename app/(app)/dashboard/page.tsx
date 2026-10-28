@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 import { listJobs } from "../../../src/server/modules/production/job-service";
 import { getShortages } from "../../../src/server/modules/inventory/shortage-service";
@@ -35,6 +36,8 @@ function countText(n: number): string {
 // as unavailable at the bottom rather than faked.
 export default async function DashboardPage() {
   const ctx = await getPageContext();
+  // Operators have no Command Centre; their home is the shop-floor workspace.
+  if (ctx.session.role === "PRODUCTION_OPERATOR") redirect("/shop-floor");
   const branchId = ctx.selectedBranchId ?? undefined;
   const canJobs = ctx.can("production_job:read");
   const canStock = canJobs && ctx.can("stock:read");

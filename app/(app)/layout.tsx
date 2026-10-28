@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import { Sidebar } from "../../components/shell/sidebar";
 import { TopBar } from "../../components/shell/top-bar";
+import { OperatorShell } from "../../components/shell/operator-shell";
 import { getVisibleNavItems } from "../../components/shell/nav-config";
 import { getPageContext } from "../../lib/server/page-context";
 
@@ -13,17 +14,14 @@ export default async function AuthenticatedLayout({ children }: { children: Reac
   const ctx = await getPageContext();
   const { session, me } = ctx;
 
-  // §1.6 / §9.5: PRODUCTION_OPERATOR gets a structurally different shell (a
-  // tablet-first operator workspace) that is not part of this phase. Until it
-  // exists, say so honestly rather than showing manager chrome or a blank page.
+  // §1.6 / §9.5: PRODUCTION_OPERATOR gets a structurally different, tablet-first shell. It shows
+  // no management navigation; what an operator can actually open is decided by their capabilities
+  // on the server, not by what this shell links to.
   if (session.role === "PRODUCTION_OPERATOR") {
     return (
-      <div className="flex min-h-screen items-center justify-center p-6 text-center">
-        <p className="max-w-sm text-sm text-muted-foreground">
-          The operator workspace isn&apos;t available yet — it ships with the shop-floor module. Ask your manager if you need something in the
-          meantime.
-        </p>
-      </div>
+      <OperatorShell orgName={me.orgName} fullName={me.fullName}>
+        {children}
+      </OperatorShell>
     );
   }
 

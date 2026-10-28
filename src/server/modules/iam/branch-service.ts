@@ -8,7 +8,7 @@
 // (soft delete) is the only lifecycle transition this module exposes.
 import { z } from "zod";
 import { prisma, isUniqueConstraintError } from "../../shared/db";
-import { assertCapability } from "../../shared/authz";
+import { assertCapability, hasBranchAccess, hasCapability } from "../../shared/authz";
 import { ConflictError, NotFoundError, ValidationError } from "../../shared/errors";
 import { recordAudit } from "./audit-service";
 import type { AuthenticatedSession } from "./session-service";
@@ -69,8 +69,11 @@ export async function deactivateBranch(session: AuthenticatedSession, branchId: 
   // then act on the confirmed row's bare id. Never update-by-bare-id
   // without this step — see shared/scope.ts's header comment.
   const branch = await prisma.branch.findFirst({ where: { orgId: session.orgId, id: branchId } });
-  if (!branch) throw new NotFoundError("Branch");
+  // A branch the caller has no grant for is "not found" -- same disclosure rule as everywhere else.
+  if (!branch || !hasBranchAccess(session, branch.id)) throw new NotFoundError("Branch");
   if (!branch.isActive) return branch;
+  const otherActive = await prisma.branch.count({ where: { orgId: session.orgId, isActive: true, id: { not: branch.id } } });
+  if (otherActive === 0) throw new ConflictError("Cannot deactivate the last active branch of an organization");
 
   const updated = await prisma.branch.update({ where: { id: branch.id }, data: { isActive: false } });
   await recordAudit(prisma, {
@@ -98,7 +101,9 @@ export async function grantBranchAccess(session: AuthenticatedSession, input: Br
     prisma.branch.findFirst({ where: { orgId: session.orgId, id: input.branchId } }),
     prisma.user.findFirst({ where: { orgId: session.orgId, id: input.userId } }),
   ]);
-  if (!branch) throw new NotFoundError("Branch");
+  // Nobody can hand out access to a branch they cannot access themselves (that would be a
+  // way to widen one's own reach through a colleague's account).
+  if (!branch || !hasBranchAccess(session, branch.id)) throw new NotFoundError("Branch");
   if (!user) throw new NotFoundError("User");
 
   try {
@@ -123,6 +128,7 @@ export async function grantBranchAccess(session: AuthenticatedSession, input: Br
 
 export async function revokeBranchAccess(session: AuthenticatedSession, input: BranchAccessInput): Promise<boolean> {
   assertCapability(session.role, "branch_access:revoke");
+  if (!hasBranchAccess(session, input.branchId)) throw new NotFoundError("Branch");
 
   const result = await prisma.userBranchAccess.deleteMany({
     where: { orgId: session.orgId, branchId: input.branchId, userId: input.userId },
@@ -139,4 +145,32 @@ export async function revokeBranchAccess(session: AuthenticatedSession, input: B
     beforeValue: { branchId: input.branchId, userId: input.userId },
   });
   return true;
+}
+
+/**
+ * One branch with the people who can work in it. Only callers who can access the branch
+ * (OWNER_ADMIN: all of them) can see it. Owners are listed as implicit members; everyone
+ * else appears only through an explicit grant. Never returns password hashes.
+ */
+export async function getBranchDetail(session: AuthenticatedSession, branchId: string) {
+  assertCapability(session.role, "branch:read");
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(branchId)) throw new NotFoundError("Branch");
+  const branch = await prisma.branch.findFirst({ where: { orgId: session.orgId, id: branchId } });
+  if (!branch || !hasBranchAccess(session, branch.id)) throw new NotFoundError("Branch");
+
+  const canSeeUsers = hasCapability(session.role, "user:read");
+  const members = canSeeUsers
+    ? await prisma.user.findMany({
+        where: { orgId: session.orgId, OR: [{ role: "OWNER_ADMIN" }, { branchAccessGranted: { some: { branchId: branch.id } } }] },
+        select: { id: true, fullName: true, email: true, role: true, isActive: true },
+        orderBy: { fullName: "asc" },
+      })
+    : [];
+  return {
+    id: branch.id,
+    name: branch.name,
+    isActive: branch.isActive,
+    createdAt: branch.createdAt,
+    members: members.map((m) => ({ ...m, access: m.role === "OWNER_ADMIN" ? ("implicit" as const) : ("granted" as const) })),
+  };
 }

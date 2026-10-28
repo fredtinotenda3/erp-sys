@@ -15,7 +15,8 @@
 // See shared/db.ts's import comment re: the "/client" suffix.
 import type { Prisma } from "../../../generated/prisma/client";
 import { prisma, type Db } from "../../shared/db";
-import { assertCapability } from "../../shared/authz";
+import { assertBranchAccess, assertCapability } from "../../shared/authz";
+import { ValidationError } from "../../shared/errors";
 import type { AuthenticatedSession } from "./session-service";
 
 export const AUDIT_ACTION_VALUES = ["create", "update", "delete", "transition", "grant", "revoke"] as const;
@@ -53,21 +54,52 @@ export interface ListAuditLogFilter {
   branchId?: string;
   entityType?: string;
   entityId?: string;
+  actorUserId?: string;
+  action?: AuditAction;
+  /** Inclusive lower / upper bound on createdAt. */
+  from?: Date;
+  to?: Date;
+  /** Keyset pagination: only entries with an id LOWER than this (ids are issued in order). */
+  beforeId?: bigint;
   limit?: number;
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// Branch scope: OWNER_ADMIN reads everything in the organization. Anyone else sees
+// organization-wide entries (no branch: users, customers, exchange rates ...) plus entries
+// for branches they hold an explicit grant for -- never another branch's history.
 export async function listAuditLog(session: AuthenticatedSession, filter: ListAuditLogFilter = {}) {
   assertCapability(session.role, "audit_log:read");
   const limit = Math.min(Math.max(filter.limit ?? 50, 1), 200);
 
+  for (const [name, value] of [["branchId", filter.branchId], ["entityId", filter.entityId], ["actorUserId", filter.actorUserId]] as const) {
+    if (value !== undefined && !UUID_RE.test(value)) throw new ValidationError(`${name} must be a valid id`);
+  }
+  if (filter.action !== undefined && !(AUDIT_ACTION_VALUES as readonly string[]).includes(filter.action)) {
+    throw new ValidationError("Unknown audit action");
+  }
+  if (filter.from && filter.to && filter.from > filter.to) throw new ValidationError("The start date is after the end date");
+  if (filter.branchId) assertBranchAccess(session, filter.branchId);
+
+  const scope =
+    filter.branchId || session.role === "OWNER_ADMIN"
+      ? {}
+      : { OR: [{ branchId: null }, { branchId: { in: [...session.branchIds] } }] };
+
   return prisma.auditLog.findMany({
     where: {
       orgId: session.orgId, // mandatory tenant scope — never omit this
+      ...scope,
       ...(filter.branchId ? { branchId: filter.branchId } : {}),
       ...(filter.entityType ? { entityType: filter.entityType } : {}),
       ...(filter.entityId ? { entityId: filter.entityId } : {}),
+      ...(filter.actorUserId ? { actorUserId: filter.actorUserId } : {}),
+      ...(filter.action ? { action: filter.action } : {}),
+      ...(filter.from || filter.to ? { createdAt: { ...(filter.from ? { gte: filter.from } : {}), ...(filter.to ? { lte: filter.to } : {}) } } : {}),
+      ...(filter.beforeId !== undefined ? { id: { lt: filter.beforeId } } : {}),
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: { id: "desc" },
     take: limit,
   });
 }

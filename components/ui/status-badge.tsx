@@ -79,3 +79,24 @@ export function ActiveBadge({ active }: { active: boolean }) {
     </Badge>
   );
 }
+
+const ORDER: Record<string, { variant: Variant; icon: LucideIcon; label: string }> = {
+  draft: { variant: "status-neutral", icon: CircleDashed, label: "Draft" },
+  confirmed: { variant: "status-info", icon: CircleCheck, label: "Confirmed" },
+  in_production: { variant: "status-info", icon: CirclePlay, label: "In production" },
+  partially_delivered: { variant: "status-warning", icon: Pause, label: "Partially delivered" },
+  delivered: { variant: "status-success", icon: CircleCheck, label: "Delivered" },
+  closed: { variant: "status-success", icon: Lock, label: "Closed" },
+  cancelled: { variant: "status-danger", icon: Ban, label: "Cancelled" },
+};
+
+export function OrderStatusBadge({ status }: { status: string }) {
+  const s = ORDER[status] ?? { variant: "status-neutral" as Variant, icon: CircleDashed, label: humanize(status) };
+  const Icon = s.icon;
+  return (
+    <Badge variant={s.variant}>
+      <Icon aria-hidden="true" />
+      {s.label}
+    </Badge>
+  );
+}

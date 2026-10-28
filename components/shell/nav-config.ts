@@ -31,7 +31,8 @@ export interface NavItem {
 
 export const NAV_ITEMS: readonly NavItem[] = [
   { label: "Command Centre", href: "/dashboard", icon: "dashboard", capabilities: [], implemented: true },
-  { label: "Orders", href: "/orders", icon: "orders", capabilities: ["sales_order:read"], implemented: false },
+  { label: "Shop floor", href: "/shop-floor", icon: "production", capabilities: ["output:record", "stage:transition"], implemented: true },
+  { label: "Orders", href: "/orders", icon: "orders", capabilities: ["sales_order:read"], implemented: true },
   {
     label: "Production",
     href: "/production/jobs",
@@ -70,10 +71,41 @@ export const NAV_ITEMS: readonly NavItem[] = [
     ],
   },
   { label: "Exchange rates", href: "/costing/exchange-rates", icon: "currency", capabilities: ["exchange_rate:read"], implemented: true },
-  { label: "Customers", href: "/customers", icon: "customers", capabilities: ["customer:read"], implemented: false },
-  { label: "Quality", href: "/quality", icon: "quality", capabilities: ["quality:read"], implemented: false },
-  { label: "Reports", href: "/reports/profitability", icon: "reports", capabilities: ["cost:read"], implemented: false },
-  { label: "Settings", href: "/settings/users", icon: "settings", capabilities: ["user:read", "branch:read", "audit_log:read"], implemented: false },
+  { label: "Customers", href: "/customers", icon: "customers", capabilities: ["customer:read"], implemented: true },
+  {
+    label: "Quality",
+    href: "/quality",
+    icon: "quality",
+    capabilities: ["quality:read"],
+    implemented: true,
+    children: [
+      { label: "Overview", href: "/quality", capabilities: ["quality:read"] },
+      { label: "Inspections", href: "/quality/inspections", capabilities: ["quality:read"] },
+    ],
+  },
+  {
+    label: "Reports",
+    href: "/reports",
+    icon: "reports",
+    capabilities: ["cost:read"],
+    implemented: true,
+    children: [
+      { label: "Job costs", href: "/reports/job-costs", capabilities: ["cost:read"] },
+      { label: "Profitability", href: "/reports/profitability", capabilities: ["cost:read"] },
+    ],
+  },
+  {
+    label: "Settings",
+    href: "/settings/users",
+    icon: "settings",
+    capabilities: ["user:read", "audit_log:read"],
+    implemented: true,
+    children: [
+      { label: "Users", href: "/settings/users", capabilities: ["user:read"] },
+      { label: "Branches", href: "/settings/branches", capabilities: ["user:read"] },
+      { label: "Audit log", href: "/settings/audit-log", capabilities: ["audit_log:read"] },
+    ],
+  },
 ] as const;
 
 export interface VisibleNavItem {

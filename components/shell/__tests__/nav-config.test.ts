@@ -10,8 +10,22 @@ describe("getVisibleNavItems", () => {
       expect(labels(role)).toContain("Command Centre");
     }
   });
-  it("never lists modules that have no screens yet", () => {
-    for (const l of ["Orders", "Customers", "Quality", "Reports", "Settings"]) expect(labels("OWNER_ADMIN")).not.toContain(l);
+  it("lists the finished modules to roles that hold their capability, and hides them from roles that don't", () => {
+    for (const l of ["Orders", "Customers", "Quality", "Reports", "Settings"]) expect(labels("OWNER_ADMIN")).toContain(l);
+    expect(labels("VIEWER")).toEqual(expect.arrayContaining(["Orders", "Customers", "Quality"]));
+    expect(labels("VIEWER")).not.toContain("Reports"); // no cost:read
+    expect(labels("VIEWER")).not.toContain("Settings"); // no user:read or audit_log:read
+    expect(labels("INVENTORY_MANAGER")).not.toContain("Orders");
+    expect(labels("FINANCE_MANAGER")).toContain("Reports");
+  });
+  it("settings tabs follow the capability behind each one", () => {
+    expect(childLabels("OWNER_ADMIN", "Settings")).toEqual(["Users", "Branches", "Audit log"]);
+    expect(childLabels("FINANCE_MANAGER", "Settings")).toContain("Audit log");
+    expect(childLabels("PRODUCTION_MANAGER", "Settings")).not.toContain("Audit log");
+  });
+  it("the shop floor is offered to roles that can record work", () => {
+    expect(labels("PRODUCTION_OPERATOR")).toContain("Shop floor");
+    expect(labels("VIEWER")).not.toContain("Shop floor");
   });
   it("only offers workflow links the role can actually perform", () => {
     expect(childLabels("VIEWER", "Inventory")).toEqual(["Stock", "Movements", "Warehouses"]);

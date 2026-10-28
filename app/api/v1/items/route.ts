@@ -1,48 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
-import { createItem, listItems, ITEM_TYPE_VALUES } from "../../../../src/server/modules/catalog/item-service";
-import { toItemView, toItemViews } from "../../../../src/server/modules/catalog/item-view";
-import { requireSession } from "../../../../src/server/modules/iam/session-guard";
-import { errorResponse } from "../../../../src/server/shared/http";
-import { ValidationError } from "../../../../src/server/shared/errors";
+import { getActiveBom } from "../../../../../../../src/server/modules/catalog/bom-service";
+import { requireSession } from "../../../../../../../src/server/modules/iam/session-guard";
+import { errorResponse } from "../../../../../../../src/server/shared/http";
 
-// Query-string filters get the same "never trust unvalidated input" rule as
-// a request body — a bare `as ItemType` cast here would let an arbitrary
-// string reach the database query unchecked.
-const listItemsQuerySchema = z.object({
-  itemType: z.enum(ITEM_TYPE_VALUES).optional(),
-  isActive: z.enum(["true", "false"]).optional(),
-  search: z.string().trim().max(200).optional(),
-});
-
-export async function GET(req: NextRequest) {
+// Returns { data: null } with 200, not 404, when the item has no active BOM
+// yet — see bom-service.ts's getActiveBom header comment. A 404 here would
+// make "no active BOM" indistinguishable from "this item doesn't exist,"
+// which the frontend needs to tell apart (UX_UI_ARCHITECTURE.md §2.6).
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await requireSession(req);
-    const params = req.nextUrl.searchParams;
-    const parsed = listItemsQuerySchema.safeParse({
-      itemType: params.get("itemType") ?? undefined,
-      isActive: params.get("isActive") ?? undefined,
-      search: params.get("search") ?? undefined,
-    });
-    if (!parsed.success) throw new ValidationError("Invalid query parameters", parsed.error.issues);
-
-    const items = await listItems(session, {
-      itemType: parsed.data.itemType,
-      isActive: parsed.data.isActive === undefined ? undefined : parsed.data.isActive === "true",
-      search: parsed.data.search,
-    });
-    return NextResponse.json({ data: toItemViews(session.role, items) });
-  } catch (err) {
-    return errorResponse(err);
-  }
-}
-
-export async function POST(req: NextRequest) {
-  try {
-    const session = await requireSession(req);
-    const body = await req.json();
-    const item = await createItem(session, body);
-    return NextResponse.json({ data: toItemView(session.role, item) }, { status: 201 });
+    const { id } = await params;
+    const bom = await getActiveBom(session, id);
+    return NextResponse.json({ data: bom });
   } catch (err) {
     return errorResponse(err);
   }
