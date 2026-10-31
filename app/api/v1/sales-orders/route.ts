@@ -1,24 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSalesOrder, updateSalesOrder } from "../../../../../src/server/modules/sales/sales-order-service";
-import { requireSession } from "../../../../../src/server/modules/iam/session-guard";
-import { errorResponse } from "../../../../../src/server/shared/http";
+import { createSalesOrder, listSalesOrders, type SalesOrderStatus } from "../../../../src/server/modules/sales/sales-order-service";
+import { requireSession } from "../../../../src/server/modules/iam/session-guard";
+import { errorResponse } from "../../../../src/server/shared/http";
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextRequest) {
   try {
     const session = await requireSession(req);
-    const { id } = await params;
-    return NextResponse.json({ data: await getSalesOrder(session, id) });
+    const p = req.nextUrl.searchParams;
+    const num = (k: string) => (p.get(k) ? Number(p.get(k)) : undefined);
+    const data = await listSalesOrders(session, {
+      status: (p.get("status") as SalesOrderStatus | null) ?? undefined,
+      customerId: p.get("customerId") ?? undefined,
+      branchId: p.get("branchId") ?? undefined,
+      search: p.get("search") ?? undefined,
+      limit: num("limit"),
+      offset: num("offset"),
+    });
+    return NextResponse.json({ data });
   } catch (err) {
     return errorResponse(err);
   }
 }
 
-// Draft orders only; the service rejects edits to anything else with 409.
-export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(req: NextRequest) {
   try {
     const session = await requireSession(req);
-    const { id } = await params;
-    return NextResponse.json({ data: await updateSalesOrder(session, id, await req.json()) });
+    const order = await createSalesOrder(session, await req.json());
+    return NextResponse.json({ data: order }, { status: 201 });
   } catch (err) {
     return errorResponse(err);
   }
