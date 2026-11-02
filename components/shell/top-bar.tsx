@@ -87,6 +87,7 @@ export function TopBar({ fullName, email, orgName, roleLabel, branches, selected
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={() => router.push("/account/password")}>Change password</DropdownMenuItem>
             <DropdownMenuItem variant="destructive" disabled={loggingOut} onSelect={handleLogout}>
               {loggingOut ? "Logging out…" : "Log out"}
             </DropdownMenuItem>

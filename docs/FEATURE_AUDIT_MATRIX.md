@@ -6,11 +6,11 @@ Status as of 31 Oct 2026, from reading the schema, services, routes and tests in
 - **Unverified UI** = page exists, compiles, typechecks and lints, but has **not** been rendered or clicked through in a browser, and has no component tests.
 - **Partial** / **Missing** = see the evidence column.
 
-Last recorded results: backend 420 tests passing, UI 50 passing, lint clean, `tsc` clean once `seed-review/` is excluded.
+Last recorded results: backend 443 tests passing, UI 50 passing, lint clean, `tsc` clean, 21/21 browser smoke checks on a production build against a scratch database (`scripts/smoke-test.py`). See `docs/PRODUCTION_READINESS.md` for the security and operations detail.
 
 | # | Module (priority) | Status | Evidence / gap |
 |---|---|---|---|
-| 1 | Auth, roles, permissions (P0) | Verified (backend), partial overall | Login/logout/sessions, 8 roles, capability checks in services, last-owner protection, owner-only owner deactivation, org + branch isolation, no password hashes in responses: `src/server/modules/iam/*` + tests. **Missing:** change password, password reset, brute-force/rate limiting (none found), failed-login audit events |
+| 1 | Auth, roles, permissions (P0) | Verified (backend), partial overall | Login/logout/sessions, 8 roles, capability checks in services, last-owner protection, owner-only owner deactivation, org + branch isolation, no password hashes in responses: `src/server/modules/iam/*` + tests. Password change, password reset (needs a mail transport wired, see `PRODUCTION_READINESS.md`), login and reset rate limiting, session invalidation on password change/reset, gated organization bootstrap: `password-service.ts`, `auth-throttle.ts`, `bootstrap-gate.ts` + `account-security.test.ts`. **Missing:** failed-login audit events, MFA, a configured production mailer |
 | 2 | Company and branches (P0) | Verified (backend), unverified UI | Branch create/list/detail/deactivate, branch-scoped queries, last-active-branch guard. **Missing:** company profile editing, branch rename/reactivate, deactivation blocked by open dependencies, consolidated vs branch report switch beyond the branch selector |
 | 3 | Dashboard (P1) | Partial | Existing Command Centre reads real jobs/stock. Not audited against the checklist (sales totals, low stock alerts, pending approvals not present) |
 | 4 | Items and catalogue (P0) | Partial | Items, types, UoM, standard cost, selling price, BOM link, active flag, duplicate SKU rejection. **Missing:** categories, packaging/unit conversions, tax codes, import |
@@ -35,7 +35,7 @@ Last recorded results: backend 420 tests passing, UI 50 passing, lint clean, `ts
 | 23 | Reports (P1) | Partial | Job costs and profitability only (with CSV/print). Stock, movement, purchasing, quality, labour reports missing |
 | 24 | Audit log (P0) | Verified (backend), unverified UI | Writes in the same transaction as changes; read-only viewer with filters; branch-scoped for non-owners. **Missing:** login/failed-login events, export events, tamper-evidence beyond DB permissions |
 | 25 | Database integrity (P0) | Partial | Constraints, triggers, transactions, idempotency keys, separate migrator/runtime roles in `docs/db-roles-and-security.sql` and the test setup. **To confirm on the live Neon project:** that `MIGRATION_DATABASE_URL` and `RUNTIME_DATABASE_URL` really use different accounts. Backup/restore **not** established |
-| 26 | App security (P0) | Partial | Server-side validation (zod), parameterised queries, safe error responses. **Not checked/missing:** rate limiting, security headers, CSRF review, dependency audit, file-upload rules |
+| 26 | App security (P0) | Partial | Server-side validation (zod), parameterised queries, safe error responses, rate limiting on login/reset/bootstrap, every API route proven to demand a session (`api-authorization.test.ts`), httpOnly/SameSite=Lax/Secure session cookie. **Not done:** security headers, a CSRF review beyond SameSite, dependency audit, file-upload rules, row-level security |
 | 27 | Backups, monitoring (P0) | **Missing** (health probe added: `GET /api/v1/health`) | No automated backup or restore evidence, no error tracking or alerting in the repo |
 | 28 | Documents/attachments (P1) | Missing | |
 | 29 | Notifications/approvals (P1) | Missing | |

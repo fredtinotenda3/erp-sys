@@ -7,9 +7,10 @@ import { randomBytes, createHash } from "node:crypto";
 import { z } from "zod";
 import { prisma, type Db } from "../../shared/db";
 import { UnauthorizedError, ValidationError } from "../../shared/errors";
-import { verifyPassword } from "../../shared/password";
+import { hashPassword, verifyPassword } from "../../shared/password";
 import type { Role } from "../../shared/authz";
 import { recordAudit } from "./audit-service";
+import { assertNotThrottled, throttleClear, throttleHit, throttleKey, type Limit } from "./auth-throttle";
 
 // Fixed-duration, revocable session. 24h balances "don't make shop-floor
 // users re-login constantly" against "a stolen token doesn't live forever";
@@ -71,6 +72,23 @@ async function loadBranchIds(orgId: string, userId: string): Promise<string[]> {
   return rows.map((r) => r.branchId);
 }
 
+// Failed-login throttling. Three counters, because each alone is either weak or abusable:
+//  - per (account + address): the tight one that stops guessing a password from one place;
+//  - per address: stops one place spraying many accounts;
+//  - per account: a looser cap against a distributed guess, loose enough that an attacker cannot
+//    cheaply lock a real user out by typing wrong passwords for them.
+// All three count what was TYPED (org + email), whether or not the account exists, so a lockout never
+// reveals which accounts are real.
+export const LOGIN_ACCOUNT_IP_LIMIT: Limit = { limit: 5, windowMs: 15 * 60 * 1000 };
+export const LOGIN_IP_LIMIT: Limit = { limit: 30, windowMs: 15 * 60 * 1000 };
+export const LOGIN_ACCOUNT_LIMIT: Limit = { limit: 20, windowMs: 15 * 60 * 1000 };
+
+// A real argon2 hash of a throwaway string, computed once. Verifying against it when the account does
+// not exist makes "no such user" cost the same time as "wrong password", so response time does not
+// reveal which emails have accounts.
+let dummyHash: Promise<string> | null = null;
+const getDummyHash = () => (dummyHash ??= hashPassword(randomBytes(16).toString("hex")));
+
 export async function login(input: unknown, context: LoginContext = {}): Promise<LoginResult> {
   const parsed = loginSchema.safeParse(input);
   if (!parsed.success) throw new ValidationError("Invalid login payload", parsed.error.issues);
@@ -79,15 +97,35 @@ export async function login(input: unknown, context: LoginContext = {}): Promise
   // Resolve the organization. An unknown slug produces the SAME generic
   // error as a wrong password so the login form can't be used to discover
   // which organization handles exist.
+  const address = context.ipAddress ?? "unknown";
+  const accountId = `${organizationSlug ?? parsed.data.organizationId}:${email}`;
+  const keyAccountIp = throttleKey("login-acct-ip", `${accountId}|${address}`);
+  const keyIp = throttleKey("login-ip", address);
+  const keyAccount = throttleKey("login-acct", accountId);
+  // With no known address (a host that sets no forwarding header, or an internal caller) the per-address
+  // counter is skipped: lumping every such caller into one bucket would let a single attacker lock
+  // everybody out. The per-account counters still apply.
+  const useIp = address !== "unknown";
+  await assertNotThrottled([
+    { key: keyAccountIp, rule: LOGIN_ACCOUNT_IP_LIMIT },
+    ...(useIp ? [{ key: keyIp, rule: LOGIN_IP_LIMIT }] : []),
+    { key: keyAccount, rule: LOGIN_ACCOUNT_LIMIT },
+  ]);
+  const fail = async (message: string): Promise<never> => {
+    await Promise.all([
+      throttleHit(keyAccountIp, LOGIN_ACCOUNT_IP_LIMIT),
+      ...(useIp ? [throttleHit(keyIp, LOGIN_IP_LIMIT)] : []),
+      throttleHit(keyAccount, LOGIN_ACCOUNT_LIMIT),
+    ]);
+    throw new UnauthorizedError(message);
+  };
+
   let organizationId = parsed.data.organizationId;
   if (organizationSlug) {
     const org = await prisma.organization.findUnique({ where: { slug: organizationSlug }, select: { id: true } });
-    if (!org) throw new UnauthorizedError("Invalid email or password");
-    organizationId = org.id;
+    if (org) organizationId = org.id;
   }
-  if (!organizationId) throw new UnauthorizedError("Invalid email or password");
-
-  const user = await prisma.user.findFirst({ where: { orgId: organizationId, email } });
+  const user = organizationId ? await prisma.user.findFirst({ where: { orgId: organizationId, email } }) : null;
 
   // Identical error for "no such user" and "correct user, wrong password" —
   // deliberately not distinguishing them in the response, to avoid account
@@ -95,10 +133,14 @@ export async function login(input: unknown, context: LoginContext = {}): Promise
   // correct password still yields the same generic failure rather than a
   // distinct "account disabled" message that would itself leak account
   // existence/state.
-  if (!user || !user.isActive) throw new UnauthorizedError("Invalid email or password");
+  if (!user || !user.isActive || !organizationId) {
+    await verifyPassword(await getDummyHash(), password); // equalise timing with the real-user path
+    return fail("Invalid email or password");
+  }
 
   const passwordOk = await verifyPassword(user.passwordHash, password);
-  if (!passwordOk) throw new UnauthorizedError("Invalid email or password");
+  if (!passwordOk) return fail("Invalid email or password");
+  await throttleClear(keyAccountIp); // a correct password clears this person's own failure streak
 
   const token = randomBytes(32).toString("base64url");
   const tokenHash = hashToken(token);

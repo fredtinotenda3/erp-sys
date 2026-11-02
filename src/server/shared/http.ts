@@ -4,7 +4,7 @@
 // way around, so this file stays a cross-cutting primitive any module can
 // use without a layering cycle.
 import { NextResponse } from "next/server";
-import { AppError, ValidationError } from "./errors";
+import { AppError, RateLimitError, ValidationError } from "./errors";
 
 export const SESSION_COOKIE_NAME = "mops_session";
 
@@ -42,6 +42,12 @@ export function errorResponse(err: unknown): NextResponse {
       { status: err.httpStatus },
     );
   }
+  if (err instanceof RateLimitError) {
+    return NextResponse.json(
+      { error: { code: err.code, message: err.message } },
+      { status: err.httpStatus, headers: { "Retry-After": String(err.retryAfterSeconds) } },
+    );
+  }
   if (err instanceof AppError) {
     return NextResponse.json({ error: { code: err.code, message: err.message } }, { status: err.httpStatus });
   }
@@ -49,5 +55,17 @@ export function errorResponse(err: unknown): NextResponse {
   return NextResponse.json(
     { error: { code: "INTERNAL_ERROR", message: "An unexpected error occurred" } },
     { status: 500 },
+  );
+}
+
+// Best-effort client address for rate limiting and session metadata. These headers are only
+// trustworthy when the app sits behind a proxy that sets/overwrites them (Vercel does); on any other
+// host, put a proxy in front or the first X-Forwarded-For entry can be forged by the caller.
+export function clientIp(headers: Headers): string | undefined {
+  return (
+    headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() ||
+    headers.get("x-real-ip")?.trim() ||
+    headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    undefined
   );
 }

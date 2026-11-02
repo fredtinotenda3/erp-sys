@@ -69,3 +69,16 @@ export class ConflictError extends AppError {
     super(message);
   }
 }
+
+// Too many attempts. Carries how long to wait so the HTTP layer can send Retry-After.
+export class RateLimitError extends AppError {
+  readonly httpStatus = 429;
+  readonly code = "RATE_LIMITED";
+
+  constructor(
+    message = "Too many attempts. Please try again later.",
+    readonly retryAfterSeconds = 60,
+  ) {
+    super(message);
+  }
+}

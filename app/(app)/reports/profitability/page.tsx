@@ -85,7 +85,8 @@ export default async function ProfitabilityPage({ searchParams }: { searchParams
         title="Profitability"
         crumbs={[{ label: "Reports", href: "/reports" }, { label: "Profitability" }]}
         description={`${branchId ? ctx.branchName(branchId) : "All your branches"} · completed jobs only.`}
-        actions={<><PrintButton /><Link href={`/api/v1/reports/profitability/export?${exportQ.toString()}`} className={buttonVariants({ variant: "outline" })} data-print-hide><Download /> Export CSV</Link></>}
+        actions={<><PrintButton />{/* A plain anchor: this is a file download, not a page, so it must not be prefetched or client-routed. */}
+          <a href={`/api/v1/reports/profitability/export?${exportQ.toString()}`} download className={buttonVariants({ variant: "outline" })} data-print-hide><Download /> Export CSV</a></>}
       />
       <Notice tone="info" className="mb-4">
         The &ldquo;quoted amount&rdquo; is what the job was quoted, not recognised revenue — nothing here is invoiced or booked. Profit is <strong>gross profit before overhead</strong>: quote minus recorded material and labour cost. Figures are never converted between currencies.

@@ -62,7 +62,8 @@ export default async function JobCostsReportPage({ searchParams }: { searchParam
         title="Job costs"
         crumbs={[{ label: "Reports", href: "/reports" }, { label: "Job costs" }]}
         description={`${branchId ? ctx.branchName(branchId) : "All your branches"}. Amounts are shown in the currency each cost was recorded in; nothing is converted.`}
-        actions={<><PrintButton /><Link href={`/api/v1/reports/job-costs/export?${exportQ.toString()}`} className={buttonVariants({ variant: "outline" })} data-print-hide><Download /> Export CSV</Link></>}
+        actions={<><PrintButton />{/* A plain anchor: this is a file download, not a page, so it must not be prefetched or client-routed. */}
+          <a href={`/api/v1/reports/job-costs/export?${exportQ.toString()}`} download className={buttonVariants({ variant: "outline" })} data-print-hide><Download /> Export CSV</a></>}
       />
       <FilterBar resetHref="/reports/job-costs">
         <FilterField id="status" label="Status">

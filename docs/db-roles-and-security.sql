@@ -105,7 +105,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON
   item, bill_of_material, bom_line, customer, sales_order, sales_order_line,
   production_job, material_requirement, labour_record,
   production_stage_template, production_job_stage,
-  warehouse, job_cost_estimate
+  warehouse, job_cost_estimate,
+  password_reset_token, auth_throttle -- migration 20261031100000_account_security (also grants itself, guarded)
 TO mops_runtime;
 
 -- Production module tables (migration 20261008110000_production_job_foundations
