@@ -1,13 +1,15 @@
-// Loads .env into process.env for test runs. Vite/Vitest populates
-// `import.meta.env`, not `process.env`, by default — but every module under
-// test reads `process.env.RUNTIME_DATABASE_URL` etc. directly (see
-// src/server/shared/db.ts), so process.env needs to actually be populated.
-import "dotenv/config";
+// Runs in every test worker before each test file.
+// Environment is already populated from .env.test by vitest.config.ts (see vitest.test-env.ts).
+import { afterAll } from "vitest";
+import { assertSafeTestDatabase, loadTestEnv } from "./vitest.test-env";
 
-if (!process.env.RUNTIME_DATABASE_URL || !process.env.MIGRATION_DATABASE_URL) {
-  throw new Error(
-    "RUNTIME_DATABASE_URL / MIGRATION_DATABASE_URL are not set. Copy .env.example to " +
-      ".env and fill in real values before running the isolation test suite — these " +
-      "tests run against a real local PostgreSQL instance, not a mock.",
-  );
-}
+loadTestEnv();
+assertSafeTestDatabase();
+
+// Close this file's connection pool when the file finishes, instead of leaving it for the
+// process to drop. Unclosed pools accumulate server-side connections across a long run.
+// No import of the db module here: files that never touch the database stay cheap.
+afterAll(async () => {
+  const client = (globalThis as { __mopsPrismaClient?: { $disconnect(): Promise<void> } }).__mopsPrismaClient;
+  if (client) await client.$disconnect().catch(() => undefined);
+});

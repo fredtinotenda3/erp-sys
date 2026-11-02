@@ -1,4 +1,14 @@
 import { defineConfig } from "vitest/config";
+import { loadTestEnv } from "./vitest.test-env";
+
+// Must run before anything reads process.env: the config is evaluated in the main process and
+// the forked test workers inherit its environment, so every module under test sees .env.test.
+loadTestEnv();
+
+const num = (name: string, fallback: number) => {
+  const n = Number(process.env[name]);
+  return Number.isFinite(n) && n > 0 ? n : fallback;
+};
 
 export default defineConfig({
   test: {
@@ -6,18 +16,15 @@ export default defineConfig({
     include: ["src/**/*.test.ts"],
     globalSetup: ["./vitest.global-setup.ts"],
     setupFiles: ["./vitest.setup.ts"],
-    // Real Postgres round-trips (including intentionally-slow argon2id
-    // hashing per shared/password.ts) are slower than in-memory unit tests.
-    // 30s keeps CI from timing out on a cold connection pool without
-    // masking a genuinely hung test.
-    testTimeout: 30_000,
-    hookTimeout: 30_000,
-    // These tests hit one real database and create real rows (see
-    // src/server/modules/iam/__tests__/test-helpers.ts) — run them
-    // sequentially within a file and across files to avoid unrelated
-    // concurrent test runs racing on shared reference data (e.g. the
-    // `currency` table) or on connection-pool limits against a small local
-    // Postgres instance.
+    // Intentionally-slow argon2id hashing plus real Postgres round trips. Generous enough for a
+    // cold machine, tight enough that a genuinely hung test still fails. Override with
+    // TEST_TIMEOUT_MS / TEST_HOOK_TIMEOUT_MS (e.g. when pointing at a remote database).
+    testTimeout: num("TEST_TIMEOUT_MS", 30_000),
+    hookTimeout: num("TEST_HOOK_TIMEOUT_MS", 60_000),
+    // Tests share one real database and reference data (e.g. the `currency` table), so files run
+    // one at a time, each in its own process (and therefore its own connection pool, which the
+    // setup file closes when the file finishes).
     fileParallelism: false,
+    pool: "forks",
   },
 });

@@ -41,12 +41,28 @@ declare global {
   var __mopsPrismaClient: PrismaClient | undefined;
 }
 
+// Pool tuning. Defaults suit a remote pooled database (Neon): a new connection needs a TCP + TLS +
+// SCRAM handshake, and a cold or waking compute can take well over the old 5s limit, which surfaced as
+// "Connection terminated due to connection timeout". Override per environment without a code change.
+const envInt = (name: string, fallback: number): number => {
+  const n = Number(process.env[name]);
+  return Number.isFinite(n) && n > 0 ? Math.floor(n) : fallback;
+};
+
 function createPrismaClient(): PrismaClient {
   const pool = new Pool({
     connectionString: RUNTIME_DATABASE_URL,
-    max: 10,
-    idleTimeoutMillis: 30_000,
-    connectionTimeoutMillis: 5_000,
+    max: envInt("DB_POOL_MAX", 10),
+    idleTimeoutMillis: envInt("DB_IDLE_TIMEOUT_MS", 30_000),
+    connectionTimeoutMillis: envInt("DB_CONNECT_TIMEOUT_MS", 15_000),
+    // Keep TCP alive so a pooler or NAT idle cut is noticed instead of discovered mid-query.
+    keepAlive: true,
+  });
+  // The server (or a pooler / autosuspending compute) can drop an IDLE connection. node-postgres emits
+  // that as an 'error' event on the pool; with no listener it is an uncaught exception that kills the
+  // process (or the test worker). The pool discards the dead client and opens a new one on demand.
+  pool.on("error", (err) => {
+    console.warn(`[db] idle pooled connection dropped: ${err.message}`);
   });
   const adapter = new PrismaPg(pool);
   return new PrismaClient({

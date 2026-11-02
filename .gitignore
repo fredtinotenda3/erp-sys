@@ -38,6 +38,7 @@ yarn-error.log*
 # committable while every real .env* file stays ignored.
 .env*
 !.env.example
+!.env.test.example
 
 # vercel
 .vercel

@@ -5,18 +5,21 @@
 // "column ... does not exist" and it is not obvious that a single missing
 // migration is the cause. This turns that wall of failures into one clear
 // message that says what to run.
-import "dotenv/config";
 import { readdirSync, existsSync } from "node:fs";
 import path from "node:path";
 import { Pool } from "pg";
+import { assertSafeTestDatabase, loadTestEnv } from "./vitest.test-env";
 
 export default async function globalSetup() {
+  loadTestEnv();
+  assertSafeTestDatabase(); // refuses a non-local database and a missing .env.test
   const migrationUrl = process.env.MIGRATION_DATABASE_URL;
   const runtimeUrl = process.env.RUNTIME_DATABASE_URL;
   if (!migrationUrl || !runtimeUrl) return; // vitest.setup.ts reports this
 
   const problems: string[] = [];
   const pool = new Pool({ connectionString: migrationUrl, max: 1, connectionTimeoutMillis: 10_000 });
+  pool.on("error", () => undefined); // an idle-connection drop must not crash the preflight
   try {
     const failed = await pool.query(
       `SELECT migration_name FROM _prisma_migrations
@@ -49,8 +52,7 @@ export default async function globalSetup() {
         if (missing.length > 0) {
           problems.push(
             `${missing.length} migration(s) in prisma/migrations are not applied to this database: ` +
-              `${missing.join(", ")}. Run \`npx prisma migrate deploy\` (with MIGRATION_DATABASE_URL pointing at the ` +
-              `isolated TEST database, never production), then re-run Stage 3 of docs/db-roles-and-security.sql.`,
+              `${missing.join(", ")}. Run \`npm run test:db:setup\`.`,
           );
         }
       }
@@ -87,13 +89,13 @@ export default async function globalSetup() {
     if (sec && (!sec.rows[0].thr || !sec.rows[0].prt)) {
       problems.push(
         "mops_runtime lacks privileges on auth_throttle / password_reset_token. Re-run Stage 3 of " +
-          "docs/db-roles-and-security.sql as a superuser (the migration only grants when the role already exists).",
+          "docs/db-roles-and-security.sql as a superuser — for the test database, just run `npm run test:db:setup`.",
       );
     }
     if (grants && (grants.rows[0].bal_update || grants.rows[0].bal_insert || grants.rows[0].bal_delete)) {
       problems.push(
         "mops_runtime can write to stock_balance (it must be SELECT-only). Run `npx prisma migrate deploy` " +
-          "(it revokes this) or re-run Stage 3 of docs/db-roles-and-security.sql.",
+          "(it revokes this) or run `npm run test:db:setup`.",
       );
     }
   } catch (err) {
