@@ -6,6 +6,8 @@
 // migration is the cause. This turns that wall of failures into one clear
 // message that says what to run.
 import "dotenv/config";
+import { readdirSync, existsSync } from "node:fs";
+import path from "node:path";
 import { Pool } from "pg";
 
 export default async function globalSetup() {
@@ -28,10 +30,39 @@ export default async function globalSetup() {
       );
     }
 
+    // Every migration directory in the repo must be recorded as applied. This catches ANY migration the
+    // database is behind on (e.g. 20261031100000_account_security, which creates auth_throttle — without
+    // it every login() fails with `relation "auth_throttle" does not exist`). If there is no history table
+    // the database was built by hand with psql, and the table/column probes below are the only check.
+    const migrationsDir = path.join(process.cwd(), "prisma", "migrations");
+    if (existsSync(migrationsDir)) {
+      const onDisk = readdirSync(migrationsDir, { withFileTypes: true })
+        .filter((e) => e.isDirectory() && existsSync(path.join(migrationsDir, e.name, "migration.sql")))
+        .map((e) => e.name)
+        .sort();
+      const applied = await pool
+        .query(`SELECT migration_name FROM _prisma_migrations WHERE finished_at IS NOT NULL AND rolled_back_at IS NULL`)
+        .then((r) => new Set<string>(r.rows.map((x: { migration_name: string }) => x.migration_name)))
+        .catch(() => null);
+      if (applied) {
+        const missing = onDisk.filter((m) => !applied.has(m));
+        if (missing.length > 0) {
+          problems.push(
+            `${missing.length} migration(s) in prisma/migrations are not applied to this database: ` +
+              `${missing.join(", ")}. Run \`npx prisma migrate deploy\` (with MIGRATION_DATABASE_URL pointing at the ` +
+              `isolated TEST database, never production), then re-run Stage 3 of docs/db-roles-and-security.sql.`,
+          );
+        }
+      }
+    }
+
     const needed: [string, string][] = [
       ["exchange_rate", "org_id"],
       ["job_cost_actual", "revenue_currency"],
       ["job_cost_actual_line", "currency"],
+      // migration 20261031100000_account_security
+      ["auth_throttle", "window_start"],
+      ["password_reset_token", "token_hash"],
     ];
     for (const [table, column] of needed) {
       const { rowCount } = await pool.query(
@@ -47,6 +78,18 @@ export default async function globalSetup() {
               has_table_privilege('mops_runtime', 'stock_balance', 'INSERT') AS bal_insert,
               has_table_privilege('mops_runtime', 'stock_balance', 'DELETE') AS bal_delete`,
     ).catch(() => null);
+    const sec = await pool
+      .query(
+        `SELECT has_table_privilege('mops_runtime', 'auth_throttle', 'SELECT,INSERT,UPDATE,DELETE') AS thr,
+                has_table_privilege('mops_runtime', 'password_reset_token', 'SELECT,INSERT,UPDATE') AS prt`,
+      )
+      .catch(() => null); // tables missing: already reported above
+    if (sec && (!sec.rows[0].thr || !sec.rows[0].prt)) {
+      problems.push(
+        "mops_runtime lacks privileges on auth_throttle / password_reset_token. Re-run Stage 3 of " +
+          "docs/db-roles-and-security.sql as a superuser (the migration only grants when the role already exists).",
+      );
+    }
     if (grants && (grants.rows[0].bal_update || grants.rows[0].bal_insert || grants.rows[0].bal_delete)) {
       problems.push(
         "mops_runtime can write to stock_balance (it must be SELECT-only). Run `npx prisma migrate deploy` " +

@@ -4,7 +4,7 @@
 //    present it as the `x-bootstrap-token` header (compared in constant time). Operators enable it
 //    only while onboarding a new organization and unset it afterwards.
 //  - Outside production with no token set it stays open, so local development keeps working.
-//  - Every call is rate limited per address either way.
+//  - Calls are rate limited per trusted client address (and, with no token configured, in one shared bucket).
 import { timingSafeEqual } from "node:crypto";
 import { ForbiddenError, NotFoundError, RateLimitError } from "../../shared/errors";
 import { clientIp } from "../../shared/http";
@@ -24,8 +24,14 @@ export async function assertBootstrapAllowed(headers: Headers): Promise<void> {
 
   if (production && !configured) throw new NotFoundError("Resource"); // disabled: indistinguishable from a missing route
 
-  const { count } = await throttleHit(throttleKey("bootstrap-ip", clientIp(headers) ?? "unknown"), BOOTSTRAP_LIMIT);
-  if (count > BOOTSTRAP_LIMIT.limit) throw new RateLimitError("Too many attempts. Please try again later.", Math.ceil(BOOTSTRAP_LIMIT.windowMs / 1000));
+  // Per trusted address when we have one. With no trusted address (see clientIp in shared/http.ts) and a
+  // token configured, the token itself is the gate and a shared bucket would only let an anonymous caller
+  // exhaust it and block the operator; with no token (local development) one shared bucket is fine.
+  const ip = clientIp(headers);
+  if (ip || !configured) {
+    const { count } = await throttleHit(throttleKey("bootstrap-ip", ip ?? "unknown"), BOOTSTRAP_LIMIT);
+    if (count > BOOTSTRAP_LIMIT.limit) throw new RateLimitError("Too many attempts. Please try again later.", Math.ceil(BOOTSTRAP_LIMIT.windowMs / 1000));
+  }
 
   if (configured) {
     const presented = headers.get("x-bootstrap-token") ?? "";

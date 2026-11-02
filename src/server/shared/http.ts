@@ -3,6 +3,7 @@
 // modules/iam/session-guard.ts, which depends on this file, not the other
 // way around, so this file stays a cross-cutting primitive any module can
 // use without a layering cycle.
+import { isIP } from "node:net";
 import { NextResponse } from "next/server";
 import { AppError, RateLimitError, ValidationError } from "./errors";
 
@@ -58,14 +59,28 @@ export function errorResponse(err: unknown): NextResponse {
   );
 }
 
-// Best-effort client address for rate limiting and session metadata. These headers are only
-// trustworthy when the app sits behind a proxy that sets/overwrites them (Vercel does); on any other
-// host, put a proxy in front or the first X-Forwarded-For entry can be forged by the caller.
+// Client address for rate limiting and session metadata.
+//
+// Forwarding headers are ordinary request headers: any caller can send them. They are therefore trusted
+// ONLY where the deployment guarantees the platform overwrites them, and never otherwise:
+//   - Vercel (process.env.VERCEL is set by the platform): x-vercel-forwarded-for, then x-real-ip, both
+//     overwritten by Vercel's edge, so a caller cannot choose them.
+//   - Anywhere else: only the single header named by TRUSTED_CLIENT_IP_HEADER (for example `x-real-ip`
+//     behind nginx that sets it with `proxy_set_header X-Real-IP $remote_addr`, or `cf-connecting-ip`
+//     behind Cloudflare), and only if your proxy overwrites it on every request. `x-forwarded-for` is
+//     deliberately not accepted as that setting: proxies append to it, so its first entry is caller-chosen.
+//   - Neither: no header is trusted and this returns undefined. Per-address limits are then skipped
+//     (per-account limits still apply) instead of being keyed on a value the attacker controls.
+// The value must be a literal IP address; anything else is discarded rather than stored or hashed.
 export function clientIp(headers: Headers): string | undefined {
-  return (
-    headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() ||
-    headers.get("x-real-ip")?.trim() ||
-    headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    undefined
-  );
+  const names: string[] = [];
+  const configured = process.env.TRUSTED_CLIENT_IP_HEADER?.trim().toLowerCase();
+  if (configured && configured !== "x-forwarded-for") names.push(configured);
+  else if (process.env.VERCEL) names.push("x-vercel-forwarded-for", "x-real-ip");
+
+  for (const name of names) {
+    const raw = headers.get(name)?.split(",")[0]?.trim();
+    if (raw && isIP(raw) !== 0) return raw;
+  }
+  return undefined;
 }

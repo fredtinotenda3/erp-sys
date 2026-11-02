@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // Route-level boundary tests: these call the real Next route handlers (not the services) so they
 // catch a handler that reads its body, or touches data, BEFORE authenticating.
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { readdirSync, statSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 import { pathToFileURL } from "node:url";
-import { randomUUID } from "node:crypto";
 import { NextRequest } from "next/server";
 import { SESSION_COOKIE_NAME } from "../http";
 import { createTestOrg, loginAs, ownerSession, testEmail, TEST_PASSWORD } from "../../modules/iam/__tests__/test-helpers";
@@ -121,11 +120,14 @@ describe("cross-branch access through reports, exports and the audit log", () =>
   });
 });
 
+const randomIp = () => `10.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}`;
+
 describe("organization bootstrap is not an open door in production", () => {
+  beforeEach(() => vi.stubEnv("TRUSTED_CLIENT_IP_HEADER", "x-real-ip"));
   afterEach(() => vi.unstubAllEnvs());
   const post = async (headers: Record<string, string> = {}) => {
     const { POST } = await import("../../../../app/api/v1/organizations/bootstrap/route");
-    return POST(new NextRequest("http://localhost/api/v1/organizations/bootstrap", { method: "POST", headers: { "content-type": "application/json", "x-forwarded-for": `198.51.100.${Math.floor(Math.random() * 250)}-${randomUUID().slice(0, 6)}`, ...headers }, body: "{}" }));
+    return POST(new NextRequest("http://localhost/api/v1/organizations/bootstrap", { method: "POST", headers: { "content-type": "application/json", "x-real-ip": randomIp(), ...headers }, body: "{}" }));
   };
 
   it("is disabled (404) in production when no token is configured", async () => {
@@ -145,7 +147,7 @@ describe("organization bootstrap is not an open door in production", () => {
   it("is rate limited per address", async () => {
     vi.stubEnv("NODE_ENV", "development");
     vi.stubEnv("ORG_BOOTSTRAP_TOKEN", "");
-    const headers = { "x-forwarded-for": `192.0.2.${randomUUID().slice(0, 8)}` };
+    const headers = { "x-real-ip": randomIp() };
     const statuses: number[] = [];
     for (let i = 0; i < 6; i++) statuses.push((await post(headers)).status);
     expect(statuses.slice(0, 5).every((s) => s === 400)).toBe(true);

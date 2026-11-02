@@ -89,7 +89,9 @@ export async function requestPasswordReset(input: unknown, context: RequestConte
   const { organizationSlug, email } = parsed.data;
 
   // Counted BEFORE any lookup, keyed on what was typed.
-  await enforce("reset-req-ip", context.ipAddress ?? "unknown", RESET_REQUEST_IP_LIMIT);
+  // No trusted client address (see clientIp in shared/http.ts): skip the per-address counter rather than
+  // pooling every such caller into one shared bucket, which one attacker could exhaust to block everyone.
+  if (context.ipAddress) await enforce("reset-req-ip", context.ipAddress, RESET_REQUEST_IP_LIMIT);
   await enforce("reset-req-acct", `${organizationSlug}:${email}`, RESET_REQUEST_ACCOUNT_LIMIT);
 
   const org = await prisma.organization.findUnique({ where: { slug: organizationSlug }, select: { id: true } });
@@ -129,7 +131,7 @@ const confirmSchema = z.object({ token: z.string().min(20).max(200), newPassword
 const INVALID_LINK = "This reset link is invalid or has expired. Request a new one.";
 
 export async function confirmPasswordReset(input: unknown, context: RequestContext = {}): Promise<void> {
-  await enforce("reset-confirm-ip", context.ipAddress ?? "unknown", RESET_CONFIRM_IP_LIMIT);
+  if (context.ipAddress) await enforce("reset-confirm-ip", context.ipAddress, RESET_CONFIRM_IP_LIMIT);
   const parsed = confirmSchema.safeParse(input);
   if (!parsed.success) {
     const tokenBad = parsed.error.issues.some((i) => i.path[0] === "token");

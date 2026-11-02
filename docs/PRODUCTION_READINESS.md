@@ -25,7 +25,7 @@ To enable it: at server start call `setPasswordResetMailer(async ({ email, organ
 Development: set `NODE_ENV=development` and `PASSWORD_RESET_DEV_OUTBOX=1`; links are appended to `.dev-outbox/password-reset.log` (git-ignored). This is impossible to enable when `NODE_ENV=production`.
 
 ### Rate limiting: how it works and its limits
-Counters live in the `auth_throttle` table (atomic upsert), because in-memory counters do not work on serverless hosting. Identifiers are hashed. The client address comes from `x-vercel-forwarded-for` / `x-real-ip` / `x-forwarded-for`; **these are only trustworthy behind a proxy that sets them (Vercel does). Elsewhere a caller can forge them.** Rows older than a day can be purged with `purgeExpiredThrottles()` (run it from a scheduled job; not scheduled by this repo).
+Counters live in the `auth_throttle` table (atomic upsert), because in-memory counters do not work on serverless hosting. Identifiers are hashed. The client address is **fail-closed**: forwarding headers are ordinary request headers a caller can forge, so `clientIp()` (`src/server/shared/http.ts`) trusts them only where the deployment guarantees they are overwritten: on Vercel (`VERCEL` is set by the platform) it uses `x-vercel-forwarded-for`, then `x-real-ip`; anywhere else it uses only the single header named in `TRUSTED_CLIENT_IP_HEADER` (e.g. `x-real-ip` behind nginx, `cf-connecting-ip` behind Cloudflare), and `x-forwarded-for` is never accepted because proxies append to it. The value must be a literal IP address. With no trusted source the address is `undefined`: the per-address counters (login, reset request/confirm) are skipped and the per-account counters still apply, so a forged header can never buy fresh attempts and anonymous callers are never pooled into one shared bucket. Sessions then record no IP. Rows older than a day can be purged with `purgeExpiredThrottles()` (run it from a scheduled job; not scheduled by this repo).
 
 ## 2. Tenant and branch boundaries: what actually exists
 - **Organization (tenant) isolation exists**: every table carries `org_id`, composite foreign keys keep references inside one organization, and every service filters by it. Covered by `tenant-isolation.test.ts` and the "not found across organizations" tests in each module.
@@ -71,7 +71,7 @@ Recommended and required before real data:
 3. [ ] `NODE_ENV=production`; `ORG_BOOTSTRAP_TOKEN` **unset** (or set only during onboarding).
 4. [ ] Mail provider wired through `setPasswordResetMailer`; a real reset email received and the link worked once and then failed.
 5. [ ] HTTPS only; confirm the session cookie is `Secure; HttpOnly; SameSite=Lax`.
-6. [ ] Host passes a trusted client-address header (Vercel: automatic).
+6. [ ] Client address: on Vercel nothing to do. Elsewhere set `TRUSTED_CLIENT_IP_HEADER` to a header your proxy **overwrites on every request**, and confirm a request with a forged `X-Real-IP`/`X-Forwarded-For` does not change the address the app sees. If unset, per-address limits are off (per-account limits remain).
 7. [ ] Migrations reviewed, rehearsed on a Neon branch, applied by the pipeline.
 8. [ ] Backup/PITR retention recorded; one restore test completed in isolation.
 9. [ ] Uptime monitor on `/api/v1/health`; someone is alerted when it fails.

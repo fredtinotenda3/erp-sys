@@ -1,6 +1,7 @@
 // Account security: password change, password reset, login/reset throttling, and session lifecycle.
 // Real database, fresh random organizations per test (see test-helpers.ts for why there is no cleanup).
-import { describe, expect, it, afterEach } from "vitest";
+import { describe, expect, it, afterEach, vi } from "vitest";
+import { NextRequest } from "next/server";
 import { createHash, randomUUID } from "node:crypto";
 import { prisma } from "../../../shared/db";
 import { RateLimitError, UnauthorizedError, ValidationError } from "../../../shared/errors";
@@ -12,7 +13,7 @@ import { listCustomers } from "../../customers/customer-service";
 import { createCustomer } from "../../customers/customer-service";
 
 const NEW_PASSWORD = "Another-Str0ng-Passw0rd!";
-const uniqueIp = () => `203.0.113.${Math.floor(Math.random() * 250) + 1}-${randomUUID().slice(0, 8)}`;
+const uniqueIp = () => `10.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}`;
 
 async function slugOf(org: TestOrg) {
   return (await prisma.organization.findUniqueOrThrow({ where: { id: org.organizationId }, select: { slug: true } })).slug;
@@ -229,5 +230,38 @@ describe("session lifecycle and permission changes", () => {
     await updateUserRole(owner, user.id, "VIEWER");
     await expect(createCustomer((await validateSessionToken(token))!, { name: "Revoked again" })).rejects.toThrow(/does not have/);
     expect((await listCustomers((await validateSessionToken(token))!)).length).toBeGreaterThan(0);
+  });
+});
+
+describe("rate limits cannot be dodged with forged forwarding headers", () => {
+  afterEach(() => vi.unstubAllEnvs());
+
+  it("rotating X-Forwarded-For / X-Real-IP does not give a login attacker fresh attempts (self-hosted default)", async () => {
+    vi.stubEnv("VERCEL", "");
+    vi.stubEnv("TRUSTED_CLIENT_IP_HEADER", "");
+    const org = await createTestOrg("forged-hdr");
+    const { email } = await userWith(org);
+    const { POST } = await import("../../../../../app/api/v1/auth/login/route");
+    const attempt = (n: number, password: string) =>
+      POST(new NextRequest("http://localhost/api/v1/auth/login", {
+        method: "POST",
+        headers: { "content-type": "application/json", "x-forwarded-for": `198.51.100.${n}`, "x-real-ip": `198.51.100.${n}` },
+        body: JSON.stringify({ organizationId: org.organizationId, email, password }),
+      }));
+    for (let i = 1; i <= 5; i++) expect((await attempt(i, `wrong-password-${i}`)).status).toBe(401);
+    // A sixth attempt from a "new" address is still refused — even with the right password.
+    const res = await attempt(99, TEST_PASSWORD);
+    expect(res.status).toBe(429);
+    expect(res.headers.get("retry-after")).toBeTruthy();
+  });
+
+  it("password-reset requests with no trusted address are limited per account, never pooled into one shared bucket", async () => {
+    vi.stubEnv("VERCEL", "");
+    vi.stubEnv("TRUSTED_CLIENT_IP_HEADER", "");
+    const org = await createTestOrg("no-ip-reset");
+    const slug = await slugOf(org);
+    for (let i = 0; i < 12; i++) {
+      await expect(requestPasswordReset({ organizationSlug: slug, email: `nobody${i}.${randomUUID()}@test.mops.invalid` })).resolves.toBeUndefined();
+    }
   });
 });
