@@ -62,6 +62,16 @@ export type User = Prisma.UserModel
  */
 export type UserBranchAccess = Prisma.UserBranchAccessModel
 /**
+ * Model PasswordResetToken
+ * 
+ */
+export type PasswordResetToken = Prisma.PasswordResetTokenModel
+/**
+ * Model AuthThrottle
+ * 
+ */
+export type AuthThrottle = Prisma.AuthThrottleModel
+/**
  * Model UserSession
  * 
  */

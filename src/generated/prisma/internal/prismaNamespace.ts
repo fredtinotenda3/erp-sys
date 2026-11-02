@@ -401,6 +401,8 @@ export const ModelName = {
   Branch: 'Branch',
   User: 'User',
   UserBranchAccess: 'UserBranchAccess',
+  PasswordResetToken: 'PasswordResetToken',
+  AuthThrottle: 'AuthThrottle',
   UserSession: 'UserSession',
   AuditLog: 'AuditLog',
   Currency: 'Currency',
@@ -444,7 +446,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "organization" | "branch" | "user" | "userBranchAccess" | "userSession" | "auditLog" | "currency" | "exchangeRate" | "item" | "billOfMaterial" | "bomLine" | "customer" | "salesOrder" | "salesOrderLine" | "productionJob" | "materialRequirement" | "labourRecord" | "productionStageTemplate" | "productionJobStage" | "qualityRecord" | "warehouse" | "stockMovement" | "stockBalance" | "jobCostEstimate" | "jobCostEstimateLine" | "jobNumberCounter" | "jobCostActual" | "jobCostActualLine" | "jobCostAdjustment" | "productionOutput" | "productionOutputVoid" | "qualityDisposition"
+    modelProps: "organization" | "branch" | "user" | "userBranchAccess" | "passwordResetToken" | "authThrottle" | "userSession" | "auditLog" | "currency" | "exchangeRate" | "item" | "billOfMaterial" | "bomLine" | "customer" | "salesOrder" | "salesOrderLine" | "productionJob" | "materialRequirement" | "labourRecord" | "productionStageTemplate" | "productionJobStage" | "qualityRecord" | "warehouse" | "stockMovement" | "stockBalance" | "jobCostEstimate" | "jobCostEstimateLine" | "jobNumberCounter" | "jobCostActual" | "jobCostActualLine" | "jobCostAdjustment" | "productionOutput" | "productionOutputVoid" | "qualityDisposition"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -741,6 +743,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserBranchAccessCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserBranchAccessCountAggregateOutputType> | number
+        }
+      }
+    }
+    PasswordResetToken: {
+      payload: Prisma.$PasswordResetTokenPayload<ExtArgs>
+      fields: Prisma.PasswordResetTokenFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PasswordResetTokenFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PasswordResetTokenFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+        }
+        findFirst: {
+          args: Prisma.PasswordResetTokenFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PasswordResetTokenFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+        }
+        findMany: {
+          args: Prisma.PasswordResetTokenFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>[]
+        }
+        create: {
+          args: Prisma.PasswordResetTokenCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+        }
+        createMany: {
+          args: Prisma.PasswordResetTokenCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PasswordResetTokenCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>[]
+        }
+        delete: {
+          args: Prisma.PasswordResetTokenDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+        }
+        update: {
+          args: Prisma.PasswordResetTokenUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+        }
+        deleteMany: {
+          args: Prisma.PasswordResetTokenDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PasswordResetTokenUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PasswordResetTokenUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>[]
+        }
+        upsert: {
+          args: Prisma.PasswordResetTokenUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+        }
+        aggregate: {
+          args: Prisma.PasswordResetTokenAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePasswordResetToken>
+        }
+        groupBy: {
+          args: Prisma.PasswordResetTokenGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PasswordResetTokenGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PasswordResetTokenCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PasswordResetTokenCountAggregateOutputType> | number
+        }
+      }
+    }
+    AuthThrottle: {
+      payload: Prisma.$AuthThrottlePayload<ExtArgs>
+      fields: Prisma.AuthThrottleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AuthThrottleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthThrottlePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AuthThrottleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthThrottlePayload>
+        }
+        findFirst: {
+          args: Prisma.AuthThrottleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthThrottlePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AuthThrottleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthThrottlePayload>
+        }
+        findMany: {
+          args: Prisma.AuthThrottleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthThrottlePayload>[]
+        }
+        create: {
+          args: Prisma.AuthThrottleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthThrottlePayload>
+        }
+        createMany: {
+          args: Prisma.AuthThrottleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AuthThrottleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthThrottlePayload>[]
+        }
+        delete: {
+          args: Prisma.AuthThrottleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthThrottlePayload>
+        }
+        update: {
+          args: Prisma.AuthThrottleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthThrottlePayload>
+        }
+        deleteMany: {
+          args: Prisma.AuthThrottleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AuthThrottleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AuthThrottleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthThrottlePayload>[]
+        }
+        upsert: {
+          args: Prisma.AuthThrottleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthThrottlePayload>
+        }
+        aggregate: {
+          args: Prisma.AuthThrottleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAuthThrottle>
+        }
+        groupBy: {
+          args: Prisma.AuthThrottleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AuthThrottleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AuthThrottleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AuthThrottleCountAggregateOutputType> | number
         }
       }
     }
@@ -2906,6 +3056,29 @@ export const UserBranchAccessScalarFieldEnum = {
 export type UserBranchAccessScalarFieldEnum = (typeof UserBranchAccessScalarFieldEnum)[keyof typeof UserBranchAccessScalarFieldEnum]
 
 
+export const PasswordResetTokenScalarFieldEnum = {
+  id: 'id',
+  orgId: 'orgId',
+  userId: 'userId',
+  tokenHash: 'tokenHash',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  requestedIp: 'requestedIp'
+} as const
+
+export type PasswordResetTokenScalarFieldEnum = (typeof PasswordResetTokenScalarFieldEnum)[keyof typeof PasswordResetTokenScalarFieldEnum]
+
+
+export const AuthThrottleScalarFieldEnum = {
+  key: 'key',
+  windowStart: 'windowStart',
+  count: 'count'
+} as const
+
+export type AuthThrottleScalarFieldEnum = (typeof AuthThrottleScalarFieldEnum)[keyof typeof AuthThrottleScalarFieldEnum]
+
+
 export const UserSessionScalarFieldEnum = {
   id: 'id',
   orgId: 'orgId',
@@ -3818,6 +3991,8 @@ export type GlobalOmitConfig = {
   branch?: Prisma.BranchOmit
   user?: Prisma.UserOmit
   userBranchAccess?: Prisma.UserBranchAccessOmit
+  passwordResetToken?: Prisma.PasswordResetTokenOmit
+  authThrottle?: Prisma.AuthThrottleOmit
   userSession?: Prisma.UserSessionOmit
   auditLog?: Prisma.AuditLogOmit
   currency?: Prisma.CurrencyOmit

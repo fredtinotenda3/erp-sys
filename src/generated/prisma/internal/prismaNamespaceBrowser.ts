@@ -55,6 +55,8 @@ export const ModelName = {
   Branch: 'Branch',
   User: 'User',
   UserBranchAccess: 'UserBranchAccess',
+  PasswordResetToken: 'PasswordResetToken',
+  AuthThrottle: 'AuthThrottle',
   UserSession: 'UserSession',
   AuditLog: 'AuditLog',
   Currency: 'Currency',
@@ -150,6 +152,29 @@ export const UserBranchAccessScalarFieldEnum = {
 } as const
 
 export type UserBranchAccessScalarFieldEnum = (typeof UserBranchAccessScalarFieldEnum)[keyof typeof UserBranchAccessScalarFieldEnum]
+
+
+export const PasswordResetTokenScalarFieldEnum = {
+  id: 'id',
+  orgId: 'orgId',
+  userId: 'userId',
+  tokenHash: 'tokenHash',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  requestedIp: 'requestedIp'
+} as const
+
+export type PasswordResetTokenScalarFieldEnum = (typeof PasswordResetTokenScalarFieldEnum)[keyof typeof PasswordResetTokenScalarFieldEnum]
+
+
+export const AuthThrottleScalarFieldEnum = {
+  key: 'key',
+  windowStart: 'windowStart',
+  count: 'count'
+} as const
+
+export type AuthThrottleScalarFieldEnum = (typeof AuthThrottleScalarFieldEnum)[keyof typeof AuthThrottleScalarFieldEnum]
 
 
 export const UserSessionScalarFieldEnum = {
