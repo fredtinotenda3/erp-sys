@@ -64,6 +64,7 @@ model Organization {
   auditLogs AuditLog[]
   items     Item[]
   customers Customer[]
+  suppliers Supplier[]
   jobCounter JobNumberCounter?
   exchangeRates ExchangeRate[]
 
@@ -352,6 +353,46 @@ model Customer {
 
   @@unique([orgId, id])
   @@map("customer")
+}
+
+// ---------------------------------------------------------------------------
+// SUPPLIERS — first milestone of the shared-core build-out (see
+// ARCHITECTURE.md's new "Shared core before industry layer" sequencing note).
+// Deliberately shaped identically to Customer: org-wide master data (a vendor
+// relationship isn't a branch concept — the same supplier can ship to any of
+// an org's branches), no hard delete, lifecycle via `status`, no uniqueness
+// constraint on name for the same reason Customer has none (two legitimate
+// suppliers can share a trading name; supplier-service.test.ts asserts this
+// explicitly, same as customer-service.test.ts does).
+//
+// Fields are intentionally minimal (name/contact/address/notes/status) —
+// the same conservative slice Customer shipped with. Purchasing/PO (the next
+// milestone in Stanley's ordered list) will likely need supplier-specific
+// fields this slice does NOT have: payment terms, lead time, currency,
+// tax/registration number, bank details. Not adding them speculatively here
+// — flag when Purchasing starts whether they belong on Supplier directly or
+// on the PO relationship itself.
+// ---------------------------------------------------------------------------
+
+enum SupplierStatus {
+  active
+  inactive
+}
+
+model Supplier {
+  id        String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId     String         @map("org_id") @db.Uuid
+  org       Organization   @relation(fields: [orgId], references: [id])
+  name      String
+  contact   String?
+  address   String?
+  status    SupplierStatus @default(active)
+  notes     String?
+  createdAt DateTime       @default(now()) @map("created_at")
+  updatedAt DateTime       @updatedAt @map("updated_at")
+
+  @@unique([orgId, id])
+  @@map("supplier")
 }
 
 enum SalesOrderStatus {

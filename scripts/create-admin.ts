@@ -1,17 +1,18 @@
-// Creates the first organization, its first branch and an OWNER_ADMIN login.
-// Run once per organization:
+// Creates the first organization + OWNER_ADMIN, OR (if the organization already exists)
+// verifies the login and can repair/reset the admin account. Safe to re-run.
 //
 //   PowerShell:
 //     $env:ADMIN_PASSWORD = "<12+ chars>"
+//     $env:ADMIN_EMAIL    = "debtors2@willsgrove.co.zw"
 //     npx tsx scripts/create-admin.ts
 //
-// Everything else comes from optional env vars (defaults below). The password
-// is read from the environment so it never lands in a file or in shell history
-// of the script. Uses the same service the API uses (bootstrapOrganization), so
-// the audit log and org/branch/user rows are created exactly as in production.
+//   Repair an existing account (reset password, force OWNER_ADMIN, reactivate, grant all branches):
+//     $env:RESET_ADMIN = "1"
+//     npx tsx scripts/create-admin.ts
 import "dotenv/config";
 import { bootstrapOrganization } from "../src/server/modules/iam/org-service";
 import { login } from "../src/server/modules/iam/session-service";
+import { hashPassword } from "../src/server/shared/password";
 import { prisma } from "../src/server/shared/db";
 
 async function main() {
@@ -19,23 +20,57 @@ async function main() {
   if (!password || password.length < 12) {
     throw new Error("Set ADMIN_PASSWORD (at least 12 characters) before running this script.");
   }
-  const input = {
-    organizationName: process.env.ORG_NAME ?? "Wills Grove",
-    organizationSlug: process.env.ORG_SLUG ?? "willsgrove",
-    baseCurrency: process.env.BASE_CURRENCY ?? "USD",
-    firstBranchName: process.env.BRANCH_NAME ?? "Main",
-    ownerEmail: process.env.ADMIN_EMAIL ?? "debtors2@willsgrove.co.zw",
-    ownerFullName: process.env.ADMIN_NAME ?? "Wills Grove Admin",
-    ownerPassword: password,
-  };
-  const result = await bootstrapOrganization(input);
-  // Prove the credentials work end to end.
-  await login({ organizationSlug: result.organizationSlug, email: input.ownerEmail, password });
-  console.log("\nAdmin created and login verified.\n");
-  console.log("  Organization handle :", result.organizationSlug);
-  console.log("  Email               :", input.ownerEmail.toLowerCase());
-  console.log("  Role                : OWNER_ADMIN");
-  console.log("  (password: the ADMIN_PASSWORD you set)\n");
+  const slug = (process.env.ORG_SLUG ?? "willsgrove").trim().toLowerCase();
+  const email = (process.env.ADMIN_EMAIL ?? "debtors2@willsgrove.co.zw").trim().toLowerCase();
+
+  const org = await prisma.organization.findUnique({ where: { slug }, select: { id: true, name: true } });
+
+  if (!org) {
+    const result = await bootstrapOrganization({
+      organizationName: process.env.ORG_NAME ?? "Wills Grove",
+      organizationSlug: slug,
+      baseCurrency: process.env.BASE_CURRENCY ?? "USD",
+      firstBranchName: process.env.BRANCH_NAME ?? "Main",
+      ownerEmail: email,
+      ownerFullName: process.env.ADMIN_NAME ?? "Wills Grove Admin",
+      ownerPassword: password,
+    });
+    await login({ organizationSlug: result.organizationSlug, email, password });
+    console.log("\nOrganization + admin created and login verified.");
+    return;
+  }
+
+  console.log(`Organization "${slug}" already exists (${org.name}) — not creating it again.`);
+
+  const branches = await prisma.branch.findMany({ where: { orgId: org.id }, select: { id: true, name: true, isActive: true } });
+  console.log("Branches:", branches.length ? branches.map((b) => b.name).join(", ") : "NONE");
+
+  const user = await prisma.user.findFirst({ where: { orgId: org.id, email } });
+  console.log(
+    user
+      ? `User ${email}: role=${user.role} active=${user.isActive}`
+      : `User ${email}: DOES NOT EXIST in this organization`,
+  );
+
+  if (process.env.RESET_ADMIN === "1") {
+    const passwordHash = await hashPassword(password);
+    const fixed = user
+      ? await prisma.user.update({ where: { id: user.id }, data: { passwordHash, role: "OWNER_ADMIN", isActive: true } })
+      : await prisma.user.create({
+          data: { orgId: org.id, email, passwordHash, fullName: process.env.ADMIN_NAME ?? "Wills Grove Admin", role: "OWNER_ADMIN", isActive: true },
+        });
+    console.log(`Repaired ${fixed.email}: OWNER_ADMIN, active, password reset.`);
+  }
+
+  try {
+    const r = await login({ organizationSlug: slug, email, password });
+    console.log(`\nLogin OK. role=${r.session.role}. Use these on the login page:`);
+    console.log(`  Organization: ${slug}\n  Email: ${email}`);
+  } catch (e) {
+    console.log("\nLogin FAILED:", e instanceof Error ? e.message : e);
+    console.log("Re-run with $env:RESET_ADMIN = \"1\" to repair the account.");
+    process.exitCode = 1;
+  }
 }
 
 main()

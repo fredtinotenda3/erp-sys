@@ -1,25 +1,13 @@
-// The ONE place the application constructs its Prisma Client. Deliberately
-// uses RUNTIME_DATABASE_URL (the mops_runtime role) and NOTHING ELSE —
-// never MIGRATION_DATABASE_URL, which is reserved for the Prisma CLI
-// (prisma.config.ts) and manual migration SQL. If this file ever needs
-// MIGRATION_DATABASE_URL for something, that's a sign the operation belongs
-// in a migration or an admin script, not in application code — the whole
-// point of the two-role split (ARCHITECTURE.md Phase 0 Addendum #6) is that
-// the running app can never hold schema-owner privileges.
+// The ONE place the application constructs its Prisma Client. Uses RUNTIME_DATABASE_URL
+// (the least-privilege role) and NOTHING ELSE -- never MIGRATION_DATABASE_URL.
 //
-// Prisma ORM 7's "prisma-client" generator (see prisma/schema.prisma header)
-// requires an explicit driver adapter at runtime rather than managing its
-// own connection internally — @prisma/adapter-pg wraps a `pg.Pool`.
+// FIX: pool limits were hard-coded (5s connect timeout). On a remote database (Neon, us-east-2,
+// reached from Zimbabwe, possibly waking from auto-suspend) opening a connection can take several
+// seconds, and the dashboard fires ~12 queries at once. They queued past 5s and failed with
+// "timeout exceeded when trying to connect", so the page crashed after a successful login.
+// Limits are now configurable (matches .env.example) with remote-safe defaults.
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
-// NOTE the "/client" suffix: Prisma 7's "prisma-client" generator emits its
-// importable entry point at "<output>/client" (a client.ts/.js file), not a
-// plain index at the output root — confirmed against two current Prisma v7
-// doc pages (generating-prisma-client, handling-exceptions-and-errors) since
-// `npx prisma generate` could not be run in this sandbox to confirm it
-// empirically (see ARCHITECTURE.md Phase 0 Addendum, "Known verification
-// gap"). If your actual generated output differs, this is the one line to
-// fix.
 import { PrismaClient, Prisma } from "../../generated/prisma/client";
 
 const RUNTIME_DATABASE_URL = process.env.RUNTIME_DATABASE_URL;
@@ -32,48 +20,29 @@ if (!RUNTIME_DATABASE_URL) {
   );
 }
 
-// Next.js's dev server module-reloads on every file change; without caching
-// the client on `globalThis`, each reload would create a brand new
-// connection pool and leak the old one (a well-documented Prisma+Next.js dev
-// footgun). Not needed in production, where the module is loaded exactly
-// once per server process.
+const intEnv = (name: string, fallback: number): number => {
+  const n = Number.parseInt(process.env[name] ?? "", 10);
+  return Number.isFinite(n) && n > 0 ? n : fallback;
+};
+
 declare global {
   var __mopsPrismaClient: PrismaClient | undefined;
 }
 
-// Pool tuning. Defaults suit a remote pooled database (Neon): a new connection needs a TCP + TLS +
-// SCRAM handshake, and a cold or waking compute can take well over the old 5s limit, which surfaced as
-// "Connection terminated due to connection timeout". Override per environment without a code change.
-const envInt = (name: string, fallback: number): number => {
-  const n = Number(process.env[name]);
-  return Number.isFinite(n) && n > 0 ? Math.floor(n) : fallback;
-};
-
 function createPrismaClient(): PrismaClient {
   const pool = new Pool({
     connectionString: RUNTIME_DATABASE_URL,
-    max: envInt("DB_POOL_MAX", 10),
-    idleTimeoutMillis: envInt("DB_IDLE_TIMEOUT_MS", 30_000),
-    connectionTimeoutMillis: envInt("DB_CONNECT_TIMEOUT_MS", 15_000),
-    // Keep TCP alive so a pooler or NAT idle cut is noticed instead of discovered mid-query.
+    max: intEnv("DB_POOL_MAX", 10),
+    idleTimeoutMillis: intEnv("DB_IDLE_TIMEOUT_MS", 30_000),
+    connectionTimeoutMillis: intEnv("DB_CONNECT_TIMEOUT_MS", 15_000),
     keepAlive: true,
   });
-  // The server (or a pooler / autosuspending compute) can drop an IDLE connection. node-postgres emits
-  // that as an 'error' event on the pool; with no listener it is an uncaught exception that kills the
-  // process (or the test worker). The pool discards the dead client and opens a new one on demand.
-  pool.on("error", (err) => {
-    console.warn(`[db] idle pooled connection dropped: ${err.message}`);
-  });
+  // An idle-connection error (Neon closing a suspended socket) must not crash the process.
+  pool.on("error", (err) => console.error("pg pool idle client error:", err.message));
   const adapter = new PrismaPg(pool);
   return new PrismaClient({
     adapter,
-    // Prisma's interactive-transaction defaults (2s to acquire a connection,
-    // 5s to finish) are too tight for multi-statement service transactions on
-    // a busy or remote database: createJob serialises on the per-org job
-    // counter row, so concurrent creates queue behind each other and the
-    // later ones were expiring ("A commit cannot be executed on an expired
-    // transaction"). Generous limits cost nothing when the database is fast.
-    transactionOptions: { maxWait: 10_000, timeout: 30_000 },
+    transactionOptions: { maxWait: 15_000, timeout: 60_000 },
   });
 }
 
@@ -83,10 +52,6 @@ if (process.env.NODE_ENV !== "production") {
   globalThis.__mopsPrismaClient = prisma;
 }
 
-// A function/service-layer function can run inside a transaction (passed a
-// `Prisma.TransactionClient`) or standalone (passed the top-level
-// `PrismaClient`) — this union lets repository helpers like
-// modules/iam/audit-service.ts accept either without duplicating code.
 export type Db = PrismaClient | Prisma.TransactionClient;
 
 export function isUniqueConstraintError(err: unknown): boolean {

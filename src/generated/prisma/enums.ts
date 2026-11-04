@@ -71,6 +71,14 @@ export const CustomerStatus = {
 export type CustomerStatus = (typeof CustomerStatus)[keyof typeof CustomerStatus]
 
 
+export const SupplierStatus = {
+  active: 'active',
+  inactive: 'inactive'
+} as const
+
+export type SupplierStatus = (typeof SupplierStatus)[keyof typeof SupplierStatus]
+
+
 export const SalesOrderStatus = {
   draft: 'draft',
   confirmed: 'confirmed',

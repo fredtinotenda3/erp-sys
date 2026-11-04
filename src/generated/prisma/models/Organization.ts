@@ -238,6 +238,7 @@ export type OrganizationWhereInput = {
   auditLogs?: Prisma.AuditLogListRelationFilter
   items?: Prisma.ItemListRelationFilter
   customers?: Prisma.CustomerListRelationFilter
+  suppliers?: Prisma.SupplierListRelationFilter
   jobCounter?: Prisma.XOR<Prisma.JobNumberCounterNullableScalarRelationFilter, Prisma.JobNumberCounterWhereInput> | null
   exchangeRates?: Prisma.ExchangeRateListRelationFilter
 }
@@ -256,6 +257,7 @@ export type OrganizationOrderByWithRelationInput = {
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
   items?: Prisma.ItemOrderByRelationAggregateInput
   customers?: Prisma.CustomerOrderByRelationAggregateInput
+  suppliers?: Prisma.SupplierOrderByRelationAggregateInput
   jobCounter?: Prisma.JobNumberCounterOrderByWithRelationInput
   exchangeRates?: Prisma.ExchangeRateOrderByRelationAggregateInput
 }
@@ -277,6 +279,7 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   auditLogs?: Prisma.AuditLogListRelationFilter
   items?: Prisma.ItemListRelationFilter
   customers?: Prisma.CustomerListRelationFilter
+  suppliers?: Prisma.SupplierListRelationFilter
   jobCounter?: Prisma.XOR<Prisma.JobNumberCounterNullableScalarRelationFilter, Prisma.JobNumberCounterWhereInput> | null
   exchangeRates?: Prisma.ExchangeRateListRelationFilter
 }, "id" | "slug">
@@ -322,6 +325,7 @@ export type OrganizationCreateInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerCreateNestedManyWithoutOrgInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutOrgInput
   jobCounter?: Prisma.JobNumberCounterCreateNestedOneWithoutOrgInput
   exchangeRates?: Prisma.ExchangeRateCreateNestedManyWithoutOrgInput
 }
@@ -339,6 +343,7 @@ export type OrganizationUncheckedCreateInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutOrgInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutOrgInput
   jobCounter?: Prisma.JobNumberCounterUncheckedCreateNestedOneWithoutOrgInput
   exchangeRates?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutOrgInput
 }
@@ -356,6 +361,7 @@ export type OrganizationUpdateInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutOrgNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutOrgNestedInput
   jobCounter?: Prisma.JobNumberCounterUpdateOneWithoutOrgNestedInput
   exchangeRates?: Prisma.ExchangeRateUpdateManyWithoutOrgNestedInput
 }
@@ -373,6 +379,7 @@ export type OrganizationUncheckedUpdateInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutOrgNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutOrgNestedInput
   jobCounter?: Prisma.JobNumberCounterUncheckedUpdateOneWithoutOrgNestedInput
   exchangeRates?: Prisma.ExchangeRateUncheckedUpdateManyWithoutOrgNestedInput
 }
@@ -601,6 +608,20 @@ export type OrganizationUpdateOneRequiredWithoutCustomersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutCustomersInput, Prisma.OrganizationUpdateWithoutCustomersInput>, Prisma.OrganizationUncheckedUpdateWithoutCustomersInput>
 }
 
+export type OrganizationCreateNestedOneWithoutSuppliersInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutSuppliersInput, Prisma.OrganizationUncheckedCreateWithoutSuppliersInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutSuppliersInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutSuppliersNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutSuppliersInput, Prisma.OrganizationUncheckedCreateWithoutSuppliersInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutSuppliersInput
+  upsert?: Prisma.OrganizationUpsertWithoutSuppliersInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutSuppliersInput, Prisma.OrganizationUpdateWithoutSuppliersInput>, Prisma.OrganizationUncheckedUpdateWithoutSuppliersInput>
+}
+
 export type OrganizationCreateNestedOneWithoutJobCounterInput = {
   create?: Prisma.XOR<Prisma.OrganizationCreateWithoutJobCounterInput, Prisma.OrganizationUncheckedCreateWithoutJobCounterInput>
   connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutJobCounterInput
@@ -627,6 +648,7 @@ export type OrganizationCreateWithoutBranchesInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerCreateNestedManyWithoutOrgInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutOrgInput
   jobCounter?: Prisma.JobNumberCounterCreateNestedOneWithoutOrgInput
   exchangeRates?: Prisma.ExchangeRateCreateNestedManyWithoutOrgInput
 }
@@ -643,6 +665,7 @@ export type OrganizationUncheckedCreateWithoutBranchesInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutOrgInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutOrgInput
   jobCounter?: Prisma.JobNumberCounterUncheckedCreateNestedOneWithoutOrgInput
   exchangeRates?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutOrgInput
 }
@@ -675,6 +698,7 @@ export type OrganizationUpdateWithoutBranchesInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutOrgNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutOrgNestedInput
   jobCounter?: Prisma.JobNumberCounterUpdateOneWithoutOrgNestedInput
   exchangeRates?: Prisma.ExchangeRateUpdateManyWithoutOrgNestedInput
 }
@@ -691,6 +715,7 @@ export type OrganizationUncheckedUpdateWithoutBranchesInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutOrgNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutOrgNestedInput
   jobCounter?: Prisma.JobNumberCounterUncheckedUpdateOneWithoutOrgNestedInput
   exchangeRates?: Prisma.ExchangeRateUncheckedUpdateManyWithoutOrgNestedInput
 }
@@ -707,6 +732,7 @@ export type OrganizationCreateWithoutUsersInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerCreateNestedManyWithoutOrgInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutOrgInput
   jobCounter?: Prisma.JobNumberCounterCreateNestedOneWithoutOrgInput
   exchangeRates?: Prisma.ExchangeRateCreateNestedManyWithoutOrgInput
 }
@@ -723,6 +749,7 @@ export type OrganizationUncheckedCreateWithoutUsersInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutOrgInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutOrgInput
   jobCounter?: Prisma.JobNumberCounterUncheckedCreateNestedOneWithoutOrgInput
   exchangeRates?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutOrgInput
 }
@@ -755,6 +782,7 @@ export type OrganizationUpdateWithoutUsersInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutOrgNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutOrgNestedInput
   jobCounter?: Prisma.JobNumberCounterUpdateOneWithoutOrgNestedInput
   exchangeRates?: Prisma.ExchangeRateUpdateManyWithoutOrgNestedInput
 }
@@ -771,6 +799,7 @@ export type OrganizationUncheckedUpdateWithoutUsersInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutOrgNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutOrgNestedInput
   jobCounter?: Prisma.JobNumberCounterUncheckedUpdateOneWithoutOrgNestedInput
   exchangeRates?: Prisma.ExchangeRateUncheckedUpdateManyWithoutOrgNestedInput
 }
@@ -787,6 +816,7 @@ export type OrganizationCreateWithoutAuditLogsInput = {
   users?: Prisma.UserCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerCreateNestedManyWithoutOrgInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutOrgInput
   jobCounter?: Prisma.JobNumberCounterCreateNestedOneWithoutOrgInput
   exchangeRates?: Prisma.ExchangeRateCreateNestedManyWithoutOrgInput
 }
@@ -803,6 +833,7 @@ export type OrganizationUncheckedCreateWithoutAuditLogsInput = {
   users?: Prisma.UserUncheckedCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutOrgInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutOrgInput
   jobCounter?: Prisma.JobNumberCounterUncheckedCreateNestedOneWithoutOrgInput
   exchangeRates?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutOrgInput
 }
@@ -835,6 +866,7 @@ export type OrganizationUpdateWithoutAuditLogsInput = {
   users?: Prisma.UserUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutOrgNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutOrgNestedInput
   jobCounter?: Prisma.JobNumberCounterUpdateOneWithoutOrgNestedInput
   exchangeRates?: Prisma.ExchangeRateUpdateManyWithoutOrgNestedInput
 }
@@ -851,6 +883,7 @@ export type OrganizationUncheckedUpdateWithoutAuditLogsInput = {
   users?: Prisma.UserUncheckedUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutOrgNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutOrgNestedInput
   jobCounter?: Prisma.JobNumberCounterUncheckedUpdateOneWithoutOrgNestedInput
   exchangeRates?: Prisma.ExchangeRateUncheckedUpdateManyWithoutOrgNestedInput
 }
@@ -867,6 +900,7 @@ export type OrganizationCreateWithoutCurrencyInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerCreateNestedManyWithoutOrgInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutOrgInput
   jobCounter?: Prisma.JobNumberCounterCreateNestedOneWithoutOrgInput
   exchangeRates?: Prisma.ExchangeRateCreateNestedManyWithoutOrgInput
 }
@@ -883,6 +917,7 @@ export type OrganizationUncheckedCreateWithoutCurrencyInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutOrgInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutOrgInput
   jobCounter?: Prisma.JobNumberCounterUncheckedCreateNestedOneWithoutOrgInput
   exchangeRates?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutOrgInput
 }
@@ -939,6 +974,7 @@ export type OrganizationCreateWithoutExchangeRatesInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerCreateNestedManyWithoutOrgInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutOrgInput
   jobCounter?: Prisma.JobNumberCounterCreateNestedOneWithoutOrgInput
 }
 
@@ -955,6 +991,7 @@ export type OrganizationUncheckedCreateWithoutExchangeRatesInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutOrgInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutOrgInput
   jobCounter?: Prisma.JobNumberCounterUncheckedCreateNestedOneWithoutOrgInput
 }
 
@@ -987,6 +1024,7 @@ export type OrganizationUpdateWithoutExchangeRatesInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutOrgNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutOrgNestedInput
   jobCounter?: Prisma.JobNumberCounterUpdateOneWithoutOrgNestedInput
 }
 
@@ -1003,6 +1041,7 @@ export type OrganizationUncheckedUpdateWithoutExchangeRatesInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutOrgNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutOrgNestedInput
   jobCounter?: Prisma.JobNumberCounterUncheckedUpdateOneWithoutOrgNestedInput
 }
 
@@ -1018,6 +1057,7 @@ export type OrganizationCreateWithoutItemsInput = {
   users?: Prisma.UserCreateNestedManyWithoutOrgInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerCreateNestedManyWithoutOrgInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutOrgInput
   jobCounter?: Prisma.JobNumberCounterCreateNestedOneWithoutOrgInput
   exchangeRates?: Prisma.ExchangeRateCreateNestedManyWithoutOrgInput
 }
@@ -1034,6 +1074,7 @@ export type OrganizationUncheckedCreateWithoutItemsInput = {
   users?: Prisma.UserUncheckedCreateNestedManyWithoutOrgInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutOrgInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutOrgInput
   jobCounter?: Prisma.JobNumberCounterUncheckedCreateNestedOneWithoutOrgInput
   exchangeRates?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutOrgInput
 }
@@ -1066,6 +1107,7 @@ export type OrganizationUpdateWithoutItemsInput = {
   users?: Prisma.UserUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutOrgNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutOrgNestedInput
   jobCounter?: Prisma.JobNumberCounterUpdateOneWithoutOrgNestedInput
   exchangeRates?: Prisma.ExchangeRateUpdateManyWithoutOrgNestedInput
 }
@@ -1082,6 +1124,7 @@ export type OrganizationUncheckedUpdateWithoutItemsInput = {
   users?: Prisma.UserUncheckedUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutOrgNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutOrgNestedInput
   jobCounter?: Prisma.JobNumberCounterUncheckedUpdateOneWithoutOrgNestedInput
   exchangeRates?: Prisma.ExchangeRateUncheckedUpdateManyWithoutOrgNestedInput
 }
@@ -1098,6 +1141,7 @@ export type OrganizationCreateWithoutCustomersInput = {
   users?: Prisma.UserCreateNestedManyWithoutOrgInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemCreateNestedManyWithoutOrgInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutOrgInput
   jobCounter?: Prisma.JobNumberCounterCreateNestedOneWithoutOrgInput
   exchangeRates?: Prisma.ExchangeRateCreateNestedManyWithoutOrgInput
 }
@@ -1114,6 +1158,7 @@ export type OrganizationUncheckedCreateWithoutCustomersInput = {
   users?: Prisma.UserUncheckedCreateNestedManyWithoutOrgInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutOrgInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutOrgInput
   jobCounter?: Prisma.JobNumberCounterUncheckedCreateNestedOneWithoutOrgInput
   exchangeRates?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutOrgInput
 }
@@ -1146,6 +1191,7 @@ export type OrganizationUpdateWithoutCustomersInput = {
   users?: Prisma.UserUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUpdateManyWithoutOrgNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutOrgNestedInput
   jobCounter?: Prisma.JobNumberCounterUpdateOneWithoutOrgNestedInput
   exchangeRates?: Prisma.ExchangeRateUpdateManyWithoutOrgNestedInput
 }
@@ -1162,6 +1208,91 @@ export type OrganizationUncheckedUpdateWithoutCustomersInput = {
   users?: Prisma.UserUncheckedUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutOrgNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutOrgNestedInput
+  jobCounter?: Prisma.JobNumberCounterUncheckedUpdateOneWithoutOrgNestedInput
+  exchangeRates?: Prisma.ExchangeRateUncheckedUpdateManyWithoutOrgNestedInput
+}
+
+export type OrganizationCreateWithoutSuppliersInput = {
+  id?: string
+  name: string
+  slug: string
+  staleOrderThresholdDays?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  currency: Prisma.CurrencyCreateNestedOneWithoutOrganizationsInput
+  branches?: Prisma.BranchCreateNestedManyWithoutOrgInput
+  users?: Prisma.UserCreateNestedManyWithoutOrgInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutOrgInput
+  items?: Prisma.ItemCreateNestedManyWithoutOrgInput
+  customers?: Prisma.CustomerCreateNestedManyWithoutOrgInput
+  jobCounter?: Prisma.JobNumberCounterCreateNestedOneWithoutOrgInput
+  exchangeRates?: Prisma.ExchangeRateCreateNestedManyWithoutOrgInput
+}
+
+export type OrganizationUncheckedCreateWithoutSuppliersInput = {
+  id?: string
+  name: string
+  slug: string
+  baseCurrency: string
+  staleOrderThresholdDays?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrgInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrgInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
+  items?: Prisma.ItemUncheckedCreateNestedManyWithoutOrgInput
+  customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutOrgInput
+  jobCounter?: Prisma.JobNumberCounterUncheckedCreateNestedOneWithoutOrgInput
+  exchangeRates?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutOrgInput
+}
+
+export type OrganizationCreateOrConnectWithoutSuppliersInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutSuppliersInput, Prisma.OrganizationUncheckedCreateWithoutSuppliersInput>
+}
+
+export type OrganizationUpsertWithoutSuppliersInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutSuppliersInput, Prisma.OrganizationUncheckedUpdateWithoutSuppliersInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutSuppliersInput, Prisma.OrganizationUncheckedCreateWithoutSuppliersInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutSuppliersInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutSuppliersInput, Prisma.OrganizationUncheckedUpdateWithoutSuppliersInput>
+}
+
+export type OrganizationUpdateWithoutSuppliersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currency?: Prisma.CurrencyUpdateOneRequiredWithoutOrganizationsNestedInput
+  branches?: Prisma.BranchUpdateManyWithoutOrgNestedInput
+  users?: Prisma.UserUpdateManyWithoutOrgNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutOrgNestedInput
+  items?: Prisma.ItemUpdateManyWithoutOrgNestedInput
+  customers?: Prisma.CustomerUpdateManyWithoutOrgNestedInput
+  jobCounter?: Prisma.JobNumberCounterUpdateOneWithoutOrgNestedInput
+  exchangeRates?: Prisma.ExchangeRateUpdateManyWithoutOrgNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutSuppliersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  baseCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUncheckedUpdateManyWithoutOrgNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrgNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
+  items?: Prisma.ItemUncheckedUpdateManyWithoutOrgNestedInput
+  customers?: Prisma.CustomerUncheckedUpdateManyWithoutOrgNestedInput
   jobCounter?: Prisma.JobNumberCounterUncheckedUpdateOneWithoutOrgNestedInput
   exchangeRates?: Prisma.ExchangeRateUncheckedUpdateManyWithoutOrgNestedInput
 }
@@ -1179,6 +1310,7 @@ export type OrganizationCreateWithoutJobCounterInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerCreateNestedManyWithoutOrgInput
+  suppliers?: Prisma.SupplierCreateNestedManyWithoutOrgInput
   exchangeRates?: Prisma.ExchangeRateCreateNestedManyWithoutOrgInput
 }
 
@@ -1195,6 +1327,7 @@ export type OrganizationUncheckedCreateWithoutJobCounterInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutOrgInput
   customers?: Prisma.CustomerUncheckedCreateNestedManyWithoutOrgInput
+  suppliers?: Prisma.SupplierUncheckedCreateNestedManyWithoutOrgInput
   exchangeRates?: Prisma.ExchangeRateUncheckedCreateNestedManyWithoutOrgInput
 }
 
@@ -1227,6 +1360,7 @@ export type OrganizationUpdateWithoutJobCounterInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutOrgNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutOrgNestedInput
   exchangeRates?: Prisma.ExchangeRateUpdateManyWithoutOrgNestedInput
 }
 
@@ -1243,6 +1377,7 @@ export type OrganizationUncheckedUpdateWithoutJobCounterInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutOrgNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutOrgNestedInput
   exchangeRates?: Prisma.ExchangeRateUncheckedUpdateManyWithoutOrgNestedInput
 }
 
@@ -1267,6 +1402,7 @@ export type OrganizationUpdateWithoutCurrencyInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUpdateManyWithoutOrgNestedInput
+  suppliers?: Prisma.SupplierUpdateManyWithoutOrgNestedInput
   jobCounter?: Prisma.JobNumberCounterUpdateOneWithoutOrgNestedInput
   exchangeRates?: Prisma.ExchangeRateUpdateManyWithoutOrgNestedInput
 }
@@ -1283,6 +1419,7 @@ export type OrganizationUncheckedUpdateWithoutCurrencyInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutOrgNestedInput
   customers?: Prisma.CustomerUncheckedUpdateManyWithoutOrgNestedInput
+  suppliers?: Prisma.SupplierUncheckedUpdateManyWithoutOrgNestedInput
   jobCounter?: Prisma.JobNumberCounterUncheckedUpdateOneWithoutOrgNestedInput
   exchangeRates?: Prisma.ExchangeRateUncheckedUpdateManyWithoutOrgNestedInput
 }
@@ -1307,6 +1444,7 @@ export type OrganizationCountOutputType = {
   auditLogs: number
   items: number
   customers: number
+  suppliers: number
   exchangeRates: number
 }
 
@@ -1316,6 +1454,7 @@ export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Exte
   auditLogs?: boolean | OrganizationCountOutputTypeCountAuditLogsArgs
   items?: boolean | OrganizationCountOutputTypeCountItemsArgs
   customers?: boolean | OrganizationCountOutputTypeCountCustomersArgs
+  suppliers?: boolean | OrganizationCountOutputTypeCountSuppliersArgs
   exchangeRates?: boolean | OrganizationCountOutputTypeCountExchangeRatesArgs
 }
 
@@ -1367,6 +1506,13 @@ export type OrganizationCountOutputTypeCountCustomersArgs<ExtArgs extends runtim
 /**
  * OrganizationCountOutputType without action
  */
+export type OrganizationCountOutputTypeCountSuppliersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SupplierWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
 export type OrganizationCountOutputTypeCountExchangeRatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ExchangeRateWhereInput
 }
@@ -1386,6 +1532,7 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   auditLogs?: boolean | Prisma.Organization$auditLogsArgs<ExtArgs>
   items?: boolean | Prisma.Organization$itemsArgs<ExtArgs>
   customers?: boolean | Prisma.Organization$customersArgs<ExtArgs>
+  suppliers?: boolean | Prisma.Organization$suppliersArgs<ExtArgs>
   jobCounter?: boolean | Prisma.Organization$jobCounterArgs<ExtArgs>
   exchangeRates?: boolean | Prisma.Organization$exchangeRatesArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
@@ -1431,6 +1578,7 @@ export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   auditLogs?: boolean | Prisma.Organization$auditLogsArgs<ExtArgs>
   items?: boolean | Prisma.Organization$itemsArgs<ExtArgs>
   customers?: boolean | Prisma.Organization$customersArgs<ExtArgs>
+  suppliers?: boolean | Prisma.Organization$suppliersArgs<ExtArgs>
   jobCounter?: boolean | Prisma.Organization$jobCounterArgs<ExtArgs>
   exchangeRates?: boolean | Prisma.Organization$exchangeRatesArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
@@ -1451,6 +1599,7 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
     items: Prisma.$ItemPayload<ExtArgs>[]
     customers: Prisma.$CustomerPayload<ExtArgs>[]
+    suppliers: Prisma.$SupplierPayload<ExtArgs>[]
     jobCounter: Prisma.$JobNumberCounterPayload<ExtArgs> | null
     exchangeRates: Prisma.$ExchangeRatePayload<ExtArgs>[]
   }
@@ -1862,6 +2011,7 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
   auditLogs<T extends Prisma.Organization$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   items<T extends Prisma.Organization$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   customers<T extends Prisma.Organization$customersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$customersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  suppliers<T extends Prisma.Organization$suppliersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$suppliersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   jobCounter<T extends Prisma.Organization$jobCounterArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$jobCounterArgs<ExtArgs>>): Prisma.Prisma__JobNumberCounterClient<runtime.Types.Result.GetResult<Prisma.$JobNumberCounterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   exchangeRates<T extends Prisma.Organization$exchangeRatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$exchangeRatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExchangeRatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -2418,6 +2568,30 @@ export type Organization$customersArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.CustomerScalarFieldEnum | Prisma.CustomerScalarFieldEnum[]
+}
+
+/**
+ * Organization.suppliers
+ */
+export type Organization$suppliersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Supplier
+   */
+  select?: Prisma.SupplierSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Supplier
+   */
+  omit?: Prisma.SupplierOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SupplierInclude<ExtArgs> | null
+  where?: Prisma.SupplierWhereInput
+  orderBy?: Prisma.SupplierOrderByWithRelationInput | Prisma.SupplierOrderByWithRelationInput[]
+  cursor?: Prisma.SupplierWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SupplierScalarFieldEnum | Prisma.SupplierScalarFieldEnum[]
 }
 
 /**

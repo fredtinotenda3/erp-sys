@@ -11,7 +11,7 @@
 // screen ships; once everything has shipped, delete the field.
 import { hasCapability, type Capability, type Role } from "../../src/server/shared/authz";
 
-export type NavIcon = "currency" | "dashboard" | "production" | "inventory" | "catalog" | "orders" | "customers" | "quality" | "reports" | "settings";
+export type NavIcon = "currency" | "dashboard" | "production" | "inventory" | "catalog" | "orders" | "customers" | "suppliers" | "quality" | "reports" | "settings";
 
 export interface NavChild {
   label: string;
@@ -72,6 +72,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   },
   { label: "Exchange rates", href: "/costing/exchange-rates", icon: "currency", capabilities: ["exchange_rate:read"], implemented: true },
   { label: "Customers", href: "/customers", icon: "customers", capabilities: ["customer:read"], implemented: true },
+  { label: "Suppliers", href: "/suppliers", icon: "suppliers", capabilities: ["supplier:read"], implemented: true },
   {
     label: "Quality",
     href: "/quality",

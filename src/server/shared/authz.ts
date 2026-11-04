@@ -64,6 +64,10 @@ export type Capability =
   | "sales_order:read"
   | "sales_order:update"
   | "sales_order:confirm"
+  // Suppliers (shared-core milestone 1 — ARCHITECTURE.md's new sequencing note)
+  | "supplier:create"
+  | "supplier:read"
+  | "supplier:update"
   // Production
   | "production_job:create"
   | "production_job:read"
@@ -94,6 +98,17 @@ export type Capability =
 // tier can otherwise create/deactivate users and manage branches. This is a
 // Phase 1 default, not a spec answer — flag if you want a narrower or wider
 // rule here.
+//
+// NOTE on supplier:create for INVENTORY_MANAGER: unlike Customer (where only
+// OWNER_ADMIN/OPERATIONS_MANAGER get create/update, and every other role that
+// can see Customer is read-only), INVENTORY_MANAGER is ALSO granted
+// supplier:create/update below. This is a deliberate divergence from treating
+// Supplier as a pure mirror of Customer's capability row, not an oversight:
+// Suppliers is the first module of a chain INVENTORY_MANAGER already owns
+// the rest of (stock:receive, stock:adjust, warehouse:create), and the next
+// milestone (Purchasing/POs) will need someone who can both place an order
+// and register who it's with. Flag if you'd rather keep Supplier creation
+// restricted to Owner/Admin/Ops-Manager only, same as Customer.
 //
 // PHASE 1.5 NOTE on exchange_rate:create: ARCHITECTURE.md §11 scoped
 // exchange-rate writes to "Finance/Admin only" — read literally, that's
@@ -132,6 +147,9 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "sales_order:read",
     "sales_order:update",
     "sales_order:confirm",
+    "supplier:create",
+    "supplier:read",
+    "supplier:update",
     "production_job:create",
     "production_job:read",
     "production_job:update",
@@ -175,6 +193,9 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "sales_order:read",
     "sales_order:update",
     "sales_order:confirm",
+    "supplier:create",
+    "supplier:read",
+    "supplier:update",
     "production_job:create",
     "production_job:read",
     "production_job:update",
@@ -202,6 +223,7 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "bom:read",
     "bom:activate",
     "customer:read",
+    "supplier:read",
     "sales_order:read",
     "production_job:create",
     "production_job:read",
@@ -224,6 +246,11 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "item:read",
     "item:update",
     "bom:read",
+    // supplier:create/update granted here, unlike Customer — see the note
+    // above the map explaining this divergence.
+    "supplier:create",
+    "supplier:read",
+    "supplier:update",
     "production_job:read",
     "quality:read",
     "material:issue",
@@ -253,6 +280,7 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "item:read",
     "bom:read",
     "customer:read",
+    "supplier:read",
     "sales_order:read",
     "production_job:read",
     "quality:read",
@@ -267,6 +295,7 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "item:read",
     "bom:read",
     "customer:read",
+    "supplier:read",
     "sales_order:read",
     "production_job:read",
     "quality:read",
