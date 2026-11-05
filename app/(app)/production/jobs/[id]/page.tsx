@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { getJob, listJobs } from "../../../../../src/server/modules/production/job-service";
 import { getJobMaterials } from "../../../../../src/server/modules/inventory/material-issue-service";
+import { getJobLotConsumption } from "../../../../../src/server/modules/inventory/lot-service";
 import { getJobCost } from "../../../../../src/server/modules/costing/cost-service";
 import { listBomVersions } from "../../../../../src/server/modules/catalog/bom-service";
 import { listAuditLog } from "../../../../../src/server/modules/iam/audit-service";
@@ -10,6 +11,7 @@ import { acceptsWork } from "../../../../../src/server/modules/production/job-st
 import { loadShopfloorView, ProductionTab, QualityTab } from "../../../../../components/features/production/shopfloor/job-sections";
 import { EditJobDialog } from "../../../../../components/features/production/edit-job-dialog";
 import { IssueMaterialDialog } from "../../../../../components/features/production/issue-material-dialog";
+import { ReturnMaterialDialog } from "../../../../../components/features/production/return-material-dialog";
 import { JobActions } from "../../../../../components/features/production/job-actions";
 import { CostAdjustmentDialog } from "../../../../../components/features/production/cost-adjustment-dialog";
 import { CostsView } from "../../../../../components/features/production/costs-view";
@@ -26,7 +28,7 @@ import { describeAudit } from "../../../../../lib/audit-describe";
 import { formatDate, formatDateTimeUtc } from "../../../../../lib/format";
 import { getPageContext, load, param, UUID_RE } from "../../../../../lib/server/page-context";
 import { loadCurrencies, loadCustomers, loadItems, loadUsers, loadWarehouses, itemLabel, type Lookup } from "../../../../../lib/server/lookups";
-import type { AuditEntry, Bom, Item, Job, JobCost, JobMaterialRow } from "../../../../../lib/api-types";
+import type { AuditEntry, Bom, Item, Job, JobCost, JobLotConsumptionRow, JobMaterialRow } from "../../../../../lib/api-types";
 import type { PageContext } from "../../../../../lib/server/page-context";
 
 const EDITABLE = new Set(["planned", "released", "in_progress", "on_hold"]);
@@ -204,26 +206,51 @@ async function OverviewTab({ ctx, job, productName, customerName, customersAvail
 }
 
 async function MaterialsTab({ ctx, job, items }: { ctx: PageContext; job: Job; items: Lookup<Item> }) {
-  const [mats, warehouses] = await Promise.all([load<JobMaterialRow[]>(() => getJobMaterials(ctx.session, job.id)), loadWarehouses(ctx)]);
+  const canSeeLots = ctx.can("lot:read");
+  const [mats, warehouses, lotsRes] = await Promise.all([
+    load<JobMaterialRow[]>(() => getJobMaterials(ctx.session, job.id)),
+    loadWarehouses(ctx),
+    canSeeLots ? load<JobLotConsumptionRow[]>(() => getJobLotConsumption(ctx.session, job.id)) : Promise.resolve(null),
+  ]);
   if (!mats.ok) return <LoadFailure status={mats.status} message={mats.message} what="job materials" />;
   const showCost = ctx.can("cost:read");
   const label = (id: string) => itemLabel(items.byId.get(id), id);
   const branchWarehouses = warehouses.list.filter((w) => w.branchId === job.branchId && w.isActive);
   const working = acceptsWork(job.status);
   const canIssue = ctx.can("material:issue") && ctx.can("stock:read") && working && mats.data.length > 0 && branchWarehouses.length > 0;
+  const lots = lotsRes?.ok ? lotsRes.data : [];
+  const lotsByItem = new Map<string, JobLotConsumptionRow[]>();
+  for (const l of lots) lotsByItem.set(l.itemId, [...(lotsByItem.get(l.itemId) ?? []), l]);
+
+  const returnable = mats.data
+    .filter((m) => Number(m.issuedQty) > 0)
+    .map((m) => ({ materialItemId: m.materialItemId, label: label(m.materialItemId), uom: m.uom, outstandingQty: m.issuedQty }));
+  const canReturn = ctx.can("material:issue") && ctx.can("stock:read") && returnable.length > 0 && branchWarehouses.length > 0;
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm text-muted-foreground">Expected quantities are the snapshot taken when the job was created; issued quantities come from the stock ledger.</p>
-        {canIssue ? (
-          <IssueMaterialDialog
-            jobId={job.id}
-            jobNumber={job.jobNumber}
-            warehouses={branchWarehouses.map((w) => ({ id: w.id, name: w.name }))}
-            materials={mats.data.map((m) => ({ materialItemId: m.materialItemId, label: label(m.materialItemId), uom: m.uom, remainingQty: m.remainingQty, expectedQty: m.expectedQty, issuedQty: m.issuedQty }))}
-          />
-        ) : null}
+        <div className="flex gap-2">
+          {canIssue ? (
+            <IssueMaterialDialog
+              jobId={job.id}
+              jobNumber={job.jobNumber}
+              warehouses={branchWarehouses.map((w) => ({ id: w.id, name: w.name }))}
+              materials={mats.data.map((m) => ({ materialItemId: m.materialItemId, label: label(m.materialItemId), uom: m.uom, remainingQty: m.remainingQty, expectedQty: m.expectedQty, issuedQty: m.issuedQty }))}
+              canPickLots={canSeeLots}
+            />
+          ) : null}
+          {canReturn ? (
+            <ReturnMaterialDialog
+              jobId={job.id}
+              jobNumber={job.jobNumber}
+              materials={returnable}
+              warehouses={branchWarehouses.map((w) => ({ id: w.id, name: w.name }))}
+              lots={lots}
+            />
+          ) : null}
+        </div>
       </div>
       {!working && ctx.can("material:issue") ? <Notice tone="neutral">Material can only be issued while the job is released or in progress.</Notice> : null}
       {working && ctx.can("material:issue") && ctx.can("stock:read") && branchWarehouses.length === 0 && warehouses.available ? <Notice tone="warning">This job&apos;s branch has no active warehouse to issue from.</Notice> : null}
@@ -248,12 +275,24 @@ async function MaterialsTab({ ctx, job, items }: { ctx: PageContext; job: Job; i
               </tr>
             </THead>
             <TBody>
-              {mats.data.map((m) => (
+              {mats.data.map((m) => {
+                const itemLots = lotsByItem.get(m.materialItemId) ?? [];
+                return (
                 <TR key={m.materialItemId}>
                   <TD>
                     <Link href={`/catalog/items/${m.materialItemId}`} className="text-primary hover:underline">
                       {label(m.materialItemId)}
                     </Link>
+                    {itemLots.length > 0 ? (
+                      <ul className="mt-1 space-y-0.5 text-xs text-muted-foreground">
+                        {itemLots.map((l) => (
+                          <li key={l.lotId}>
+                            <Link href={`/inventory/lots/${l.lotId}`} className="hover:underline">{l.lotNumber}</Link>: <Quantity value={l.consumed} uom={m.uom} /> consumed
+                            {Number(l.returned) > 0 ? <>, <Quantity value={l.returned} uom={m.uom} /> returned</> : null}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
                   </TD>
                   <TD className="text-right">
                     <Quantity value={m.expectedQty} uom={m.uom} />
@@ -271,7 +310,8 @@ async function MaterialsTab({ ctx, job, items }: { ctx: PageContext; job: Job; i
                     </TD>
                   ) : null}
                 </TR>
-              ))}
+                );
+              })}
             </TBody>
           </Table>
         </Card>

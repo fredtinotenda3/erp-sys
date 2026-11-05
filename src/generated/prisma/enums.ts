@@ -79,6 +79,35 @@ export const SupplierStatus = {
 export type SupplierStatus = (typeof SupplierStatus)[keyof typeof SupplierStatus]
 
 
+export const PurchaseOrderStatus = {
+  draft: 'draft',
+  confirmed: 'confirmed',
+  partially_received: 'partially_received',
+  received: 'received',
+  closed: 'closed',
+  cancelled: 'cancelled'
+} as const
+
+export type PurchaseOrderStatus = (typeof PurchaseOrderStatus)[keyof typeof PurchaseOrderStatus]
+
+
+export const MaterialLotStatus = {
+  active: 'active',
+  quarantined: 'quarantined',
+  expired: 'expired'
+} as const
+
+export type MaterialLotStatus = (typeof MaterialLotStatus)[keyof typeof MaterialLotStatus]
+
+
+export const LotConsumptionType = {
+  consumption: 'consumption',
+  return: 'return'
+} as const
+
+export type LotConsumptionType = (typeof LotConsumptionType)[keyof typeof LotConsumptionType]
+
+
 export const SalesOrderStatus = {
   draft: 'draft',
   confirmed: 'confirmed',

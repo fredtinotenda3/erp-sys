@@ -15,7 +15,14 @@ import { recordAudit } from "../iam/audit-service";
 import type { AuthenticatedSession } from "../iam/session-service";
 import { isBalanceCreationRace, mapStockTriggerError } from "./stock-errors";
 
-export type PostableMovementType = "purchase_receipt" | "adjustment" | "production_consumption";
+// "material_return" added for Phase One of the next mandate round
+// (migration 20261105120000_lot_consumption_and_traceability):
+// material-issue-service.ts's returnMaterialFromJob posts unused/returned
+// material back into a warehouse as a POSITIVE movement, same sign
+// convention as purchase_receipt -- see that file's header comment for why
+// its unit_cost must be the cost basis of what is being reversed, not an
+// arbitrary caller-supplied figure.
+export type PostableMovementType = "purchase_receipt" | "adjustment" | "production_consumption" | "material_return";
 
 export interface PostMovementArgs {
   warehouse: { id: string; branchId: string };
@@ -40,8 +47,17 @@ export interface PostMovementArgs {
   reason: string | null;
   clientRequestId: string;
   occurredAt?: Date;
-  /** Runs inside the same transaction, after the movement is written (e.g. job released -> in_progress). */
-  afterInsert?: (tx: Prisma.TransactionClient) => Promise<void>;
+  /**
+   * Runs inside the same transaction, after the movement is written (e.g.
+   * job released -> in_progress; or, as of this milestone, writing the
+   * LotConsumption rows / quarantine MaterialLot a lot-tracked issue or
+   * return needs — see material-issue-service.ts). The created movement row
+   * is passed as the second argument so callers that need its id (to link a
+   * child row back to it) don't have to re-query for it; existing callers
+   * that only take `tx` remain valid (TypeScript allows assigning a
+   * shorter-parameter-list function where more parameters are accepted).
+   */
+  afterInsert?: (tx: Prisma.TransactionClient, movement: MovementRow) => Promise<void>;
 }
 
 interface MovementRow {
@@ -117,7 +133,7 @@ async function insertMovementTx(tx: Prisma.TransactionClient, session: Authentic
       ...(a.occurredAt ? { occurredAt: a.occurredAt } : {}),
     },
   });
-  if (a.afterInsert) await a.afterInsert(tx);
+  if (a.afterInsert) await a.afterInsert(tx, created as unknown as MovementRow);
   await recordAudit(tx, {
     orgId: session.orgId,
     branchId: a.warehouse.branchId,

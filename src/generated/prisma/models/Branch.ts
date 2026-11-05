@@ -196,6 +196,8 @@ export type BranchWhereInput = {
   productionJobs?: Prisma.ProductionJobListRelationFilter
   salesOrders?: Prisma.SalesOrderListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
+  purchaseOrders?: Prisma.PurchaseOrderListRelationFilter
+  goodsReceipts?: Prisma.GoodsReceiptListRelationFilter
 }
 
 export type BranchOrderByWithRelationInput = {
@@ -211,6 +213,8 @@ export type BranchOrderByWithRelationInput = {
   productionJobs?: Prisma.ProductionJobOrderByRelationAggregateInput
   salesOrders?: Prisma.SalesOrderOrderByRelationAggregateInput
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
+  purchaseOrders?: Prisma.PurchaseOrderOrderByRelationAggregateInput
+  goodsReceipts?: Prisma.GoodsReceiptOrderByRelationAggregateInput
 }
 
 export type BranchWhereUniqueInput = Prisma.AtLeast<{
@@ -231,6 +235,8 @@ export type BranchWhereUniqueInput = Prisma.AtLeast<{
   productionJobs?: Prisma.ProductionJobListRelationFilter
   salesOrders?: Prisma.SalesOrderListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
+  purchaseOrders?: Prisma.PurchaseOrderListRelationFilter
+  goodsReceipts?: Prisma.GoodsReceiptListRelationFilter
 }, "id" | "orgId_name" | "orgId_id">
 
 export type BranchOrderByWithAggregationInput = {
@@ -269,6 +275,8 @@ export type BranchCreateInput = {
   productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutBranchInput
   salesOrders?: Prisma.SalesOrderCreateNestedManyWithoutBranchInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUncheckedCreateInput = {
@@ -283,6 +291,8 @@ export type BranchUncheckedCreateInput = {
   productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutBranchInput
   salesOrders?: Prisma.SalesOrderUncheckedCreateNestedManyWithoutBranchInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUpdateInput = {
@@ -297,6 +307,8 @@ export type BranchUpdateInput = {
   productionJobs?: Prisma.ProductionJobUpdateManyWithoutBranchNestedInput
   salesOrders?: Prisma.SalesOrderUpdateManyWithoutBranchNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateInput = {
@@ -311,6 +323,8 @@ export type BranchUncheckedUpdateInput = {
   productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutBranchNestedInput
   salesOrders?: Prisma.SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchCreateManyInput = {
@@ -472,6 +486,34 @@ export type BranchUpdateOneWithoutAuditLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutAuditLogsInput, Prisma.BranchUpdateWithoutAuditLogsInput>, Prisma.BranchUncheckedUpdateWithoutAuditLogsInput>
 }
 
+export type BranchCreateNestedOneWithoutPurchaseOrdersInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutPurchaseOrdersInput, Prisma.BranchUncheckedCreateWithoutPurchaseOrdersInput>
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutPurchaseOrdersInput
+  connect?: Prisma.BranchWhereUniqueInput
+}
+
+export type BranchUpdateOneRequiredWithoutPurchaseOrdersNestedInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutPurchaseOrdersInput, Prisma.BranchUncheckedCreateWithoutPurchaseOrdersInput>
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutPurchaseOrdersInput
+  upsert?: Prisma.BranchUpsertWithoutPurchaseOrdersInput
+  connect?: Prisma.BranchWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutPurchaseOrdersInput, Prisma.BranchUpdateWithoutPurchaseOrdersInput>, Prisma.BranchUncheckedUpdateWithoutPurchaseOrdersInput>
+}
+
+export type BranchCreateNestedOneWithoutGoodsReceiptsInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutGoodsReceiptsInput, Prisma.BranchUncheckedCreateWithoutGoodsReceiptsInput>
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutGoodsReceiptsInput
+  connect?: Prisma.BranchWhereUniqueInput
+}
+
+export type BranchUpdateOneRequiredWithoutGoodsReceiptsNestedInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutGoodsReceiptsInput, Prisma.BranchUncheckedCreateWithoutGoodsReceiptsInput>
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutGoodsReceiptsInput
+  upsert?: Prisma.BranchUpsertWithoutGoodsReceiptsInput
+  connect?: Prisma.BranchWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutGoodsReceiptsInput, Prisma.BranchUpdateWithoutGoodsReceiptsInput>, Prisma.BranchUncheckedUpdateWithoutGoodsReceiptsInput>
+}
+
 export type BranchCreateNestedOneWithoutSalesOrdersInput = {
   create?: Prisma.XOR<Prisma.BranchCreateWithoutSalesOrdersInput, Prisma.BranchUncheckedCreateWithoutSalesOrdersInput>
   connectOrCreate?: Prisma.BranchCreateOrConnectWithoutSalesOrdersInput
@@ -525,6 +567,8 @@ export type BranchCreateWithoutOrgInput = {
   productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutBranchInput
   salesOrders?: Prisma.SalesOrderCreateNestedManyWithoutBranchInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUncheckedCreateWithoutOrgInput = {
@@ -538,6 +582,8 @@ export type BranchUncheckedCreateWithoutOrgInput = {
   productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutBranchInput
   salesOrders?: Prisma.SalesOrderUncheckedCreateNestedManyWithoutBranchInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type BranchCreateOrConnectWithoutOrgInput = {
@@ -589,6 +635,8 @@ export type BranchCreateWithoutUserAccessInput = {
   productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutBranchInput
   salesOrders?: Prisma.SalesOrderCreateNestedManyWithoutBranchInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUncheckedCreateWithoutUserAccessInput = {
@@ -602,6 +650,8 @@ export type BranchUncheckedCreateWithoutUserAccessInput = {
   productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutBranchInput
   salesOrders?: Prisma.SalesOrderUncheckedCreateNestedManyWithoutBranchInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type BranchCreateOrConnectWithoutUserAccessInput = {
@@ -631,6 +681,8 @@ export type BranchUpdateWithoutUserAccessInput = {
   productionJobs?: Prisma.ProductionJobUpdateManyWithoutBranchNestedInput
   salesOrders?: Prisma.SalesOrderUpdateManyWithoutBranchNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateWithoutUserAccessInput = {
@@ -644,6 +696,8 @@ export type BranchUncheckedUpdateWithoutUserAccessInput = {
   productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutBranchNestedInput
   salesOrders?: Prisma.SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchCreateWithoutAuditLogsInput = {
@@ -657,6 +711,8 @@ export type BranchCreateWithoutAuditLogsInput = {
   warehouses?: Prisma.WarehouseCreateNestedManyWithoutBranchInput
   productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutBranchInput
   salesOrders?: Prisma.SalesOrderCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUncheckedCreateWithoutAuditLogsInput = {
@@ -670,6 +726,8 @@ export type BranchUncheckedCreateWithoutAuditLogsInput = {
   warehouses?: Prisma.WarehouseUncheckedCreateNestedManyWithoutBranchInput
   productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutBranchInput
   salesOrders?: Prisma.SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type BranchCreateOrConnectWithoutAuditLogsInput = {
@@ -699,6 +757,8 @@ export type BranchUpdateWithoutAuditLogsInput = {
   warehouses?: Prisma.WarehouseUpdateManyWithoutBranchNestedInput
   productionJobs?: Prisma.ProductionJobUpdateManyWithoutBranchNestedInput
   salesOrders?: Prisma.SalesOrderUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateWithoutAuditLogsInput = {
@@ -712,6 +772,160 @@ export type BranchUncheckedUpdateWithoutAuditLogsInput = {
   warehouses?: Prisma.WarehouseUncheckedUpdateManyWithoutBranchNestedInput
   productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutBranchNestedInput
   salesOrders?: Prisma.SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchCreateWithoutPurchaseOrdersInput = {
+  id?: string
+  name: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  org: Prisma.OrganizationCreateNestedOneWithoutBranchesInput
+  userAccess?: Prisma.UserBranchAccessCreateNestedManyWithoutBranchInput
+  warehouses?: Prisma.WarehouseCreateNestedManyWithoutBranchInput
+  productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutBranchInput
+  salesOrders?: Prisma.SalesOrderCreateNestedManyWithoutBranchInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptCreateNestedManyWithoutBranchInput
+}
+
+export type BranchUncheckedCreateWithoutPurchaseOrdersInput = {
+  id?: string
+  orgId: string
+  name: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userAccess?: Prisma.UserBranchAccessUncheckedCreateNestedManyWithoutBranchInput
+  warehouses?: Prisma.WarehouseUncheckedCreateNestedManyWithoutBranchInput
+  productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutBranchInput
+  salesOrders?: Prisma.SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedCreateNestedManyWithoutBranchInput
+}
+
+export type BranchCreateOrConnectWithoutPurchaseOrdersInput = {
+  where: Prisma.BranchWhereUniqueInput
+  create: Prisma.XOR<Prisma.BranchCreateWithoutPurchaseOrdersInput, Prisma.BranchUncheckedCreateWithoutPurchaseOrdersInput>
+}
+
+export type BranchUpsertWithoutPurchaseOrdersInput = {
+  update: Prisma.XOR<Prisma.BranchUpdateWithoutPurchaseOrdersInput, Prisma.BranchUncheckedUpdateWithoutPurchaseOrdersInput>
+  create: Prisma.XOR<Prisma.BranchCreateWithoutPurchaseOrdersInput, Prisma.BranchUncheckedCreateWithoutPurchaseOrdersInput>
+  where?: Prisma.BranchWhereInput
+}
+
+export type BranchUpdateToOneWithWhereWithoutPurchaseOrdersInput = {
+  where?: Prisma.BranchWhereInput
+  data: Prisma.XOR<Prisma.BranchUpdateWithoutPurchaseOrdersInput, Prisma.BranchUncheckedUpdateWithoutPurchaseOrdersInput>
+}
+
+export type BranchUpdateWithoutPurchaseOrdersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  org?: Prisma.OrganizationUpdateOneRequiredWithoutBranchesNestedInput
+  userAccess?: Prisma.UserBranchAccessUpdateManyWithoutBranchNestedInput
+  warehouses?: Prisma.WarehouseUpdateManyWithoutBranchNestedInput
+  productionJobs?: Prisma.ProductionJobUpdateManyWithoutBranchNestedInput
+  salesOrders?: Prisma.SalesOrderUpdateManyWithoutBranchNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchUncheckedUpdateWithoutPurchaseOrdersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userAccess?: Prisma.UserBranchAccessUncheckedUpdateManyWithoutBranchNestedInput
+  warehouses?: Prisma.WarehouseUncheckedUpdateManyWithoutBranchNestedInput
+  productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutBranchNestedInput
+  salesOrders?: Prisma.SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchCreateWithoutGoodsReceiptsInput = {
+  id?: string
+  name: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  org: Prisma.OrganizationCreateNestedOneWithoutBranchesInput
+  userAccess?: Prisma.UserBranchAccessCreateNestedManyWithoutBranchInput
+  warehouses?: Prisma.WarehouseCreateNestedManyWithoutBranchInput
+  productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutBranchInput
+  salesOrders?: Prisma.SalesOrderCreateNestedManyWithoutBranchInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
+}
+
+export type BranchUncheckedCreateWithoutGoodsReceiptsInput = {
+  id?: string
+  orgId: string
+  name: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userAccess?: Prisma.UserBranchAccessUncheckedCreateNestedManyWithoutBranchInput
+  warehouses?: Prisma.WarehouseUncheckedCreateNestedManyWithoutBranchInput
+  productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutBranchInput
+  salesOrders?: Prisma.SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+}
+
+export type BranchCreateOrConnectWithoutGoodsReceiptsInput = {
+  where: Prisma.BranchWhereUniqueInput
+  create: Prisma.XOR<Prisma.BranchCreateWithoutGoodsReceiptsInput, Prisma.BranchUncheckedCreateWithoutGoodsReceiptsInput>
+}
+
+export type BranchUpsertWithoutGoodsReceiptsInput = {
+  update: Prisma.XOR<Prisma.BranchUpdateWithoutGoodsReceiptsInput, Prisma.BranchUncheckedUpdateWithoutGoodsReceiptsInput>
+  create: Prisma.XOR<Prisma.BranchCreateWithoutGoodsReceiptsInput, Prisma.BranchUncheckedCreateWithoutGoodsReceiptsInput>
+  where?: Prisma.BranchWhereInput
+}
+
+export type BranchUpdateToOneWithWhereWithoutGoodsReceiptsInput = {
+  where?: Prisma.BranchWhereInput
+  data: Prisma.XOR<Prisma.BranchUpdateWithoutGoodsReceiptsInput, Prisma.BranchUncheckedUpdateWithoutGoodsReceiptsInput>
+}
+
+export type BranchUpdateWithoutGoodsReceiptsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  org?: Prisma.OrganizationUpdateOneRequiredWithoutBranchesNestedInput
+  userAccess?: Prisma.UserBranchAccessUpdateManyWithoutBranchNestedInput
+  warehouses?: Prisma.WarehouseUpdateManyWithoutBranchNestedInput
+  productionJobs?: Prisma.ProductionJobUpdateManyWithoutBranchNestedInput
+  salesOrders?: Prisma.SalesOrderUpdateManyWithoutBranchNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchUncheckedUpdateWithoutGoodsReceiptsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userAccess?: Prisma.UserBranchAccessUncheckedUpdateManyWithoutBranchNestedInput
+  warehouses?: Prisma.WarehouseUncheckedUpdateManyWithoutBranchNestedInput
+  productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutBranchNestedInput
+  salesOrders?: Prisma.SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchCreateWithoutSalesOrdersInput = {
@@ -725,6 +939,8 @@ export type BranchCreateWithoutSalesOrdersInput = {
   warehouses?: Prisma.WarehouseCreateNestedManyWithoutBranchInput
   productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutBranchInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUncheckedCreateWithoutSalesOrdersInput = {
@@ -738,6 +954,8 @@ export type BranchUncheckedCreateWithoutSalesOrdersInput = {
   warehouses?: Prisma.WarehouseUncheckedCreateNestedManyWithoutBranchInput
   productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutBranchInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type BranchCreateOrConnectWithoutSalesOrdersInput = {
@@ -767,6 +985,8 @@ export type BranchUpdateWithoutSalesOrdersInput = {
   warehouses?: Prisma.WarehouseUpdateManyWithoutBranchNestedInput
   productionJobs?: Prisma.ProductionJobUpdateManyWithoutBranchNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateWithoutSalesOrdersInput = {
@@ -780,6 +1000,8 @@ export type BranchUncheckedUpdateWithoutSalesOrdersInput = {
   warehouses?: Prisma.WarehouseUncheckedUpdateManyWithoutBranchNestedInput
   productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutBranchNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchCreateWithoutProductionJobsInput = {
@@ -793,6 +1015,8 @@ export type BranchCreateWithoutProductionJobsInput = {
   warehouses?: Prisma.WarehouseCreateNestedManyWithoutBranchInput
   salesOrders?: Prisma.SalesOrderCreateNestedManyWithoutBranchInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUncheckedCreateWithoutProductionJobsInput = {
@@ -806,6 +1030,8 @@ export type BranchUncheckedCreateWithoutProductionJobsInput = {
   warehouses?: Prisma.WarehouseUncheckedCreateNestedManyWithoutBranchInput
   salesOrders?: Prisma.SalesOrderUncheckedCreateNestedManyWithoutBranchInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type BranchCreateOrConnectWithoutProductionJobsInput = {
@@ -835,6 +1061,8 @@ export type BranchUpdateWithoutProductionJobsInput = {
   warehouses?: Prisma.WarehouseUpdateManyWithoutBranchNestedInput
   salesOrders?: Prisma.SalesOrderUpdateManyWithoutBranchNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateWithoutProductionJobsInput = {
@@ -848,6 +1076,8 @@ export type BranchUncheckedUpdateWithoutProductionJobsInput = {
   warehouses?: Prisma.WarehouseUncheckedUpdateManyWithoutBranchNestedInput
   salesOrders?: Prisma.SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchCreateWithoutWarehousesInput = {
@@ -861,6 +1091,8 @@ export type BranchCreateWithoutWarehousesInput = {
   productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutBranchInput
   salesOrders?: Prisma.SalesOrderCreateNestedManyWithoutBranchInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUncheckedCreateWithoutWarehousesInput = {
@@ -874,6 +1106,8 @@ export type BranchUncheckedCreateWithoutWarehousesInput = {
   productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutBranchInput
   salesOrders?: Prisma.SalesOrderUncheckedCreateNestedManyWithoutBranchInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type BranchCreateOrConnectWithoutWarehousesInput = {
@@ -903,6 +1137,8 @@ export type BranchUpdateWithoutWarehousesInput = {
   productionJobs?: Prisma.ProductionJobUpdateManyWithoutBranchNestedInput
   salesOrders?: Prisma.SalesOrderUpdateManyWithoutBranchNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateWithoutWarehousesInput = {
@@ -916,6 +1152,8 @@ export type BranchUncheckedUpdateWithoutWarehousesInput = {
   productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutBranchNestedInput
   salesOrders?: Prisma.SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchCreateManyOrgInput = {
@@ -937,6 +1175,8 @@ export type BranchUpdateWithoutOrgInput = {
   productionJobs?: Prisma.ProductionJobUpdateManyWithoutBranchNestedInput
   salesOrders?: Prisma.SalesOrderUpdateManyWithoutBranchNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateWithoutOrgInput = {
@@ -950,6 +1190,8 @@ export type BranchUncheckedUpdateWithoutOrgInput = {
   productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutBranchNestedInput
   salesOrders?: Prisma.SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateManyWithoutOrgInput = {
@@ -971,6 +1213,8 @@ export type BranchCountOutputType = {
   productionJobs: number
   salesOrders: number
   auditLogs: number
+  purchaseOrders: number
+  goodsReceipts: number
 }
 
 export type BranchCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -979,6 +1223,8 @@ export type BranchCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions
   productionJobs?: boolean | BranchCountOutputTypeCountProductionJobsArgs
   salesOrders?: boolean | BranchCountOutputTypeCountSalesOrdersArgs
   auditLogs?: boolean | BranchCountOutputTypeCountAuditLogsArgs
+  purchaseOrders?: boolean | BranchCountOutputTypeCountPurchaseOrdersArgs
+  goodsReceipts?: boolean | BranchCountOutputTypeCountGoodsReceiptsArgs
 }
 
 /**
@@ -1026,6 +1272,20 @@ export type BranchCountOutputTypeCountAuditLogsArgs<ExtArgs extends runtime.Type
   where?: Prisma.AuditLogWhereInput
 }
 
+/**
+ * BranchCountOutputType without action
+ */
+export type BranchCountOutputTypeCountPurchaseOrdersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PurchaseOrderWhereInput
+}
+
+/**
+ * BranchCountOutputType without action
+ */
+export type BranchCountOutputTypeCountGoodsReceiptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GoodsReceiptWhereInput
+}
+
 
 export type BranchSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1040,6 +1300,8 @@ export type BranchSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   productionJobs?: boolean | Prisma.Branch$productionJobsArgs<ExtArgs>
   salesOrders?: boolean | Prisma.Branch$salesOrdersArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Branch$auditLogsArgs<ExtArgs>
+  purchaseOrders?: boolean | Prisma.Branch$purchaseOrdersArgs<ExtArgs>
+  goodsReceipts?: boolean | Prisma.Branch$goodsReceiptsArgs<ExtArgs>
   _count?: boolean | Prisma.BranchCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["branch"]>
 
@@ -1080,6 +1342,8 @@ export type BranchInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   productionJobs?: boolean | Prisma.Branch$productionJobsArgs<ExtArgs>
   salesOrders?: boolean | Prisma.Branch$salesOrdersArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Branch$auditLogsArgs<ExtArgs>
+  purchaseOrders?: boolean | Prisma.Branch$purchaseOrdersArgs<ExtArgs>
+  goodsReceipts?: boolean | Prisma.Branch$goodsReceiptsArgs<ExtArgs>
   _count?: boolean | Prisma.BranchCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type BranchIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1098,6 +1362,8 @@ export type $BranchPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     productionJobs: Prisma.$ProductionJobPayload<ExtArgs>[]
     salesOrders: Prisma.$SalesOrderPayload<ExtArgs>[]
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
+    purchaseOrders: Prisma.$PurchaseOrderPayload<ExtArgs>[]
+    goodsReceipts: Prisma.$GoodsReceiptPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1506,6 +1772,8 @@ export interface Prisma__BranchClient<T, Null = never, ExtArgs extends runtime.T
   productionJobs<T extends Prisma.Branch$productionJobsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$productionJobsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductionJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   salesOrders<T extends Prisma.Branch$salesOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$salesOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SalesOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditLogs<T extends Prisma.Branch$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  purchaseOrders<T extends Prisma.Branch$purchaseOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$purchaseOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PurchaseOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  goodsReceipts<T extends Prisma.Branch$goodsReceiptsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$goodsReceiptsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GoodsReceiptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2059,6 +2327,54 @@ export type Branch$auditLogsArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.AuditLogScalarFieldEnum | Prisma.AuditLogScalarFieldEnum[]
+}
+
+/**
+ * Branch.purchaseOrders
+ */
+export type Branch$purchaseOrdersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PurchaseOrder
+   */
+  select?: Prisma.PurchaseOrderSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PurchaseOrder
+   */
+  omit?: Prisma.PurchaseOrderOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PurchaseOrderInclude<ExtArgs> | null
+  where?: Prisma.PurchaseOrderWhereInput
+  orderBy?: Prisma.PurchaseOrderOrderByWithRelationInput | Prisma.PurchaseOrderOrderByWithRelationInput[]
+  cursor?: Prisma.PurchaseOrderWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PurchaseOrderScalarFieldEnum | Prisma.PurchaseOrderScalarFieldEnum[]
+}
+
+/**
+ * Branch.goodsReceipts
+ */
+export type Branch$goodsReceiptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GoodsReceipt
+   */
+  select?: Prisma.GoodsReceiptSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GoodsReceipt
+   */
+  omit?: Prisma.GoodsReceiptOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GoodsReceiptInclude<ExtArgs> | null
+  where?: Prisma.GoodsReceiptWhereInput
+  orderBy?: Prisma.GoodsReceiptOrderByWithRelationInput | Prisma.GoodsReceiptOrderByWithRelationInput[]
+  cursor?: Prisma.GoodsReceiptWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GoodsReceiptScalarFieldEnum | Prisma.GoodsReceiptScalarFieldEnum[]
 }
 
 /**

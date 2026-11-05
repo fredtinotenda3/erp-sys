@@ -712,10 +712,6 @@ export type QualityRecordUncheckedUpdateManyWithoutJobStageNestedInput = {
   deleteMany?: Prisma.QualityRecordScalarWhereInput | Prisma.QualityRecordScalarWhereInput[]
 }
 
-export type NullableEnumRejectReasonFieldUpdateOperationsInput = {
-  set?: $Enums.RejectReason | null
-}
-
 export type QualityRecordCreateNestedOneWithoutOutputsInput = {
   create?: Prisma.XOR<Prisma.QualityRecordCreateWithoutOutputsInput, Prisma.QualityRecordUncheckedCreateWithoutOutputsInput>
   connectOrCreate?: Prisma.QualityRecordCreateOrConnectWithoutOutputsInput

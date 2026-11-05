@@ -96,6 +96,23 @@ export type Capability =
   | "stock:adjust"
   | "warehouse:create"
   | "stock:read"
+  // Lot traceability (Phase One of the next mandate round, migration
+  // 20261105120000_lot_consumption_and_traceability). Issuing/returning
+  // material to/from a specific lot reuses "material:issue" (the same role
+  // set that can issue is the one that can correct an issue by returning
+  // it — segregation-of-duties doesn't give a reason to split them, unlike
+  // purchase_order:confirm). These two are for everything else:
+  // lot:read   -- browsing/searching lots and the traceability chain. Given
+  //               to exactly the role set that already has goods_receipt:read
+  //               (a lot's existence is already visible to them via the
+  //               receipt that created it; this just makes it searchable on
+  //               its own terms).
+  // lot:manage -- manually transitioning a lot's status (active <->
+  //               quarantined/expired), e.g. after a physical recheck. Given
+  //               to the same role set as stock:adjust, since both are
+  //               inventory-integrity corrections, not routine stock moves.
+  | "lot:read"
+  | "lot:manage"
   // Costing / currency
   | "cost:read"
   | "cost:adjust"
@@ -182,6 +199,8 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "stock:adjust",
     "warehouse:create",
     "stock:read",
+    "lot:read",
+    "lot:manage",
     "cost:read",
     "cost:adjust",
     "exchange_rate:create",
@@ -234,6 +253,8 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "stock:adjust",
     "warehouse:create",
     "stock:read",
+    "lot:read",
+    "lot:manage",
     "cost:read",
     // exchange_rate:create intentionally omitted — see note above the map.
     "exchange_rate:read",
@@ -262,6 +283,7 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "output:record",
     "quality:read",
     "stock:read",
+    "lot:read",
     "cost:read",
   ]),
   // purchase_order:confirm is deliberately NOT granted here, unlike
@@ -305,6 +327,8 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "stock:adjust",
     "warehouse:create",
     "stock:read",
+    "lot:read",
+    "lot:manage",
   ]),
   PRODUCTION_OPERATOR: new Set<Capability>([
     "branch:read",
@@ -334,6 +358,7 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "production_job:read",
     "quality:read",
     "stock:read",
+    "lot:read",
     "cost:read",
     "cost:adjust",
     "exchange_rate:create",
@@ -351,6 +376,7 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "production_job:read",
     "quality:read",
     "stock:read",
+    "lot:read",
     // cost:read intentionally omitted — approved choice, docs/UX_UI_ARCHITECTURE.md
     // §15.1: Viewer sees every module read-only except cost/margin data.
   ]),

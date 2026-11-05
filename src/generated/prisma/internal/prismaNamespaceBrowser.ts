@@ -66,6 +66,12 @@ export const ModelName = {
   BomLine: 'BomLine',
   Customer: 'Customer',
   Supplier: 'Supplier',
+  PurchaseOrder: 'PurchaseOrder',
+  PurchaseOrderLine: 'PurchaseOrderLine',
+  GoodsReceipt: 'GoodsReceipt',
+  GoodsReceiptLine: 'GoodsReceiptLine',
+  MaterialLot: 'MaterialLot',
+  LotConsumption: 'LotConsumption',
   SalesOrder: 'SalesOrder',
   SalesOrderLine: 'SalesOrderLine',
   ProductionJob: 'ProductionJob',
@@ -310,6 +316,114 @@ export const SupplierScalarFieldEnum = {
 } as const
 
 export type SupplierScalarFieldEnum = (typeof SupplierScalarFieldEnum)[keyof typeof SupplierScalarFieldEnum]
+
+
+export const PurchaseOrderScalarFieldEnum = {
+  id: 'id',
+  orgId: 'orgId',
+  branchId: 'branchId',
+  poNumber: 'poNumber',
+  supplierId: 'supplierId',
+  status: 'status',
+  currency: 'currency',
+  requestedDeliveryDate: 'requestedDeliveryDate',
+  supplierReference: 'supplierReference',
+  notes: 'notes',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PurchaseOrderScalarFieldEnum = (typeof PurchaseOrderScalarFieldEnum)[keyof typeof PurchaseOrderScalarFieldEnum]
+
+
+export const PurchaseOrderLineScalarFieldEnum = {
+  id: 'id',
+  orgId: 'orgId',
+  poId: 'poId',
+  itemId: 'itemId',
+  quantity: 'quantity',
+  uom: 'uom',
+  unitPrice: 'unitPrice',
+  currency: 'currency'
+} as const
+
+export type PurchaseOrderLineScalarFieldEnum = (typeof PurchaseOrderLineScalarFieldEnum)[keyof typeof PurchaseOrderLineScalarFieldEnum]
+
+
+export const GoodsReceiptScalarFieldEnum = {
+  id: 'id',
+  orgId: 'orgId',
+  poId: 'poId',
+  branchId: 'branchId',
+  deliveryReference: 'deliveryReference',
+  receivedAt: 'receivedAt',
+  notes: 'notes',
+  clientRequestId: 'clientRequestId',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+} as const
+
+export type GoodsReceiptScalarFieldEnum = (typeof GoodsReceiptScalarFieldEnum)[keyof typeof GoodsReceiptScalarFieldEnum]
+
+
+export const GoodsReceiptLineScalarFieldEnum = {
+  id: 'id',
+  orgId: 'orgId',
+  receiptId: 'receiptId',
+  poLineId: 'poLineId',
+  itemId: 'itemId',
+  warehouseId: 'warehouseId',
+  receivedQty: 'receivedQty',
+  acceptedQty: 'acceptedQty',
+  rejectedQty: 'rejectedQty',
+  rejectReason: 'rejectReason',
+  unitCost: 'unitCost',
+  currency: 'currency',
+  notes: 'notes',
+  createdAt: 'createdAt'
+} as const
+
+export type GoodsReceiptLineScalarFieldEnum = (typeof GoodsReceiptLineScalarFieldEnum)[keyof typeof GoodsReceiptLineScalarFieldEnum]
+
+
+export const MaterialLotScalarFieldEnum = {
+  id: 'id',
+  orgId: 'orgId',
+  lotNumber: 'lotNumber',
+  itemId: 'itemId',
+  supplierId: 'supplierId',
+  supplierLotRef: 'supplierLotRef',
+  receiptLineId: 'receiptLineId',
+  warehouseId: 'warehouseId',
+  quantityReceived: 'quantityReceived',
+  uom: 'uom',
+  status: 'status',
+  expiryDate: 'expiryDate',
+  receivedAt: 'receivedAt',
+  createdAt: 'createdAt',
+  sourceReturnOfLotId: 'sourceReturnOfLotId',
+  sourceReturnJobId: 'sourceReturnJobId',
+  sourceReturnMovementId: 'sourceReturnMovementId'
+} as const
+
+export type MaterialLotScalarFieldEnum = (typeof MaterialLotScalarFieldEnum)[keyof typeof MaterialLotScalarFieldEnum]
+
+
+export const LotConsumptionScalarFieldEnum = {
+  id: 'id',
+  orgId: 'orgId',
+  lotId: 'lotId',
+  jobId: 'jobId',
+  movementId: 'movementId',
+  type: 'type',
+  quantity: 'quantity',
+  notes: 'notes',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+} as const
+
+export type LotConsumptionScalarFieldEnum = (typeof LotConsumptionScalarFieldEnum)[keyof typeof LotConsumptionScalarFieldEnum]
 
 
 export const SalesOrderScalarFieldEnum = {

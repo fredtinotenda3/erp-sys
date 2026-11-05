@@ -609,27 +609,39 @@ model GoodsReceiptLine {
 }
 
 // ---------------------------------------------------------------------------
-// LOT TRACEABILITY (incoming side) -- one MaterialLot per accepted
-// GoodsReceiptLine, created automatically and unconditionally in the same
-// transaction as the receipt (section 5F: "do not introduce lot tracking as
-// disconnected metadata"). A line with acceptedQty = 0 (fully rejected)
-// creates no lot -- there is nothing to trace into inventory.
+// LOT TRACEABILITY -- one MaterialLot per accepted GoodsReceiptLine, created
+// automatically and unconditionally in the same transaction as the receipt
+// (section 5F: "do not introduce lot tracking as disconnected metadata"). A
+// line with acceptedQty = 0 (fully rejected) creates no lot -- there is
+// nothing to trace into inventory.
 //
-// Consumption (lot -> production job -> finished-goods batch -> dispatch ->
-// customer) is NOT built in this milestone -- seeding/creating lots at
-// receipt is the first half of the traceability chain (mandate section 5F's
-// first arrow, Supplier -> PO -> Goods Receipt -> Incoming Material Lot);
-// wiring material issue to draw from a specific lot, and finished-goods
-// batches/dispatch to the back half, is the next milestone (see
-// IMPLEMENTATION_MANIFEST.md "Known limitations"). Deliberately not stubbed
-// with speculative columns here -- see this file's header note on avoiding
-// fields nothing reads yet.
+// CONSUMPTION (as of migration 20261105120000_lot_consumption_and_traceability,
+// "Phase One -- complete lot traceability"): wiring material issue/return to
+// draw from and credit back to a specific lot is now built -- see
+// LotConsumption below and inventory/material-issue-service.ts. Finished-
+// goods batches and dispatch/customer traceability (the mandate's remaining
+// forward-chain arrows) are still the NEXT milestone -- see
+// IMPLEMENTATION_MANIFEST.md "Known limitations".
 //
-// quantityReceived is the original accepted quantity, immutable. How much of
-// the lot remains is computed by summing consumption records against it, not
-// stored here -- same "no duplicate source of truth" principle as
-// StockBalance being trigger-derived from StockMovement (once consumption
-// exists, remaining = quantityReceived - SUM(consumption)).
+// quantityReceived is the original accepted quantity (or, for a lot spawned
+// by a quarantine-flagged return -- see sourceReturnOfLotId below -- the
+// returned quantity), immutable. How much of the lot remains is computed by
+// summing LotConsumption rows against it, not stored here -- same "no
+// duplicate source of truth" principle as StockBalance being trigger-derived
+// from StockMovement: remaining = quantityReceived - SUM(LotConsumption.quantity)
+// (LotConsumption.quantity is itself signed: positive = drawn from the lot,
+// negative = returned to it -- see that model's comment).
+//
+// receiptLineId is now NULLABLE: a lot spawned by a return that needs
+// inspection (see sourceReturnOfLotId) has no originating GoodsReceiptLine --
+// it originates from a ProductionJob's returned material instead. Exactly
+// one of (receiptLineId) or (sourceReturnOfLotId + sourceReturnJobId +
+// sourceReturnMovementId) is set for any given lot; which one tells you
+// whether this lot's lineage starts at a supplier delivery or at a
+// production return. Not enforced as a DB CHECK (would need an OR of two
+// multi-column null-groups) -- enforced by the two call sites that create a
+// MaterialLot (goods-receipt-service.ts, material-issue-service.ts) never
+// setting both, verified by this milestone's tests.
 enum MaterialLotStatus {
   active
   quarantined
@@ -647,8 +659,9 @@ model MaterialLot {
   // What the supplier itself calls this lot/batch, if they provided one --
   // free text, not validated (mirrors PurchaseOrder.supplierReference).
   supplierLotRef String?          @map("supplier_lot_ref")
-  receiptLineId  String           @map("receipt_line_id") @db.Uuid
-  receiptLine    GoodsReceiptLine @relation(fields: [orgId, receiptLineId], references: [orgId, id])
+  // Nullable as of this milestone -- see the model comment above.
+  receiptLineId  String?          @map("receipt_line_id") @db.Uuid
+  receiptLine    GoodsReceiptLine? @relation(fields: [orgId, receiptLineId], references: [orgId, id])
   warehouseId    String           @map("warehouse_id") @db.Uuid
   warehouse      Warehouse        @relation(fields: [orgId, warehouseId], references: [orgId, id])
   quantityReceived Decimal          @map("quantity_received") @db.Decimal(14, 4)
@@ -658,10 +671,71 @@ model MaterialLot {
   receivedAt       DateTime          @map("received_at")
   createdAt        DateTime          @default(now()) @map("created_at")
 
+  // --- Return lineage (this milestone). Set together, only when this lot was
+  // spawned by a "needs inspection / quarantine" return rather than a goods
+  // receipt -- see returnMaterialFromJob in material-issue-service.ts. All
+  // three are set once at creation and never updated (same column-grant
+  // discipline as every other immutable-after-creation column on this model).
+  sourceReturnOfLotId    String?       @map("source_return_of_lot_id") @db.Uuid
+  sourceReturnOfLot      MaterialLot?  @relation("LotReturnLineage", fields: [orgId, sourceReturnOfLotId], references: [orgId, id])
+  returnChildLots        MaterialLot[] @relation("LotReturnLineage")
+  sourceReturnJobId      String?       @map("source_return_job_id") @db.Uuid
+  sourceReturnJob        ProductionJob? @relation("LotReturnJob", fields: [orgId, sourceReturnJobId], references: [orgId, id])
+  sourceReturnMovementId String?       @map("source_return_movement_id") @db.Uuid
+  sourceReturnMovement   StockMovement? @relation("LotReturnMovement", fields: [orgId, sourceReturnMovementId], references: [orgId, id])
+
+  consumptions LotConsumption[]
+
   @@unique([orgId, lotNumber])
   @@unique([orgId, id])
   @@unique([orgId, receiptLineId])
+  @@index([orgId, itemId, warehouseId])
   @@map("material_lot")
+}
+
+// Append-only usage ledger against one MaterialLot (same "one place this is
+// written, never updated" discipline as StockMovement). Every row is tied 1:1
+// in spirit to a slice of a StockMovement: `movementId` is the
+// production_consumption or material_return movement this row is part of --
+// one movement can split across several lots (one job issue drawing from
+// two lots), so movementId is not unique by itself; the invariant the
+// service layer enforces (and this milestone's tests verify) is that the
+// LotConsumption rows sharing one movementId always sum, in absolute value,
+// to that movement's own quantity.
+//
+// `quantity` is signed from the LOT's point of view, mirroring
+// StockMovement's own sign convention: positive = drawn from the lot
+// (type=consumption), negative = given back to the lot (type=return). A
+// return that needs inspection does NOT create a negative row here against
+// the original lot -- it spawns a new quarantined child lot instead (see
+// MaterialLot.sourceReturnOfLotId) and the original consumption stands.
+// remaining = quantityReceived - SUM(quantity), same formula the MaterialLot
+// comment above states.
+enum LotConsumptionType {
+  consumption
+  return
+}
+
+model LotConsumption {
+  id          String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId       String             @map("org_id") @db.Uuid
+  lotId       String             @map("lot_id") @db.Uuid
+  lot         MaterialLot        @relation(fields: [orgId, lotId], references: [orgId, id])
+  jobId       String             @map("job_id") @db.Uuid
+  job         ProductionJob      @relation(fields: [orgId, jobId], references: [orgId, id])
+  movementId  String             @map("movement_id") @db.Uuid
+  movement    StockMovement      @relation(fields: [orgId, movementId], references: [orgId, id])
+  type        LotConsumptionType
+  quantity    Decimal            @db.Decimal(14, 4)
+  notes       String?
+  createdById String?            @map("created_by") @db.Uuid
+  createdAt   DateTime           @default(now()) @map("created_at")
+
+  @@unique([orgId, id])
+  @@index([lotId])
+  @@index([jobId])
+  @@index([movementId])
+  @@map("lot_consumption")
 }
 
 enum SalesOrderStatus {
@@ -764,6 +838,12 @@ model ProductionJob {
   outputs              ProductionOutput[]
   outputVoids          ProductionOutputVoid[]
   dispositions         QualityDisposition[]
+  // Added by migration 20261105120000_lot_consumption_and_traceability.
+  lotConsumptions      LotConsumption[]
+  // Reverse of MaterialLot.sourceReturnJobId: quarantine lots spawned by a
+  // return FROM this job (not the lots this job consumed -- see
+  // lotConsumptions above and getJobLotConsumption in lot-service.ts for that).
+  returnSpawnedLots    MaterialLot[]          @relation("LotReturnJob")
 
   @@unique([orgId, jobNumber])
   @@unique([orgId, id])
@@ -957,7 +1037,17 @@ model StockMovement {
   occurredAt      DateTime       @default(now()) @map("occurred_at")
   syncedAt        DateTime       @default(now()) @map("synced_at")
 
+  // Added by migration 20261105120000_lot_consumption_and_traceability so
+  // MaterialLot/LotConsumption rows can carry a composite (orgId, movementId)
+  // FK back to the exact movement they were created from or returned against
+  // -- same org-isolation-at-the-constraint-level convention every other
+  // relation in this schema already uses, not previously needed because
+  // nothing referenced a StockMovement row before this milestone.
+  lotConsumptions LotConsumption[]
+  lotsReturnedFrom MaterialLot[]  @relation("LotReturnMovement")
+
   @@unique([orgId, clientRequestId])
+  @@unique([orgId, id])
   @@index([itemId, warehouseId, occurredAt])
   @@index([referenceType, referenceId])
   @@map("stock_movement")

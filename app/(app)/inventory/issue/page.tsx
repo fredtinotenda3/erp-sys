@@ -37,6 +37,7 @@ export default async function IssuePage() {
           jobs={jobs}
           warehouses={warehouses.list.filter((w) => w.isActive).map((w) => ({ id: w.id, name: w.name, branchId: w.branchId }))}
           itemNames={Object.fromEntries(items.list.map((i) => [i.id, `${i.name} (${i.sku})`]))}
+          canPickLots={ctx.can("lot:read")}
         />
       )}
     </>

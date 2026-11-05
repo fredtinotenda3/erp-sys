@@ -120,3 +120,20 @@ export function PurchaseOrderStatusBadge({ status }: { status: string }) {
     </Badge>
   );
 }
+
+const LOT: Record<string, { variant: Variant; icon: LucideIcon; label: string }> = {
+  active: { variant: "status-success", icon: CircleCheck, label: "Active" },
+  quarantined: { variant: "status-warning", icon: Ban, label: "Quarantined" },
+  expired: { variant: "status-danger", icon: TriangleAlert, label: "Expired" },
+};
+
+export function LotStatusBadge({ status }: { status: string }) {
+  const s = LOT[status] ?? { variant: "status-neutral" as Variant, icon: CircleDashed, label: humanize(status) };
+  const Icon = s.icon;
+  return (
+    <Badge variant={s.variant}>
+      <Icon aria-hidden="true" />
+      {s.label}
+    </Badge>
+  );
+}

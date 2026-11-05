@@ -321,6 +321,9 @@ export type ItemWhereInput = {
   stockMovements?: Prisma.StockMovementListRelationFilter
   stockBalances?: Prisma.StockBalanceListRelationFilter
   stageTemplates?: Prisma.ProductionStageTemplateListRelationFilter
+  purchaseOrderLines?: Prisma.PurchaseOrderLineListRelationFilter
+  goodsReceiptLines?: Prisma.GoodsReceiptLineListRelationFilter
+  materialLots?: Prisma.MaterialLotListRelationFilter
 }
 
 export type ItemOrderByWithRelationInput = {
@@ -349,6 +352,9 @@ export type ItemOrderByWithRelationInput = {
   stockMovements?: Prisma.StockMovementOrderByRelationAggregateInput
   stockBalances?: Prisma.StockBalanceOrderByRelationAggregateInput
   stageTemplates?: Prisma.ProductionStageTemplateOrderByRelationAggregateInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineOrderByRelationAggregateInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineOrderByRelationAggregateInput
+  materialLots?: Prisma.MaterialLotOrderByRelationAggregateInput
 }
 
 export type ItemWhereUniqueInput = Prisma.AtLeast<{
@@ -382,6 +388,9 @@ export type ItemWhereUniqueInput = Prisma.AtLeast<{
   stockMovements?: Prisma.StockMovementListRelationFilter
   stockBalances?: Prisma.StockBalanceListRelationFilter
   stageTemplates?: Prisma.ProductionStageTemplateListRelationFilter
+  purchaseOrderLines?: Prisma.PurchaseOrderLineListRelationFilter
+  goodsReceiptLines?: Prisma.GoodsReceiptLineListRelationFilter
+  materialLots?: Prisma.MaterialLotListRelationFilter
 }, "id" | "orgId_sku" | "orgId_id">
 
 export type ItemOrderByWithAggregationInput = {
@@ -455,6 +464,9 @@ export type ItemCreateInput = {
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutItemInput
   stockBalances?: Prisma.StockBalanceCreateNestedManyWithoutItemInput
   stageTemplates?: Prisma.ProductionStageTemplateCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateInput = {
@@ -482,6 +494,9 @@ export type ItemUncheckedCreateInput = {
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutItemInput
   stockBalances?: Prisma.StockBalanceUncheckedCreateNestedManyWithoutItemInput
   stageTemplates?: Prisma.ProductionStageTemplateUncheckedCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemUpdateInput = {
@@ -509,6 +524,9 @@ export type ItemUpdateInput = {
   stockMovements?: Prisma.StockMovementUpdateManyWithoutItemNestedInput
   stockBalances?: Prisma.StockBalanceUpdateManyWithoutItemNestedInput
   stageTemplates?: Prisma.ProductionStageTemplateUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateInput = {
@@ -536,6 +554,9 @@ export type ItemUncheckedUpdateInput = {
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutItemNestedInput
   stockBalances?: Prisma.StockBalanceUncheckedUpdateManyWithoutItemNestedInput
   stageTemplates?: Prisma.ProductionStageTemplateUncheckedUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemCreateManyInput = {
@@ -775,6 +796,48 @@ export type ItemUpdateOneRequiredWithoutBomLinesAsMaterialNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ItemUpdateToOneWithWhereWithoutBomLinesAsMaterialInput, Prisma.ItemUpdateWithoutBomLinesAsMaterialInput>, Prisma.ItemUncheckedUpdateWithoutBomLinesAsMaterialInput>
 }
 
+export type ItemCreateNestedOneWithoutPurchaseOrderLinesInput = {
+  create?: Prisma.XOR<Prisma.ItemCreateWithoutPurchaseOrderLinesInput, Prisma.ItemUncheckedCreateWithoutPurchaseOrderLinesInput>
+  connectOrCreate?: Prisma.ItemCreateOrConnectWithoutPurchaseOrderLinesInput
+  connect?: Prisma.ItemWhereUniqueInput
+}
+
+export type ItemUpdateOneRequiredWithoutPurchaseOrderLinesNestedInput = {
+  create?: Prisma.XOR<Prisma.ItemCreateWithoutPurchaseOrderLinesInput, Prisma.ItemUncheckedCreateWithoutPurchaseOrderLinesInput>
+  connectOrCreate?: Prisma.ItemCreateOrConnectWithoutPurchaseOrderLinesInput
+  upsert?: Prisma.ItemUpsertWithoutPurchaseOrderLinesInput
+  connect?: Prisma.ItemWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ItemUpdateToOneWithWhereWithoutPurchaseOrderLinesInput, Prisma.ItemUpdateWithoutPurchaseOrderLinesInput>, Prisma.ItemUncheckedUpdateWithoutPurchaseOrderLinesInput>
+}
+
+export type ItemCreateNestedOneWithoutGoodsReceiptLinesInput = {
+  create?: Prisma.XOR<Prisma.ItemCreateWithoutGoodsReceiptLinesInput, Prisma.ItemUncheckedCreateWithoutGoodsReceiptLinesInput>
+  connectOrCreate?: Prisma.ItemCreateOrConnectWithoutGoodsReceiptLinesInput
+  connect?: Prisma.ItemWhereUniqueInput
+}
+
+export type ItemUpdateOneRequiredWithoutGoodsReceiptLinesNestedInput = {
+  create?: Prisma.XOR<Prisma.ItemCreateWithoutGoodsReceiptLinesInput, Prisma.ItemUncheckedCreateWithoutGoodsReceiptLinesInput>
+  connectOrCreate?: Prisma.ItemCreateOrConnectWithoutGoodsReceiptLinesInput
+  upsert?: Prisma.ItemUpsertWithoutGoodsReceiptLinesInput
+  connect?: Prisma.ItemWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ItemUpdateToOneWithWhereWithoutGoodsReceiptLinesInput, Prisma.ItemUpdateWithoutGoodsReceiptLinesInput>, Prisma.ItemUncheckedUpdateWithoutGoodsReceiptLinesInput>
+}
+
+export type ItemCreateNestedOneWithoutMaterialLotsInput = {
+  create?: Prisma.XOR<Prisma.ItemCreateWithoutMaterialLotsInput, Prisma.ItemUncheckedCreateWithoutMaterialLotsInput>
+  connectOrCreate?: Prisma.ItemCreateOrConnectWithoutMaterialLotsInput
+  connect?: Prisma.ItemWhereUniqueInput
+}
+
+export type ItemUpdateOneRequiredWithoutMaterialLotsNestedInput = {
+  create?: Prisma.XOR<Prisma.ItemCreateWithoutMaterialLotsInput, Prisma.ItemUncheckedCreateWithoutMaterialLotsInput>
+  connectOrCreate?: Prisma.ItemCreateOrConnectWithoutMaterialLotsInput
+  upsert?: Prisma.ItemUpsertWithoutMaterialLotsInput
+  connect?: Prisma.ItemWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ItemUpdateToOneWithWhereWithoutMaterialLotsInput, Prisma.ItemUpdateWithoutMaterialLotsInput>, Prisma.ItemUncheckedUpdateWithoutMaterialLotsInput>
+}
+
 export type ItemCreateNestedOneWithoutSalesOrderLinesInput = {
   create?: Prisma.XOR<Prisma.ItemCreateWithoutSalesOrderLinesInput, Prisma.ItemUncheckedCreateWithoutSalesOrderLinesInput>
   connectOrCreate?: Prisma.ItemCreateOrConnectWithoutSalesOrderLinesInput
@@ -885,6 +948,9 @@ export type ItemCreateWithoutOrgInput = {
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutItemInput
   stockBalances?: Prisma.StockBalanceCreateNestedManyWithoutItemInput
   stageTemplates?: Prisma.ProductionStageTemplateCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutOrgInput = {
@@ -911,6 +977,9 @@ export type ItemUncheckedCreateWithoutOrgInput = {
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutItemInput
   stockBalances?: Prisma.StockBalanceUncheckedCreateNestedManyWithoutItemInput
   stageTemplates?: Prisma.ProductionStageTemplateUncheckedCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutOrgInput = {
@@ -985,6 +1054,9 @@ export type ItemCreateWithoutBomsAsProductInput = {
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutItemInput
   stockBalances?: Prisma.StockBalanceCreateNestedManyWithoutItemInput
   stageTemplates?: Prisma.ProductionStageTemplateCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutBomsAsProductInput = {
@@ -1011,6 +1083,9 @@ export type ItemUncheckedCreateWithoutBomsAsProductInput = {
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutItemInput
   stockBalances?: Prisma.StockBalanceUncheckedCreateNestedManyWithoutItemInput
   stageTemplates?: Prisma.ProductionStageTemplateUncheckedCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutBomsAsProductInput = {
@@ -1053,6 +1128,9 @@ export type ItemUpdateWithoutBomsAsProductInput = {
   stockMovements?: Prisma.StockMovementUpdateManyWithoutItemNestedInput
   stockBalances?: Prisma.StockBalanceUpdateManyWithoutItemNestedInput
   stageTemplates?: Prisma.ProductionStageTemplateUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutBomsAsProductInput = {
@@ -1079,6 +1157,9 @@ export type ItemUncheckedUpdateWithoutBomsAsProductInput = {
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutItemNestedInput
   stockBalances?: Prisma.StockBalanceUncheckedUpdateManyWithoutItemNestedInput
   stageTemplates?: Prisma.ProductionStageTemplateUncheckedUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemCreateWithoutBomLinesAsMaterialInput = {
@@ -1105,6 +1186,9 @@ export type ItemCreateWithoutBomLinesAsMaterialInput = {
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutItemInput
   stockBalances?: Prisma.StockBalanceCreateNestedManyWithoutItemInput
   stageTemplates?: Prisma.ProductionStageTemplateCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutBomLinesAsMaterialInput = {
@@ -1131,6 +1215,9 @@ export type ItemUncheckedCreateWithoutBomLinesAsMaterialInput = {
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutItemInput
   stockBalances?: Prisma.StockBalanceUncheckedCreateNestedManyWithoutItemInput
   stageTemplates?: Prisma.ProductionStageTemplateUncheckedCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutBomLinesAsMaterialInput = {
@@ -1173,6 +1260,9 @@ export type ItemUpdateWithoutBomLinesAsMaterialInput = {
   stockMovements?: Prisma.StockMovementUpdateManyWithoutItemNestedInput
   stockBalances?: Prisma.StockBalanceUpdateManyWithoutItemNestedInput
   stageTemplates?: Prisma.ProductionStageTemplateUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutBomLinesAsMaterialInput = {
@@ -1199,6 +1289,405 @@ export type ItemUncheckedUpdateWithoutBomLinesAsMaterialInput = {
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutItemNestedInput
   stockBalances?: Prisma.StockBalanceUncheckedUpdateManyWithoutItemNestedInput
   stageTemplates?: Prisma.ProductionStageTemplateUncheckedUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutItemNestedInput
+}
+
+export type ItemCreateWithoutPurchaseOrderLinesInput = {
+  id?: string
+  sku: string
+  name: string
+  description?: string | null
+  uom: string
+  itemType: $Enums.ItemType
+  isSellable?: boolean
+  sellingPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sellingPriceCurrency?: string | null
+  standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  org: Prisma.OrganizationCreateNestedOneWithoutItemsInput
+  bomsAsProduct?: Prisma.BillOfMaterialCreateNestedManyWithoutProductItemInput
+  bomLinesAsMaterial?: Prisma.BomLineCreateNestedManyWithoutMaterialItemInput
+  salesOrderLines?: Prisma.SalesOrderLineCreateNestedManyWithoutItemInput
+  productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutProductItemInput
+  materialRequirements?: Prisma.MaterialRequirementCreateNestedManyWithoutMaterialItemInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutItemInput
+  stockBalances?: Prisma.StockBalanceCreateNestedManyWithoutItemInput
+  stageTemplates?: Prisma.ProductionStageTemplateCreateNestedManyWithoutProductInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotCreateNestedManyWithoutItemInput
+}
+
+export type ItemUncheckedCreateWithoutPurchaseOrderLinesInput = {
+  id?: string
+  orgId: string
+  sku: string
+  name: string
+  description?: string | null
+  uom: string
+  itemType: $Enums.ItemType
+  isSellable?: boolean
+  sellingPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sellingPriceCurrency?: string | null
+  standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bomsAsProduct?: Prisma.BillOfMaterialUncheckedCreateNestedManyWithoutProductItemInput
+  bomLinesAsMaterial?: Prisma.BomLineUncheckedCreateNestedManyWithoutMaterialItemInput
+  salesOrderLines?: Prisma.SalesOrderLineUncheckedCreateNestedManyWithoutItemInput
+  productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutProductItemInput
+  materialRequirements?: Prisma.MaterialRequirementUncheckedCreateNestedManyWithoutMaterialItemInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutItemInput
+  stockBalances?: Prisma.StockBalanceUncheckedCreateNestedManyWithoutItemInput
+  stageTemplates?: Prisma.ProductionStageTemplateUncheckedCreateNestedManyWithoutProductInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutItemInput
+}
+
+export type ItemCreateOrConnectWithoutPurchaseOrderLinesInput = {
+  where: Prisma.ItemWhereUniqueInput
+  create: Prisma.XOR<Prisma.ItemCreateWithoutPurchaseOrderLinesInput, Prisma.ItemUncheckedCreateWithoutPurchaseOrderLinesInput>
+}
+
+export type ItemUpsertWithoutPurchaseOrderLinesInput = {
+  update: Prisma.XOR<Prisma.ItemUpdateWithoutPurchaseOrderLinesInput, Prisma.ItemUncheckedUpdateWithoutPurchaseOrderLinesInput>
+  create: Prisma.XOR<Prisma.ItemCreateWithoutPurchaseOrderLinesInput, Prisma.ItemUncheckedCreateWithoutPurchaseOrderLinesInput>
+  where?: Prisma.ItemWhereInput
+}
+
+export type ItemUpdateToOneWithWhereWithoutPurchaseOrderLinesInput = {
+  where?: Prisma.ItemWhereInput
+  data: Prisma.XOR<Prisma.ItemUpdateWithoutPurchaseOrderLinesInput, Prisma.ItemUncheckedUpdateWithoutPurchaseOrderLinesInput>
+}
+
+export type ItemUpdateWithoutPurchaseOrderLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  sku?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uom?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.EnumItemTypeFieldUpdateOperationsInput | $Enums.ItemType
+  isSellable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sellingPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  org?: Prisma.OrganizationUpdateOneRequiredWithoutItemsNestedInput
+  bomsAsProduct?: Prisma.BillOfMaterialUpdateManyWithoutProductItemNestedInput
+  bomLinesAsMaterial?: Prisma.BomLineUpdateManyWithoutMaterialItemNestedInput
+  salesOrderLines?: Prisma.SalesOrderLineUpdateManyWithoutItemNestedInput
+  productionJobs?: Prisma.ProductionJobUpdateManyWithoutProductItemNestedInput
+  materialRequirements?: Prisma.MaterialRequirementUpdateManyWithoutMaterialItemNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutItemNestedInput
+  stockBalances?: Prisma.StockBalanceUpdateManyWithoutItemNestedInput
+  stageTemplates?: Prisma.ProductionStageTemplateUpdateManyWithoutProductNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUpdateManyWithoutItemNestedInput
+}
+
+export type ItemUncheckedUpdateWithoutPurchaseOrderLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  sku?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uom?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.EnumItemTypeFieldUpdateOperationsInput | $Enums.ItemType
+  isSellable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sellingPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bomsAsProduct?: Prisma.BillOfMaterialUncheckedUpdateManyWithoutProductItemNestedInput
+  bomLinesAsMaterial?: Prisma.BomLineUncheckedUpdateManyWithoutMaterialItemNestedInput
+  salesOrderLines?: Prisma.SalesOrderLineUncheckedUpdateManyWithoutItemNestedInput
+  productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutProductItemNestedInput
+  materialRequirements?: Prisma.MaterialRequirementUncheckedUpdateManyWithoutMaterialItemNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutItemNestedInput
+  stockBalances?: Prisma.StockBalanceUncheckedUpdateManyWithoutItemNestedInput
+  stageTemplates?: Prisma.ProductionStageTemplateUncheckedUpdateManyWithoutProductNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutItemNestedInput
+}
+
+export type ItemCreateWithoutGoodsReceiptLinesInput = {
+  id?: string
+  sku: string
+  name: string
+  description?: string | null
+  uom: string
+  itemType: $Enums.ItemType
+  isSellable?: boolean
+  sellingPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sellingPriceCurrency?: string | null
+  standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  org: Prisma.OrganizationCreateNestedOneWithoutItemsInput
+  bomsAsProduct?: Prisma.BillOfMaterialCreateNestedManyWithoutProductItemInput
+  bomLinesAsMaterial?: Prisma.BomLineCreateNestedManyWithoutMaterialItemInput
+  salesOrderLines?: Prisma.SalesOrderLineCreateNestedManyWithoutItemInput
+  productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutProductItemInput
+  materialRequirements?: Prisma.MaterialRequirementCreateNestedManyWithoutMaterialItemInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutItemInput
+  stockBalances?: Prisma.StockBalanceCreateNestedManyWithoutItemInput
+  stageTemplates?: Prisma.ProductionStageTemplateCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotCreateNestedManyWithoutItemInput
+}
+
+export type ItemUncheckedCreateWithoutGoodsReceiptLinesInput = {
+  id?: string
+  orgId: string
+  sku: string
+  name: string
+  description?: string | null
+  uom: string
+  itemType: $Enums.ItemType
+  isSellable?: boolean
+  sellingPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sellingPriceCurrency?: string | null
+  standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bomsAsProduct?: Prisma.BillOfMaterialUncheckedCreateNestedManyWithoutProductItemInput
+  bomLinesAsMaterial?: Prisma.BomLineUncheckedCreateNestedManyWithoutMaterialItemInput
+  salesOrderLines?: Prisma.SalesOrderLineUncheckedCreateNestedManyWithoutItemInput
+  productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutProductItemInput
+  materialRequirements?: Prisma.MaterialRequirementUncheckedCreateNestedManyWithoutMaterialItemInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutItemInput
+  stockBalances?: Prisma.StockBalanceUncheckedCreateNestedManyWithoutItemInput
+  stageTemplates?: Prisma.ProductionStageTemplateUncheckedCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutItemInput
+}
+
+export type ItemCreateOrConnectWithoutGoodsReceiptLinesInput = {
+  where: Prisma.ItemWhereUniqueInput
+  create: Prisma.XOR<Prisma.ItemCreateWithoutGoodsReceiptLinesInput, Prisma.ItemUncheckedCreateWithoutGoodsReceiptLinesInput>
+}
+
+export type ItemUpsertWithoutGoodsReceiptLinesInput = {
+  update: Prisma.XOR<Prisma.ItemUpdateWithoutGoodsReceiptLinesInput, Prisma.ItemUncheckedUpdateWithoutGoodsReceiptLinesInput>
+  create: Prisma.XOR<Prisma.ItemCreateWithoutGoodsReceiptLinesInput, Prisma.ItemUncheckedCreateWithoutGoodsReceiptLinesInput>
+  where?: Prisma.ItemWhereInput
+}
+
+export type ItemUpdateToOneWithWhereWithoutGoodsReceiptLinesInput = {
+  where?: Prisma.ItemWhereInput
+  data: Prisma.XOR<Prisma.ItemUpdateWithoutGoodsReceiptLinesInput, Prisma.ItemUncheckedUpdateWithoutGoodsReceiptLinesInput>
+}
+
+export type ItemUpdateWithoutGoodsReceiptLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  sku?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uom?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.EnumItemTypeFieldUpdateOperationsInput | $Enums.ItemType
+  isSellable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sellingPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  org?: Prisma.OrganizationUpdateOneRequiredWithoutItemsNestedInput
+  bomsAsProduct?: Prisma.BillOfMaterialUpdateManyWithoutProductItemNestedInput
+  bomLinesAsMaterial?: Prisma.BomLineUpdateManyWithoutMaterialItemNestedInput
+  salesOrderLines?: Prisma.SalesOrderLineUpdateManyWithoutItemNestedInput
+  productionJobs?: Prisma.ProductionJobUpdateManyWithoutProductItemNestedInput
+  materialRequirements?: Prisma.MaterialRequirementUpdateManyWithoutMaterialItemNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutItemNestedInput
+  stockBalances?: Prisma.StockBalanceUpdateManyWithoutItemNestedInput
+  stageTemplates?: Prisma.ProductionStageTemplateUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUpdateManyWithoutItemNestedInput
+}
+
+export type ItemUncheckedUpdateWithoutGoodsReceiptLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  sku?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uom?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.EnumItemTypeFieldUpdateOperationsInput | $Enums.ItemType
+  isSellable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sellingPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bomsAsProduct?: Prisma.BillOfMaterialUncheckedUpdateManyWithoutProductItemNestedInput
+  bomLinesAsMaterial?: Prisma.BomLineUncheckedUpdateManyWithoutMaterialItemNestedInput
+  salesOrderLines?: Prisma.SalesOrderLineUncheckedUpdateManyWithoutItemNestedInput
+  productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutProductItemNestedInput
+  materialRequirements?: Prisma.MaterialRequirementUncheckedUpdateManyWithoutMaterialItemNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutItemNestedInput
+  stockBalances?: Prisma.StockBalanceUncheckedUpdateManyWithoutItemNestedInput
+  stageTemplates?: Prisma.ProductionStageTemplateUncheckedUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutItemNestedInput
+}
+
+export type ItemCreateWithoutMaterialLotsInput = {
+  id?: string
+  sku: string
+  name: string
+  description?: string | null
+  uom: string
+  itemType: $Enums.ItemType
+  isSellable?: boolean
+  sellingPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sellingPriceCurrency?: string | null
+  standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  org: Prisma.OrganizationCreateNestedOneWithoutItemsInput
+  bomsAsProduct?: Prisma.BillOfMaterialCreateNestedManyWithoutProductItemInput
+  bomLinesAsMaterial?: Prisma.BomLineCreateNestedManyWithoutMaterialItemInput
+  salesOrderLines?: Prisma.SalesOrderLineCreateNestedManyWithoutItemInput
+  productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutProductItemInput
+  materialRequirements?: Prisma.MaterialRequirementCreateNestedManyWithoutMaterialItemInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutItemInput
+  stockBalances?: Prisma.StockBalanceCreateNestedManyWithoutItemInput
+  stageTemplates?: Prisma.ProductionStageTemplateCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineCreateNestedManyWithoutItemInput
+}
+
+export type ItemUncheckedCreateWithoutMaterialLotsInput = {
+  id?: string
+  orgId: string
+  sku: string
+  name: string
+  description?: string | null
+  uom: string
+  itemType: $Enums.ItemType
+  isSellable?: boolean
+  sellingPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sellingPriceCurrency?: string | null
+  standardCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardCostCurrency?: string | null
+  reorderThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bomsAsProduct?: Prisma.BillOfMaterialUncheckedCreateNestedManyWithoutProductItemInput
+  bomLinesAsMaterial?: Prisma.BomLineUncheckedCreateNestedManyWithoutMaterialItemInput
+  salesOrderLines?: Prisma.SalesOrderLineUncheckedCreateNestedManyWithoutItemInput
+  productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutProductItemInput
+  materialRequirements?: Prisma.MaterialRequirementUncheckedCreateNestedManyWithoutMaterialItemInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutItemInput
+  stockBalances?: Prisma.StockBalanceUncheckedCreateNestedManyWithoutItemInput
+  stageTemplates?: Prisma.ProductionStageTemplateUncheckedCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedCreateNestedManyWithoutItemInput
+}
+
+export type ItemCreateOrConnectWithoutMaterialLotsInput = {
+  where: Prisma.ItemWhereUniqueInput
+  create: Prisma.XOR<Prisma.ItemCreateWithoutMaterialLotsInput, Prisma.ItemUncheckedCreateWithoutMaterialLotsInput>
+}
+
+export type ItemUpsertWithoutMaterialLotsInput = {
+  update: Prisma.XOR<Prisma.ItemUpdateWithoutMaterialLotsInput, Prisma.ItemUncheckedUpdateWithoutMaterialLotsInput>
+  create: Prisma.XOR<Prisma.ItemCreateWithoutMaterialLotsInput, Prisma.ItemUncheckedCreateWithoutMaterialLotsInput>
+  where?: Prisma.ItemWhereInput
+}
+
+export type ItemUpdateToOneWithWhereWithoutMaterialLotsInput = {
+  where?: Prisma.ItemWhereInput
+  data: Prisma.XOR<Prisma.ItemUpdateWithoutMaterialLotsInput, Prisma.ItemUncheckedUpdateWithoutMaterialLotsInput>
+}
+
+export type ItemUpdateWithoutMaterialLotsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  sku?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uom?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.EnumItemTypeFieldUpdateOperationsInput | $Enums.ItemType
+  isSellable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sellingPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  org?: Prisma.OrganizationUpdateOneRequiredWithoutItemsNestedInput
+  bomsAsProduct?: Prisma.BillOfMaterialUpdateManyWithoutProductItemNestedInput
+  bomLinesAsMaterial?: Prisma.BomLineUpdateManyWithoutMaterialItemNestedInput
+  salesOrderLines?: Prisma.SalesOrderLineUpdateManyWithoutItemNestedInput
+  productionJobs?: Prisma.ProductionJobUpdateManyWithoutProductItemNestedInput
+  materialRequirements?: Prisma.MaterialRequirementUpdateManyWithoutMaterialItemNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutItemNestedInput
+  stockBalances?: Prisma.StockBalanceUpdateManyWithoutItemNestedInput
+  stageTemplates?: Prisma.ProductionStageTemplateUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUpdateManyWithoutItemNestedInput
+}
+
+export type ItemUncheckedUpdateWithoutMaterialLotsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  sku?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uom?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.EnumItemTypeFieldUpdateOperationsInput | $Enums.ItemType
+  isSellable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sellingPrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sellingPriceCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  standardCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardCostCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reorderThreshold?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bomsAsProduct?: Prisma.BillOfMaterialUncheckedUpdateManyWithoutProductItemNestedInput
+  bomLinesAsMaterial?: Prisma.BomLineUncheckedUpdateManyWithoutMaterialItemNestedInput
+  salesOrderLines?: Prisma.SalesOrderLineUncheckedUpdateManyWithoutItemNestedInput
+  productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutProductItemNestedInput
+  materialRequirements?: Prisma.MaterialRequirementUncheckedUpdateManyWithoutMaterialItemNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutItemNestedInput
+  stockBalances?: Prisma.StockBalanceUncheckedUpdateManyWithoutItemNestedInput
+  stageTemplates?: Prisma.ProductionStageTemplateUncheckedUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemCreateWithoutSalesOrderLinesInput = {
@@ -1225,6 +1714,9 @@ export type ItemCreateWithoutSalesOrderLinesInput = {
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutItemInput
   stockBalances?: Prisma.StockBalanceCreateNestedManyWithoutItemInput
   stageTemplates?: Prisma.ProductionStageTemplateCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutSalesOrderLinesInput = {
@@ -1251,6 +1743,9 @@ export type ItemUncheckedCreateWithoutSalesOrderLinesInput = {
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutItemInput
   stockBalances?: Prisma.StockBalanceUncheckedCreateNestedManyWithoutItemInput
   stageTemplates?: Prisma.ProductionStageTemplateUncheckedCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutSalesOrderLinesInput = {
@@ -1293,6 +1788,9 @@ export type ItemUpdateWithoutSalesOrderLinesInput = {
   stockMovements?: Prisma.StockMovementUpdateManyWithoutItemNestedInput
   stockBalances?: Prisma.StockBalanceUpdateManyWithoutItemNestedInput
   stageTemplates?: Prisma.ProductionStageTemplateUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutSalesOrderLinesInput = {
@@ -1319,6 +1817,9 @@ export type ItemUncheckedUpdateWithoutSalesOrderLinesInput = {
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutItemNestedInput
   stockBalances?: Prisma.StockBalanceUncheckedUpdateManyWithoutItemNestedInput
   stageTemplates?: Prisma.ProductionStageTemplateUncheckedUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemCreateWithoutProductionJobsInput = {
@@ -1345,6 +1846,9 @@ export type ItemCreateWithoutProductionJobsInput = {
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutItemInput
   stockBalances?: Prisma.StockBalanceCreateNestedManyWithoutItemInput
   stageTemplates?: Prisma.ProductionStageTemplateCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutProductionJobsInput = {
@@ -1371,6 +1875,9 @@ export type ItemUncheckedCreateWithoutProductionJobsInput = {
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutItemInput
   stockBalances?: Prisma.StockBalanceUncheckedCreateNestedManyWithoutItemInput
   stageTemplates?: Prisma.ProductionStageTemplateUncheckedCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutProductionJobsInput = {
@@ -1413,6 +1920,9 @@ export type ItemUpdateWithoutProductionJobsInput = {
   stockMovements?: Prisma.StockMovementUpdateManyWithoutItemNestedInput
   stockBalances?: Prisma.StockBalanceUpdateManyWithoutItemNestedInput
   stageTemplates?: Prisma.ProductionStageTemplateUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutProductionJobsInput = {
@@ -1439,6 +1949,9 @@ export type ItemUncheckedUpdateWithoutProductionJobsInput = {
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutItemNestedInput
   stockBalances?: Prisma.StockBalanceUncheckedUpdateManyWithoutItemNestedInput
   stageTemplates?: Prisma.ProductionStageTemplateUncheckedUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemCreateWithoutMaterialRequirementsInput = {
@@ -1465,6 +1978,9 @@ export type ItemCreateWithoutMaterialRequirementsInput = {
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutItemInput
   stockBalances?: Prisma.StockBalanceCreateNestedManyWithoutItemInput
   stageTemplates?: Prisma.ProductionStageTemplateCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutMaterialRequirementsInput = {
@@ -1491,6 +2007,9 @@ export type ItemUncheckedCreateWithoutMaterialRequirementsInput = {
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutItemInput
   stockBalances?: Prisma.StockBalanceUncheckedCreateNestedManyWithoutItemInput
   stageTemplates?: Prisma.ProductionStageTemplateUncheckedCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutMaterialRequirementsInput = {
@@ -1533,6 +2052,9 @@ export type ItemUpdateWithoutMaterialRequirementsInput = {
   stockMovements?: Prisma.StockMovementUpdateManyWithoutItemNestedInput
   stockBalances?: Prisma.StockBalanceUpdateManyWithoutItemNestedInput
   stageTemplates?: Prisma.ProductionStageTemplateUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutMaterialRequirementsInput = {
@@ -1559,6 +2081,9 @@ export type ItemUncheckedUpdateWithoutMaterialRequirementsInput = {
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutItemNestedInput
   stockBalances?: Prisma.StockBalanceUncheckedUpdateManyWithoutItemNestedInput
   stageTemplates?: Prisma.ProductionStageTemplateUncheckedUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemCreateWithoutStageTemplatesInput = {
@@ -1585,6 +2110,9 @@ export type ItemCreateWithoutStageTemplatesInput = {
   materialRequirements?: Prisma.MaterialRequirementCreateNestedManyWithoutMaterialItemInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutItemInput
   stockBalances?: Prisma.StockBalanceCreateNestedManyWithoutItemInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutStageTemplatesInput = {
@@ -1611,6 +2139,9 @@ export type ItemUncheckedCreateWithoutStageTemplatesInput = {
   materialRequirements?: Prisma.MaterialRequirementUncheckedCreateNestedManyWithoutMaterialItemInput
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutItemInput
   stockBalances?: Prisma.StockBalanceUncheckedCreateNestedManyWithoutItemInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutStageTemplatesInput = {
@@ -1653,6 +2184,9 @@ export type ItemUpdateWithoutStageTemplatesInput = {
   materialRequirements?: Prisma.MaterialRequirementUpdateManyWithoutMaterialItemNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutItemNestedInput
   stockBalances?: Prisma.StockBalanceUpdateManyWithoutItemNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutStageTemplatesInput = {
@@ -1679,6 +2213,9 @@ export type ItemUncheckedUpdateWithoutStageTemplatesInput = {
   materialRequirements?: Prisma.MaterialRequirementUncheckedUpdateManyWithoutMaterialItemNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutItemNestedInput
   stockBalances?: Prisma.StockBalanceUncheckedUpdateManyWithoutItemNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemCreateWithoutStockMovementsInput = {
@@ -1705,6 +2242,9 @@ export type ItemCreateWithoutStockMovementsInput = {
   materialRequirements?: Prisma.MaterialRequirementCreateNestedManyWithoutMaterialItemInput
   stockBalances?: Prisma.StockBalanceCreateNestedManyWithoutItemInput
   stageTemplates?: Prisma.ProductionStageTemplateCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutStockMovementsInput = {
@@ -1731,6 +2271,9 @@ export type ItemUncheckedCreateWithoutStockMovementsInput = {
   materialRequirements?: Prisma.MaterialRequirementUncheckedCreateNestedManyWithoutMaterialItemInput
   stockBalances?: Prisma.StockBalanceUncheckedCreateNestedManyWithoutItemInput
   stageTemplates?: Prisma.ProductionStageTemplateUncheckedCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutStockMovementsInput = {
@@ -1773,6 +2316,9 @@ export type ItemUpdateWithoutStockMovementsInput = {
   materialRequirements?: Prisma.MaterialRequirementUpdateManyWithoutMaterialItemNestedInput
   stockBalances?: Prisma.StockBalanceUpdateManyWithoutItemNestedInput
   stageTemplates?: Prisma.ProductionStageTemplateUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutStockMovementsInput = {
@@ -1799,6 +2345,9 @@ export type ItemUncheckedUpdateWithoutStockMovementsInput = {
   materialRequirements?: Prisma.MaterialRequirementUncheckedUpdateManyWithoutMaterialItemNestedInput
   stockBalances?: Prisma.StockBalanceUncheckedUpdateManyWithoutItemNestedInput
   stageTemplates?: Prisma.ProductionStageTemplateUncheckedUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemCreateWithoutStockBalancesInput = {
@@ -1825,6 +2374,9 @@ export type ItemCreateWithoutStockBalancesInput = {
   materialRequirements?: Prisma.MaterialRequirementCreateNestedManyWithoutMaterialItemInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutItemInput
   stageTemplates?: Prisma.ProductionStageTemplateCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutStockBalancesInput = {
@@ -1851,6 +2403,9 @@ export type ItemUncheckedCreateWithoutStockBalancesInput = {
   materialRequirements?: Prisma.MaterialRequirementUncheckedCreateNestedManyWithoutMaterialItemInput
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutItemInput
   stageTemplates?: Prisma.ProductionStageTemplateUncheckedCreateNestedManyWithoutProductInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedCreateNestedManyWithoutItemInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedCreateNestedManyWithoutItemInput
+  materialLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutStockBalancesInput = {
@@ -1893,6 +2448,9 @@ export type ItemUpdateWithoutStockBalancesInput = {
   materialRequirements?: Prisma.MaterialRequirementUpdateManyWithoutMaterialItemNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutItemNestedInput
   stageTemplates?: Prisma.ProductionStageTemplateUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutStockBalancesInput = {
@@ -1919,6 +2477,9 @@ export type ItemUncheckedUpdateWithoutStockBalancesInput = {
   materialRequirements?: Prisma.MaterialRequirementUncheckedUpdateManyWithoutMaterialItemNestedInput
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutItemNestedInput
   stageTemplates?: Prisma.ProductionStageTemplateUncheckedUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemCreateManyOrgInput = {
@@ -1963,6 +2524,9 @@ export type ItemUpdateWithoutOrgInput = {
   stockMovements?: Prisma.StockMovementUpdateManyWithoutItemNestedInput
   stockBalances?: Prisma.StockBalanceUpdateManyWithoutItemNestedInput
   stageTemplates?: Prisma.ProductionStageTemplateUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutOrgInput = {
@@ -1989,6 +2553,9 @@ export type ItemUncheckedUpdateWithoutOrgInput = {
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutItemNestedInput
   stockBalances?: Prisma.StockBalanceUncheckedUpdateManyWithoutItemNestedInput
   stageTemplates?: Prisma.ProductionStageTemplateUncheckedUpdateManyWithoutProductNestedInput
+  purchaseOrderLines?: Prisma.PurchaseOrderLineUncheckedUpdateManyWithoutItemNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedUpdateManyWithoutItemNestedInput
+  materialLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateManyWithoutOrgInput = {
@@ -2023,6 +2590,9 @@ export type ItemCountOutputType = {
   stockMovements: number
   stockBalances: number
   stageTemplates: number
+  purchaseOrderLines: number
+  goodsReceiptLines: number
+  materialLots: number
 }
 
 export type ItemCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2034,6 +2604,9 @@ export type ItemCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   stockMovements?: boolean | ItemCountOutputTypeCountStockMovementsArgs
   stockBalances?: boolean | ItemCountOutputTypeCountStockBalancesArgs
   stageTemplates?: boolean | ItemCountOutputTypeCountStageTemplatesArgs
+  purchaseOrderLines?: boolean | ItemCountOutputTypeCountPurchaseOrderLinesArgs
+  goodsReceiptLines?: boolean | ItemCountOutputTypeCountGoodsReceiptLinesArgs
+  materialLots?: boolean | ItemCountOutputTypeCountMaterialLotsArgs
 }
 
 /**
@@ -2102,6 +2675,27 @@ export type ItemCountOutputTypeCountStageTemplatesArgs<ExtArgs extends runtime.T
   where?: Prisma.ProductionStageTemplateWhereInput
 }
 
+/**
+ * ItemCountOutputType without action
+ */
+export type ItemCountOutputTypeCountPurchaseOrderLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PurchaseOrderLineWhereInput
+}
+
+/**
+ * ItemCountOutputType without action
+ */
+export type ItemCountOutputTypeCountGoodsReceiptLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GoodsReceiptLineWhereInput
+}
+
+/**
+ * ItemCountOutputType without action
+ */
+export type ItemCountOutputTypeCountMaterialLotsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MaterialLotWhereInput
+}
+
 
 export type ItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2129,6 +2723,9 @@ export type ItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   stockMovements?: boolean | Prisma.Item$stockMovementsArgs<ExtArgs>
   stockBalances?: boolean | Prisma.Item$stockBalancesArgs<ExtArgs>
   stageTemplates?: boolean | Prisma.Item$stageTemplatesArgs<ExtArgs>
+  purchaseOrderLines?: boolean | Prisma.Item$purchaseOrderLinesArgs<ExtArgs>
+  goodsReceiptLines?: boolean | Prisma.Item$goodsReceiptLinesArgs<ExtArgs>
+  materialLots?: boolean | Prisma.Item$materialLotsArgs<ExtArgs>
   _count?: boolean | Prisma.ItemCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["item"]>
 
@@ -2202,6 +2799,9 @@ export type ItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   stockMovements?: boolean | Prisma.Item$stockMovementsArgs<ExtArgs>
   stockBalances?: boolean | Prisma.Item$stockBalancesArgs<ExtArgs>
   stageTemplates?: boolean | Prisma.Item$stageTemplatesArgs<ExtArgs>
+  purchaseOrderLines?: boolean | Prisma.Item$purchaseOrderLinesArgs<ExtArgs>
+  goodsReceiptLines?: boolean | Prisma.Item$goodsReceiptLinesArgs<ExtArgs>
+  materialLots?: boolean | Prisma.Item$materialLotsArgs<ExtArgs>
   _count?: boolean | Prisma.ItemCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ItemIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2223,6 +2823,9 @@ export type $ItemPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     stockMovements: Prisma.$StockMovementPayload<ExtArgs>[]
     stockBalances: Prisma.$StockBalancePayload<ExtArgs>[]
     stageTemplates: Prisma.$ProductionStageTemplatePayload<ExtArgs>[]
+    purchaseOrderLines: Prisma.$PurchaseOrderLinePayload<ExtArgs>[]
+    goodsReceiptLines: Prisma.$GoodsReceiptLinePayload<ExtArgs>[]
+    materialLots: Prisma.$MaterialLotPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2644,6 +3247,9 @@ export interface Prisma__ItemClient<T, Null = never, ExtArgs extends runtime.Typ
   stockMovements<T extends Prisma.Item$stockMovementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Item$stockMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   stockBalances<T extends Prisma.Item$stockBalancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Item$stockBalancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StockBalancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   stageTemplates<T extends Prisma.Item$stageTemplatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Item$stageTemplatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductionStageTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  purchaseOrderLines<T extends Prisma.Item$purchaseOrderLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Item$purchaseOrderLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PurchaseOrderLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  goodsReceiptLines<T extends Prisma.Item$goodsReceiptLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Item$goodsReceiptLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GoodsReceiptLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  materialLots<T extends Prisma.Item$materialLotsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Item$materialLotsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaterialLotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3279,6 +3885,78 @@ export type Item$stageTemplatesArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.ProductionStageTemplateScalarFieldEnum | Prisma.ProductionStageTemplateScalarFieldEnum[]
+}
+
+/**
+ * Item.purchaseOrderLines
+ */
+export type Item$purchaseOrderLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PurchaseOrderLine
+   */
+  select?: Prisma.PurchaseOrderLineSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PurchaseOrderLine
+   */
+  omit?: Prisma.PurchaseOrderLineOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PurchaseOrderLineInclude<ExtArgs> | null
+  where?: Prisma.PurchaseOrderLineWhereInput
+  orderBy?: Prisma.PurchaseOrderLineOrderByWithRelationInput | Prisma.PurchaseOrderLineOrderByWithRelationInput[]
+  cursor?: Prisma.PurchaseOrderLineWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PurchaseOrderLineScalarFieldEnum | Prisma.PurchaseOrderLineScalarFieldEnum[]
+}
+
+/**
+ * Item.goodsReceiptLines
+ */
+export type Item$goodsReceiptLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GoodsReceiptLine
+   */
+  select?: Prisma.GoodsReceiptLineSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GoodsReceiptLine
+   */
+  omit?: Prisma.GoodsReceiptLineOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GoodsReceiptLineInclude<ExtArgs> | null
+  where?: Prisma.GoodsReceiptLineWhereInput
+  orderBy?: Prisma.GoodsReceiptLineOrderByWithRelationInput | Prisma.GoodsReceiptLineOrderByWithRelationInput[]
+  cursor?: Prisma.GoodsReceiptLineWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GoodsReceiptLineScalarFieldEnum | Prisma.GoodsReceiptLineScalarFieldEnum[]
+}
+
+/**
+ * Item.materialLots
+ */
+export type Item$materialLotsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MaterialLot
+   */
+  select?: Prisma.MaterialLotSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MaterialLot
+   */
+  omit?: Prisma.MaterialLotOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MaterialLotInclude<ExtArgs> | null
+  where?: Prisma.MaterialLotWhereInput
+  orderBy?: Prisma.MaterialLotOrderByWithRelationInput | Prisma.MaterialLotOrderByWithRelationInput[]
+  cursor?: Prisma.MaterialLotWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MaterialLotScalarFieldEnum | Prisma.MaterialLotScalarFieldEnum[]
 }
 
 /**

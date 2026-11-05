@@ -439,3 +439,69 @@ export interface Readiness {
   jobBlockers: string[];
   stages: { id: string; sequence: number; name: string; completionBlockers: string[] }[];
 }
+
+// --- Lot traceability ("Phase One" of the next mandate round) -------------
+
+export type MaterialLotStatus = "active" | "quarantined" | "expired";
+
+export interface MaterialLot {
+  id: string;
+  lotNumber: string;
+  itemId: string;
+  warehouseId: string;
+  supplierId: string;
+  uom: string;
+  status: MaterialLotStatus;
+  expiryDate: string | null;
+  receivedAt: string;
+  quantityReceived: Dec;
+  remaining: Dec;
+  /** false when quarantined, expired, or nothing left -- see lot-availability.ts's isAvailable. */
+  available: boolean;
+}
+
+export type LotOrigin =
+  | { type: "receipt"; receiptLineId: string; goodsReceiptId: string; purchaseOrderId: string; purchaseOrderNumber: string; supplierId: string; supplierName: string }
+  | { type: "return"; sourceReturnOfLotId: string | null; sourceReturnOfLotNumber: string | null; sourceReturnJobId: string | null; sourceReturnJobNumber: string | null; sourceReturnMovementId: string | null };
+
+export interface LotDetail extends MaterialLot {
+  supplierLotRef: string | null;
+  origin: LotOrigin;
+  returnChildLots: { id: string; lotNumber: string; status: MaterialLotStatus; quantityReceived: Dec; createdAt: string }[];
+}
+
+export interface LotTraceabilityJobEvent {
+  type: "consumption" | "return";
+  quantity: Dec;
+  movementId: string;
+  occurredAt: string;
+  createdAt: string;
+}
+
+export interface LotTraceabilityJob {
+  jobId: string;
+  jobNumber: string;
+  consumed: Dec;
+  returned: Dec;
+  netOutstanding: Dec;
+  events: LotTraceabilityJobEvent[];
+}
+
+export interface LotTraceability {
+  lotId: string;
+  lotNumber: string;
+  originChain: Array<Record<string, unknown>>;
+  consumedByJobs: LotTraceabilityJob[];
+  forwardChainNote: string;
+}
+
+/** Per-job, per-lot breakdown behind a JobMaterialRow's issuedQty figure. */
+export interface JobLotConsumptionRow {
+  lotId: string;
+  lotNumber: string;
+  itemId: string;
+  warehouseId: string;
+  consumed: Dec;
+  returned: Dec;
+  netOutstanding: Dec;
+}

@@ -93,6 +93,36 @@ export type Customer = Prisma.CustomerModel
  */
 export type Supplier = Prisma.SupplierModel
 /**
+ * Model PurchaseOrder
+ * 
+ */
+export type PurchaseOrder = Prisma.PurchaseOrderModel
+/**
+ * Model PurchaseOrderLine
+ * 
+ */
+export type PurchaseOrderLine = Prisma.PurchaseOrderLineModel
+/**
+ * Model GoodsReceipt
+ * 
+ */
+export type GoodsReceipt = Prisma.GoodsReceiptModel
+/**
+ * Model GoodsReceiptLine
+ * 
+ */
+export type GoodsReceiptLine = Prisma.GoodsReceiptLineModel
+/**
+ * Model MaterialLot
+ * 
+ */
+export type MaterialLot = Prisma.MaterialLotModel
+/**
+ * Model LotConsumption
+ * 
+ */
+export type LotConsumption = Prisma.LotConsumptionModel
+/**
  * Model SalesOrder
  * 
  */

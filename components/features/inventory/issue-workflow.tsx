@@ -20,7 +20,7 @@ type Mats = { state: "idle" } | { state: "loading" } | { state: "error"; message
 // Inventory-side entry to "issue material to a job": pick an open job, load its
 // real requirements from the materials endpoint, then reuse the same form the
 // job's Materials tab uses.
-export function IssueWorkflow({ jobs, warehouses, itemNames }: { jobs: IssueJobOption[]; warehouses: { id: string; name: string; branchId: string }[]; itemNames: Record<string, string>}) {
+export function IssueWorkflow({ jobs, warehouses, itemNames, canPickLots = false }: { jobs: IssueJobOption[]; warehouses: { id: string; name: string; branchId: string }[]; itemNames: Record<string, string>; canPickLots?: boolean }) {
   const [jobId, setJobId] = useState("");
   const [mats, setMats] = useState<Mats>({ state: "idle" });
 
@@ -69,7 +69,7 @@ export function IssueWorkflow({ jobs, warehouses, itemNames }: { jobs: IssueJobO
         ) : whs.length === 0 ? (
           <Notice tone="warning">This job&apos;s branch has no active warehouse to issue from.</Notice>
         ) : (
-          <IssueMaterialForm key={jobId} jobId={jobId} materials={mats.rows} warehouses={whs} onIssued={() => void load(jobId)} />
+          <IssueMaterialForm key={jobId} jobId={jobId} materials={mats.rows} warehouses={whs} canPickLots={canPickLots} onIssued={() => void load(jobId)} />
         )
       ) : null}
     </div>

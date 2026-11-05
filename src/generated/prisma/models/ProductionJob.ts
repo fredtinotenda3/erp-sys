@@ -349,6 +349,8 @@ export type ProductionJobWhereInput = {
   outputs?: Prisma.ProductionOutputListRelationFilter
   outputVoids?: Prisma.ProductionOutputVoidListRelationFilter
   dispositions?: Prisma.QualityDispositionListRelationFilter
+  lotConsumptions?: Prisma.LotConsumptionListRelationFilter
+  returnSpawnedLots?: Prisma.MaterialLotListRelationFilter
 }
 
 export type ProductionJobOrderByWithRelationInput = {
@@ -388,6 +390,8 @@ export type ProductionJobOrderByWithRelationInput = {
   outputs?: Prisma.ProductionOutputOrderByRelationAggregateInput
   outputVoids?: Prisma.ProductionOutputVoidOrderByRelationAggregateInput
   dispositions?: Prisma.QualityDispositionOrderByRelationAggregateInput
+  lotConsumptions?: Prisma.LotConsumptionOrderByRelationAggregateInput
+  returnSpawnedLots?: Prisma.MaterialLotOrderByRelationAggregateInput
 }
 
 export type ProductionJobWhereUniqueInput = Prisma.AtLeast<{
@@ -433,6 +437,8 @@ export type ProductionJobWhereUniqueInput = Prisma.AtLeast<{
   outputs?: Prisma.ProductionOutputListRelationFilter
   outputVoids?: Prisma.ProductionOutputVoidListRelationFilter
   dispositions?: Prisma.QualityDispositionListRelationFilter
+  lotConsumptions?: Prisma.LotConsumptionListRelationFilter
+  returnSpawnedLots?: Prisma.MaterialLotListRelationFilter
 }, "id" | "orgId_jobNumber" | "orgId_id" | "orgId_salesOrderLineId">
 
 export type ProductionJobOrderByWithAggregationInput = {
@@ -518,6 +524,8 @@ export type ProductionJobCreateInput = {
   outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobUncheckedCreateInput = {
@@ -552,6 +560,8 @@ export type ProductionJobUncheckedCreateInput = {
   outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobUpdateInput = {
@@ -585,6 +595,8 @@ export type ProductionJobUpdateInput = {
   outputs?: Prisma.ProductionOutputUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateInput = {
@@ -619,6 +631,8 @@ export type ProductionJobUncheckedUpdateInput = {
   outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobCreateManyInput = {
@@ -694,6 +708,11 @@ export type ProductionJobOrderByRelationAggregateInput = {
 export type ProductionJobNullableScalarRelationFilter = {
   is?: Prisma.ProductionJobWhereInput | null
   isNot?: Prisma.ProductionJobWhereInput | null
+}
+
+export type ProductionJobScalarRelationFilter = {
+  is?: Prisma.ProductionJobWhereInput
+  isNot?: Prisma.ProductionJobWhereInput
 }
 
 export type ProductionJobOrgIdJobNumberCompoundUniqueInput = {
@@ -785,11 +804,6 @@ export type ProductionJobMinOrderByAggregateInput = {
 export type ProductionJobSumOrderByAggregateInput = {
   plannedQty?: Prisma.SortOrder
   quotedAmount?: Prisma.SortOrder
-}
-
-export type ProductionJobScalarRelationFilter = {
-  is?: Prisma.ProductionJobWhereInput
-  isNot?: Prisma.ProductionJobWhereInput
 }
 
 export type ProductionJobCreateNestedManyWithoutBranchInput = {
@@ -958,6 +972,36 @@ export type ProductionJobUncheckedUpdateManyWithoutCustomerNestedInput = {
   update?: Prisma.ProductionJobUpdateWithWhereUniqueWithoutCustomerInput | Prisma.ProductionJobUpdateWithWhereUniqueWithoutCustomerInput[]
   updateMany?: Prisma.ProductionJobUpdateManyWithWhereWithoutCustomerInput | Prisma.ProductionJobUpdateManyWithWhereWithoutCustomerInput[]
   deleteMany?: Prisma.ProductionJobScalarWhereInput | Prisma.ProductionJobScalarWhereInput[]
+}
+
+export type ProductionJobCreateNestedOneWithoutReturnSpawnedLotsInput = {
+  create?: Prisma.XOR<Prisma.ProductionJobCreateWithoutReturnSpawnedLotsInput, Prisma.ProductionJobUncheckedCreateWithoutReturnSpawnedLotsInput>
+  connectOrCreate?: Prisma.ProductionJobCreateOrConnectWithoutReturnSpawnedLotsInput
+  connect?: Prisma.ProductionJobWhereUniqueInput
+}
+
+export type ProductionJobUpdateOneWithoutReturnSpawnedLotsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProductionJobCreateWithoutReturnSpawnedLotsInput, Prisma.ProductionJobUncheckedCreateWithoutReturnSpawnedLotsInput>
+  connectOrCreate?: Prisma.ProductionJobCreateOrConnectWithoutReturnSpawnedLotsInput
+  upsert?: Prisma.ProductionJobUpsertWithoutReturnSpawnedLotsInput
+  disconnect?: Prisma.ProductionJobWhereInput | boolean
+  delete?: Prisma.ProductionJobWhereInput | boolean
+  connect?: Prisma.ProductionJobWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProductionJobUpdateToOneWithWhereWithoutReturnSpawnedLotsInput, Prisma.ProductionJobUpdateWithoutReturnSpawnedLotsInput>, Prisma.ProductionJobUncheckedUpdateWithoutReturnSpawnedLotsInput>
+}
+
+export type ProductionJobCreateNestedOneWithoutLotConsumptionsInput = {
+  create?: Prisma.XOR<Prisma.ProductionJobCreateWithoutLotConsumptionsInput, Prisma.ProductionJobUncheckedCreateWithoutLotConsumptionsInput>
+  connectOrCreate?: Prisma.ProductionJobCreateOrConnectWithoutLotConsumptionsInput
+  connect?: Prisma.ProductionJobWhereUniqueInput
+}
+
+export type ProductionJobUpdateOneRequiredWithoutLotConsumptionsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProductionJobCreateWithoutLotConsumptionsInput, Prisma.ProductionJobUncheckedCreateWithoutLotConsumptionsInput>
+  connectOrCreate?: Prisma.ProductionJobCreateOrConnectWithoutLotConsumptionsInput
+  upsert?: Prisma.ProductionJobUpsertWithoutLotConsumptionsInput
+  connect?: Prisma.ProductionJobWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProductionJobUpdateToOneWithWhereWithoutLotConsumptionsInput, Prisma.ProductionJobUpdateWithoutLotConsumptionsInput>, Prisma.ProductionJobUncheckedUpdateWithoutLotConsumptionsInput>
 }
 
 export type ProductionJobCreateNestedOneWithoutSalesOrderLineInput = {
@@ -1194,6 +1238,8 @@ export type ProductionJobCreateWithoutBranchInput = {
   outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobUncheckedCreateWithoutBranchInput = {
@@ -1226,6 +1272,8 @@ export type ProductionJobUncheckedCreateWithoutBranchInput = {
   outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobCreateOrConnectWithoutBranchInput = {
@@ -1309,6 +1357,8 @@ export type ProductionJobCreateWithoutProductItemInput = {
   outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobUncheckedCreateWithoutProductItemInput = {
@@ -1341,6 +1391,8 @@ export type ProductionJobUncheckedCreateWithoutProductItemInput = {
   outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobCreateOrConnectWithoutProductItemInput = {
@@ -1399,6 +1451,8 @@ export type ProductionJobCreateWithoutBomInput = {
   outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobUncheckedCreateWithoutBomInput = {
@@ -1431,6 +1485,8 @@ export type ProductionJobUncheckedCreateWithoutBomInput = {
   outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobCreateOrConnectWithoutBomInput = {
@@ -1489,6 +1545,8 @@ export type ProductionJobCreateWithoutCustomerInput = {
   outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobUncheckedCreateWithoutCustomerInput = {
@@ -1521,6 +1579,8 @@ export type ProductionJobUncheckedCreateWithoutCustomerInput = {
   outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobCreateOrConnectWithoutCustomerInput = {
@@ -1547,6 +1607,314 @@ export type ProductionJobUpdateWithWhereUniqueWithoutCustomerInput = {
 export type ProductionJobUpdateManyWithWhereWithoutCustomerInput = {
   where: Prisma.ProductionJobScalarWhereInput
   data: Prisma.XOR<Prisma.ProductionJobUpdateManyMutationInput, Prisma.ProductionJobUncheckedUpdateManyWithoutCustomerInput>
+}
+
+export type ProductionJobCreateWithoutReturnSpawnedLotsInput = {
+  id?: string
+  jobNumber: string
+  plannedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
+  plannedStart?: Date | string | null
+  plannedEnd?: Date | string | null
+  actualStart?: Date | string | null
+  actualEnd?: Date | string | null
+  status?: $Enums.ProductionJobStatus
+  quotedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quotedCurrency?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branch: Prisma.BranchCreateNestedOneWithoutProductionJobsInput
+  salesOrderLine?: Prisma.SalesOrderLineCreateNestedOneWithoutProductionJobInput
+  customer?: Prisma.CustomerCreateNestedOneWithoutProductionJobsInput
+  productItem: Prisma.ItemCreateNestedOneWithoutProductionJobsInput
+  bom: Prisma.BillOfMaterialCreateNestedOneWithoutProductionJobsInput
+  materialRequirements?: Prisma.MaterialRequirementCreateNestedManyWithoutJobInput
+  labourRecords?: Prisma.LabourRecordCreateNestedManyWithoutJobInput
+  costEstimate?: Prisma.JobCostEstimateCreateNestedOneWithoutJobInput
+  costEstimateLines?: Prisma.JobCostEstimateLineCreateNestedManyWithoutJobInput
+  costActualLines?: Prisma.JobCostActualLineCreateNestedManyWithoutJobInput
+  costActual?: Prisma.JobCostActualCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentCreateNestedManyWithoutJobInput
+  stages?: Prisma.ProductionJobStageCreateNestedManyWithoutJobInput
+  qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobInput
+  outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobInput
+  outputVoids?: Prisma.ProductionOutputVoidCreateNestedManyWithoutJobInput
+  dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutJobInput
+}
+
+export type ProductionJobUncheckedCreateWithoutReturnSpawnedLotsInput = {
+  id?: string
+  orgId: string
+  branchId: string
+  jobNumber: string
+  salesOrderLineId?: string | null
+  customerId?: string | null
+  productItemId: string
+  bomId: string
+  plannedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
+  plannedStart?: Date | string | null
+  plannedEnd?: Date | string | null
+  actualStart?: Date | string | null
+  actualEnd?: Date | string | null
+  status?: $Enums.ProductionJobStatus
+  quotedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quotedCurrency?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  materialRequirements?: Prisma.MaterialRequirementUncheckedCreateNestedManyWithoutJobInput
+  labourRecords?: Prisma.LabourRecordUncheckedCreateNestedManyWithoutJobInput
+  costEstimate?: Prisma.JobCostEstimateUncheckedCreateNestedOneWithoutJobInput
+  costEstimateLines?: Prisma.JobCostEstimateLineUncheckedCreateNestedManyWithoutJobInput
+  costActualLines?: Prisma.JobCostActualLineUncheckedCreateNestedManyWithoutJobInput
+  costActual?: Prisma.JobCostActualUncheckedCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedCreateNestedManyWithoutJobInput
+  stages?: Prisma.ProductionJobStageUncheckedCreateNestedManyWithoutJobInput
+  qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobInput
+  outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobInput
+  outputVoids?: Prisma.ProductionOutputVoidUncheckedCreateNestedManyWithoutJobInput
+  dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutJobInput
+}
+
+export type ProductionJobCreateOrConnectWithoutReturnSpawnedLotsInput = {
+  where: Prisma.ProductionJobWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProductionJobCreateWithoutReturnSpawnedLotsInput, Prisma.ProductionJobUncheckedCreateWithoutReturnSpawnedLotsInput>
+}
+
+export type ProductionJobUpsertWithoutReturnSpawnedLotsInput = {
+  update: Prisma.XOR<Prisma.ProductionJobUpdateWithoutReturnSpawnedLotsInput, Prisma.ProductionJobUncheckedUpdateWithoutReturnSpawnedLotsInput>
+  create: Prisma.XOR<Prisma.ProductionJobCreateWithoutReturnSpawnedLotsInput, Prisma.ProductionJobUncheckedCreateWithoutReturnSpawnedLotsInput>
+  where?: Prisma.ProductionJobWhereInput
+}
+
+export type ProductionJobUpdateToOneWithWhereWithoutReturnSpawnedLotsInput = {
+  where?: Prisma.ProductionJobWhereInput
+  data: Prisma.XOR<Prisma.ProductionJobUpdateWithoutReturnSpawnedLotsInput, Prisma.ProductionJobUncheckedUpdateWithoutReturnSpawnedLotsInput>
+}
+
+export type ProductionJobUpdateWithoutReturnSpawnedLotsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  jobNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  plannedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  plannedStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  plannedEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actualStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actualEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumProductionJobStatusFieldUpdateOperationsInput | $Enums.ProductionJobStatus
+  quotedAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quotedCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneRequiredWithoutProductionJobsNestedInput
+  salesOrderLine?: Prisma.SalesOrderLineUpdateOneWithoutProductionJobNestedInput
+  customer?: Prisma.CustomerUpdateOneWithoutProductionJobsNestedInput
+  productItem?: Prisma.ItemUpdateOneRequiredWithoutProductionJobsNestedInput
+  bom?: Prisma.BillOfMaterialUpdateOneRequiredWithoutProductionJobsNestedInput
+  materialRequirements?: Prisma.MaterialRequirementUpdateManyWithoutJobNestedInput
+  labourRecords?: Prisma.LabourRecordUpdateManyWithoutJobNestedInput
+  costEstimate?: Prisma.JobCostEstimateUpdateOneWithoutJobNestedInput
+  costEstimateLines?: Prisma.JobCostEstimateLineUpdateManyWithoutJobNestedInput
+  costActualLines?: Prisma.JobCostActualLineUpdateManyWithoutJobNestedInput
+  costActual?: Prisma.JobCostActualUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUpdateManyWithoutJobNestedInput
+  stages?: Prisma.ProductionJobStageUpdateManyWithoutJobNestedInput
+  qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobNestedInput
+  outputs?: Prisma.ProductionOutputUpdateManyWithoutJobNestedInput
+  outputVoids?: Prisma.ProductionOutputVoidUpdateManyWithoutJobNestedInput
+  dispositions?: Prisma.QualityDispositionUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutJobNestedInput
+}
+
+export type ProductionJobUncheckedUpdateWithoutReturnSpawnedLotsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.StringFieldUpdateOperationsInput | string
+  jobNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  salesOrderLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  productItemId?: Prisma.StringFieldUpdateOperationsInput | string
+  bomId?: Prisma.StringFieldUpdateOperationsInput | string
+  plannedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  plannedStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  plannedEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actualStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actualEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumProductionJobStatusFieldUpdateOperationsInput | $Enums.ProductionJobStatus
+  quotedAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quotedCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  materialRequirements?: Prisma.MaterialRequirementUncheckedUpdateManyWithoutJobNestedInput
+  labourRecords?: Prisma.LabourRecordUncheckedUpdateManyWithoutJobNestedInput
+  costEstimate?: Prisma.JobCostEstimateUncheckedUpdateOneWithoutJobNestedInput
+  costEstimateLines?: Prisma.JobCostEstimateLineUncheckedUpdateManyWithoutJobNestedInput
+  costActualLines?: Prisma.JobCostActualLineUncheckedUpdateManyWithoutJobNestedInput
+  costActual?: Prisma.JobCostActualUncheckedUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedUpdateManyWithoutJobNestedInput
+  stages?: Prisma.ProductionJobStageUncheckedUpdateManyWithoutJobNestedInput
+  qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobNestedInput
+  outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobNestedInput
+  outputVoids?: Prisma.ProductionOutputVoidUncheckedUpdateManyWithoutJobNestedInput
+  dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutJobNestedInput
+}
+
+export type ProductionJobCreateWithoutLotConsumptionsInput = {
+  id?: string
+  jobNumber: string
+  plannedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
+  plannedStart?: Date | string | null
+  plannedEnd?: Date | string | null
+  actualStart?: Date | string | null
+  actualEnd?: Date | string | null
+  status?: $Enums.ProductionJobStatus
+  quotedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quotedCurrency?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branch: Prisma.BranchCreateNestedOneWithoutProductionJobsInput
+  salesOrderLine?: Prisma.SalesOrderLineCreateNestedOneWithoutProductionJobInput
+  customer?: Prisma.CustomerCreateNestedOneWithoutProductionJobsInput
+  productItem: Prisma.ItemCreateNestedOneWithoutProductionJobsInput
+  bom: Prisma.BillOfMaterialCreateNestedOneWithoutProductionJobsInput
+  materialRequirements?: Prisma.MaterialRequirementCreateNestedManyWithoutJobInput
+  labourRecords?: Prisma.LabourRecordCreateNestedManyWithoutJobInput
+  costEstimate?: Prisma.JobCostEstimateCreateNestedOneWithoutJobInput
+  costEstimateLines?: Prisma.JobCostEstimateLineCreateNestedManyWithoutJobInput
+  costActualLines?: Prisma.JobCostActualLineCreateNestedManyWithoutJobInput
+  costActual?: Prisma.JobCostActualCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentCreateNestedManyWithoutJobInput
+  stages?: Prisma.ProductionJobStageCreateNestedManyWithoutJobInput
+  qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobInput
+  outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobInput
+  outputVoids?: Prisma.ProductionOutputVoidCreateNestedManyWithoutJobInput
+  dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnJobInput
+}
+
+export type ProductionJobUncheckedCreateWithoutLotConsumptionsInput = {
+  id?: string
+  orgId: string
+  branchId: string
+  jobNumber: string
+  salesOrderLineId?: string | null
+  customerId?: string | null
+  productItemId: string
+  bomId: string
+  plannedQty: runtime.Decimal | runtime.DecimalJsLike | number | string
+  plannedStart?: Date | string | null
+  plannedEnd?: Date | string | null
+  actualStart?: Date | string | null
+  actualEnd?: Date | string | null
+  status?: $Enums.ProductionJobStatus
+  quotedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quotedCurrency?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  materialRequirements?: Prisma.MaterialRequirementUncheckedCreateNestedManyWithoutJobInput
+  labourRecords?: Prisma.LabourRecordUncheckedCreateNestedManyWithoutJobInput
+  costEstimate?: Prisma.JobCostEstimateUncheckedCreateNestedOneWithoutJobInput
+  costEstimateLines?: Prisma.JobCostEstimateLineUncheckedCreateNestedManyWithoutJobInput
+  costActualLines?: Prisma.JobCostActualLineUncheckedCreateNestedManyWithoutJobInput
+  costActual?: Prisma.JobCostActualUncheckedCreateNestedOneWithoutJobInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedCreateNestedManyWithoutJobInput
+  stages?: Prisma.ProductionJobStageUncheckedCreateNestedManyWithoutJobInput
+  qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobInput
+  outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobInput
+  outputVoids?: Prisma.ProductionOutputVoidUncheckedCreateNestedManyWithoutJobInput
+  dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnJobInput
+}
+
+export type ProductionJobCreateOrConnectWithoutLotConsumptionsInput = {
+  where: Prisma.ProductionJobWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProductionJobCreateWithoutLotConsumptionsInput, Prisma.ProductionJobUncheckedCreateWithoutLotConsumptionsInput>
+}
+
+export type ProductionJobUpsertWithoutLotConsumptionsInput = {
+  update: Prisma.XOR<Prisma.ProductionJobUpdateWithoutLotConsumptionsInput, Prisma.ProductionJobUncheckedUpdateWithoutLotConsumptionsInput>
+  create: Prisma.XOR<Prisma.ProductionJobCreateWithoutLotConsumptionsInput, Prisma.ProductionJobUncheckedCreateWithoutLotConsumptionsInput>
+  where?: Prisma.ProductionJobWhereInput
+}
+
+export type ProductionJobUpdateToOneWithWhereWithoutLotConsumptionsInput = {
+  where?: Prisma.ProductionJobWhereInput
+  data: Prisma.XOR<Prisma.ProductionJobUpdateWithoutLotConsumptionsInput, Prisma.ProductionJobUncheckedUpdateWithoutLotConsumptionsInput>
+}
+
+export type ProductionJobUpdateWithoutLotConsumptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  jobNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  plannedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  plannedStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  plannedEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actualStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actualEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumProductionJobStatusFieldUpdateOperationsInput | $Enums.ProductionJobStatus
+  quotedAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quotedCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneRequiredWithoutProductionJobsNestedInput
+  salesOrderLine?: Prisma.SalesOrderLineUpdateOneWithoutProductionJobNestedInput
+  customer?: Prisma.CustomerUpdateOneWithoutProductionJobsNestedInput
+  productItem?: Prisma.ItemUpdateOneRequiredWithoutProductionJobsNestedInput
+  bom?: Prisma.BillOfMaterialUpdateOneRequiredWithoutProductionJobsNestedInput
+  materialRequirements?: Prisma.MaterialRequirementUpdateManyWithoutJobNestedInput
+  labourRecords?: Prisma.LabourRecordUpdateManyWithoutJobNestedInput
+  costEstimate?: Prisma.JobCostEstimateUpdateOneWithoutJobNestedInput
+  costEstimateLines?: Prisma.JobCostEstimateLineUpdateManyWithoutJobNestedInput
+  costActualLines?: Prisma.JobCostActualLineUpdateManyWithoutJobNestedInput
+  costActual?: Prisma.JobCostActualUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUpdateManyWithoutJobNestedInput
+  stages?: Prisma.ProductionJobStageUpdateManyWithoutJobNestedInput
+  qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobNestedInput
+  outputs?: Prisma.ProductionOutputUpdateManyWithoutJobNestedInput
+  outputVoids?: Prisma.ProductionOutputVoidUpdateManyWithoutJobNestedInput
+  dispositions?: Prisma.QualityDispositionUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnJobNestedInput
+}
+
+export type ProductionJobUncheckedUpdateWithoutLotConsumptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.StringFieldUpdateOperationsInput | string
+  jobNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  salesOrderLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  productItemId?: Prisma.StringFieldUpdateOperationsInput | string
+  bomId?: Prisma.StringFieldUpdateOperationsInput | string
+  plannedQty?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  plannedStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  plannedEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actualStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actualEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumProductionJobStatusFieldUpdateOperationsInput | $Enums.ProductionJobStatus
+  quotedAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quotedCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  materialRequirements?: Prisma.MaterialRequirementUncheckedUpdateManyWithoutJobNestedInput
+  labourRecords?: Prisma.LabourRecordUncheckedUpdateManyWithoutJobNestedInput
+  costEstimate?: Prisma.JobCostEstimateUncheckedUpdateOneWithoutJobNestedInput
+  costEstimateLines?: Prisma.JobCostEstimateLineUncheckedUpdateManyWithoutJobNestedInput
+  costActualLines?: Prisma.JobCostActualLineUncheckedUpdateManyWithoutJobNestedInput
+  costActual?: Prisma.JobCostActualUncheckedUpdateOneWithoutJobNestedInput
+  costAdjustments?: Prisma.JobCostAdjustmentUncheckedUpdateManyWithoutJobNestedInput
+  stages?: Prisma.ProductionJobStageUncheckedUpdateManyWithoutJobNestedInput
+  qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobNestedInput
+  outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobNestedInput
+  outputVoids?: Prisma.ProductionOutputVoidUncheckedUpdateManyWithoutJobNestedInput
+  dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobCreateWithoutSalesOrderLineInput = {
@@ -1579,6 +1947,8 @@ export type ProductionJobCreateWithoutSalesOrderLineInput = {
   outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobUncheckedCreateWithoutSalesOrderLineInput = {
@@ -1611,6 +1981,8 @@ export type ProductionJobUncheckedCreateWithoutSalesOrderLineInput = {
   outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobCreateOrConnectWithoutSalesOrderLineInput = {
@@ -1659,6 +2031,8 @@ export type ProductionJobUpdateWithoutSalesOrderLineInput = {
   outputs?: Prisma.ProductionOutputUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateWithoutSalesOrderLineInput = {
@@ -1691,6 +2065,8 @@ export type ProductionJobUncheckedUpdateWithoutSalesOrderLineInput = {
   outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobCreateWithoutMaterialRequirementsInput = {
@@ -1723,6 +2099,8 @@ export type ProductionJobCreateWithoutMaterialRequirementsInput = {
   outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobUncheckedCreateWithoutMaterialRequirementsInput = {
@@ -1756,6 +2134,8 @@ export type ProductionJobUncheckedCreateWithoutMaterialRequirementsInput = {
   outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobCreateOrConnectWithoutMaterialRequirementsInput = {
@@ -1804,6 +2184,8 @@ export type ProductionJobUpdateWithoutMaterialRequirementsInput = {
   outputs?: Prisma.ProductionOutputUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateWithoutMaterialRequirementsInput = {
@@ -1837,6 +2219,8 @@ export type ProductionJobUncheckedUpdateWithoutMaterialRequirementsInput = {
   outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobCreateWithoutLabourRecordsInput = {
@@ -1869,6 +2253,8 @@ export type ProductionJobCreateWithoutLabourRecordsInput = {
   outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobUncheckedCreateWithoutLabourRecordsInput = {
@@ -1902,6 +2288,8 @@ export type ProductionJobUncheckedCreateWithoutLabourRecordsInput = {
   outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobCreateOrConnectWithoutLabourRecordsInput = {
@@ -1950,6 +2338,8 @@ export type ProductionJobUpdateWithoutLabourRecordsInput = {
   outputs?: Prisma.ProductionOutputUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateWithoutLabourRecordsInput = {
@@ -1983,6 +2373,8 @@ export type ProductionJobUncheckedUpdateWithoutLabourRecordsInput = {
   outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobCreateWithoutStagesInput = {
@@ -2015,6 +2407,8 @@ export type ProductionJobCreateWithoutStagesInput = {
   outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobUncheckedCreateWithoutStagesInput = {
@@ -2048,6 +2442,8 @@ export type ProductionJobUncheckedCreateWithoutStagesInput = {
   outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobCreateOrConnectWithoutStagesInput = {
@@ -2096,6 +2492,8 @@ export type ProductionJobUpdateWithoutStagesInput = {
   outputs?: Prisma.ProductionOutputUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateWithoutStagesInput = {
@@ -2129,6 +2527,8 @@ export type ProductionJobUncheckedUpdateWithoutStagesInput = {
   outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobCreateWithoutQualityRecordsInput = {
@@ -2161,6 +2561,8 @@ export type ProductionJobCreateWithoutQualityRecordsInput = {
   outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobUncheckedCreateWithoutQualityRecordsInput = {
@@ -2194,6 +2596,8 @@ export type ProductionJobUncheckedCreateWithoutQualityRecordsInput = {
   outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobCreateOrConnectWithoutQualityRecordsInput = {
@@ -2242,6 +2646,8 @@ export type ProductionJobUpdateWithoutQualityRecordsInput = {
   outputs?: Prisma.ProductionOutputUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateWithoutQualityRecordsInput = {
@@ -2275,6 +2681,8 @@ export type ProductionJobUncheckedUpdateWithoutQualityRecordsInput = {
   outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobCreateWithoutCostEstimateInput = {
@@ -2307,6 +2715,8 @@ export type ProductionJobCreateWithoutCostEstimateInput = {
   outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobUncheckedCreateWithoutCostEstimateInput = {
@@ -2340,6 +2750,8 @@ export type ProductionJobUncheckedCreateWithoutCostEstimateInput = {
   outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobCreateOrConnectWithoutCostEstimateInput = {
@@ -2388,6 +2800,8 @@ export type ProductionJobUpdateWithoutCostEstimateInput = {
   outputs?: Prisma.ProductionOutputUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateWithoutCostEstimateInput = {
@@ -2421,6 +2835,8 @@ export type ProductionJobUncheckedUpdateWithoutCostEstimateInput = {
   outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobCreateWithoutCostEstimateLinesInput = {
@@ -2453,6 +2869,8 @@ export type ProductionJobCreateWithoutCostEstimateLinesInput = {
   outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobUncheckedCreateWithoutCostEstimateLinesInput = {
@@ -2486,6 +2904,8 @@ export type ProductionJobUncheckedCreateWithoutCostEstimateLinesInput = {
   outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobCreateOrConnectWithoutCostEstimateLinesInput = {
@@ -2534,6 +2954,8 @@ export type ProductionJobUpdateWithoutCostEstimateLinesInput = {
   outputs?: Prisma.ProductionOutputUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateWithoutCostEstimateLinesInput = {
@@ -2567,6 +2989,8 @@ export type ProductionJobUncheckedUpdateWithoutCostEstimateLinesInput = {
   outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobCreateWithoutCostActualInput = {
@@ -2599,6 +3023,8 @@ export type ProductionJobCreateWithoutCostActualInput = {
   outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobUncheckedCreateWithoutCostActualInput = {
@@ -2632,6 +3058,8 @@ export type ProductionJobUncheckedCreateWithoutCostActualInput = {
   outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobCreateOrConnectWithoutCostActualInput = {
@@ -2680,6 +3108,8 @@ export type ProductionJobUpdateWithoutCostActualInput = {
   outputs?: Prisma.ProductionOutputUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateWithoutCostActualInput = {
@@ -2713,6 +3143,8 @@ export type ProductionJobUncheckedUpdateWithoutCostActualInput = {
   outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobCreateWithoutCostActualLinesInput = {
@@ -2745,6 +3177,8 @@ export type ProductionJobCreateWithoutCostActualLinesInput = {
   outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobUncheckedCreateWithoutCostActualLinesInput = {
@@ -2778,6 +3212,8 @@ export type ProductionJobUncheckedCreateWithoutCostActualLinesInput = {
   outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobCreateOrConnectWithoutCostActualLinesInput = {
@@ -2826,6 +3262,8 @@ export type ProductionJobUpdateWithoutCostActualLinesInput = {
   outputs?: Prisma.ProductionOutputUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateWithoutCostActualLinesInput = {
@@ -2859,6 +3297,8 @@ export type ProductionJobUncheckedUpdateWithoutCostActualLinesInput = {
   outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobCreateWithoutCostAdjustmentsInput = {
@@ -2891,6 +3331,8 @@ export type ProductionJobCreateWithoutCostAdjustmentsInput = {
   outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobUncheckedCreateWithoutCostAdjustmentsInput = {
@@ -2924,6 +3366,8 @@ export type ProductionJobUncheckedCreateWithoutCostAdjustmentsInput = {
   outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobCreateOrConnectWithoutCostAdjustmentsInput = {
@@ -2972,6 +3416,8 @@ export type ProductionJobUpdateWithoutCostAdjustmentsInput = {
   outputs?: Prisma.ProductionOutputUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateWithoutCostAdjustmentsInput = {
@@ -3005,6 +3451,8 @@ export type ProductionJobUncheckedUpdateWithoutCostAdjustmentsInput = {
   outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobCreateWithoutOutputsInput = {
@@ -3037,6 +3485,8 @@ export type ProductionJobCreateWithoutOutputsInput = {
   qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobUncheckedCreateWithoutOutputsInput = {
@@ -3070,6 +3520,8 @@ export type ProductionJobUncheckedCreateWithoutOutputsInput = {
   qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobCreateOrConnectWithoutOutputsInput = {
@@ -3118,6 +3570,8 @@ export type ProductionJobUpdateWithoutOutputsInput = {
   qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateWithoutOutputsInput = {
@@ -3151,6 +3605,8 @@ export type ProductionJobUncheckedUpdateWithoutOutputsInput = {
   qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobCreateWithoutOutputVoidsInput = {
@@ -3183,6 +3639,8 @@ export type ProductionJobCreateWithoutOutputVoidsInput = {
   qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobInput
   outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobUncheckedCreateWithoutOutputVoidsInput = {
@@ -3216,6 +3674,8 @@ export type ProductionJobUncheckedCreateWithoutOutputVoidsInput = {
   qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobInput
   outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobInput
   dispositions?: Prisma.QualityDispositionUncheckedCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobCreateOrConnectWithoutOutputVoidsInput = {
@@ -3264,6 +3724,8 @@ export type ProductionJobUpdateWithoutOutputVoidsInput = {
   qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobNestedInput
   outputs?: Prisma.ProductionOutputUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateWithoutOutputVoidsInput = {
@@ -3297,6 +3759,8 @@ export type ProductionJobUncheckedUpdateWithoutOutputVoidsInput = {
   qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobNestedInput
   outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobCreateWithoutDispositionsInput = {
@@ -3329,6 +3793,8 @@ export type ProductionJobCreateWithoutDispositionsInput = {
   qualityRecords?: Prisma.QualityRecordCreateNestedManyWithoutJobInput
   outputs?: Prisma.ProductionOutputCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobUncheckedCreateWithoutDispositionsInput = {
@@ -3362,6 +3828,8 @@ export type ProductionJobUncheckedCreateWithoutDispositionsInput = {
   qualityRecords?: Prisma.QualityRecordUncheckedCreateNestedManyWithoutJobInput
   outputs?: Prisma.ProductionOutputUncheckedCreateNestedManyWithoutJobInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedCreateNestedManyWithoutJobInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutJobInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnJobInput
 }
 
 export type ProductionJobCreateOrConnectWithoutDispositionsInput = {
@@ -3410,6 +3878,8 @@ export type ProductionJobUpdateWithoutDispositionsInput = {
   qualityRecords?: Prisma.QualityRecordUpdateManyWithoutJobNestedInput
   outputs?: Prisma.ProductionOutputUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateWithoutDispositionsInput = {
@@ -3443,6 +3913,8 @@ export type ProductionJobUncheckedUpdateWithoutDispositionsInput = {
   qualityRecords?: Prisma.QualityRecordUncheckedUpdateManyWithoutJobNestedInput
   outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobCreateManyBranchInput = {
@@ -3495,6 +3967,8 @@ export type ProductionJobUpdateWithoutBranchInput = {
   outputs?: Prisma.ProductionOutputUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateWithoutBranchInput = {
@@ -3527,6 +4001,8 @@ export type ProductionJobUncheckedUpdateWithoutBranchInput = {
   outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateManyWithoutBranchInput = {
@@ -3599,6 +4075,8 @@ export type ProductionJobUpdateWithoutProductItemInput = {
   outputs?: Prisma.ProductionOutputUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateWithoutProductItemInput = {
@@ -3631,6 +4109,8 @@ export type ProductionJobUncheckedUpdateWithoutProductItemInput = {
   outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateManyWithoutProductItemInput = {
@@ -3703,6 +4183,8 @@ export type ProductionJobUpdateWithoutBomInput = {
   outputs?: Prisma.ProductionOutputUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateWithoutBomInput = {
@@ -3735,6 +4217,8 @@ export type ProductionJobUncheckedUpdateWithoutBomInput = {
   outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateManyWithoutBomInput = {
@@ -3807,6 +4291,8 @@ export type ProductionJobUpdateWithoutCustomerInput = {
   outputs?: Prisma.ProductionOutputUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateWithoutCustomerInput = {
@@ -3839,6 +4325,8 @@ export type ProductionJobUncheckedUpdateWithoutCustomerInput = {
   outputs?: Prisma.ProductionOutputUncheckedUpdateManyWithoutJobNestedInput
   outputVoids?: Prisma.ProductionOutputVoidUncheckedUpdateManyWithoutJobNestedInput
   dispositions?: Prisma.QualityDispositionUncheckedUpdateManyWithoutJobNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutJobNestedInput
+  returnSpawnedLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput
 }
 
 export type ProductionJobUncheckedUpdateManyWithoutCustomerInput = {
@@ -3877,6 +4365,8 @@ export type ProductionJobCountOutputType = {
   outputs: number
   outputVoids: number
   dispositions: number
+  lotConsumptions: number
+  returnSpawnedLots: number
 }
 
 export type ProductionJobCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3890,6 +4380,8 @@ export type ProductionJobCountOutputTypeSelect<ExtArgs extends runtime.Types.Ext
   outputs?: boolean | ProductionJobCountOutputTypeCountOutputsArgs
   outputVoids?: boolean | ProductionJobCountOutputTypeCountOutputVoidsArgs
   dispositions?: boolean | ProductionJobCountOutputTypeCountDispositionsArgs
+  lotConsumptions?: boolean | ProductionJobCountOutputTypeCountLotConsumptionsArgs
+  returnSpawnedLots?: boolean | ProductionJobCountOutputTypeCountReturnSpawnedLotsArgs
 }
 
 /**
@@ -3972,6 +4464,20 @@ export type ProductionJobCountOutputTypeCountDispositionsArgs<ExtArgs extends ru
   where?: Prisma.QualityDispositionWhereInput
 }
 
+/**
+ * ProductionJobCountOutputType without action
+ */
+export type ProductionJobCountOutputTypeCountLotConsumptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LotConsumptionWhereInput
+}
+
+/**
+ * ProductionJobCountOutputType without action
+ */
+export type ProductionJobCountOutputTypeCountReturnSpawnedLotsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MaterialLotWhereInput
+}
+
 
 export type ProductionJobSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -4010,6 +4516,8 @@ export type ProductionJobSelect<ExtArgs extends runtime.Types.Extensions.Interna
   outputs?: boolean | Prisma.ProductionJob$outputsArgs<ExtArgs>
   outputVoids?: boolean | Prisma.ProductionJob$outputVoidsArgs<ExtArgs>
   dispositions?: boolean | Prisma.ProductionJob$dispositionsArgs<ExtArgs>
+  lotConsumptions?: boolean | Prisma.ProductionJob$lotConsumptionsArgs<ExtArgs>
+  returnSpawnedLots?: boolean | Prisma.ProductionJob$returnSpawnedLotsArgs<ExtArgs>
   _count?: boolean | Prisma.ProductionJobCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["productionJob"]>
 
@@ -4108,6 +4616,8 @@ export type ProductionJobInclude<ExtArgs extends runtime.Types.Extensions.Intern
   outputs?: boolean | Prisma.ProductionJob$outputsArgs<ExtArgs>
   outputVoids?: boolean | Prisma.ProductionJob$outputVoidsArgs<ExtArgs>
   dispositions?: boolean | Prisma.ProductionJob$dispositionsArgs<ExtArgs>
+  lotConsumptions?: boolean | Prisma.ProductionJob$lotConsumptionsArgs<ExtArgs>
+  returnSpawnedLots?: boolean | Prisma.ProductionJob$returnSpawnedLotsArgs<ExtArgs>
   _count?: boolean | Prisma.ProductionJobCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProductionJobIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4145,6 +4655,8 @@ export type $ProductionJobPayload<ExtArgs extends runtime.Types.Extensions.Inter
     outputs: Prisma.$ProductionOutputPayload<ExtArgs>[]
     outputVoids: Prisma.$ProductionOutputVoidPayload<ExtArgs>[]
     dispositions: Prisma.$QualityDispositionPayload<ExtArgs>[]
+    lotConsumptions: Prisma.$LotConsumptionPayload<ExtArgs>[]
+    returnSpawnedLots: Prisma.$MaterialLotPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -4577,6 +5089,8 @@ export interface Prisma__ProductionJobClient<T, Null = never, ExtArgs extends ru
   outputs<T extends Prisma.ProductionJob$outputsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductionJob$outputsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductionOutputPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   outputVoids<T extends Prisma.ProductionJob$outputVoidsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductionJob$outputVoidsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductionOutputVoidPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   dispositions<T extends Prisma.ProductionJob$dispositionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductionJob$dispositionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QualityDispositionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  lotConsumptions<T extends Prisma.ProductionJob$lotConsumptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductionJob$lotConsumptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LotConsumptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  returnSpawnedLots<T extends Prisma.ProductionJob$returnSpawnedLotsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductionJob$returnSpawnedLotsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaterialLotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5339,6 +5853,54 @@ export type ProductionJob$dispositionsArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.QualityDispositionScalarFieldEnum | Prisma.QualityDispositionScalarFieldEnum[]
+}
+
+/**
+ * ProductionJob.lotConsumptions
+ */
+export type ProductionJob$lotConsumptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LotConsumption
+   */
+  select?: Prisma.LotConsumptionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LotConsumption
+   */
+  omit?: Prisma.LotConsumptionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LotConsumptionInclude<ExtArgs> | null
+  where?: Prisma.LotConsumptionWhereInput
+  orderBy?: Prisma.LotConsumptionOrderByWithRelationInput | Prisma.LotConsumptionOrderByWithRelationInput[]
+  cursor?: Prisma.LotConsumptionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LotConsumptionScalarFieldEnum | Prisma.LotConsumptionScalarFieldEnum[]
+}
+
+/**
+ * ProductionJob.returnSpawnedLots
+ */
+export type ProductionJob$returnSpawnedLotsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MaterialLot
+   */
+  select?: Prisma.MaterialLotSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MaterialLot
+   */
+  omit?: Prisma.MaterialLotOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MaterialLotInclude<ExtArgs> | null
+  where?: Prisma.MaterialLotWhereInput
+  orderBy?: Prisma.MaterialLotOrderByWithRelationInput | Prisma.MaterialLotOrderByWithRelationInput[]
+  cursor?: Prisma.MaterialLotWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MaterialLotScalarFieldEnum | Prisma.MaterialLotScalarFieldEnum[]
 }
 
 /**

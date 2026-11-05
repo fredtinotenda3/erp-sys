@@ -57,6 +57,8 @@ export const NAV_ITEMS: readonly NavItem[] = [
       { label: "Receive stock", href: "/inventory/receive", capabilities: ["stock:receive"] },
       { label: "Adjust stock", href: "/inventory/adjust", capabilities: ["stock:adjust"] },
       { label: "Issue to job", href: "/inventory/issue", capabilities: ["material:issue"] },
+      { label: "Return from job", href: "/inventory/return", capabilities: ["material:issue"] },
+      { label: "Material lots", href: "/inventory/lots", capabilities: ["lot:read"] },
     ],
   },
   {
