@@ -100,3 +100,23 @@ export function OrderStatusBadge({ status }: { status: string }) {
     </Badge>
   );
 }
+
+const PURCHASE_ORDER: Record<string, { variant: Variant; icon: LucideIcon; label: string }> = {
+  draft: { variant: "status-neutral", icon: CircleDashed, label: "Draft" },
+  confirmed: { variant: "status-info", icon: CircleCheck, label: "Confirmed" },
+  partially_received: { variant: "status-warning", icon: Pause, label: "Partially received" },
+  received: { variant: "status-success", icon: CircleCheck, label: "Received" },
+  closed: { variant: "status-success", icon: Lock, label: "Closed" },
+  cancelled: { variant: "status-danger", icon: Ban, label: "Cancelled" },
+};
+
+export function PurchaseOrderStatusBadge({ status }: { status: string }) {
+  const s = PURCHASE_ORDER[status] ?? { variant: "status-neutral" as Variant, icon: CircleDashed, label: humanize(status) };
+  const Icon = s.icon;
+  return (
+    <Badge variant={s.variant}>
+      <Icon aria-hidden="true" />
+      {s.label}
+    </Badge>
+  );
+}

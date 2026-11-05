@@ -26,7 +26,16 @@ export interface PostMovementArgs {
   /** Required for positive movements. Must be null for negative ones (the trigger stamps the average cost). */
   unitCost: Prisma.Decimal | null;
   currency: string | null;
-  referenceType: "manual" | "production_job";
+  // "purchase_order" added for goods-receiving (goods-receipt-service.ts):
+  // a receipt's accepted quantity is posted with referenceId = the PO's id,
+  // matching the ReferenceType enum's existing "purchase_order" value in
+  // schema.prisma (anticipated there since the init migration, never used
+  // until now). The ledger's reference granularity stays at the business-
+  // document level, same as "production_job" -- not per-receipt; the
+  // specific receipt/lot detail lives in GoodsReceiptLine/MaterialLot,
+  // joinable from there, same division of responsibility as every other
+  // reference type here.
+  referenceType: "manual" | "production_job" | "purchase_order";
   referenceId: string | null;
   reason: string | null;
   clientRequestId: string;
@@ -79,50 +88,62 @@ export function checkReplay(existing: MovementRow, a: PostMovementArgs): PostRes
   return { replayed: true, movement: existing };
 }
 
+// Core insert, factored out so composite, multi-table operations that need
+// the stock-movement write inside their OWN already-open transaction (for
+// atomicity across several inserts that must all succeed or all fail
+// together -- e.g. goods-receipt-service.ts, which also writes a
+// GoodsReceipt header, GoodsReceiptLine rows and MaterialLot rows in the
+// same transaction) can reuse the exact same insert this file's header
+// comment promises is the ONE place a stock movement is written, instead of
+// a second, divergence-prone copy of it. postMovement below is now a thin
+// wrapper: open a transaction, call this, handle the replay/retry cases
+// that only make sense for a single standalone movement.
+async function insertMovementTx(tx: Prisma.TransactionClient, session: AuthenticatedSession, a: PostMovementArgs): Promise<MovementRow> {
+  const created = await tx.stockMovement.create({
+    data: {
+      orgId: session.orgId,
+      branchId: a.warehouse.branchId,
+      itemId: a.itemId,
+      warehouseId: a.warehouse.id,
+      movementType: a.movementType,
+      quantity: a.quantity,
+      unitCost: a.unitCost,
+      currency: a.currency,
+      referenceType: a.referenceType,
+      referenceId: a.referenceId,
+      reason: a.reason,
+      clientRequestId: a.clientRequestId,
+      createdById: session.userId,
+      ...(a.occurredAt ? { occurredAt: a.occurredAt } : {}),
+    },
+  });
+  if (a.afterInsert) await a.afterInsert(tx);
+  await recordAudit(tx, {
+    orgId: session.orgId,
+    branchId: a.warehouse.branchId,
+    actorUserId: session.userId,
+    entityType: "stock_movement",
+    entityId: created.id,
+    action: "create",
+    afterValue: {
+      movementType: a.movementType,
+      itemId: a.itemId,
+      warehouseId: a.warehouse.id,
+      quantity: a.quantity.toString(),
+      referenceType: a.referenceType,
+      referenceId: a.referenceId,
+    },
+    reason: a.reason,
+  });
+  return created as unknown as MovementRow;
+}
+
 export async function postMovement(session: AuthenticatedSession, a: PostMovementArgs): Promise<PostResult> {
   const MAX_ATTEMPTS = 4;
   for (let attempt = 1; ; attempt++) {
     try {
-      const movement = await prisma.$transaction(async (tx) => {
-        const created = await tx.stockMovement.create({
-          data: {
-            orgId: session.orgId,
-            branchId: a.warehouse.branchId,
-            itemId: a.itemId,
-            warehouseId: a.warehouse.id,
-            movementType: a.movementType,
-            quantity: a.quantity,
-            unitCost: a.unitCost,
-            currency: a.currency,
-            referenceType: a.referenceType,
-            referenceId: a.referenceId,
-            reason: a.reason,
-            clientRequestId: a.clientRequestId,
-            createdById: session.userId,
-            ...(a.occurredAt ? { occurredAt: a.occurredAt } : {}),
-          },
-        });
-        if (a.afterInsert) await a.afterInsert(tx);
-        await recordAudit(tx, {
-          orgId: session.orgId,
-          branchId: a.warehouse.branchId,
-          actorUserId: session.userId,
-          entityType: "stock_movement",
-          entityId: created.id,
-          action: "create",
-          afterValue: {
-            movementType: a.movementType,
-            itemId: a.itemId,
-            warehouseId: a.warehouse.id,
-            quantity: a.quantity.toString(),
-            referenceType: a.referenceType,
-            referenceId: a.referenceId,
-          },
-          reason: a.reason,
-        });
-        return created;
-      });
-      return { replayed: false, movement: movement as unknown as MovementRow };
+      const movement = await prisma.$transaction((tx) => insertMovementTx(tx, session, a));
+      return { replayed: false, movement };
     } catch (err) {
       // Same clientRequestId racing itself: hand back the winner's row.
       const winner = await findByClientRequestId(session.orgId, a.clientRequestId);
@@ -133,6 +154,29 @@ export async function postMovement(session: AuthenticatedSession, a: PostMovemen
       throw mapStockTriggerError(err);
     }
   }
+}
+
+/**
+ * For composite operations that need the stock-movement write inside their
+ * OWN already-open transaction (see insertMovementTx's comment above for
+ * why this exists rather than nesting postMovement itself, which always
+ * opens its own transaction against the pooled `prisma` client -- doing
+ * that from inside another transaction would use a second connection and
+ * would NOT roll back together with the caller's transaction on failure,
+ * silently breaking atomicity).
+ *
+ * Callers are responsible for their own idempotency at the composite-
+ * operation level (see goods-receipt-service.ts's header-level
+ * clientRequestId check) and for serialising the specific race they care
+ * about (e.g. an advisory lock or a `SELECT ... FOR UPDATE` on the parent
+ * row) -- this function does not retry on the balance-creation race the way
+ * postMovement does, because retrying would mean restarting the caller's
+ * entire outer transaction, not just this one insert. A race here simply
+ * fails the whole submission (409/500), same as any other conflict the
+ * caller's transaction can raise; the client retries the whole request.
+ */
+export async function postMovementInTransaction(tx: Prisma.TransactionClient, session: AuthenticatedSession, a: PostMovementArgs): Promise<MovementRow> {
+  return insertMovementTx(tx, session, a);
 }
 
 export function toMovementView(role: Role, m: MovementRow) {

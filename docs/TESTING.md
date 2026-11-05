@@ -45,6 +45,11 @@ npm test
 
 - The suite reads **only `.env.test`**, never `.env`. If `.env.test` is missing it stops with instructions.
 - It refuses any non-local database host unless `ALLOW_REMOTE_TEST_DB=1`.
+- If you do set `ALLOW_REMOTE_TEST_DB=1` (e.g. a shared/branched database in CI), the suite additionally
+  requires `TEST_DB_CONFIRM_TARGET=<database>@<host>` (copy the exact value from the error message on
+  first refusal — never type it from memory) and refuses outright if the target's name looks like
+  production (`prod`/`production`/`live`), even when confirmed. This mirrors the confirmation the dev
+  seed (`src/server/dev/seed-guard.ts`) already requires — see `src/server/dev/test-db-guard.ts`.
 - `scripts/test-db-setup.mjs` also refuses non-local hosts (it creates roles and can drop the database).
 - Plain `npx prisma migrate deploy` still targets `.env` (Neon). The setup script passes the test URL explicitly,
   so it cannot hit Neon.

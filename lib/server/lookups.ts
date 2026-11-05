@@ -6,9 +6,10 @@ import { listItems } from "../../src/server/modules/catalog/item-service";
 import { toItemViews } from "../../src/server/modules/catalog/item-view";
 import { listUsers } from "../../src/server/modules/iam/user-service";
 import { listCustomers } from "../../src/server/modules/customers/customer-service";
+import { listSuppliers } from "../../src/server/modules/suppliers/supplier-service";
 import { listWarehouses } from "../../src/server/modules/inventory/warehouse-service";
 import { listCurrencies } from "../../src/server/modules/costing/currency-service";
-import type { Currency, Customer, Item, UserLite, Warehouse } from "../api-types";
+import type { Currency, Customer, Item, Supplier, UserLite, Warehouse } from "../api-types";
 import { load, type PageContext } from "./page-context";
 
 export interface Lookup<T> {
@@ -40,6 +41,15 @@ export async function loadCustomers(ctx: PageContext): Promise<Lookup<Customer>>
   const r = await load<Customer[]>(async () => {
     const rows = await listCustomers(ctx.session);
     return rows.map((c) => ({ id: c.id, name: c.name, status: c.status }));
+  });
+  return toLookup(r.ok ? r.data : null);
+}
+
+export async function loadSuppliers(ctx: PageContext): Promise<Lookup<Supplier>> {
+  if (!ctx.can("supplier:read")) return toLookup<Supplier>(null);
+  const r = await load<Supplier[]>(async () => {
+    const rows = await listSuppliers(ctx.session);
+    return rows.map((s) => ({ id: s.id, name: s.name, status: s.status }));
   });
   return toLookup(r.ok ? r.data : null);
 }

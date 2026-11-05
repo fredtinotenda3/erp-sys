@@ -68,6 +68,17 @@ export type Capability =
   | "supplier:create"
   | "supplier:read"
   | "supplier:update"
+  // Purchasing (shared-core milestone 2). purchase_order:confirm is deliberately
+  // its own capability, not folded into :update, for the same reason
+  // sales_order:confirm is separate from sales_order:update — see the grant
+  // table below for the segregation-of-duties reasoning specific to Purchasing.
+  | "purchase_order:create"
+  | "purchase_order:read"
+  | "purchase_order:update"
+  | "purchase_order:confirm"
+  // Goods receiving (shared-core milestone 3)
+  | "goods_receipt:create"
+  | "goods_receipt:read"
   // Production
   | "production_job:create"
   | "production_job:read"
@@ -150,6 +161,12 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "supplier:create",
     "supplier:read",
     "supplier:update",
+    "purchase_order:create",
+    "purchase_order:read",
+    "purchase_order:update",
+    "purchase_order:confirm",
+    "goods_receipt:create",
+    "goods_receipt:read",
     "production_job:create",
     "production_job:read",
     "production_job:update",
@@ -196,6 +213,12 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "supplier:create",
     "supplier:read",
     "supplier:update",
+    "purchase_order:create",
+    "purchase_order:read",
+    "purchase_order:update",
+    "purchase_order:confirm",
+    "goods_receipt:create",
+    "goods_receipt:read",
     "production_job:create",
     "production_job:read",
     "production_job:update",
@@ -224,6 +247,8 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "bom:activate",
     "customer:read",
     "supplier:read",
+    "purchase_order:read",
+    "goods_receipt:read",
     "sales_order:read",
     "production_job:create",
     "production_job:read",
@@ -239,6 +264,23 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "stock:read",
     "cost:read",
   ]),
+  // purchase_order:confirm is deliberately NOT granted here, unlike
+  // purchase_order:create/update (which mirror the same reasoning as
+  // supplier:create/update's grant to this role -- see that comment).
+  // Confirming a PO is the point where the organisation takes on a real
+  // financial commitment to a supplier, same category of action as approving
+  // a sales order (sales_order:confirm, also withheld from this role).
+  // supplier-service.ts's own comment flagged exactly this: "letting the
+  // same role both create a vendor and set its banking/tax details
+  // unsupervised is a segregation-of-duties question real procurement
+  // controls usually care about ... revisit when Purchasing adds
+  // vendor-financial fields" -- this is that revisit. Inventory Manager can
+  // draft and edit a PO (ordering is operationally theirs, same as stock
+  // receive/adjust) but Owner/Admin or Operations Manager must commit it.
+  // goods_receipt:create/read ARE granted -- physically receiving a delivery
+  // against an already-confirmed PO is a direct extension of stock:receive,
+  // which this role already holds; it creates no new financial commitment,
+  // only records what physically arrived.
   INVENTORY_MANAGER: new Set<Capability>([
     "branch:read",
     "user:read",
@@ -251,6 +293,11 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "supplier:create",
     "supplier:read",
     "supplier:update",
+    "purchase_order:create",
+    "purchase_order:read",
+    "purchase_order:update",
+    "goods_receipt:create",
+    "goods_receipt:read",
     "production_job:read",
     "quality:read",
     "material:issue",
@@ -281,6 +328,8 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "bom:read",
     "customer:read",
     "supplier:read",
+    "purchase_order:read",
+    "goods_receipt:read",
     "sales_order:read",
     "production_job:read",
     "quality:read",
@@ -296,6 +345,8 @@ const CAPABILITIES_BY_ROLE: Readonly<Record<Role, ReadonlySet<Capability>>> = {
     "bom:read",
     "customer:read",
     "supplier:read",
+    "purchase_order:read",
+    "goods_receipt:read",
     "sales_order:read",
     "production_job:read",
     "quality:read",

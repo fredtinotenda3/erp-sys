@@ -17,8 +17,17 @@
 //   4. The stock_balance-maintaining SECURITY DEFINER trigger with
 //      negative-stock / currency-mixing / branch-consistency checks.
 //   5. prevent_mutation immutability triggers (stock_movement, audit_log,
-//      exchange_rate, job_cost_actual) — see docs/db-roles-and-security.sql.
+//      exchange_rate, job_cost_actual, and — as of migration
+//      20261104110000_purchasing_and_receiving — goods_receipt and
+//      goods_receipt_line) — see docs/db-roles-and-security.sql.
 //   6. job_material_cost_live / job_labour_cost_live views ($queryRaw only).
+//   7. goods_receipt_line CHECK constraints: quantities non-negative, and
+//      accepted_qty + rejected_qty = received_qty (migration
+//      20261104110000_purchasing_and_receiving).
+//   8. material_lot.quantity_received > 0 CHECK, and a column-level GRANT
+//      restricting mops_runtime's UPDATE on material_lot to (status,
+//      expiry_date) only — every other column is set once at creation and
+//      never updated (same migration as #7).
 //
 // Fields reorderThreshold (Item) and staleOrderThresholdDays (Organization)
 // were added by migration 20261007090000 and are mirrored here.
@@ -85,6 +94,8 @@ model Branch {
   productionJobs ProductionJob[]
   salesOrders    SalesOrder[]
   auditLogs      AuditLog[]
+  purchaseOrders PurchaseOrder[]
+  goodsReceipts  GoodsReceipt[]
 
   @@unique([orgId, name])
   @@unique([orgId, id]) // lets children do composite FK (orgId, branchId) -> Branch(orgId, id)
@@ -282,6 +293,9 @@ model Item {
   stockMovements       StockMovement[]
   stockBalances        StockBalance[]
   stageTemplates       ProductionStageTemplate[]
+  purchaseOrderLines   PurchaseOrderLine[]
+  goodsReceiptLines    GoodsReceiptLine[]
+  materialLots         MaterialLot[]
 
   @@unique([orgId, sku])
   @@unique([orgId, id])
@@ -391,8 +405,263 @@ model Supplier {
   createdAt DateTime       @default(now()) @map("created_at")
   updatedAt DateTime       @updatedAt @map("updated_at")
 
+  purchaseOrders PurchaseOrder[]
+  materialLots   MaterialLot[]
+
   @@unique([orgId, id])
   @@map("supplier")
+}
+
+// ---------------------------------------------------------------------------
+// PURCHASING — second milestone of the shared-core build-out, after Suppliers
+// (ARCHITECTURE.md's "shared core before industry layer" sequencing note).
+//
+// Branch-scoped, not org-wide like Supplier/Customer: a PO is placed FOR
+// delivery into one branch's warehouses (mirrors SalesOrder's branchId for
+// the symmetric reason -- a sale ships FROM a branch, a purchase arrives
+// INTO one). Numbering follows sales-order-service.ts's exact pattern
+// (advisory xact lock + MAX(substring)+1 inside the create transaction) --
+// no separate counter table, same choice SalesOrder made and ProductionJob
+// didn't; not duplicating that decision rationale here, see that file.
+//
+// Status lifecycle (every value is a genuine business state with a defined
+// transition, not speculative):
+//   draft               -> lines are mutable; the only state that can be edited freely.
+//   confirmed           -> committed to the supplier; lines frozen. Mirrors
+//                          SalesOrder's confirm step and -- deliberately --
+//                          reuses it as the one approval gate rather than
+//                          inventing a separate multi-step chain nothing
+//                          else in this codebase has (see
+//                          purchase_order:confirm's capability grant below
+//                          for the segregation-of-duties reasoning).
+//   partially_received  -> at least one GoodsReceipt posted, outstanding qty > 0
+//                          on at least one line. Set by the goods-receiving
+//                          service (next milestone), never written directly here.
+//   received            -> every line's outstanding qty is 0. Also set by
+//                          goods-receiving, not here.
+//   closed              -> manually closed after receiving is done (e.g. the
+//                          supplier will never deliver the remainder) -- a
+//                          deliberate terminal state distinct from "received"
+//                          so a report can tell "fully delivered" apart from
+//                          "we stopped waiting."
+//   cancelled           -> draft or confirmed only, and only before any
+//                          receipt exists (mirrors SalesOrder's "cancel
+//                          blocked by live jobs" rule: cancel blocked by any
+//                          real downstream activity).
+//
+enum PurchaseOrderStatus {
+  draft
+  confirmed
+  partially_received
+  received
+  closed
+  cancelled
+}
+
+// Outstanding/received quantity is deliberately NOT a stored column on
+// PurchaseOrderLine -- it is computed by summing GoodsReceiptLine.acceptedQty
+// (same "no duplicate source of truth" principle as StockBalance being
+// trigger-derived from StockMovement, and the same choice this codebase
+// already made for "why is stock what it is" -- see stock-service.ts's
+// header comment). A denormalized running total would need its own
+// consistency mechanism (trigger or transaction discipline) for a number
+// that's already cheap to derive from the ledger of receipts.
+model PurchaseOrder {
+  id                    String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId                 String              @map("org_id") @db.Uuid
+  branchId              String              @map("branch_id") @db.Uuid
+  branch                Branch              @relation(fields: [orgId, branchId], references: [orgId, id])
+  poNumber              String              @map("po_number")
+  supplierId            String              @map("supplier_id") @db.Uuid
+  supplier              Supplier            @relation(fields: [orgId, supplierId], references: [orgId, id])
+  status                PurchaseOrderStatus @default(draft)
+  currency              String              @db.Char(3)
+  requestedDeliveryDate DateTime?           @map("requested_delivery_date") @db.Date
+  // Free-text reference to the supplier's own quote/order number -- not
+  // validated against anything, same treatment as every other free-text
+  // reference field in this codebase (e.g. StockMovement.reason).
+  supplierReference String?  @map("supplier_reference")
+  notes             String?
+  createdById       String?  @map("created_by") @db.Uuid
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  lines         PurchaseOrderLine[]
+  goodsReceipts GoodsReceipt[]
+
+  @@unique([orgId, poNumber])
+  @@unique([orgId, id])
+  @@index([branchId, status])
+  @@map("purchase_order")
+}
+
+model PurchaseOrderLine {
+  id        String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId     String        @map("org_id") @db.Uuid
+  poId      String        @map("po_id") @db.Uuid
+  po        PurchaseOrder @relation(fields: [orgId, poId], references: [orgId, id], onDelete: Cascade)
+  itemId    String        @map("item_id") @db.Uuid
+  item      Item          @relation(fields: [orgId, itemId], references: [orgId, id])
+  quantity  Decimal       @db.Decimal(14, 4)
+  // Snapshot of the ordering unit at the time the line was written, same
+  // convention as BomLine.uom / MaterialRequirement.uom -- never silently
+  // re-derived from item.uom, which could change after the PO is placed.
+  uom       String
+  unitPrice Decimal       @map("unit_price") @db.Decimal(14, 4)
+  currency  String        @db.Char(3)
+
+  goodsReceiptLines GoodsReceiptLine[]
+
+  @@unique([orgId, id])
+  @@index([poId])
+  @@map("purchase_order_line")
+}
+
+// ---------------------------------------------------------------------------
+// GOODS RECEIVING — third milestone of the shared-core build-out, built
+// alongside Purchasing rather than after it: a PO's "outstanding quantity"
+// (section 5B requirement #17) has no referent until receipts exist, so the
+// two were designed as one schema change (see IMPLEMENTATION_MANIFEST.md for
+// why this reorders the mandate's own step 4/5 split without changing what
+// either milestone delivers).
+//
+// One GoodsReceipt (header: which delivery, when, against which PO) has many
+// GoodsReceiptLine rows (one per PO line received on that delivery). A single
+// PO can have many receipts (partial deliveries -- requirement #18) and a
+// single receipt only ever covers one PO (a delivery note that covers two
+// POs is recorded as two receipts, same as a single delivery truck with two
+// invoices -- keeps "which PO does this receipt close against" unambiguous).
+//
+// acceptedQty/rejectedQty/rejectReason mirrors QualityRecord's existing
+// produced/accepted/rejected shape exactly (service layer enforces
+// accepted + rejected = received, same invariant quality-service.ts already
+// enforces for production inspections) -- reusing RejectReason rather than
+// inventing a parallel enum for the same reason BomLine.uom etc. reuse
+// existing shapes: one vocabulary, not two that can drift apart.
+//
+// unitCost/currency are NOT accepted from the caller -- the service derives
+// them from the PO line's own unitPrice/currency (ARCHITECTURE.md's
+// standing rule: never trust a client-supplied cost; see
+// purchase-order-service.ts / goods-receipt-service.ts). This is receiving
+// cost, which may differ from an eventual supplier invoice -- invoice
+// matching is accounting/AP territory, out of scope here (FEATURE_AUDIT_MATRIX.md
+// #21, already flagged as a pending decision, not reopened by this milestone).
+model GoodsReceipt {
+  id                String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId             String        @map("org_id") @db.Uuid
+  poId              String        @map("po_id") @db.Uuid
+  po                PurchaseOrder @relation(fields: [orgId, poId], references: [orgId, id])
+  branchId          String        @map("branch_id") @db.Uuid
+  branch            Branch        @relation(fields: [orgId, branchId], references: [orgId, id])
+  deliveryReference String?       @map("delivery_reference")
+  receivedAt        DateTime      @map("received_at")
+  notes             String?
+  // Idempotency key for the WHOLE submission (one receiving event, however
+  // many lines) -- same role StockMovement.clientRequestId plays per
+  // movement, but at the header level here: a retried "post this delivery"
+  // request must not re-run the per-line loop (and therefore never calls
+  // postMovement twice), not merely avoid a duplicate header row. Individual
+  // StockMovement/MaterialLot rows created by one receipt get their own
+  // fresh, server-generated ids -- they don't need their own idempotency key
+  // because the header check already prevents the creating code from running
+  // twice for the same logical request.
+  clientRequestId String?  @map("client_request_id") @db.Uuid
+  createdById     String?  @map("created_by") @db.Uuid
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  lines GoodsReceiptLine[]
+
+  @@unique([orgId, id])
+  @@unique([orgId, clientRequestId])
+  @@index([poId])
+  @@index([branchId, receivedAt])
+  @@map("goods_receipt")
+}
+
+model GoodsReceiptLine {
+  id           String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId        String            @map("org_id") @db.Uuid
+  receiptId    String            @map("receipt_id") @db.Uuid
+  receipt      GoodsReceipt      @relation(fields: [orgId, receiptId], references: [orgId, id], onDelete: Cascade)
+  poLineId     String            @map("po_line_id") @db.Uuid
+  poLine       PurchaseOrderLine @relation(fields: [orgId, poLineId], references: [orgId, id])
+  itemId       String            @map("item_id") @db.Uuid
+  item         Item              @relation(fields: [orgId, itemId], references: [orgId, id])
+  warehouseId  String            @map("warehouse_id") @db.Uuid
+  warehouse    Warehouse         @relation(fields: [orgId, warehouseId], references: [orgId, id])
+  receivedQty  Decimal           @map("received_qty") @db.Decimal(14, 4)
+  acceptedQty  Decimal           @map("accepted_qty") @db.Decimal(14, 4)
+  rejectedQty  Decimal           @map("rejected_qty") @db.Decimal(14, 4)
+  rejectReason RejectReason?     @map("reject_reason")
+  // Derived from the PO line at receipt time, never client-supplied -- see
+  // the model block comment above.
+  unitCost  Decimal  @map("unit_cost") @db.Decimal(14, 4)
+  currency  String   @db.Char(3)
+  notes     String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  lot MaterialLot?
+
+  @@unique([orgId, id])
+  @@index([poLineId])
+  @@index([receiptId])
+  @@map("goods_receipt_line")
+}
+
+// ---------------------------------------------------------------------------
+// LOT TRACEABILITY (incoming side) -- one MaterialLot per accepted
+// GoodsReceiptLine, created automatically and unconditionally in the same
+// transaction as the receipt (section 5F: "do not introduce lot tracking as
+// disconnected metadata"). A line with acceptedQty = 0 (fully rejected)
+// creates no lot -- there is nothing to trace into inventory.
+//
+// Consumption (lot -> production job -> finished-goods batch -> dispatch ->
+// customer) is NOT built in this milestone -- seeding/creating lots at
+// receipt is the first half of the traceability chain (mandate section 5F's
+// first arrow, Supplier -> PO -> Goods Receipt -> Incoming Material Lot);
+// wiring material issue to draw from a specific lot, and finished-goods
+// batches/dispatch to the back half, is the next milestone (see
+// IMPLEMENTATION_MANIFEST.md "Known limitations"). Deliberately not stubbed
+// with speculative columns here -- see this file's header note on avoiding
+// fields nothing reads yet.
+//
+// quantityReceived is the original accepted quantity, immutable. How much of
+// the lot remains is computed by summing consumption records against it, not
+// stored here -- same "no duplicate source of truth" principle as
+// StockBalance being trigger-derived from StockMovement (once consumption
+// exists, remaining = quantityReceived - SUM(consumption)).
+enum MaterialLotStatus {
+  active
+  quarantined
+  expired
+}
+
+model MaterialLot {
+  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId          String           @map("org_id") @db.Uuid
+  lotNumber      String           @map("lot_number")
+  itemId         String           @map("item_id") @db.Uuid
+  item           Item             @relation(fields: [orgId, itemId], references: [orgId, id])
+  supplierId     String           @map("supplier_id") @db.Uuid
+  supplier       Supplier         @relation(fields: [orgId, supplierId], references: [orgId, id])
+  // What the supplier itself calls this lot/batch, if they provided one --
+  // free text, not validated (mirrors PurchaseOrder.supplierReference).
+  supplierLotRef String?          @map("supplier_lot_ref")
+  receiptLineId  String           @map("receipt_line_id") @db.Uuid
+  receiptLine    GoodsReceiptLine @relation(fields: [orgId, receiptLineId], references: [orgId, id])
+  warehouseId    String           @map("warehouse_id") @db.Uuid
+  warehouse      Warehouse        @relation(fields: [orgId, warehouseId], references: [orgId, id])
+  quantityReceived Decimal          @map("quantity_received") @db.Decimal(14, 4)
+  uom              String
+  status           MaterialLotStatus @default(active)
+  expiryDate       DateTime?         @map("expiry_date") @db.Date
+  receivedAt       DateTime          @map("received_at")
+  createdAt        DateTime          @default(now()) @map("created_at")
+
+  @@unique([orgId, lotNumber])
+  @@unique([orgId, id])
+  @@unique([orgId, receiptLineId])
+  @@map("material_lot")
 }
 
 enum SalesOrderStatus {
@@ -639,8 +908,10 @@ model Warehouse {
   name     String
   isActive Boolean @default(true) @map("is_active")
 
-  stockMovements StockMovement[]
-  stockBalances  StockBalance[]
+  stockMovements    StockMovement[]
+  stockBalances     StockBalance[]
+  goodsReceiptLines GoodsReceiptLine[]
+  materialLots      MaterialLot[]
 
   @@unique([branchId, name])
   @@unique([orgId, id])

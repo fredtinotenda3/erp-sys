@@ -57,6 +57,12 @@ export interface Customer {
   status: "active" | "inactive";
 }
 
+export interface Supplier {
+  id: string;
+  name: string;
+  status: "active" | "inactive";
+}
+
 export interface Warehouse {
   id: string;
   branchId: string;

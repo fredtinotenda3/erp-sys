@@ -4,11 +4,17 @@
 // cannot delete what they create). It must therefore never run against the database you use
 // for demos or development. It reads .env.test only, and refuses non-local databases unless
 // ALLOW_REMOTE_TEST_DB=1 is set.
+//
+// Hardening pass: once ALLOW_REMOTE_TEST_DB=1 is actually used (a shared/branched database,
+// e.g. in CI), a further positive-confirmation + production-name check now applies too -- see
+// test-db-guard.ts's header comment for why this was added and what gap it closes.
 import { config } from "dotenv";
 import { existsSync } from "node:fs";
 import path from "node:path";
+import { LOCAL_DB_HOSTS } from "./src/server/dev/db-target";
+import { checkRemoteTestDbSafety } from "./src/server/dev/test-db-guard";
 
-const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "::1", "[::1]", "postgres-test", "host.docker.internal"]);
+const LOCAL_HOSTS = LOCAL_DB_HOSTS;
 
 export function loadTestEnv(): void {
   const file = path.join(process.cwd(), ".env.test");
@@ -52,5 +58,22 @@ export function assertSafeTestDatabase(): void {
           "ALLOW_REMOTE_TEST_DB=1 in .env.test.\n",
       );
     }
+  }
+
+  // Everything above refuses a remote database outright unless ALLOW_REMOTE_TEST_DB=1 is set --
+  // unchanged. Once that opt-in is actually used, apply the same positive-confirmation and
+  // production-name checks seed-guard.ts already requires of the dev seed (see test-db-guard.ts).
+  const remote = checkRemoteTestDbSafety({
+    MIGRATION_DATABASE_URL: process.env.MIGRATION_DATABASE_URL,
+    RUNTIME_DATABASE_URL: process.env.RUNTIME_DATABASE_URL,
+    ALLOW_REMOTE_TEST_DB: process.env.ALLOW_REMOTE_TEST_DB,
+    TEST_DB_CONFIRM_TARGET: process.env.TEST_DB_CONFIRM_TARGET,
+  });
+  if (!remote.ok) {
+    throw new Error(
+      "\n\nRefusing to run tests against a remote database (ALLOW_REMOTE_TEST_DB=1 is set):\n\n - " +
+        remote.problems.join("\n - ") +
+        "\n",
+    );
   }
 }

@@ -11,30 +11,16 @@
 // NODE_ENV=production, when the two configured URLs disagree about the target,
 // or when the database/host name looks like production. Passwords and usernames
 // are never read into the result, so nothing secret can be printed.
+//
+// DbTarget/parseTarget/targetLabel/the production-name check now live in
+// db-target.ts (test-db-guard.ts needs the identical logic for the automated
+// test suite's own remote-database guard -- see that file). Re-exported here
+// unchanged so existing imports of parseTarget/targetLabel from "./seed-guard"
+// keep working.
+import { isProductionLikeLabel, parseTarget, targetLabel, type DbTarget } from "./db-target";
 
-export interface DbTarget {
-  host: string;
-  database: string;
-}
-
-/** Neon serves the same database on a pooled host ("-pooler") and a direct one. */
-function normalizeHost(host: string): string {
-  return host.toLowerCase().replace(/-pooler(?=\.)/, "");
-}
-
-export function parseTarget(url: string | undefined): DbTarget | null {
-  if (!url) return null;
-  try {
-    const u = new URL(url);
-    const database = decodeURIComponent(u.pathname.replace(/^\//, ""));
-    if (!u.hostname || !database) return null;
-    return { host: normalizeHost(u.hostname), database };
-  } catch {
-    return null;
-  }
-}
-
-export const targetLabel = (t: DbTarget) => `${t.database}@${t.host}`;
+export type { DbTarget };
+export { parseTarget, targetLabel };
 
 export interface GuardResult {
   ok: boolean;
@@ -56,7 +42,7 @@ export function checkSeedSafety(env: Record<string, string | undefined>): GuardR
   }
 
   const label = runtime ? targetLabel(runtime) : null;
-  if (label && /(^|[^a-z])(prod|production|live)([^a-z]|$)/i.test(label)) {
+  if (label && isProductionLikeLabel(label)) {
     problems.push(`The target "${label}" looks like a production database.`);
   }
 

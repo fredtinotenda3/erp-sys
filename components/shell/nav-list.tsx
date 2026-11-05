@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Boxes, ChartColumn, Coins, ClipboardCheck, Factory, LayoutDashboard, Package, Settings, ShoppingCart, Truck, Users, type LucideIcon } from "lucide-react";
+import { Boxes, ChartColumn, ClipboardList, Coins, ClipboardCheck, Factory, LayoutDashboard, Package, Settings, ShoppingCart, Truck, Users, type LucideIcon } from "lucide-react";
 
 import type { NavIcon, VisibleNavItem } from "./nav-config";
 import { cn } from "@/lib/utils";
@@ -16,6 +16,7 @@ const ICONS: Record<NavIcon, LucideIcon> = {
   orders: ShoppingCart,
   customers: Users,
   suppliers: Truck,
+  purchasing: ClipboardList,
   quality: ClipboardCheck,
   reports: ChartColumn,
   settings: Settings,

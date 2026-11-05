@@ -96,6 +96,10 @@ GRANT USAGE ON SCHEMA public TO mops_runtime;
 REVOKE INSERT, UPDATE, DELETE ON stock_balance FROM mops_runtime;
 REVOKE UPDATE, DELETE ON stock_movement, audit_log, exchange_rate, job_cost_actual FROM mops_runtime;
 REVOKE UPDATE, DELETE ON job_cost_actual_line FROM mops_runtime;
+-- migration 20261104110000_purchasing_and_receiving
+REVOKE UPDATE, DELETE ON goods_receipt, goods_receipt_line FROM mops_runtime;
+REVOKE DELETE ON material_lot FROM mops_runtime;
+REVOKE UPDATE ON material_lot FROM mops_runtime; -- re-granted column-scoped (status, expiry_date) below
 
 -- Tables mops_runtime may fully read/write (ordinary CRUD, Phase 1 tables
 -- plus later-phase tables listed for completeness — grant only the ones
@@ -107,7 +111,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON
   production_stage_template, production_job_stage,
   warehouse, job_cost_estimate,
   password_reset_token, auth_throttle, -- migration 20261031100000_account_security (also grants itself, guarded)
-  supplier -- migration 20261104100000_suppliers (also grants itself, guarded)
+  supplier, -- migration 20261104100000_suppliers (also grants itself, guarded)
+  purchase_order, purchase_order_line -- migration 20261104110000_purchasing_and_receiving (also grants itself, guarded)
 TO mops_runtime;
 
 -- Production module tables (migration 20261008110000_production_job_foundations
@@ -125,6 +130,16 @@ GRANT SELECT, INSERT ON stock_movement, audit_log, exchange_rate, job_cost_actua
 -- Phase 2 / 3 append-only tables (migrations 20261015100000 and 20261022100000 also
 -- grant these themselves, guarded on the role existing). quality_record is append-only now.
 GRANT SELECT, INSERT ON job_cost_adjustment, production_output, production_output_void, quality_record, quality_disposition TO mops_runtime;
+-- goods_receipt / goods_receipt_line: append-only (migration 20261104110000_purchasing_and_receiving
+-- also grants these themselves, guarded). Enforced twice over, same as the tables above:
+-- this GRANT and the trg_goods_receipt(_line)_immutable triggers independently.
+GRANT SELECT, INSERT ON goods_receipt, goods_receipt_line TO mops_runtime;
+-- material_lot: SELECT + INSERT fully; UPDATE restricted to the two columns that
+-- legitimately change after creation. Every other column (quantity_received, every FK)
+-- is set once and never updated — enforced at the column-privilege level, not just by
+-- service-layer discipline (same migration).
+GRANT SELECT, INSERT ON material_lot TO mops_runtime;
+GRANT UPDATE (status, expiry_date) ON material_lot TO mops_runtime;
 
 -- stock_balance: SELECT only. It is written exclusively by
 -- trg_stock_movement_before_insert, which is declared SECURITY DEFINER (see
