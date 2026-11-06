@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -36,15 +35,21 @@ function readRememberedOrgSlug(): string {
 }
 
 export default function LoginPage() {
-  const router = useRouter();
   const [organizationSlug, setOrganizationSlug] = useState(readRememberedOrgSlug);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  // Closes the gap `disabled={submitting}` leaves: a second Enter/click can
+  // land before React re-renders with the button disabled. Checked
+  // synchronously, before any state update, same pattern as
+  // components/features/shared/use-submission.ts's inflight guard.
+  const inflight = useRef(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (inflight.current) return;
+    inflight.current = true;
     setError(null);
     setSubmitting(true);
 
@@ -58,6 +63,7 @@ export default function LoginPage() {
       if (!response.ok) {
         const body = (await response.json().catch(() => null)) as LoginErrorBody | null;
         setError(body?.error?.message ?? "Unable to sign in — please try again.");
+        inflight.current = false;
         setSubmitting(false);
         return;
       }
@@ -68,14 +74,26 @@ export default function LoginPage() {
         // Same as above — a failed write here never blocks a successful login.
       }
 
-      router.push("/dashboard");
-      router.refresh();
+      // A full navigation, not router.push()/router.refresh(): the session
+      // cookie is already set by the response above, so the browser just
+      // needs to load /dashboard fresh. router.push() is a soft, client-side
+      // RSC transition that re-renders the target route in place -- on a
+      // high-latency database it can sit waiting on that transition's
+      // payload, and router.refresh() fired immediately after push() can
+      // race it (a second RSC fetch for the same navigation), which is
+      // consistent with "the terminal never prints GET /dashboard": the
+      // request never went out. window.location.assign forces a real
+      // browser navigation, so it cannot stall the same way, and it also
+      // means this component is about to unmount -- there is deliberately
+      // no `finally` to re-enable the button, and inflight is deliberately
+      // never reset here either: the button stays disabled until the
+      // browser actually leaves this page.
+      window.location.assign("/dashboard");
     } catch {
       setError("Couldn't reach the server — check your connection and try again.");
+      inflight.current = false;
       setSubmitting(false);
     }
-    // No `finally`: on success the button stays disabled ("Signing in…") until the browser
-    // actually navigates to /dashboard, so a slow first dashboard load can't look like a stuck login.
   }
 
   return (

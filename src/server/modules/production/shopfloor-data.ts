@@ -23,6 +23,10 @@ export interface LoadedShopfloor {
     startedAt: Date | null;
     completedAt: Date | null;
     workCentre: string | null;
+    workCentreId: string | null;
+    machineId: string | null;
+    expectedSetupMinutes: number | null;
+    expectedRunMinutes: number | null;
     operatorUserId: string | null;
     blockedReason: string | null;
     blockedAt: Date | null;
@@ -52,6 +56,10 @@ export async function loadShopfloor(db: Db | typeof prisma, orgId: string, jobId
       startedAt: s.startedAt,
       completedAt: s.completedAt,
       workCentre: s.workCentre,
+      workCentreId: s.workCentreId,
+      machineId: s.machineId,
+      expectedSetupMinutes: s.expectedSetupMinutes,
+      expectedRunMinutes: s.expectedRunMinutes,
       operatorUserId: s.operatorUserId,
       blockedReason: s.blockedReason,
       blockedAt: s.blockedAt,

@@ -64,14 +64,6 @@ function hashToken(token: string): string {
   return createHash("sha256").update(token).digest("hex");
 }
 
-async function loadBranchIds(orgId: string, userId: string): Promise<string[]> {
-  const rows = await prisma.userBranchAccess.findMany({
-    where: { orgId, userId },
-    select: { branchId: true },
-  });
-  return rows.map((r) => r.branchId);
-}
-
 // Failed-login throttling. Three counters, because each alone is either weak or abusable:
 //  - per (account + address): the tight one that stops guessing a password from one place;
 //  - per address: stops one place spraying many accounts;
@@ -106,10 +98,18 @@ export async function login(input: unknown, context: LoginContext = {}): Promise
   // counter is skipped: lumping every such caller into one bucket would let a single attacker lock
   // everybody out. The per-account counters still apply.
   const useIp = address !== "unknown";
-  await assertNotThrottled([
-    { key: keyAccountIp, rule: LOGIN_ACCOUNT_IP_LIMIT },
-    ...(useIp ? [{ key: keyIp, rule: LOGIN_IP_LIMIT }] : []),
-    { key: keyAccount, rule: LOGIN_ACCOUNT_LIMIT },
+  // The throttle check and the org lookup are independent reads (neither's
+  // result feeds the other), so they run concurrently. If the throttle
+  // check rejects, the org lookup's result is simply unused -- Promise.all
+  // still rejects with the RateLimitError, nothing about which keys are
+  // throttled is decided by or leaked through the org lookup.
+  const [, orgRow] = await Promise.all([
+    assertNotThrottled([
+      { key: keyAccountIp, rule: LOGIN_ACCOUNT_IP_LIMIT },
+      ...(useIp ? [{ key: keyIp, rule: LOGIN_IP_LIMIT }] : []),
+      { key: keyAccount, rule: LOGIN_ACCOUNT_LIMIT },
+    ]),
+    organizationSlug ? prisma.organization.findUnique({ where: { slug: organizationSlug }, select: { id: true } }) : Promise.resolve(null),
   ]);
   const fail = async (message: string): Promise<never> => {
     await Promise.all([
@@ -121,11 +121,14 @@ export async function login(input: unknown, context: LoginContext = {}): Promise
   };
 
   let organizationId = parsed.data.organizationId;
-  if (organizationSlug) {
-    const org = await prisma.organization.findUnique({ where: { slug: organizationSlug }, select: { id: true } });
-    if (org) organizationId = org.id;
-  }
-  const user = organizationId ? await prisma.user.findFirst({ where: { orgId: organizationId, email } }) : null;
+  if (organizationSlug && orgRow) organizationId = orgRow.id;
+  // branchAccessGranted is fetched alongside the user row (one query) rather
+  // than via a separate loadBranchIds() call after -- it's the exact same
+  // user_branch_access rows loadBranchIds would read, at no extra round-trip
+  // cost since this lookup has to happen either way.
+  const user = organizationId
+    ? await prisma.user.findFirst({ where: { orgId: organizationId, email }, include: { branchAccessGranted: { select: { branchId: true } } } })
+    : null;
 
   // Identical error for "no such user" and "correct user, wrong password" —
   // deliberately not distinguishing them in the response, to avoid account
@@ -156,8 +159,7 @@ export async function login(input: unknown, context: LoginContext = {}): Promise
       userAgent: context.userAgent ?? null,
     },
   });
-
-  const branchIds = await loadBranchIds(organizationId, user.id);
+  const branchIds = user.branchAccessGranted.map((a) => a.branchId);
 
   await recordAudit(prisma, {
     orgId: organizationId,
@@ -185,23 +187,25 @@ export async function validateSessionToken(token: string): Promise<Authenticated
   if (!token) return null;
   const tokenHash = hashToken(token);
 
+  // Session + user + the user's branch grants in one query, instead of a
+  // second loadBranchIds() round trip after -- this runs on every
+  // authenticated request (every page, every API call), so cutting it from
+  // two round trips to one matters more here than almost anywhere else.
   const sessionRow = await prisma.userSession.findUnique({
     where: { tokenHash },
-    include: { user: true },
+    include: { user: { include: { branchAccessGranted: { select: { branchId: true } } } } },
   });
   if (!sessionRow) return null;
   if (sessionRow.revokedAt) return null;
   if (sessionRow.expiresAt.getTime() <= Date.now()) return null;
   if (!sessionRow.user.isActive) return null;
 
-  const branchIds = await loadBranchIds(sessionRow.orgId, sessionRow.userId);
-
   return {
     sessionId: sessionRow.id,
     orgId: sessionRow.orgId,
     userId: sessionRow.userId,
     role: sessionRow.user.role as Role,
-    branchIds,
+    branchIds: sessionRow.user.branchAccessGranted.map((a) => a.branchId),
   };
 }
 

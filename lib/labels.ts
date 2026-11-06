@@ -20,6 +20,7 @@ export const MOVEMENT_LABELS: Record<MovementType, string> = {
   adjustment: "Adjustment",
   stock_transfer_out: "Transfer out",
   stock_transfer_in: "Transfer in",
+  regrind_generation: "Regrind generated",
 };
 
 /** Item types a job can produce (job-service enforces this too). */

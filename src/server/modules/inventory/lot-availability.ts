@@ -18,7 +18,9 @@ export interface LotRow {
   lotNumber: string;
   itemId: string;
   warehouseId: string;
-  supplierId: string;
+  // Nullable as of Milestone 6: a regrind-generated lot has no external
+  // supplier (see schema.prisma's MaterialLot.supplierId comment).
+  supplierId: string | null;
   uom: string;
   status: string;
   expiryDate: Date | null;

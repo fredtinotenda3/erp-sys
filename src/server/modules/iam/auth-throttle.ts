@@ -51,10 +51,16 @@ export async function throttleClear(key: string, db: Db = prisma): Promise<void>
   await db.$executeRaw`DELETE FROM auth_throttle WHERE key = ${key}`;
 }
 
-/** Throws RateLimitError if the key is already at its limit. Does not count an attempt. */
+/**
+ * Throws RateLimitError if any key is already at its limit. Does not count
+ * an attempt. The keys are independent reads (different counters, no
+ * dependency between them), so they run concurrently rather than one round
+ * trip per key -- same decision (max retry-after across all keys), just not
+ * paid for serially on a high-latency connection.
+ */
 export async function assertNotThrottled(keys: { key: string; rule: Limit }[], db: Db = prisma, now = new Date()): Promise<void> {
-  let worst = 0;
-  for (const { key, rule } of keys) worst = Math.max(worst, await throttleRetryAfter(key, rule, db, now));
+  const waits = await Promise.all(keys.map(({ key, rule }) => throttleRetryAfter(key, rule, db, now)));
+  const worst = Math.max(0, ...waits);
   if (worst > 0) throw new RateLimitError("Too many attempts. Please try again later.", worst);
 }
 

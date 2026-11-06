@@ -93,7 +93,7 @@ export function IndustryProfileForm({ profiles, current }: Props) {
         </Card>
       ) : (
         <p className="text-sm text-muted-foreground">
-          This profile has no optional modules implemented yet. Selecting it changes the organization's profile
+          This profile has no optional modules implemented yet. Selecting it changes the organization&apos;s profile
           but does not turn on any industry-specific behaviour.
         </p>
       )}

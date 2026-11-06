@@ -9,6 +9,7 @@
 // READ operations do not, for the same historical-integrity reason as
 // mould-service.ts's header comment.
 import { z } from "zod";
+import { Prisma } from "../../../generated/prisma/client";
 import { prisma } from "../../shared/db";
 import { assertCapability } from "../../shared/authz";
 import { NotFoundError, ValidationError } from "../../shared/errors";
@@ -103,7 +104,12 @@ export async function setPlasticsMaterialAttributes(session: AuthenticatedSessio
     recycledContentPct: merged(d.recycledContentPct, existing?.recycledContentPct?.toNumber() ?? null),
     supplierMaterialRef: merged(d.supplierMaterialRef, existing?.supplierMaterialRef),
     materialCertificateReference: merged(d.materialCertificateReference, existing?.materialCertificateReference),
-    blendComposition: merged(d.blendComposition, existing?.blendComposition as unknown as { component: string; percentage: number }[] | null | undefined),
+    // Prisma's generated input types for a nullable Json column don't accept
+    // a plain `null` (it's ambiguous with "column not provided") -- the
+    // Prisma.JsonNull sentinel is how a caller asks for the SQL/JSON null
+    // merged() already decided on. No behaviour change, just the type the
+    // client requires for the same outcome.
+    blendComposition: merged(d.blendComposition, existing?.blendComposition as unknown as { component: string; percentage: number }[] | null | undefined) ?? Prisma.JsonNull,
   };
 
   return prisma.$transaction(async (tx) => {

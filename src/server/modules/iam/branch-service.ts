@@ -49,6 +49,14 @@ export async function createBranch(session: AuthenticatedSession, input: unknown
 // is the read-path expression of the exact same rule
 // shared/authz.ts#hasBranchAccess enforces for write-path checks, and it is
 // the core assertion of the branch-isolation test suite.
+//
+// Filtered by session.branchIds (an `id IN (...)` lookup) rather than by a
+// `userAccess: { some: ... }` relational filter: session.branchIds was
+// already derived from the exact same user_branch_access rows by
+// validateSessionToken for this same request (see session-service.ts), so
+// re-deriving the same membership via a join here would just be the same
+// fact fetched from the same table twice. No behaviour change — same rows,
+// same org/role scoping — just without the extra join.
 export async function listBranches(session: AuthenticatedSession) {
   assertCapability(session.role, "branch:read");
 
@@ -57,7 +65,7 @@ export async function listBranches(session: AuthenticatedSession) {
   }
 
   return prisma.branch.findMany({
-    where: { orgId: session.orgId, userAccess: { some: { userId: session.userId } } },
+    where: { orgId: session.orgId, id: { in: [...session.branchIds] } },
     orderBy: { name: "asc" },
   });
 }

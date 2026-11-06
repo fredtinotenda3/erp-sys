@@ -342,7 +342,11 @@ describe("lot allocation on issue", () => {
     const second = await issueMaterialToJob(ownerA, jobId, p);
     expect(second.replayed).toBe(true);
     expect(second.movement.id).toBe(first.movement.id);
-    const count = await prisma.lotConsumption.count({ where: { orgId: orgA.organizationId, movementId: first.movement.id } });
+    // toMovementView() deliberately returns Record<string, unknown> (its shape
+    // depends on the caller's capabilities -- see stock-core.ts), so `.id` is
+    // `unknown` to the type checker even though it's always a string at
+    // runtime (toMovementView always sets it from the movement row's own id).
+    const count = await prisma.lotConsumption.count({ where: { orgId: orgA.organizationId, movementId: first.movement.id as string } });
     expect(count).toBe(1);
   });
 });

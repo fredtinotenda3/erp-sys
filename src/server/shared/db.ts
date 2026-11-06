@@ -29,6 +29,25 @@ declare global {
   var __mopsPrismaClient: PrismaClient | undefined;
 }
 
+// node-postgres's Pool has no native "min" option — connections are opened
+// lazily, on demand, one per concurrent query above whatever is already
+// idle. On a remote, possibly-suspended Neon compute that means the FIRST
+// request to land after any quiet period pays full connection-establishment
+// cost (several seconds here, per the file header) for every connection it
+// needs at once, even though the application code issues its queries with
+// Promise.all. warmPool() below is the standard workaround: eagerly open
+// and immediately release DB_POOL_MIN connections as soon as the module
+// loads, so they are already idle-and-ready in the pool by the time the
+// first real request's concurrent queries run. It never blocks module load
+// and never throws past this function -- a warm-up failure (e.g. the DB is
+// unreachable at process start) must not crash the process; the pool still
+// works lazily afterwards exactly as before.
+function warmPool(pool: Pool, size: number): void {
+  for (let i = 0; i < size; i++) {
+    pool.query("SELECT 1").catch((err) => console.error("pg pool warm-up query failed:", err instanceof Error ? err.message : err));
+  }
+}
+
 function createPrismaClient(): PrismaClient {
   const pool = new Pool({
     connectionString: RUNTIME_DATABASE_URL,
@@ -39,6 +58,7 @@ function createPrismaClient(): PrismaClient {
   });
   // An idle-connection error (Neon closing a suspended socket) must not crash the process.
   pool.on("error", (err) => console.error("pg pool idle client error:", err.message));
+  warmPool(pool, intEnv("DB_POOL_MIN", 2));
   const adapter = new PrismaPg(pool);
   return new PrismaClient({
     adapter,
