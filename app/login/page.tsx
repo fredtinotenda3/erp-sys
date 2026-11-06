@@ -58,6 +58,7 @@ export default function LoginPage() {
       if (!response.ok) {
         const body = (await response.json().catch(() => null)) as LoginErrorBody | null;
         setError(body?.error?.message ?? "Unable to sign in — please try again.");
+        setSubmitting(false);
         return;
       }
 
@@ -71,9 +72,10 @@ export default function LoginPage() {
       router.refresh();
     } catch {
       setError("Couldn't reach the server — check your connection and try again.");
-    } finally {
       setSubmitting(false);
     }
+    // No `finally`: on success the button stays disabled ("Signing in…") until the browser
+    // actually navigates to /dashboard, so a slow first dashboard load can't look like a stuck login.
   }
 
   return (
