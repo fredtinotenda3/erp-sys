@@ -22,7 +22,47 @@ import { isBalanceCreationRace, mapStockTriggerError } from "./stock-errors";
 // convention as purchase_receipt -- see that file's header comment for why
 // its unit_cost must be the cost basis of what is being reversed, not an
 // arbitrary caller-supplied figure.
-export type PostableMovementType = "purchase_receipt" | "adjustment" | "production_consumption" | "material_return";
+//
+// "finished_goods_receipt" / "stock_transfer_out" / "stock_transfer_in" added
+// for Milestone 2 (Finished-Goods Inventory, finished-goods-service.ts).
+// These three MovementType values already existed in schema.prisma's enum
+// (reserved since the init migration) but were never posted by any caller
+// until this milestone. finished_goods_receipt is a positive, receipt-style
+// movement (same unit_cost discipline as purchase_receipt: the caller must
+// supply a real cost basis -- here, the job's own WIP cost at the moment of
+// receipt, never invented). stock_transfer_out (negative, unit_cost=null --
+// the trigger stamps the source warehouse's own current average, same as
+// production_consumption) and stock_transfer_in (positive, unit_cost = the
+// transfer_out movement's own resulting cost basis, read back from the
+// transfer_out insert) are always posted as a pair, in one transaction, so a
+// transfer can never exist half-done.
+//
+// "sale_delivery" added for Milestone 3 (Dispatch and Delivery,
+// dispatch-service.ts). Already existed in schema.prisma's MovementType
+// enum (reserved since the init migration) but never posted by any caller
+// until this milestone. Negative, unit_cost=null (the trigger stamps the
+// warehouse's current average, same as production_consumption/
+// stock_transfer_out) -- a dispatch never invents or carries over a cost
+// figure of its own; the ledger always revalues at the moment goods leave.
+//
+// "regrind_generation" added for Milestone 6 (Plastics Manufacturing
+// Vertical, regrind-service.ts). New MovementType enum value added in this
+// milestone's own migration (20261110080000_plastics_manufacturing_vertical)
+// -- deliberately NOT "purchase_receipt": the mandate's explicit requirement
+// is "prevent regrind from being counted as newly purchased raw material",
+// so regrind gets its own movement type even though it is, like a receipt,
+// a POSITIVE movement with an operator-supplied unit_cost (the value of the
+// ground material, not a purchase price -- see regrind-service.ts).
+export type PostableMovementType =
+  | "purchase_receipt"
+  | "adjustment"
+  | "production_consumption"
+  | "material_return"
+  | "finished_goods_receipt"
+  | "stock_transfer_out"
+  | "stock_transfer_in"
+  | "sale_delivery"
+  | "regrind_generation";
 
 export interface PostMovementArgs {
   warehouse: { id: string; branchId: string };
@@ -42,7 +82,13 @@ export interface PostMovementArgs {
   // specific receipt/lot detail lives in GoodsReceiptLine/MaterialLot,
   // joinable from there, same division of responsibility as every other
   // reference type here.
-  referenceType: "manual" | "production_job" | "purchase_order";
+  //
+  // "sales_order" added for Milestone 3 (dispatch-service.ts): a dispatch's
+  // sale_delivery movement is posted with referenceId = the SalesOrder's
+  // id, same business-document-level granularity as "purchase_order" --
+  // the specific dispatch/batch-allocation detail lives in
+  // DispatchLine/DispatchBatchAllocation, joinable from there.
+  referenceType: "manual" | "production_job" | "purchase_order" | "sales_order";
   referenceId: string | null;
   reason: string | null;
   clientRequestId: string;

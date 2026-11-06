@@ -48,7 +48,13 @@ export default async function NewBomPage({ params }: { params: Promise<{ id: str
       <PageHeader title={`New BOM version for ${product.name}`} crumbs={crumbs} description="List the materials needed to make one unit." />
       <BomEditor
         productId={id}
-        seedLines={(active?.lines ?? []).map((l) => ({ materialItemId: l.materialItemId, quantity: l.quantity, uom: l.uom }))}
+        seedLines={(active?.lines ?? []).map((l) => ({
+          materialItemId: l.materialItemId,
+          quantity: l.quantity,
+          uom: l.uom,
+          scrapPct: l.expectedScrapPct ?? "",
+          yieldPct: l.expectedYieldPct ?? "",
+        }))}
         materials={materials.list.filter((m) => m.id !== id).map((m) => ({ id: m.id, name: m.name, sku: m.sku, uom: m.uom }))}
         nextVersion={latest + 1}
         activeVersion={active?.version ?? null}

@@ -32,16 +32,44 @@ export interface NavItem {
 export const NAV_ITEMS: readonly NavItem[] = [
   { label: "Command Centre", href: "/dashboard", icon: "dashboard", capabilities: [], implemented: true },
   { label: "Shop floor", href: "/shop-floor", icon: "production", capabilities: ["output:record", "stage:transition"], implemented: true },
-  { label: "Orders", href: "/orders", icon: "orders", capabilities: ["sales_order:read"], implemented: true },
+  {
+    label: "Orders",
+    href: "/orders",
+    icon: "orders",
+    // Widened to include dispatch:read (Milestone 3) so a role that holds
+    // only that capability (none currently do -- INVENTORY_MANAGER, the
+    // role that creates dispatches, was also given sales_order:read -- see
+    // authz.ts's comment on that grant) still sees this parent item and
+    // can reach "Dispatches". Same defensive widening Reports' own parent
+    // item already applies for finished_goods:read.
+    capabilities: ["sales_order:read", "dispatch:read"],
+    implemented: true,
+    children: [
+      { label: "Orders", href: "/orders", capabilities: ["sales_order:read"] },
+      { label: "Dispatches", href: "/dispatches", capabilities: ["dispatch:read"] },
+    ],
+  },
   {
     label: "Production",
     href: "/production/jobs",
     icon: "production",
-    capabilities: ["production_job:read"],
+    // Widened to include machine:read (Milestone 4) and mould:read
+    // (Milestone 6) so a role holding only one of those capabilities still
+    // sees this parent item and can reach "Machines"/"Capacity"/"Moulds" --
+    // same defensive widening pattern as Orders' and Reports' own parent
+    // items.
+    capabilities: ["production_job:read", "machine:read", "mould:read"],
     implemented: true,
     children: [
       { label: "Jobs", href: "/production/jobs", capabilities: ["production_job:read"] },
       { label: "New job", href: "/production/jobs/new", capabilities: ["production_job:create"] },
+      { label: "Machines", href: "/production/machines", capabilities: ["machine:read"] },
+      { label: "Capacity", href: "/production/capacity", capabilities: ["machine:read"] },
+      // Milestone 6. Visible under every profile (mould:read is granted
+      // independently of the org's industry profile -- see authz.ts), but
+      // the page itself is only meaningful once the org is on the plastics
+      // profile; the list page says so when it's empty for any other reason.
+      { label: "Moulds", href: "/production/moulds", capabilities: ["mould:read"] },
     ],
   },
   {
@@ -59,6 +87,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
       { label: "Issue to job", href: "/inventory/issue", capabilities: ["material:issue"] },
       { label: "Return from job", href: "/inventory/return", capabilities: ["material:issue"] },
       { label: "Material lots", href: "/inventory/lots", capabilities: ["lot:read"] },
+      { label: "Finished goods", href: "/inventory/finished-goods", capabilities: ["finished_goods:read"] },
     ],
   },
   {
@@ -101,23 +130,31 @@ export const NAV_ITEMS: readonly NavItem[] = [
     label: "Reports",
     href: "/reports",
     icon: "reports",
-    capabilities: ["cost:read"],
+    capabilities: ["cost:read", "finished_goods:read"],
     implemented: true,
     children: [
       { label: "Job costs", href: "/reports/job-costs", capabilities: ["cost:read"] },
       { label: "Profitability", href: "/reports/profitability", capabilities: ["cost:read"] },
+      { label: "WIP valuation", href: "/reports/wip-valuation", capabilities: ["cost:read"] },
+      { label: "Finished-goods valuation", href: "/reports/fg-valuation", capabilities: ["finished_goods:read"] },
     ],
   },
   {
     label: "Settings",
     href: "/settings/users",
     icon: "settings",
-    capabilities: ["user:read", "audit_log:read"],
+    // Widened to include industry_profile:manage (Milestone 5) so a role
+    // holding only that capability still sees this parent item -- same
+    // defensive widening pattern used throughout this file. In practice
+    // this changes nothing today: industry_profile:manage is OWNER_ADMIN-
+    // only, and OWNER_ADMIN already holds user:read.
+    capabilities: ["user:read", "audit_log:read", "industry_profile:manage"],
     implemented: true,
     children: [
       { label: "Users", href: "/settings/users", capabilities: ["user:read"] },
       { label: "Branches", href: "/settings/branches", capabilities: ["user:read"] },
       { label: "Audit log", href: "/settings/audit-log", capabilities: ["audit_log:read"] },
+      { label: "Manufacturing profile", href: "/settings/industry-profile", capabilities: ["industry_profile:manage"] },
     ],
   },
 ] as const;

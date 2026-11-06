@@ -21,15 +21,29 @@ import type { AuthenticatedSession } from "../iam/session-service";
 export const BOM_STATUS_VALUES = ["draft", "active", "superseded"] as const;
 export type BomStatus = (typeof BOM_STATUS_VALUES)[number];
 
-const bomLineSchema = z.object({
-  materialItemId: z.string().uuid(),
-  quantity: z.number().finite().positive(),
-  uom: z.string().trim().min(1).max(20),
-});
+const bomLineSchema = z
+  .object({
+    materialItemId: z.string().uuid(),
+    quantity: z.number().finite().positive(),
+    uom: z.string().trim().min(1).max(20),
+    // Milestone 4. Both optional; omitting either keeps today's behaviour
+    // exactly (see the field comments in prisma/schema.prisma). Note the
+    // scrap upper bound is EXCLUSIVE of 100 -- a line that expects 100%
+    // scrap would mean the material is never actually consumed, which is
+    // not a scrap rate, it's a data-entry error.
+    expectedScrapPct: z.number().finite().min(0).max(99.99).optional(),
+    expectedYieldPct: z.number().finite().gt(0).max(100).optional(),
+  })
+  .strict();
 
 const createBomVersionSchema = z.object({
   effectiveFrom: z.coerce.date().optional(),
+  effectiveTo: z.coerce.date().optional(),
   lines: z.array(bomLineSchema).min(1, "A BOM must have at least one material line").max(200),
+}).superRefine((d, ctx) => {
+  if (d.effectiveFrom && d.effectiveTo && d.effectiveTo < d.effectiveFrom) {
+    ctx.addIssue({ code: "custom", message: "effectiveTo cannot be before effectiveFrom", path: ["effectiveTo"] });
+  }
 });
 
 async function assertProductItemExists(orgId: string, productItemId: string) {
@@ -74,6 +88,7 @@ export async function createBomVersion(session: AuthenticatedSession, productIte
           version: nextVersion,
           status: "draft",
           effectiveFrom: data.effectiveFrom ?? null,
+          effectiveTo: data.effectiveTo ?? null,
           createdById: session.userId,
         },
       });
@@ -84,6 +99,8 @@ export async function createBomVersion(session: AuthenticatedSession, productIte
           materialItemId: line.materialItemId,
           quantity: line.quantity,
           uom: line.uom,
+          expectedScrapPct: line.expectedScrapPct ?? null,
+          expectedYieldPct: line.expectedYieldPct ?? null,
         })),
       });
       await recordAudit(tx, {

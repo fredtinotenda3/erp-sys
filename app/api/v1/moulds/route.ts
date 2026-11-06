@@ -1,0 +1,29 @@
+import { NextRequest, NextResponse } from "next/server";
+import { createMould, listMoulds } from "../../../../src/server/modules/production/mould-service";
+import { requireSession } from "../../../../src/server/modules/iam/session-guard";
+import { errorResponse } from "../../../../src/server/shared/http";
+
+export async function GET(req: NextRequest) {
+  try {
+    const session = await requireSession(req);
+    const sp = req.nextUrl.searchParams;
+    const data = await listMoulds(session, {
+      branchId: sp.get("branchId") ?? undefined,
+      status: (sp.get("status") as "available" | "in_use" | "maintenance" | "retired" | null) ?? undefined,
+    });
+    return NextResponse.json({ data });
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const session = await requireSession(req);
+    const body = await req.json();
+    const m = await createMould(session, body);
+    return NextResponse.json({ data: m }, { status: 201 });
+  } catch (err) {
+    return errorResponse(err);
+  }
+}

@@ -36,6 +36,11 @@ const q4 = (label: string) =>
     .max(1_000_000_000, `${label} is too large`)
     .refine((n) => Math.abs(n * 1e4 - Math.round(n * 1e4)) < 1e-6, `${label} supports at most 4 decimal places`);
 
+const measurementInput = z.object({
+  characteristicId: z.string().uuid(),
+  measuredValue: z.number().finite(),
+});
+
 const inspectSchema = z
   .object({
     clientRequestId: z.string().uuid(),
@@ -45,10 +50,26 @@ const inspectSchema = z
     rejectReason: z.enum(REJECT_REASONS).optional(),
     notes: z.string().trim().max(500).optional(),
     evidenceRef: z.string().trim().max(500).optional(),
+    // Milestone 4: optional product-specific measurements against an
+    // inspection plan's characteristics. This is diagnostic detail on top
+    // of the existing pass/fail -- see the file header's new "Milestone 4"
+    // paragraph. Both fields are optional and independent of each other;
+    // measurements may be recorded without inspectionPlanId (e.g. an ad hoc
+    // check) and a plan may be named with no measurements recorded yet.
+    inspectionPlanId: z.string().uuid().optional(),
+    measurements: z.array(measurementInput).max(100).optional(),
   })
   .superRefine((v, ctx) => {
     if (v.rejectedQty > v.inspectedQty) ctx.addIssue({ code: "custom", message: "Rejected units can't exceed inspected units", path: ["rejectedQty"] });
     if (v.rejectedQty > 0 && !v.rejectReason) ctx.addIssue({ code: "custom", message: "A defect category is required when units are rejected", path: ["rejectReason"] });
+    const seen = new Set<string>();
+    for (const m of v.measurements ?? []) {
+      if (seen.has(m.characteristicId)) ctx.addIssue({ code: "custom", message: "Each characteristic can only be measured once per inspection", path: ["measurements"] });
+      seen.add(m.characteristicId);
+    }
+    if ((v.measurements?.length ?? 0) > 0 && !v.inspectionPlanId) {
+      ctx.addIssue({ code: "custom", message: "inspectionPlanId is required when recording measurements", path: ["inspectionPlanId"] });
+    }
   });
 
 const dispositionSchema = z.object({
@@ -58,7 +79,10 @@ const dispositionSchema = z.object({
   reason: z.string().trim().min(5, "Explain the decision in at least 5 characters").max(500),
 });
 
-type Rec = Awaited<ReturnType<typeof prisma.qualityRecord.findFirstOrThrow>> & { dispositions?: { id: string; kind: string; qty: unknown; reason: string; decidedBy: string; decidedAt: Date }[] };
+type Rec = Awaited<ReturnType<typeof prisma.qualityRecord.findFirstOrThrow>> & {
+  dispositions?: { id: string; kind: string; qty: unknown; reason: string; decidedBy: string; decidedAt: Date }[];
+  measurements?: { id: string; characteristicId: string; characteristicName: string; uom: string | null; minValue: unknown; maxValue: unknown; measuredValue: unknown; passed: boolean }[];
+};
 
 export function toInspectionView(r: Rec) {
   const dispositioned = (r.dispositions ?? []).reduce((t, d) => t.add(D(d.qty)), D(0));
@@ -81,6 +105,17 @@ export function toInspectionView(r: Rec) {
     disposition: rejected.isZero() ? ("not_needed" as const) : open.gt(0) ? ("open" as const) : ("resolved" as const),
     openRejectedQty: open.toString(),
     dispositions: (r.dispositions ?? []).map((d) => ({ id: d.id, kind: d.kind as "scrap" | "rework" | "use_as_is", qty: String(d.qty), reason: d.reason, decidedBy: d.decidedBy, decidedAt: d.decidedAt })),
+    inspectionPlanId: r.inspectionPlanId ?? null,
+    measurements: (r.measurements ?? []).map((m) => ({
+      id: m.id,
+      characteristicId: m.characteristicId,
+      characteristicName: m.characteristicName,
+      uom: m.uom,
+      minValue: m.minValue === null ? null : String(m.minValue),
+      maxValue: m.maxValue === null ? null : String(m.maxValue),
+      measuredValue: String(m.measuredValue),
+      passed: m.passed,
+    })),
   };
 }
 
@@ -88,7 +123,7 @@ export async function listInspections(session: AuthenticatedSession, jobId: stri
   assertCapability(session.role, "quality:read");
   const job = await findJobInScope(session, jobId);
   if (!job) throw new NotFoundError("Production job");
-  const rows = await prisma.qualityRecord.findMany({ where: { orgId: session.orgId, jobId }, include: { dispositions: { orderBy: { decidedAt: "asc" } } }, orderBy: [{ recordedAt: "desc" }, { id: "desc" }] });
+  const rows = await prisma.qualityRecord.findMany({ where: { orgId: session.orgId, jobId }, include: { dispositions: { orderBy: { decidedAt: "asc" } }, measurements: true }, orderBy: [{ recordedAt: "desc" }, { id: "desc" }] });
   const views = rows.map((r) => toInspectionView(r as Rec));
   const sum = (f: (v: (typeof views)[number]) => string) => views.reduce((t, v) => t.add(D(f(v))), D(0)).toString();
   return {
@@ -116,16 +151,34 @@ export async function recordInspection(session: AuthenticatedSession, jobId: str
   const product = await prisma.item.findFirst({ where: { id: job.productItemId, orgId: session.orgId }, select: { uom: true } });
   if (!product) throw new NotFoundError("Product");
 
-  const existing = await prisma.qualityRecord.findFirst({ where: { orgId: session.orgId, clientRequestId: d.clientRequestId }, include: { dispositions: true } });
+  const existing = await prisma.qualityRecord.findFirst({ where: { orgId: session.orgId, clientRequestId: d.clientRequestId }, include: { dispositions: true, measurements: true } });
   if (existing) {
     const same =
       existing.jobId === job.id &&
       (existing.jobStageId ?? null) === (d.jobStageId ?? null) &&
       D(existing.producedQty).eq(D(d.inspectedQty)) &&
       D(existing.rejectedQty).eq(D(d.rejectedQty)) &&
-      (existing.rejectReason ?? null) === (d.rejectReason ?? null);
+      (existing.rejectReason ?? null) === (d.rejectReason ?? null) &&
+      (existing.inspectionPlanId ?? null) === (d.inspectionPlanId ?? null);
     if (!same) throw new ConflictError("This clientRequestId was already used for a different inspection");
     return { replayed: true, inspection: toInspectionView(existing as Rec) };
+  }
+
+  // Milestone 4: resolve and validate the plan/characteristics BEFORE the
+  // transaction -- pure reads, same staging as the rest of this function's
+  // pre-transaction validation.
+  let characteristicById: Map<string, { id: string; name: string; uom: string | null; minValue: Prisma.Decimal | null; maxValue: Prisma.Decimal | null; isActive: boolean }> | null = null;
+  if (d.inspectionPlanId) {
+    const plan = await prisma.inspectionPlan.findFirst({ where: { orgId: session.orgId, id: d.inspectionPlanId }, include: { characteristics: true } });
+    if (!plan) throw new ValidationError("inspectionPlanId does not belong to an inspection plan you can access");
+    if (plan.itemId !== job.productItemId) throw new ValidationError("inspectionPlanId does not belong to this job's product");
+    if (!plan.isActive) throw new ValidationError("This inspection plan is inactive");
+    characteristicById = new Map(plan.characteristics.map((c) => [c.id, c]));
+    for (const m of d.measurements ?? []) {
+      const c = characteristicById.get(m.characteristicId);
+      if (!c) throw new ValidationError(`Characteristic ${m.characteristicId} does not belong to this inspection plan`);
+      if (!c.isActive) throw new ValidationError(`Characteristic "${c.name}" has been retired and can no longer be measured`);
+    }
   }
 
   const created = await prisma.$transaction(async (tx) => {
@@ -171,13 +224,36 @@ export async function recordInspection(session: AuthenticatedSession, jobId: str
           inspectorUserId: session.userId,
           outcome: d.rejectedQty > 0 ? "fail" : "pass",
           clientRequestId: d.clientRequestId,
+          inspectionPlanId: d.inspectionPlanId ?? null,
         },
-        include: { dispositions: true },
       });
     } catch (err) {
       if (typeof err === "object" && err && (err as { code?: string }).code === "P2002") return null;
       throw err;
     }
+    if (characteristicById && d.measurements && d.measurements.length > 0) {
+      await tx.qualityMeasurement.createMany({
+        data: d.measurements.map((m) => {
+          const c = characteristicById!.get(m.characteristicId)!;
+          const min = c.minValue === null ? null : D(c.minValue);
+          const max = c.maxValue === null ? null : D(c.maxValue);
+          const value = D(m.measuredValue);
+          const passed = (min === null || value.gte(min)) && (max === null || value.lte(max));
+          return {
+            orgId: session.orgId,
+            qualityRecordId: row.id,
+            characteristicId: c.id,
+            characteristicName: c.name,
+            uom: c.uom,
+            minValue: c.minValue,
+            maxValue: c.maxValue,
+            measuredValue: value,
+            passed,
+          };
+        }),
+      });
+    }
+    const full = (await tx.qualityRecord.findFirst({ where: { id: row.id, orgId: session.orgId }, include: { dispositions: true, measurements: true } }))!;
     await recordAudit(tx, {
       orgId: session.orgId,
       branchId: job.branchId,
@@ -188,11 +264,11 @@ export async function recordInspection(session: AuthenticatedSession, jobId: str
       afterValue: { jobId: job.id, stageId: d.jobStageId ?? null, outcome: row.outcome, inspected: d.inspectedQty, rejected: d.rejectedQty, defect: d.rejectReason ?? null },
       reason: d.notes ?? undefined,
     });
-    return row;
+    return full;
   });
 
   if (!created) {
-    const winner = await prisma.qualityRecord.findFirst({ where: { orgId: session.orgId, clientRequestId: d.clientRequestId }, include: { dispositions: true } });
+    const winner = await prisma.qualityRecord.findFirst({ where: { orgId: session.orgId, clientRequestId: d.clientRequestId }, include: { dispositions: true, measurements: true } });
     if (!winner) throw new ConflictError("The inspection could not be recorded; retry");
     return { replayed: true, inspection: toInspectionView(winner as Rec) };
   }

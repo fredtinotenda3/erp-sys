@@ -23,6 +23,9 @@ const hasAtMostDp = (n: number, dp: number) => Math.abs(n * 10 ** dp - Math.roun
 
 const labourSchema = z.object({
   clientRequestId: z.string().uuid(),
+  // Milestone 4: optional operation-level attribution. Omitting it keeps
+  // today's meaning exactly -- "job-level labour, no specific operation".
+  jobStageId: z.string().uuid().optional(),
   hours: z
     .number()
     .finite()
@@ -44,9 +47,9 @@ export interface LabourResult {
 }
 
 function toLabourView(role: AuthenticatedSession["role"], r: {
-  id: string; jobId: string; userId: string | null; hours: unknown; rate: unknown; rateCurrency: string; recordedAt: Date;
+  id: string; jobId: string; jobStageId?: string | null; userId: string | null; hours: unknown; rate: unknown; rateCurrency: string; recordedAt: Date;
 }) {
-  const view: Record<string, unknown> = { id: r.id, jobId: r.jobId, userId: r.userId, hours: r.hours, recordedAt: r.recordedAt };
+  const view: Record<string, unknown> = { id: r.id, jobId: r.jobId, jobStageId: r.jobStageId ?? null, userId: r.userId, hours: r.hours, recordedAt: r.recordedAt };
   if (hasCapability(role, "cost:read")) {
     view.rate = r.rate;
     view.rateCurrency = r.rateCurrency;
@@ -75,12 +78,18 @@ export async function recordLabour(session: AuthenticatedSession, jobId: string,
   const currency = await prisma.currency.findUnique({ where: { code: data.rateCurrency } });
   if (!currency) throw new ValidationError(`Unknown currency code "${data.rateCurrency}"`);
 
+  if (data.jobStageId) {
+    const stage = await prisma.productionJobStage.findFirst({ where: { orgId: session.orgId, id: data.jobStageId, jobId: job.id } });
+    if (!stage) throw new ValidationError("jobStageId does not belong to this job");
+  }
+
   try {
     const record = await prisma.$transaction(async (tx) => {
       const created = await tx.labourRecord.create({
         data: {
           orgId: session.orgId,
           jobId: job.id,
+          jobStageId: data.jobStageId ?? null,
           userId: session.userId, // always the caller: nobody logs hours as someone else
           hours: new Prisma.Decimal(data.hours),
           rate: new Prisma.Decimal(data.rate),
@@ -134,12 +143,13 @@ export async function recordLabour(session: AuthenticatedSession, jobId: string,
 
 function replay(
   session: AuthenticatedSession,
-  existing: { id: string; jobId: string; userId: string | null; hours: unknown; rate: unknown; rateCurrency: string; recordedAt: Date },
+  existing: { id: string; jobId: string; jobStageId: string | null; userId: string | null; hours: unknown; rate: unknown; rateCurrency: string; recordedAt: Date },
   jobId: string,
   data: z.infer<typeof labourSchema>,
 ): LabourResult {
   const same =
     existing.jobId === jobId &&
+    (existing.jobStageId ?? null) === (data.jobStageId ?? null) &&
     new Prisma.Decimal(String(existing.hours)).equals(data.hours) &&
     new Prisma.Decimal(String(existing.rate)).equals(data.rate) &&
     existing.rateCurrency === data.rateCurrency;

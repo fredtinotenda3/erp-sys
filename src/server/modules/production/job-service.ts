@@ -32,6 +32,8 @@ import { canTransition, JOB_STATUS_VALUES, type JobStatus } from "./job-state";
 import { toJobView, type JobRow } from "./job-view";
 
 const MAX_DECIMAL = new Prisma.Decimal("9999999999"); // fits numeric(14,4)
+// Milestone 4
+const JOB_PRIORITY_VALUES = ["low", "normal", "high", "urgent"] as const;
 
 const createJobSchema = z
   .object({
@@ -46,6 +48,12 @@ const createJobSchema = z
     salesOrderLineId: z.string().uuid().optional(),
     quotedAmount: z.number().finite().nonnegative().max(9_999_999_999).optional(),
     quotedCurrency: z.string().trim().toUpperCase().length(3).optional(),
+    // Milestone 4: a planning signal only -- it does not change scheduling,
+    // material allocation, or any other behaviour; see capacity-service.ts
+    // and shortage-service.ts, neither of which currently weighs priority
+    // (both report by date/branch, not by priority order), exactly so this
+    // field doesn't silently claim a scheduling capability that isn't built.
+    priority: z.enum(JOB_PRIORITY_VALUES).default("normal"),
   })
   .superRefine((d, ctx) => {
     if ((d.quotedAmount === undefined) !== (d.quotedCurrency === undefined)) {
@@ -145,7 +153,14 @@ export async function createJob(session: AuthenticatedSession, input: unknown) {
   const unpriced: { materialItemId: string; reason: UnpricedReason }[] = [];
   const totalsByCurrency = new Map<string, Prisma.Decimal>();
   const requirementRows = bom.lines.map((line) => {
-    const expectedQty = new Prisma.Decimal(line.quantity).mul(plannedQty).toDecimalPlaces(4);
+    // Milestone 4: a BOM line's expectedScrapPct (null = 0, unchanged
+    // behaviour) inflates the material requirement so the job accounts for
+    // expected scrap up front, instead of only discovering the shortfall
+    // mid-run. expectedYieldPct is deliberately NOT applied here -- see its
+    // field comment in prisma/schema.prisma for why.
+    const scrapPct = line.expectedScrapPct ? new Prisma.Decimal(line.expectedScrapPct) : new Prisma.Decimal(0);
+    const scrapFactor = new Prisma.Decimal(1).add(scrapPct.div(100));
+    const expectedQty = new Prisma.Decimal(line.quantity).mul(plannedQty).mul(scrapFactor).toDecimalPlaces(4);
     if (expectedQty.gt(MAX_DECIMAL)) {
       throw new ValidationError("plannedQty is too large for this BOM (expected material quantity out of range)");
     }
@@ -214,6 +229,7 @@ export async function createJob(session: AuthenticatedSession, input: unknown) {
           status: "planned",
           quotedAmount: orderLink ? orderLink.quotedAmount : (data.quotedAmount ?? null),
           quotedCurrency: orderLink ? orderLink.quotedCurrency : (data.quotedCurrency ?? null),
+          priority: data.priority,
           createdById: session.userId,
         },
       });
@@ -295,6 +311,7 @@ export interface ListJobsFilter {
   customerId?: string;
   status?: JobStatus;
   overdueOnly?: boolean;
+  priority?: (typeof JOB_PRIORITY_VALUES)[number];
   limit?: number;
 }
 
@@ -315,6 +332,7 @@ export async function listJobs(session: AuthenticatedSession, filter: ListJobsFi
     where.customerId = filter.customerId;
   }
   if (filter.status) where.status = filter.status;
+  if (filter.priority) where.priority = filter.priority;
   if (filter.overdueOnly) {
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0);
@@ -443,6 +461,7 @@ const updateJobSchema = z
     customerId: z.string().uuid().nullable(),
     quotedAmount: z.number().finite().nonnegative().max(9_999_999_999).nullable(),
     quotedCurrency: z.string().trim().toUpperCase().length(3).nullable(),
+    priority: z.enum(JOB_PRIORITY_VALUES),
   })
   .partial()
   .strict() // product, quantity and BOM are deliberately not editable: unknown keys are rejected, not ignored
@@ -495,6 +514,7 @@ export async function updateJob(session: AuthenticatedSession, id: string, input
   if (d.customerId !== undefined) set("customerId", "customerId", d.customerId, job.customerId);
   if (d.quotedAmount !== undefined) set("quotedAmount", "quotedAmount", d.quotedAmount, job.quotedAmount === null ? null : String(job.quotedAmount));
   if (d.quotedCurrency !== undefined) set("quotedCurrency", "quotedCurrency", d.quotedCurrency, job.quotedCurrency);
+  if (d.priority !== undefined) set("priority", "priority", d.priority, job.priority);
 
   await prisma.$transaction(async (tx) => {
     const res = await tx.productionJob.updateMany({

@@ -135,6 +135,11 @@ async function findLotInScope(session: AuthenticatedSession, id: string) {
       sourceReturnOfLot: true,
       sourceReturnJob: true,
       sourceReturnMovement: true,
+      // Milestone 6: a regrind-generated lot has neither receiptLineId nor
+      // sourceReturnOfLotId -- see this file's getLotDetail/getLotTraceability
+      // for the third origin branch this enables.
+      sourceRegrindJob: true,
+      sourceRegrindMovement: true,
     },
   });
 }
@@ -167,6 +172,11 @@ export async function getLotDetail(session: AuthenticatedSession, id: string) {
       remaining,
     }),
     supplierLotRef: lot.supplierLotRef,
+    // Milestone 6: a regrind-generated lot is checked BEFORE the "return"
+    // fallback -- it has neither receiptLineId nor sourceReturnOfLotId, so
+    // without this branch it would fall into "return" with every
+    // sourceReturnOfLotId field null, which the "dangling" comment in
+    // getLotTraceability below used to assume could never happen.
     origin: lot.receiptLineId
       ? {
           type: "receipt" as const,
@@ -177,14 +187,26 @@ export async function getLotDetail(session: AuthenticatedSession, id: string) {
           supplierId: lot.receiptLine!.receipt.po.supplierId,
           supplierName: lot.receiptLine!.receipt.po.supplier.name,
         }
-      : {
-          type: "return" as const,
-          sourceReturnOfLotId: lot.sourceReturnOfLotId,
-          sourceReturnOfLotNumber: lot.sourceReturnOfLot?.lotNumber ?? null,
-          sourceReturnJobId: lot.sourceReturnJobId,
-          sourceReturnJobNumber: lot.sourceReturnJob?.jobNumber ?? null,
-          sourceReturnMovementId: lot.sourceReturnMovementId,
-        },
+      : lot.sourceRegrindJobId
+        ? {
+            type: "regrind" as const,
+            sourceRegrindJobId: lot.sourceRegrindJobId,
+            sourceRegrindJobNumber: lot.sourceRegrindJob?.jobNumber ?? null,
+            sourceRegrindMovementId: lot.sourceRegrindMovementId,
+            // Grinding mixes scrap that may trace to several original
+            // material lots -- see schema.prisma's MaterialLot comment.
+            // Job-level traceability is the correct, honest granularity
+            // here, not a single parent lot.
+            note: "Regrind traces to the production job it was ground from, not to a single parent material lot -- grinding can mix scrap from several lots.",
+          }
+        : {
+            type: "return" as const,
+            sourceReturnOfLotId: lot.sourceReturnOfLotId,
+            sourceReturnOfLotNumber: lot.sourceReturnOfLot?.lotNumber ?? null,
+            sourceReturnJobId: lot.sourceReturnJobId,
+            sourceReturnJobNumber: lot.sourceReturnJob?.jobNumber ?? null,
+            sourceReturnMovementId: lot.sourceReturnMovementId,
+          },
     returnChildLots: childLots.map((c) => ({
       id: c.id,
       lotNumber: c.lotNumber,
@@ -230,6 +252,21 @@ export async function getLotTraceability(session: AuthenticatedSession, id: stri
       });
       break;
     }
+    if (cursor.sourceRegrindJobId) {
+      // Milestone 6: regrind is the chain's terminus, same as a receipt --
+      // it never chases a sourceReturnOfLotId (it has none) because the
+      // material it represents does not trace to one parent lot. See
+      // getLotDetail's origin branch above for the same reasoning.
+      originChain.push({
+        type: "regrind",
+        lotId: cursor.id,
+        lotNumber: cursor.lotNumber,
+        generatedFromJobId: cursor.sourceRegrindJobId,
+        generatedFromJobNumber: cursor.sourceRegrindJob?.jobNumber ?? null,
+        generatedFromMovementId: cursor.sourceRegrindMovementId,
+      });
+      break;
+    }
     originChain.push({
       type: "return",
       lotId: cursor.id,
@@ -239,7 +276,7 @@ export async function getLotTraceability(session: AuthenticatedSession, id: stri
       returnedFromMovementId: cursor.sourceReturnMovementId,
       parentLotId: cursor.sourceReturnOfLotId,
     });
-    if (!cursor.sourceReturnOfLotId) break; // dangling (should not happen -- every lot has one origin or the other)
+    if (!cursor.sourceReturnOfLotId) break; // dangling (should not happen -- every non-receipt, non-regrind lot has a parent return lot)
     const next = await findLotInScope(session, cursor.sourceReturnOfLotId);
     if (!next) break;
     cursor = next;

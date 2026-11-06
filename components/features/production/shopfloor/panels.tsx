@@ -296,6 +296,18 @@ export function InspectionsPanel({
                   {i.evidenceRef ? ` · evidence: ${i.evidenceRef}` : ""}
                 </p>
               ) : null}
+              {i.measurements.length > 0 ? (
+                <ul className="grid gap-x-4 gap-y-0.5 text-xs sm:grid-cols-2">
+                  {i.measurements.map((m) => (
+                    <li key={m.id} className={m.passed ? "text-muted-foreground" : "text-status-danger"}>
+                      {m.characteristicName}: <span className="tabular-nums">{m.measuredValue}</span>
+                      {m.uom ? ` ${m.uom}` : ""}
+                      {m.minValue != null || m.maxValue != null ? ` (range ${m.minValue ?? "—"}–${m.maxValue ?? "—"})` : ""}
+                      {!m.passed ? " — out of tolerance" : ""}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
               {i.dispositions.length > 0 ? (
                 <ul className="space-y-0.5 text-xs">
                   {i.dispositions.map((d) => (

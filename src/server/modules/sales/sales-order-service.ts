@@ -76,7 +76,21 @@ function orderTotal(lines: { quantity: unknown; unitPrice: unknown }[]): string 
   return lines.reduce((t, l) => t.add(D(l.quantity).mul(D(l.unitPrice))), D(0)).toDecimalPlaces(4).toString();
 }
 
-function toView(o: OrderRow, canSeeJobs: boolean) {
+// Milestone 3 (Dispatch and Delivery): dispatched quantity per line, summed
+// directly from dispatch_line -- a plain groupBy, not an import from
+// dispatch-service.ts, so the two modules don't form a circular dependency
+// (dispatch-service.ts imports findOrderInScope/branchWhere from THIS file;
+// this file never needs to import anything back). dispatchedQty is always
+// shown (it is quantity/fulfilment data, same visibility as quantity
+// itself), unlike cost, which this view never carried anyway.
+async function dispatchedQtyByLine(orgId: string, lineIds: string[]): Promise<Map<string, Prisma.Decimal>> {
+  if (lineIds.length === 0) return new Map();
+  const rows = await prisma.dispatchLine.groupBy({ by: ["salesOrderLineId"], where: { orgId, salesOrderLineId: { in: lineIds } }, _sum: { quantity: true } });
+  return new Map(rows.map((r) => [r.salesOrderLineId, D(r._sum.quantity ?? 0)]));
+}
+
+async function toView(o: OrderRow, canSeeJobs: boolean) {
+  const dispatched = await dispatchedQtyByLine(o.orgId, o.lines.map((l) => l.id));
   return {
     id: o.id,
     orderNumber: o.orderNumber,
@@ -88,19 +102,28 @@ function toView(o: OrderRow, canSeeJobs: boolean) {
     total: orderTotal(o.lines),
     createdAt: o.createdAt,
     updatedAt: o.updatedAt,
-    lines: o.lines.map((l) => ({
-      id: l.id,
-      itemId: l.itemId,
-      sku: l.item.sku,
-      itemName: l.item.name,
-      uom: l.item.uom,
-      quantity: l.quantity.toString(),
-      unitPrice: l.unitPrice.toString(),
-      lineTotal: D(l.quantity).mul(D(l.unitPrice)).toDecimalPlaces(4).toString(),
-      currency: l.currency.trim(),
-      // Production linkage is only disclosed to callers who may read jobs.
-      ...(canSeeJobs ? { productionJob: l.productionJob ? { id: l.productionJob.id, jobNumber: l.productionJob.jobNumber, status: l.productionJob.status } : null } : {}),
-    })),
+    lines: o.lines.map((l) => {
+      const dispatchedQty = dispatched.get(l.id) ?? D(0);
+      return {
+        id: l.id,
+        itemId: l.itemId,
+        sku: l.item.sku,
+        itemName: l.item.name,
+        uom: l.item.uom,
+        quantity: l.quantity.toString(),
+        unitPrice: l.unitPrice.toString(),
+        lineTotal: D(l.quantity).mul(D(l.unitPrice)).toDecimalPlaces(4).toString(),
+        currency: l.currency.trim(),
+        // Milestone 3: how much of this line has shipped, and how much is
+        // still outstanding -- CALCULATED from the dispatch ledger, never
+        // stored, same "no duplicate source of truth" discipline every
+        // other outstanding/remaining figure in this codebase follows.
+        dispatchedQty: dispatchedQty.toString(),
+        remainingToDispatchQty: Prisma.Decimal.max(D(l.quantity).sub(dispatchedQty), 0).toString(),
+        // Production linkage is only disclosed to callers who may read jobs.
+        ...(canSeeJobs ? { productionJob: l.productionJob ? { id: l.productionJob.id, jobNumber: l.productionJob.jobNumber, status: l.productionJob.status } : null } : {}),
+      };
+    }),
   };
 }
 
@@ -112,11 +135,16 @@ const INCLUDE = {
   },
 } as const;
 
-function branchWhere(session: AuthenticatedSession) {
+export function branchWhere(session: AuthenticatedSession) {
   return session.role === "OWNER_ADMIN" ? {} : { branchId: { in: [...session.branchIds] } };
 }
 
-async function findOrderInScope(session: AuthenticatedSession, id: string) {
+// Exported for dispatch-service.ts (Milestone 3): dispatching fulfils a
+// sales order, so it reuses this module's own scoped lookup instead of a
+// second copy -- the same cross-module reuse convention
+// purchase-order-service.ts's findPoInScope/branchWhere already established
+// for goods-receipt-service.ts.
+export async function findOrderInScope(session: AuthenticatedSession, id: string) {
   const order = await prisma.salesOrder.findFirst({ where: { orgId: session.orgId, id, ...branchWhere(session) }, include: INCLUDE });
   return order;
 }
@@ -227,7 +255,7 @@ export async function listSalesOrders(session: AuthenticatedSession, filter: Lis
     prisma.salesOrder.findMany({ where, include: INCLUDE, orderBy: [{ createdAt: "desc" }, { id: "desc" }], take: limit, skip: offset }),
   ]);
   const canSeeJobs = hasCapability(session.role, "production_job:read");
-  return { total, limit, offset, rows: rows.map((r) => toView(r, canSeeJobs)) };
+  return { total, limit, offset, rows: await Promise.all(rows.map((r) => toView(r, canSeeJobs))) };
 }
 
 export async function getSalesOrder(session: AuthenticatedSession, id: string) {
@@ -235,7 +263,7 @@ export async function getSalesOrder(session: AuthenticatedSession, id: string) {
   if (!z.string().uuid().safeParse(id).success) throw new NotFoundError("Sales order");
   const order = await findOrderInScope(session, id);
   if (!order) throw new NotFoundError("Sales order");
-  return toView(order, hasCapability(session.role, "production_job:read"));
+  return await toView(order, hasCapability(session.role, "production_job:read"));
 }
 
 export async function updateSalesOrder(session: AuthenticatedSession, id: string, input: unknown) {
@@ -328,13 +356,28 @@ export async function cancelSalesOrder(session: AuthenticatedSession, id: string
   if (live.length > 0) {
     throw new ConflictError(`Cancel the linked production job${live.length > 1 ? "s" : ""} first (${live.map((l) => l.productionJob!.jobNumber).join(", ")})`);
   }
+  // Milestone 3 (Dispatch and Delivery): an order that has already shipped
+  // goods to a customer cannot simply be cancelled -- there is no sales-
+  // return/credit-note flow in this codebase to unwind a dispatch (see
+  // dispatch-service.ts's header for why that's a deliberate scope limit,
+  // not an oversight). Checked here, outside the transaction, same as the
+  // production-job check above; re-checked for real under the row lock
+  // below against a concurrent dispatch.
+  const dispatchCount = await prisma.dispatch.count({ where: { orgId: session.orgId, salesOrderId: existing.id } });
+  if (dispatchCount > 0) {
+    throw new ConflictError("Goods have already been dispatched against this order; it can no longer be cancelled");
+  }
 
   await prisma.$transaction(async (tx) => {
     // Take the order row FOR UPDATE first: a job being released holds it FOR SHARE, so either
-    // that job commits before we count (and blocks the cancel) or it sees "cancelled".
+    // that job commits before we count (and blocks the cancel) or it sees "cancelled". A
+    // dispatch being created takes the same lock (see dispatch-service.ts's createDispatch),
+    // so the same ordering guarantee covers it too.
     await tx.$queryRaw`SELECT id FROM sales_order WHERE id = ${existing.id}::uuid AND org_id = ${session.orgId}::uuid FOR UPDATE`;
     const jobs = await tx.productionJob.count({ where: { orgId: session.orgId, salesOrderLine: { salesOrderId: existing.id }, status: { not: "cancelled" } } });
     if (jobs > 0) throw new ConflictError("A production job was linked to this order; cancel it first");
+    const dispatches = await tx.dispatch.count({ where: { orgId: session.orgId, salesOrderId: existing.id } });
+    if (dispatches > 0) throw new ConflictError("Goods have already been dispatched against this order; it can no longer be cancelled");
     const res = await tx.salesOrder.updateMany({ where: { orgId: session.orgId, id: existing.id, status: { in: ["draft", "confirmed"] } }, data: { status: "cancelled" } });
     if (res.count !== 1) throw new ConflictError("This order can no longer be cancelled");
     await recordAudit(tx, {

@@ -4,6 +4,9 @@
 import { listStages } from "@/src/server/modules/production/stage-service";
 import { listOutput } from "@/src/server/modules/production/output-service";
 import { listInspections } from "@/src/server/modules/production/quality-service";
+import { listInspectionPlans } from "@/src/server/modules/production/quality-plan-service";
+import { listMachineTime } from "@/src/server/modules/production/machine-time-service";
+import { listCorrectiveActions } from "@/src/server/modules/production/corrective-action-service";
 import { getJobReadiness } from "@/src/server/modules/production/readiness-api";
 import { acceptsWork } from "@/src/server/modules/production/job-state";
 import { DefineStagesDialog } from "@/components/features/production/shopfloor/define-stages-dialog";
@@ -11,15 +14,17 @@ import { InspectionForm } from "@/components/features/production/shopfloor/inspe
 import { OutputForm } from "@/components/features/production/shopfloor/output-form";
 import { InspectionsPanel, OutputHistory, ReadinessNotice, StagesPanel } from "@/components/features/production/shopfloor/panels";
 import { LabourForm } from "@/components/features/production/labour-form";
+import { MachineTimeForm } from "@/components/features/production/machine-time-form";
+import { CorrectiveActionsPanel } from "@/components/features/production/corrective-actions-panel";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Notice } from "@/components/ui/notice";
 import { LoadFailure } from "@/components/ui/states";
 import { Quantity } from "@/components/ui/provenance";
 import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/table";
 import { load } from "@/lib/server/page-context";
-import { loadCurrencies, loadUsers } from "@/lib/server/lookups";
+import { loadCurrencies, loadMachines, loadUsers } from "@/lib/server/lookups";
 import type { PageContext } from "@/lib/server/page-context";
-import type { InspectionList, Job, OutputList, Readiness, StageView } from "@/lib/api-types";
+import type { CorrectiveActionView, InspectionList, InspectionPlanView, Job, MachineTimeList, OutputList, Readiness, StageView } from "@/lib/api-types";
 
 export async function loadShopfloorView(ctx: PageContext, job: Job) {
   const [stages, output, readiness, users] = await Promise.all([
@@ -35,7 +40,18 @@ export async function loadShopfloorView(ctx: PageContext, job: Job) {
 export async function ProductionTab({ ctx, job }: { ctx: PageContext; job: Job }) {
   const working = acceptsWork(job.status);
   const canRecordLabour = ctx.can("labour:record") && working;
-  const [currencies, sf] = await Promise.all([canRecordLabour ? loadCurrencies() : Promise.resolve([]), loadShopfloorView(ctx, job)]);
+  const canRecordMachineTime = ctx.can("machine_time:record") && working;
+  const [currencies, sf, machines, machineTime] = await Promise.all([
+    canRecordLabour ? loadCurrencies() : Promise.resolve([]),
+    loadShopfloorView(ctx, job),
+    // Both gated on EITHER capability (not just machine:read): every role
+    // defined today pairs machine_time:record with machine:read, but the two
+    // are independent capabilities, and a future role with the former but
+    // not the latter must still get a working form, not a silently-hidden
+    // card (the card below requires both `machines` and `machineTime`).
+    ctx.can("machine:read") || ctx.can("machine_time:record") ? loadMachines(ctx, { branchId: job.branchId }) : Promise.resolve(null),
+    ctx.can("machine:read") || ctx.can("machine_time:record") ? load<MachineTimeList>(() => listMachineTime(ctx.session, job.id)) : Promise.resolve(null),
+  ]);
 
   if (!sf.stages.ok) return <LoadFailure status={sf.stages.status} message={sf.stages.message} what="production stages" />;
   const stages = sf.stages.data.stages;
@@ -106,17 +122,43 @@ export async function ProductionTab({ ctx, job }: { ctx: PageContext; job: Job }
       ) : (
         <LoadFailure status={sf.output.status} message={sf.output.message} what="production output" />
       )}
+
+      {machines && machineTime ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Machine time</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {!machineTime.ok ? (
+              <LoadFailure status={machineTime.status} message={machineTime.message} what="machine time" />
+            ) : !canRecordMachineTime && machineTime.data.entries.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No machine time has been recorded for this job yet.</p>
+            ) : (
+              <MachineTimeForm
+                jobId={job.id}
+                machines={machines.list.filter((m) => m.isActive).map((m) => ({ id: m.id, name: m.name, code: m.code }))}
+                stages={stages.map((x) => ({ id: x.id, label: `${x.sequence}. ${x.name}` }))}
+                list={machineTime.data}
+                nameOf={sf.nameOf}
+                canRecord={canRecordMachineTime}
+              />
+            )}
+          </CardContent>
+        </Card>
+      ) : null}
     </div>
   );
 }
 
 export async function QualityTab({ ctx, job }: { ctx: PageContext; job: Job }) {
   const working = acceptsWork(job.status);
-  const [list, stagesRes, output, users] = await Promise.all([
+  const [list, stagesRes, output, users, plansRes, actionsRes] = await Promise.all([
     load<InspectionList>(() => listInspections(ctx.session, job.id)),
     load<{ stages: StageView[] }>(() => listStages(ctx.session, job.id)),
     load<OutputList>(() => listOutput(ctx.session, job.id)),
     loadUsers(ctx),
+    load<InspectionPlanView[]>(() => listInspectionPlans(ctx.session, job.productItemId)),
+    ctx.can("quality:read") ? load<CorrectiveActionView[]>(() => listCorrectiveActions(ctx.session, job.id)) : Promise.resolve(null),
   ]);
   if (!list.ok) return <LoadFailure status={list.status} message={list.message} what="quality records" />;
   const stages = stagesRes.ok ? stagesRes.data.stages : [];
@@ -125,6 +167,7 @@ export async function QualityTab({ ctx, job }: { ctx: PageContext; job: Job }) {
   const uom = output.ok ? (output.data.uom ?? "") : "";
   const inspectable = stages.filter((x) => x.status === "in_progress").map((x) => ({ id: x.id, label: `${x.sequence}. ${x.name}` }));
   const canInspect = ctx.can("quality:record") && working;
+  const activePlans = plansRes.ok ? plansRes.data.filter((p) => p.isActive) : [];
   return (
     <div className="space-y-5">
       {stages.some((x) => x.requiresInspection) ? (
@@ -171,11 +214,19 @@ export async function QualityTab({ ctx, job }: { ctx: PageContext; job: Job }) {
           ) : stages.length > 0 && inspectable.length === 0 ? (
             <Notice tone="neutral">No stage is in progress, so there is nothing to inspect yet.</Notice>
           ) : (
-            <InspectionForm jobId={job.id} uom={uom} stages={stages.length > 0 ? inspectable : []} />
+            <InspectionForm jobId={job.id} uom={uom} stages={stages.length > 0 ? inspectable : []} plans={activePlans} />
           )}
           {canInspect && !ctx.can("quality:approve") ? <p className="mt-3 text-xs text-muted-foreground">Rejected units need a decision from a manager with quality approval rights.</p> : null}
         </CardContent>
       </Card>
+
+      {actionsRes ? (
+        actionsRes.ok ? (
+          <CorrectiveActionsPanel jobId={job.id} actions={actionsRes.data} canManage={ctx.can("corrective_action:manage") && working} nameOf={nameOf} users={users.available ? users.list : []} />
+        ) : (
+          <LoadFailure status={actionsRes.status} message={actionsRes.message} what="corrective actions" />
+        )
+      ) : null}
     </div>
   );
 }

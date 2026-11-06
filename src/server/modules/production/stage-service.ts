@@ -21,6 +21,7 @@ import { acceptsWork, type JobStatus } from "./job-state";
 import { findJobInScope } from "./job-service";
 import { loadShopfloor, lockShopfloor, startJobIfReleased, type LoadedShopfloor } from "./shopfloor-data";
 import { startBlockers, stageCompletionBlockers, totalsByStage, totalsOf, type StageState } from "./shopfloor-math";
+import { findWorkCentreInScope, findMachineInScope } from "./machine-service";
 
 const defineSchema = z.object({
   stages: z
@@ -32,6 +33,16 @@ const defineSchema = z.object({
         workCentre: z.string().trim().max(100).nullish(),
         operatorUserId: z.string().uuid().nullish(),
         requiresInspection: z.boolean().default(false),
+        // Milestone 4: real register references, snapshotted onto the stage
+        // at definition time (see job-service.ts's header comment on BOM
+        // snapshots for the same discipline applied here). workCentre
+        // (free text) is still accepted for backward compatibility and for
+        // orgs that haven't set up the register yet; it is independent of
+        // workCentreId -- a caller may set either, both, or neither.
+        workCentreId: z.string().uuid().nullish(),
+        machineId: z.string().uuid().nullish(),
+        expectedSetupMinutes: z.number().int().min(0).max(100_000).nullish(),
+        expectedRunMinutes: z.number().int().min(0).max(100_000).nullish(),
       }),
     )
     .min(1)
@@ -79,6 +90,10 @@ export async function listStages(session: AuthenticatedSession, jobId: string) {
       startedAt: st.startedAt,
       completedAt: st.completedAt,
       workCentre: st.workCentre,
+      workCentreId: st.workCentreId,
+      machineId: st.machineId,
+      expectedSetupMinutes: st.expectedSetupMinutes,
+      expectedRunMinutes: st.expectedRunMinutes,
       operatorUserId: st.operatorUserId,
       requiresInspection: st.requiresInspection,
       blockedReason: st.blockedReason,
@@ -104,6 +119,32 @@ async function assertAssignable(orgId: string, branchId: string, userId: string 
   if (!access) throw new ValidationError("The assigned operator doesn't have access to this job's branch");
 }
 
+// Milestone 4: validates a stage's optional work-centre/machine assignment
+// -- both must exist in the caller's org/branch scope, and if both are
+// given, the machine must actually belong to the named work centre (a
+// stage shouldn't silently point its work centre and its machine at two
+// different places).
+async function assertRoutingAssignable(
+  session: AuthenticatedSession,
+  branchId: string,
+  stageLabel: string,
+  workCentreId: string | null | undefined,
+  machineId: string | null | undefined,
+) {
+  if (workCentreId) {
+    const wc = await findWorkCentreInScope(session, workCentreId);
+    if (!wc) throw new ValidationError(`${stageLabel}: workCentreId does not belong to a work centre you can access`);
+    if (wc.branchId !== branchId) throw new ValidationError(`${stageLabel}: the work centre must belong to the job's branch`);
+  }
+  if (machineId) {
+    const m = await findMachineInScope(session, machineId);
+    if (!m) throw new ValidationError(`${stageLabel}: machineId does not belong to a machine you can access`);
+    if (workCentreId && m.workCentreId !== workCentreId) {
+      throw new ValidationError(`${stageLabel}: the machine does not belong to the named work centre`);
+    }
+  }
+}
+
 /** Replaces the routing. Only while nothing has started and nothing has been recorded. */
 export async function defineStages(session: AuthenticatedSession, jobId: string, input: unknown) {
   assertCapability(session.role, "production_job:update");
@@ -126,7 +167,10 @@ export async function defineStages(session: AuthenticatedSession, jobId: string,
   if (job.status !== "planned" && job.status !== "released") {
     throw new ConflictError("The routing can only be defined before the job has started");
   }
-  for (const s of stages) await assertAssignable(session.orgId, job.branchId, s.operatorUserId);
+  for (const [i, s] of stages.entries()) {
+    await assertAssignable(session.orgId, job.branchId, s.operatorUserId);
+    await assertRoutingAssignable(session, job.branchId, `Stage ${i + 1} "${s.name}"`, s.workCentreId, s.machineId);
+  }
 
   await prisma.$transaction(async (tx) => {
     await lockShopfloor(tx, job.id);
@@ -150,6 +194,10 @@ export async function defineStages(session: AuthenticatedSession, jobId: string,
           plannedStart: s.plannedStart ?? null,
           plannedEnd: s.plannedEnd ?? null,
           workCentre: s.workCentre || null,
+          workCentreId: s.workCentreId ?? null,
+          machineId: s.machineId ?? null,
+          expectedSetupMinutes: s.expectedSetupMinutes ?? null,
+          expectedRunMinutes: s.expectedRunMinutes ?? null,
           operatorUserId: s.operatorUserId ?? null,
           requiresInspection: s.requiresInspection,
         },

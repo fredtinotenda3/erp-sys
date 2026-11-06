@@ -14,6 +14,7 @@
 import { prisma } from "../../shared/db";
 import type { AuthenticatedSession } from "./session-service";
 import { listBranches } from "./branch-service";
+import { getTerminology, getProfileDefinition, type IndustryProfileKey } from "../industry/profile-registry";
 
 export interface CurrentUserDisplay {
   userId: string;
@@ -27,6 +28,15 @@ export interface CurrentUserDisplay {
   // with multi-branch access"; single-branch users render branches[0].name
   // as static text).
   branches: { id: string; name: string }[];
+  // Milestone 5: every session's own org profile, same "not a privileged
+  // read" reasoning as orgName above — the app shell uses this to decide
+  // which industry-specific nav entries to show and which terminology
+  // labels to render (e.g. "Press" instead of "Machine" under the plastics
+  // profile). See industry/industry-profile-service.ts for the capability-
+  // gated WRITE side (industry_profile:manage).
+  industryProfile: IndustryProfileKey;
+  industryProfileIsImplemented: boolean;
+  terminology: Record<string, string>;
 }
 
 export async function getCurrentUserDisplay(session: AuthenticatedSession): Promise<CurrentUserDisplay> {
@@ -35,7 +45,7 @@ export async function getCurrentUserDisplay(session: AuthenticatedSession): Prom
       where: { orgId: session.orgId, id: session.userId },
       select: { fullName: true, email: true },
     }),
-    prisma.organization.findUnique({ where: { id: session.orgId }, select: { name: true } }),
+    prisma.organization.findUnique({ where: { id: session.orgId }, select: { name: true, industryProfile: true } }),
     listBranches(session),
   ]);
 
@@ -56,5 +66,8 @@ export async function getCurrentUserDisplay(session: AuthenticatedSession): Prom
     orgId: session.orgId,
     orgName: org.name,
     branches: branches.map((b) => ({ id: b.id, name: b.name })),
+    industryProfile: org.industryProfile,
+    industryProfileIsImplemented: getProfileDefinition(org.industryProfile).isImplemented,
+    terminology: getTerminology(org.industryProfile),
   };
 }

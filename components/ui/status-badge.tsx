@@ -9,6 +9,7 @@ import {
   Pause,
   Send,
   TriangleAlert,
+  Truck,
   type LucideIcon,
 } from "lucide-react";
 
@@ -129,6 +130,113 @@ const LOT: Record<string, { variant: Variant; icon: LucideIcon; label: string }>
 
 export function LotStatusBadge({ status }: { status: string }) {
   const s = LOT[status] ?? { variant: "status-neutral" as Variant, icon: CircleDashed, label: humanize(status) };
+  const Icon = s.icon;
+  return (
+    <Badge variant={s.variant}>
+      <Icon aria-hidden="true" />
+      {s.label}
+    </Badge>
+  );
+}
+
+// Finished-goods batches use a 3-way disposition (no "expired" -- a finished
+// batch isn't aged the way a received material lot is; see
+// finished-goods-service.ts's statusSchema). "rejected" is deliberately
+// terminal-looking (danger, not warning) since transferBatch refuses to move
+// a rejected batch.
+const FG_BATCH: Record<string, { variant: Variant; icon: LucideIcon; label: string }> = {
+  active: { variant: "status-success", icon: CircleCheck, label: "Active" },
+  quarantined: { variant: "status-warning", icon: Ban, label: "Quarantined" },
+  rejected: { variant: "status-danger", icon: CircleX, label: "Rejected" },
+};
+
+export function FgBatchStatusBadge({ status }: { status: string }) {
+  const s = FG_BATCH[status] ?? { variant: "status-neutral" as Variant, icon: CircleDashed, label: humanize(status) };
+  const Icon = s.icon;
+  return (
+    <Badge variant={s.variant}>
+      <Icon aria-hidden="true" />
+      {s.label}
+    </Badge>
+  );
+}
+
+// Dispatch (Milestone 3): "dispatched" is informational, not a problem state
+// (goods have correctly left the warehouse and are in transit) -- info, not
+// warning, matching JOB's own "released"/"in_progress" treatment rather
+// than FG_BATCH's "quarantined" one.
+const DISPATCH: Record<string, { variant: Variant; icon: LucideIcon; label: string }> = {
+  dispatched: { variant: "status-info", icon: Truck, label: "Dispatched" },
+  delivered: { variant: "status-success", icon: CircleCheck, label: "Delivered" },
+};
+
+export function DispatchStatusBadge({ status }: { status: string }) {
+  const s = DISPATCH[status] ?? { variant: "status-neutral" as Variant, icon: CircleDashed, label: humanize(status) };
+  const Icon = s.icon;
+  return (
+    <Badge variant={s.variant}>
+      <Icon aria-hidden="true" />
+      {s.label}
+    </Badge>
+  );
+}
+
+// Machine status: "down" and "maintenance" are both treated as warning (not
+// error) since they are normal, expected operational states with a defined
+// recovery path (close downtime / complete maintenance), not failures of the
+// system itself. "retired" is neutral, matching how other terminal/inactive
+// states (e.g. a deactivated item) are rendered elsewhere in this file.
+const MACHINE: Record<string, { variant: Variant; icon: LucideIcon; label: string }> = {
+  available: { variant: "status-success", icon: CircleCheck, label: "Available" },
+  in_use: { variant: "status-info", icon: CircleDashed, label: "In use" },
+  down: { variant: "status-warning", icon: CircleDashed, label: "Down" },
+  maintenance: { variant: "status-warning", icon: CircleDashed, label: "Maintenance" },
+  retired: { variant: "status-neutral", icon: CircleDashed, label: "Retired" },
+};
+
+export function MachineStatusBadge({ status }: { status: string }) {
+  const s = MACHINE[status] ?? { variant: "status-neutral" as Variant, icon: CircleDashed, label: humanize(status) };
+  const Icon = s.icon;
+  return (
+    <Badge variant={s.variant}>
+      <Icon aria-hidden="true" />
+      {s.label}
+    </Badge>
+  );
+}
+
+const CORRECTIVE_ACTION: Record<string, { variant: Variant; icon: LucideIcon; label: string }> = {
+  open: { variant: "status-warning", icon: TriangleAlert, label: "Open" },
+  in_progress: { variant: "status-info", icon: CirclePlay, label: "In progress" },
+  completed: { variant: "status-success", icon: CircleCheck, label: "Completed" },
+  cancelled: { variant: "status-neutral", icon: Ban, label: "Cancelled" },
+};
+
+export function CorrectiveActionStatusBadge({ status }: { status: string }) {
+  const s = CORRECTIVE_ACTION[status] ?? { variant: "status-neutral" as Variant, icon: CircleDashed, label: humanize(status) };
+  const Icon = s.icon;
+  return (
+    <Badge variant={s.variant}>
+      <Icon aria-hidden="true" />
+      {s.label}
+    </Badge>
+  );
+}
+
+// Mould status (Milestone 6): same four states and the same semantic
+// reasoning as MACHINE above ("maintenance"/"retired" are expected
+// operational states, not failures -- there is no "down" state for a mould
+// the way there is for a machine, since a mould doesn't break mid-run the
+// way a machine can; a damaged mould goes straight to "maintenance").
+const MOULD: Record<string, { variant: Variant; icon: LucideIcon; label: string }> = {
+  available: { variant: "status-success", icon: CircleCheck, label: "Available" },
+  in_use: { variant: "status-info", icon: CircleDashed, label: "In use" },
+  maintenance: { variant: "status-warning", icon: CircleDashed, label: "Maintenance" },
+  retired: { variant: "status-neutral", icon: CircleDashed, label: "Retired" },
+};
+
+export function MouldStatusBadge({ status }: { status: string }) {
+  const s = MOULD[status] ?? { variant: "status-neutral" as Variant, icon: CircleDashed, label: humanize(status) };
   const Icon = s.icon;
   return (
     <Badge variant={s.variant}>

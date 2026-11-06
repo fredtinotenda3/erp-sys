@@ -9,7 +9,9 @@ import { listCustomers } from "../../src/server/modules/customers/customer-servi
 import { listSuppliers } from "../../src/server/modules/suppliers/supplier-service";
 import { listWarehouses } from "../../src/server/modules/inventory/warehouse-service";
 import { listCurrencies } from "../../src/server/modules/costing/currency-service";
-import type { Currency, Customer, Item, Supplier, UserLite, Warehouse } from "../api-types";
+import { listWorkCentres, listMachines } from "../../src/server/modules/production/machine-service";
+import { listMoulds } from "../../src/server/modules/production/mould-service";
+import type { Currency, Customer, Item, Machine, Mould, Supplier, UserLite, Warehouse, WorkCentre } from "../api-types";
 import { load, type PageContext } from "./page-context";
 
 export interface Lookup<T> {
@@ -57,6 +59,25 @@ export async function loadSuppliers(ctx: PageContext): Promise<Lookup<Supplier>>
 export async function loadWarehouses(ctx: PageContext): Promise<Lookup<Warehouse>> {
   if (!ctx.can("stock:read")) return toLookup<Warehouse>(null);
   const r = await load<Warehouse[]>(() => listWarehouses(ctx.session));
+  return toLookup(r.ok ? r.data : null);
+}
+
+export async function loadWorkCentres(ctx: PageContext, filter: Parameters<typeof listWorkCentres>[1] = {}): Promise<Lookup<WorkCentre>> {
+  if (!ctx.can("machine:read")) return toLookup<WorkCentre>(null);
+  const r = await load<WorkCentre[]>(() => listWorkCentres(ctx.session, filter));
+  return toLookup(r.ok ? r.data : null);
+}
+
+export async function loadMachines(ctx: PageContext, filter: Parameters<typeof listMachines>[1] = {}): Promise<Lookup<Machine>> {
+  if (!ctx.can("machine:read")) return toLookup<Machine>(null);
+  const r = await load<Machine[]>(() => listMachines(ctx.session, filter));
+  return toLookup(r.ok ? r.data : null);
+}
+
+/** Milestone 6. Gated on mould:read (not machine:read) -- every role that can see moulds, not every role that can see machines; the two capability sets overlap but are not identical (see authz.ts). */
+export async function loadMoulds(ctx: PageContext, filter: Parameters<typeof listMoulds>[1] = {}): Promise<Lookup<Mould>> {
+  if (!ctx.can("mould:read")) return toLookup<Mould>(null);
+  const r = await load<Mould[]>(() => listMoulds(ctx.session, filter));
   return toLookup(r.ok ? r.data : null);
 }
 

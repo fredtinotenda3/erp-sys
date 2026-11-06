@@ -58,6 +58,23 @@ enum Role {
   VIEWER
 }
 
+// Milestone 5 (Configurable Industry Architecture). The mandate's 7-profile
+// list. "plastics" is the first, and so far only, profile with any actually
+// implemented behaviour behind it (Milestone 6); the other 5 exist here so
+// an organisation's profile selection is a real, typed value from day one --
+// not a sign that their workflows are implemented (see
+// industry-profile-service.ts's PROFILE_REGISTRY, which is the actual
+// source of truth for what each profile supports today).
+enum IndustryProfile {
+  general
+  plastics
+  food_beverage
+  metal_fabrication
+  textile_garment
+  furniture_woodworking
+  packaging_printing
+}
+
 model Organization {
   id                      String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name                    String
@@ -67,6 +84,18 @@ model Organization {
   staleOrderThresholdDays Int      @default(3) @map("stale_order_threshold_days")
   createdAt               DateTime @default(now()) @map("created_at")
   updatedAt               DateTime @updatedAt @map("updated_at")
+
+  // Milestone 5 additions. industryProfile defaults to "general" so every
+  // existing/new organization behaves exactly as before until an
+  // OWNER_ADMIN deliberately changes it (industry-profile-service.ts). A
+  // Json array of module-key strings, not a Postgres native array, to match
+  // this schema's one existing precedent for a small structured-but-dynamic
+  // value (AuditLog.beforeValue/afterValue) rather than introducing the
+  // first scalar array column in the project; validated against the
+  // selected profile's PROFILE_REGISTRY entry at the service layer, and
+  // constrained at the DB level to always be a JSON array (see migration).
+  industryProfile       IndustryProfile @default(general) @map("industry_profile")
+  industryProfileModules Json           @default("[]") @map("industry_profile_modules")
 
   branches  Branch[]
   users     User[]
@@ -96,6 +125,12 @@ model Branch {
   auditLogs      AuditLog[]
   purchaseOrders PurchaseOrder[]
   goodsReceipts  GoodsReceipt[]
+  finishedGoodsBatches FinishedGoodsBatch[]
+  dispatches           Dispatch[]
+  // Milestone 4 additions
+  workCentres          WorkCentre[]
+  // Milestone 6 additions
+  moulds               Mould[]
 
   @@unique([orgId, name])
   @@unique([orgId, id]) // lets children do composite FK (orgId, branchId) -> Branch(orgId, id)
@@ -296,6 +331,21 @@ model Item {
   purchaseOrderLines   PurchaseOrderLine[]
   goodsReceiptLines    GoodsReceiptLine[]
   materialLots         MaterialLot[]
+  finishedGoodsBatches FinishedGoodsBatch[]
+  fgBatchMaterialLines FgBatchMaterialLot[]
+  // Milestone 4 additions
+  inspectionPlans      InspectionPlan[]
+  // Milestone 6 additions -- both optional 1:1s, only ever created when the
+  // organization is on the plastics profile (enforced in
+  // plastics-item-service.ts, not by a column constraint, for the same
+  // reason setPlasticsProductSpec/setPlasticsMaterialAttributes themselves
+  // check the profile rather than a DB trigger: switching an organization
+  // OFF the plastics profile later must not corrupt or hide this historical
+  // data, so nothing here is allowed to depend on the org's CURRENT profile
+  // to remain valid).
+  plasticsMaterialAttributes PlasticsMaterialAttributes?
+  plasticsProductSpec        PlasticsProductSpec?
+  compatibleMoulds           Mould[]
 
   @@unique([orgId, sku])
   @@unique([orgId, id])
@@ -316,6 +366,12 @@ model BillOfMaterial {
   version       Int
   status        BomStatus @default(draft) // partial unique index enforces one ACTIVE per product (manual SQL)
   effectiveFrom DateTime? @map("effective_from") @db.Date
+  // Milestone 4: informational planning window only. Nothing auto-supersedes
+  // or auto-activates a BOM version on this date -- activateBomVersion
+  // (bom-service.ts) remains the only way a version becomes active, exactly
+  // as before. This just lets a plan show "this version was meant to retire
+  // on <date>" without the system silently acting on it.
+  effectiveTo   DateTime? @map("effective_to") @db.Date
   createdById   String?   @map("created_by") @db.Uuid
   createdAt     DateTime  @default(now()) @map("created_at")
 
@@ -336,6 +392,20 @@ model BomLine {
   materialItem   Item           @relation("materialItem", fields: [orgId, materialItemId], references: [orgId, id])
   quantity       Decimal        @db.Decimal(14, 4)
   uom            String
+  // Milestone 4. Both null by default = today's behaviour, unchanged: a BOM
+  // line with no explicit scrap/yield affects nothing new. expectedScrapPct
+  // (0-100), when set, is the ONLY one of the two that changes computed
+  // behaviour -- createJob (job-service.ts) multiplies the snapshotted
+  // expectedQty by (1 + expectedScrapPct/100) so the job's material
+  // requirement already allows for expected scrap. expectedYieldPct is
+  // informational only in this milestone (surfaced on the BOM editor and in
+  // reports) -- it does NOT feed into expectedQty, to avoid double-counting
+  // against expectedScrapPct and to avoid guessing which of several possible
+  // yield formulas (finished-unit yield vs. material yield) the org means
+  // without that being specified. Revisit once a concrete yield-reporting
+  // requirement names the formula.
+  expectedScrapPct Decimal? @map("expected_scrap_pct") @db.Decimal(5, 2)
+  expectedYieldPct Decimal? @map("expected_yield_pct") @db.Decimal(5, 2)
 
   @@index([bomId])
   @@map("bom_line")
@@ -654,8 +724,17 @@ model MaterialLot {
   lotNumber      String           @map("lot_number")
   itemId         String           @map("item_id") @db.Uuid
   item           Item             @relation(fields: [orgId, itemId], references: [orgId, id])
-  supplierId     String           @map("supplier_id") @db.Uuid
-  supplier       Supplier         @relation(fields: [orgId, supplierId], references: [orgId, id])
+  // Nullable as of Milestone 6 (Plastics Manufacturing Vertical): a regrind
+  // lot (see sourceRegrindJobId below) has no external supplier at all --
+  // it was generated internally from a job's own scrap, not purchased. This
+  // is the one column-level constraint this delivery relaxes rather than
+  // purely adding to; it is backward-compatible (every pre-existing row
+  // already has a real, non-null supplierId, so no existing row is
+  // affected) and the correct domain model, not a workaround -- inventing a
+  // fake "Internal" Supplier row instead would pollute the supplier
+  // catalogue (and its PO-creation picker) with a non-vendor.
+  supplierId     String?          @map("supplier_id") @db.Uuid
+  supplier       Supplier?        @relation(fields: [orgId, supplierId], references: [orgId, id])
   // What the supplier itself calls this lot/batch, if they provided one --
   // free text, not validated (mirrors PurchaseOrder.supplierReference).
   supplierLotRef String?          @map("supplier_lot_ref")
@@ -684,7 +763,26 @@ model MaterialLot {
   sourceReturnMovementId String?       @map("source_return_movement_id") @db.Uuid
   sourceReturnMovement   StockMovement? @relation("LotReturnMovement", fields: [orgId, sourceReturnMovementId], references: [orgId, id])
 
+  // --- Regrind lineage (Milestone 6). Set together, only when this lot was
+  // generated from a production job's own scrap (regrind-service.ts's
+  // createRegrindLot) rather than received or returned. Deliberately a
+  // JOB-level link, not a specific-source-lot link like sourceReturnOfLotId
+  // above: physically regrinding scrap mixes material that may trace back
+  // to several different original lots, so claiming a single-lot parent
+  // would overstate the precision this process actually has. Job-level
+  // traceability ("this regrind came from Job #1234's scrap") is the
+  // correct, honest granularity here, not a limitation of this
+  // implementation. Mutually exclusive with the return-lineage columns
+  // above (enforced by a CHECK — see the migration); both are set once at
+  // creation and never updated.
+  sourceRegrindJobId      String?        @map("source_regrind_job_id") @db.Uuid
+  sourceRegrindJob        ProductionJob? @relation("LotRegrindJob", fields: [orgId, sourceRegrindJobId], references: [orgId, id])
+  sourceRegrindMovementId String?        @map("source_regrind_movement_id") @db.Uuid
+  sourceRegrindMovement   StockMovement? @relation("LotRegrindMovement", fields: [orgId, sourceRegrindMovementId], references: [orgId, id])
+
   consumptions LotConsumption[]
+  // Added by migration 20261106090000_finished_goods_inventory.
+  fgAllocations FgBatchMaterialLot[]
 
   @@unique([orgId, lotNumber])
   @@unique([orgId, id])
@@ -731,11 +829,190 @@ model LotConsumption {
   createdById String?            @map("created_by") @db.Uuid
   createdAt   DateTime           @default(now()) @map("created_at")
 
+  fgAllocations FgBatchMaterialLot[]
+
   @@unique([orgId, id])
   @@index([lotId])
   @@index([jobId])
   @@index([movementId])
   @@map("lot_consumption")
+}
+
+// ---------------------------------------------------------------------------
+// FINISHED-GOODS INVENTORY — Milestone 2. Converts shop-floor "good" output
+// (ProductionOutput, quantities only, Phase 3) into valued, traceable
+// finished-goods stock. Deliberately NOT a new "completion" concept that
+// duplicates ProductionOutput's good/scrap/rework fields: a job's output
+// quantities are recorded exactly as before (output-service.ts, unchanged by
+// this milestone). What's new here is the act of RECEIVING already-recorded
+// good output into a finished-goods warehouse, at a chosen point in time, for
+// a chosen quantity (not necessarily all of it at once — "multiple completion
+// events per job" is exactly "receive finished goods is called more than
+// once for the same job, each time for a slice of the good output not yet
+// received"). This is the WIP -> Finished-Goods transfer the mandate asks
+// for; see finished-goods-service.ts's header comment for the full design,
+// including the proportional, FIFO-ordered cost and lot-genealogy allocation
+// algorithm (fg-genealogy.ts) that keeps every batch's cost and lot lineage
+// correct without ever double-counting material value already recognised as
+// WIP cost (actual-cost.ts) or re-touching raw-material stock.
+//
+// A batch's quantity (goodQty) is immutable, like MaterialLot.quantityReceived.
+// How much of it remains is NEVER stored -- it is computed by summing
+// FgBatchMovement rows against it (transfer_out / adjustment / dispatch,
+// signed), the exact same "no duplicate source of truth" convention
+// MaterialLot/LotConsumption already established for raw-material lots.
+//
+// A WAREHOUSE TRANSFER does not mutate the batch's warehouseId (every other
+// column on this model is immutable after creation, same column-grant
+// discipline as MaterialLot) -- it closes out the source batch's remaining
+// quantity via a `transfer_out` ledger row and spawns a brand-new
+// FinishedGoodsBatch in the destination warehouse with
+// `transferredFromBatchId` set, mirroring exactly how MaterialLot's
+// quarantine-return spawns a new, linked child lot (sourceReturnOfLotId).
+// This keeps every batch's history append-only and its lineage fully
+// traceable, rather than silently rewriting where a batch "is".
+enum FgBatchStatus {
+  active
+  quarantined
+  rejected
+}
+
+enum FgBatchMovementType {
+  transfer_out
+  adjustment
+  // Posted by Milestone 3 (Dispatch) -- the enum value is reserved now, the
+  // same way MovementType already reserved sale_delivery/stock_transfer_*
+  // before any milestone used them, so this schema never needs a second
+  // additive migration just to add a value an already-designed feature will
+  // need.
+  dispatch
+}
+
+model FinishedGoodsBatch {
+  id            String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId         String        @map("org_id") @db.Uuid
+  branchId      String        @map("branch_id") @db.Uuid
+  branch        Branch        @relation(fields: [orgId, branchId], references: [orgId, id])
+  batchNumber   String        @map("batch_number") // FG-000001..., same sequential style as LOT-/JOB-/SO-/PO-
+  productItemId String        @map("product_item_id") @db.Uuid
+  productItem   Item          @relation(fields: [orgId, productItemId], references: [orgId, id])
+  jobId         String        @map("job_id") @db.Uuid
+  job           ProductionJob @relation(fields: [orgId, jobId], references: [orgId, id])
+  warehouseId   String        @map("warehouse_id") @db.Uuid
+  warehouse     Warehouse     @relation(fields: [orgId, warehouseId], references: [orgId, id])
+  // The StockMovement (movement_type = finished_goods_receipt) that brought
+  // this batch's quantity into the warehouse. One batch, one receipt move --
+  // a transfer spawns a NEW batch (see model comment above), it never adds a
+  // second receipt movement to an existing batch.
+  producedMovementId String        @map("produced_movement_id") @db.Uuid
+  producedMovement    StockMovement @relation("FgBatchProducedMovement", fields: [orgId, producedMovementId], references: [orgId, id])
+  goodQty       Decimal       @map("good_qty") @db.Decimal(14, 4) // immutable
+  uom           String
+  status        FgBatchStatus @default(active) @map("status") // the only mutable column (manual quality disposition changes)
+  qualityNotes  String?       @map("quality_notes")
+  producedAt    DateTime      @map("produced_at")
+  createdById   String?       @map("created_by") @db.Uuid
+  createdAt     DateTime      @default(now()) @map("created_at")
+
+  // --- Transfer lineage (mirrors MaterialLot.sourceReturnOfLotId exactly) ---
+  transferredFromBatchId    String?             @map("transferred_from_batch_id") @db.Uuid
+  transferredFromBatch      FinishedGoodsBatch? @relation("FgBatchTransferLineage", fields: [orgId, transferredFromBatchId], references: [orgId, id])
+  transferChildBatches      FinishedGoodsBatch[] @relation("FgBatchTransferLineage")
+  transferredFromMovementId String?             @map("transferred_from_movement_id") @db.Uuid
+  transferredFromMovement   StockMovement?      @relation("FgBatchTransferInMovement", fields: [orgId, transferredFromMovementId], references: [orgId, id])
+
+  movements        FgBatchMovement[]
+  materialLotLines FgBatchMaterialLot[]
+  costLines        FinishedGoodsBatchCostLine[]
+  dispatchAllocations DispatchBatchAllocation[]
+
+  @@unique([orgId, batchNumber])
+  @@unique([orgId, id])
+  @@unique([orgId, producedMovementId])
+  @@index([orgId, productItemId, warehouseId])
+  @@index([orgId, jobId])
+  @@map("finished_goods_batch")
+}
+
+// Append-only usage ledger against one FinishedGoodsBatch -- the finished-
+// goods mirror of LotConsumption. `quantity` is signed: negative = leaves the
+// batch (transfer_out, dispatch), positive or negative = adjustment (a
+// correction can go either way, unlike transfer_out/dispatch which always
+// reduce). remaining = goodQty + SUM(quantity). Every row corresponds 1:1 to
+// a real StockMovement (movementId, required, never null) -- this ledger
+// never records a change to batch-level remaining stock that isn't also
+// reflected in the existing (item, warehouse) stock_balance, so there is
+// never a competing source of truth for "how much finished-goods stock
+// exists" at the warehouse level.
+model FgBatchMovement {
+  id          String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId       String              @map("org_id") @db.Uuid
+  batchId     String              @map("batch_id") @db.Uuid
+  batch       FinishedGoodsBatch  @relation(fields: [orgId, batchId], references: [orgId, id])
+  movementId  String              @map("movement_id") @db.Uuid
+  movement    StockMovement       @relation("FgBatchMovementRef", fields: [orgId, movementId], references: [orgId, id])
+  type        FgBatchMovementType
+  quantity    Decimal             @db.Decimal(14, 4)
+  reason      String?
+  createdById String?             @map("created_by") @db.Uuid
+  createdAt   DateTime            @default(now()) @map("created_at")
+
+  dispatchAllocation DispatchBatchAllocation?
+
+  @@unique([orgId, id])
+  @@index([batchId])
+  @@index([movementId])
+  @@map("fg_batch_movement")
+}
+
+// Finished-goods lot genealogy: how much of a specific incoming MaterialLot's
+// (net) consumption by this batch's job is attributed to THIS batch, as
+// opposed to any other batch the same job produced. See
+// fg-genealogy.ts for the proportional (BOM-ratio), FIFO-by-consumption-order
+// allocation algorithm this table records the result of -- a deliberately
+// documented best-effort trace (this system does not model the physical
+// mixing of a continuous process down to the unit), not a fabricated exact
+// one. Append-only: a batch's genealogy is computed once, when the batch is
+// created, from the job's lot-consumption ledger as it stood at that moment.
+model FgBatchMaterialLot {
+  id             String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId          String             @map("org_id") @db.Uuid
+  batchId        String             @map("batch_id") @db.Uuid
+  batch          FinishedGoodsBatch @relation(fields: [orgId, batchId], references: [orgId, id])
+  lotId          String             @map("lot_id") @db.Uuid
+  lot            MaterialLot        @relation(fields: [orgId, lotId], references: [orgId, id])
+  lotConsumptionId String?          @map("lot_consumption_id") @db.Uuid
+  lotConsumption   LotConsumption?  @relation(fields: [orgId, lotConsumptionId], references: [orgId, id])
+  materialItemId String             @map("material_item_id") @db.Uuid
+  materialItem   Item               @relation(fields: [orgId, materialItemId], references: [orgId, id])
+  quantity       Decimal            @db.Decimal(14, 4) // positive; the amount of this lot attributed to this batch
+  createdAt      DateTime           @default(now()) @map("created_at")
+
+  @@unique([orgId, id])
+  @@index([batchId])
+  @@index([lotId])
+  @@map("fg_batch_material_lot")
+}
+
+// This batch's allocated share of the job's WIP cost, one row per currency --
+// same "never silently mix currencies" convention as JobCostEstimateLine /
+// JobCostActualLine. See finished-goods-service.ts's computeBatchCostLines
+// for the allocation algorithm (proportional to this batch's share of the
+// job's cumulative good output, clamped so the sum across every batch of a
+// job can never exceed that job's own actual cost in that currency --
+// "never count material value twice").
+model FinishedGoodsBatchCostLine {
+  orgId        String             @map("org_id") @db.Uuid
+  batchId      String             @map("batch_id") @db.Uuid
+  batch        FinishedGoodsBatch @relation(fields: [orgId, batchId], references: [orgId, id])
+  currency     String             @db.Char(3)
+  materialCost Decimal            @map("material_cost") @db.Decimal(14, 4)
+  // null = no labour recorded in this currency for the job at receipt time (not "zero") -- same convention as JobCostActualLine.
+  labourCost   Decimal?           @map("labour_cost") @db.Decimal(14, 4)
+  createdAt    DateTime           @default(now()) @map("created_at")
+
+  @@id([batchId, currency])
+  @@map("finished_goods_batch_cost_line")
 }
 
 enum SalesOrderStatus {
@@ -762,7 +1039,8 @@ model SalesOrder {
   createdAt             DateTime         @default(now()) @map("created_at")
   updatedAt             DateTime         @updatedAt @map("updated_at")
 
-  lines SalesOrderLine[]
+  lines      SalesOrderLine[]
+  dispatches Dispatch[]
 
   @@unique([orgId, orderNumber])
   @@unique([orgId, id])
@@ -781,9 +1059,126 @@ model SalesOrderLine {
   currency     String     @db.Char(3)
 
   productionJob ProductionJob?
+  dispatchLines DispatchLine[]
 
   @@unique([orgId, id])
   @@map("sales_order_line")
+}
+
+// ---------------------------------------------------------------------------
+// DISPATCH AND DELIVERY (Milestone 3) -- fulfilling a confirmed sales order
+// from finished-goods stock.
+//
+// Two distinct events, deliberately kept separate (see
+// dispatch-service.ts's header comment for the full rationale):
+//  - DISPATCH (createDispatch): goods physically leave a warehouse. This is
+//    the inventory-integrity event -- it posts a real StockMovement
+//    (movement_type = sale_delivery, negative) per finished-goods batch
+//    drawn from, debits that batch's own ledger (FgBatchMovement,
+//    type = dispatch), and recomputes the SalesOrder's status from
+//    cumulative dispatched quantity vs. ordered quantity. Only `active`
+//    finished-goods batches are eligible -- shipping quarantined or
+//    rejected stock to a customer is refused outright, not just discouraged.
+//  - DELIVERY CONFIRMATION (confirmDelivery): a Dispatch's proof-of-delivery
+//    record (who received it, when, any notes). Purely informational --
+//    it moves no stock and does not change the SalesOrder's status (which
+//    is already driven by what shipped, not by what was confirmed
+//    received). This is a deliberate reading of SalesOrderStatus's existing
+//    "delivered" value as "fully shipped," not "customer has signed for
+//    it" -- the schema's enum was fixed before this milestone and is not
+//    changed here; see IMPLEMENTATION_MANIFEST.md Milestone 3 for the full
+//    reasoning and the known limitation this implies (no separate
+//    "awaiting delivery confirmation" order-level state).
+//
+// DispatchLine.quantity is the line's total; DispatchBatchAllocation is the
+// forward-chain ledger of exactly which batch(es) that quantity was picked
+// from, append-only (prevent_mutation() trigger), one row per real
+// FgBatchMovement -- the dispatch-side mirror of FgBatchMaterialLot's
+// genealogy-ledger discipline on the receiving side. There is no reversal
+// or "sales return" flow in this milestone (see dispatch-service.ts's
+// header for why) -- a Dispatch, once created, is a permanent record; only
+// its status/deliveredAt/receivedBy/deliveryNotes columns are ever mutated,
+// by confirmDelivery, via the same column-scoped GRANT discipline
+// finished_goods_batch already uses for its own status/quality_notes.
+// ---------------------------------------------------------------------------
+
+enum DispatchStatus {
+  dispatched // goods have left the warehouse; awaiting delivery confirmation
+  delivered // proof-of-delivery recorded
+}
+
+model Dispatch {
+  id                String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId             String         @map("org_id") @db.Uuid
+  branchId          String         @map("branch_id") @db.Uuid
+  branch            Branch         @relation(fields: [orgId, branchId], references: [orgId, id])
+  dispatchNumber    String         @map("dispatch_number") // DN-000001..., same sequential style as FG-/LOT-/JOB-/SO-/PO-
+  salesOrderId      String         @map("sales_order_id") @db.Uuid
+  salesOrder        SalesOrder     @relation(fields: [orgId, salesOrderId], references: [orgId, id])
+  warehouseId       String         @map("warehouse_id") @db.Uuid
+  warehouse         Warehouse      @relation(fields: [orgId, warehouseId], references: [orgId, id])
+  status            DispatchStatus @default(dispatched)
+  dispatchedAt      DateTime       @map("dispatched_at")
+  carrier           String?
+  trackingReference String?        @map("tracking_reference")
+  notes             String?
+  // --- Delivery confirmation (confirmDelivery) -- the only mutable columns ---
+  deliveredAt   DateTime? @map("delivered_at")
+  receivedBy    String?   @map("received_by")
+  deliveryNotes String?   @map("delivery_notes")
+  createdById   String?   @map("created_by") @db.Uuid
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  lines DispatchLine[]
+
+  @@unique([orgId, dispatchNumber])
+  @@unique([orgId, id])
+  @@index([orgId, salesOrderId])
+  @@index([orgId, warehouseId])
+  @@map("dispatch")
+}
+
+model DispatchLine {
+  id               String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId            String         @map("org_id") @db.Uuid
+  dispatchId       String         @map("dispatch_id") @db.Uuid
+  dispatch         Dispatch       @relation(fields: [orgId, dispatchId], references: [orgId, id], onDelete: Cascade)
+  salesOrderLineId String         @map("sales_order_line_id") @db.Uuid
+  salesOrderLine   SalesOrderLine @relation(fields: [orgId, salesOrderLineId], references: [orgId, id])
+  quantity         Decimal        @db.Decimal(14, 4) // immutable; positive; sum of this line's batchAllocations
+  uom              String
+
+  batchAllocations DispatchBatchAllocation[]
+
+  @@unique([orgId, id])
+  @@index([salesOrderLineId])
+  @@index([dispatchId])
+  @@map("dispatch_line")
+}
+
+// Append-only forward-traceability ledger: which finished-goods batch(es) a
+// dispatch line's quantity was picked from, and how much from each. One row
+// per real FgBatchMovement (type = dispatch) -- see the section comment
+// above. `quantity` is denormalized from fgBatchMovement.quantity (negated)
+// for query convenience only; fgBatchMovement remains the authoritative
+// ledger entry.
+model DispatchBatchAllocation {
+  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId            String             @map("org_id") @db.Uuid
+  dispatchLineId   String             @map("dispatch_line_id") @db.Uuid
+  dispatchLine     DispatchLine       @relation(fields: [orgId, dispatchLineId], references: [orgId, id], onDelete: Cascade)
+  batchId          String             @map("batch_id") @db.Uuid
+  batch            FinishedGoodsBatch @relation(fields: [orgId, batchId], references: [orgId, id])
+  fgBatchMovementId String            @map("fg_batch_movement_id") @db.Uuid
+  fgBatchMovement   FgBatchMovement   @relation(fields: [orgId, fgBatchMovementId], references: [orgId, id])
+  quantity         Decimal            @db.Decimal(14, 4) // positive
+  createdAt        DateTime           @default(now()) @map("created_at")
+
+  @@unique([orgId, id])
+  @@unique([orgId, fgBatchMovementId])
+  @@index([dispatchLineId])
+  @@index([batchId])
+  @@map("dispatch_batch_allocation")
 }
 
 // ---------------------------------------------------------------------------
@@ -844,6 +1239,16 @@ model ProductionJob {
   // return FROM this job (not the lots this job consumed -- see
   // lotConsumptions above and getJobLotConsumption in lot-service.ts for that).
   returnSpawnedLots    MaterialLot[]          @relation("LotReturnJob")
+  // Added by migration 20261106090000_finished_goods_inventory.
+  finishedGoodsBatches FinishedGoodsBatch[]
+  // Milestone 4 additions
+  machineTimeRecords   MachineTimeRecord[]
+  correctiveActions    CorrectiveAction[]
+  priority             JobPriority            @default(normal)
+  // Milestone 6: reverse of MaterialLot.sourceRegrindJobId -- regrind lots
+  // generated from THIS job's scrap (distinct from returnSpawnedLots above,
+  // which is the unrelated M1 "returned unused material" lineage).
+  regrindSpawnedLots   MaterialLot[]          @relation("LotRegrindJob")
 
   @@unique([orgId, jobNumber])
   @@unique([orgId, id])
@@ -875,6 +1280,12 @@ model LabourRecord {
   orgId           String        @map("org_id") @db.Uuid
   jobId           String        @map("job_id") @db.Uuid
   job             ProductionJob @relation(fields: [orgId, jobId], references: [orgId, id])
+  // Milestone 4: optional operation-level attribution. Null keeps today's
+  // meaning exactly -- "job-level labour, no specific operation" -- so every
+  // existing LabourRecord row (and every caller that doesn't pass it) is
+  // unaffected. See labour-service.ts.
+  jobStageId      String?             @map("job_stage_id") @db.Uuid
+  jobStage        ProductionJobStage? @relation(fields: [orgId, jobStageId], references: [orgId, id])
   userId          String?       @map("user_id") @db.Uuid
   hours           Decimal       @db.Decimal(8, 2)
   rate            Decimal       @db.Decimal(14, 4)
@@ -884,6 +1295,7 @@ model LabourRecord {
 
   @@unique([orgId, clientRequestId]) // composite, not global
   @@index([jobId])
+  @@index([jobStageId])
   @@map("labour_record")
 }
 
@@ -894,6 +1306,14 @@ model ProductionStageTemplate {
   product       Item?   @relation(fields: [orgId, productItemId], references: [orgId, id])
   stageName     String  @map("stage_name")
   sequence      Int
+  // Milestone 4: expected routing figures a job's stage copies at
+  // definition time (same snapshot discipline as the job's BOM lines --
+  // see job-service.ts's header comment). Null = not estimated, unchanged
+  // from today.
+  workCentreId       String?  @map("work_centre_id") @db.Uuid
+  workCentre         WorkCentre? @relation(fields: [orgId, workCentreId], references: [orgId, id])
+  expectedSetupMinutes Int?   @map("expected_setup_minutes")
+  expectedRunMinutes   Int?   @map("expected_run_minutes")
 
   @@unique([orgId, id])
   @@map("production_stage_template")
@@ -923,7 +1343,23 @@ model ProductionJobStage {
   // Phase 3
   plannedStart       DateTime? @map("planned_start")
   plannedEnd         DateTime? @map("planned_end")
+  // Free-text, kept for backward compatibility with stages defined before
+  // Milestone 4 (and as a fallback when no Machine/WorkCentre register entry
+  // fits). New stages should prefer workCentreId/machineId below, which are
+  // real, reportable FKs the capacity-visibility report (capacity-service.ts)
+  // and machine utilisation views can actually group by; this string can't be.
   workCentre         String?   @map("work_centre")
+  // Milestone 4: real work-centre/machine register references, snapshotted
+  // onto the stage at definition time (stage-service.ts's defineStages),
+  // exactly like workCentre/expectedSetupMinutes/expectedRunMinutes below --
+  // later edits to the WorkCentre/Machine row (e.g. renaming it, changing its
+  // capacity) never rewrite what an existing stage was planned against.
+  workCentreId         String?     @map("work_centre_id") @db.Uuid
+  workCentreRef        WorkCentre? @relation("StageWorkCentre", fields: [orgId, workCentreId], references: [orgId, id])
+  machineId            String?     @map("machine_id") @db.Uuid
+  machine              Machine?    @relation(fields: [orgId, machineId], references: [orgId, id])
+  expectedSetupMinutes Int?        @map("expected_setup_minutes")
+  expectedRunMinutes   Int?        @map("expected_run_minutes")
   requiresInspection Boolean   @default(false) @map("requires_inspection")
   blockedReason      String?   @map("blocked_reason")
   blockedAt          DateTime? @map("blocked_at")
@@ -932,6 +1368,10 @@ model ProductionJobStage {
 
   qualityRecords QualityRecord[]
   outputs        ProductionOutput[]
+  machineTimeRecords MachineTimeRecord[]
+  labourRecords  LabourRecord[]
+  // Milestone 6
+  plasticsProcessDetail PlasticsProcessDetail?
 
   @@unique([orgId, id])
   @@unique([orgId, clientRequestId])
@@ -970,6 +1410,11 @@ model QualityRecord {
 
   dispositions QualityDisposition[]
   outputs      ProductionOutput[]
+  // Milestone 4
+  measurements      QualityMeasurement[]
+  correctiveActions CorrectiveAction[]
+  inspectionPlanId  String?        @map("inspection_plan_id") @db.Uuid
+  inspectionPlan    InspectionPlan? @relation(fields: [orgId, inspectionPlanId], references: [orgId, id])
 
   @@unique([orgId, id])
   @@unique([orgId, clientRequestId])
@@ -992,6 +1437,8 @@ model Warehouse {
   stockBalances     StockBalance[]
   goodsReceiptLines GoodsReceiptLine[]
   materialLots      MaterialLot[]
+  finishedGoodsBatches FinishedGoodsBatch[]
+  dispatches           Dispatch[]
 
   @@unique([branchId, name])
   @@unique([orgId, id])
@@ -1008,6 +1455,12 @@ enum MovementType {
   adjustment
   stock_transfer_out
   stock_transfer_in
+  // Milestone 6 (Plastics Manufacturing Vertical): a regrind lot entering
+  // inventory (regrind-service.ts's createRegrindLot). Deliberately its own
+  // value, never purchase_receipt -- any report that sums purchase_receipt
+  // to answer "how much material did we buy" must never need to know
+  // regrind exists to be correct; it already excludes it by construction.
+  regrind_generation
 }
 
 enum ReferenceType {
@@ -1045,6 +1498,13 @@ model StockMovement {
   // nothing referenced a StockMovement row before this milestone.
   lotConsumptions LotConsumption[]
   lotsReturnedFrom MaterialLot[]  @relation("LotReturnMovement")
+  // Milestone 6: the regrind_generation movement a regrind lot was posted
+  // with (see MaterialLot.sourceRegrindMovementId).
+  lotsFromRegrind MaterialLot[]  @relation("LotRegrindMovement")
+  // Added by migration 20261106090000_finished_goods_inventory.
+  fgBatchProduced        FinishedGoodsBatch? @relation("FgBatchProducedMovement")
+  fgBatchTransferredInTo FinishedGoodsBatch? @relation("FgBatchTransferInMovement")
+  fgBatchMovements       FgBatchMovement[]   @relation("FgBatchMovementRef")
 
   @@unique([orgId, clientRequestId])
   @@unique([orgId, id])
@@ -1239,4 +1699,516 @@ model QualityDisposition {
   @@unique([orgId, clientRequestId])
   @@index([inspectionId])
   @@map("quality_disposition")
+}
+
+// ============================================================================
+// MILESTONE 4 — Full Manufacturing Lifecycle
+// ============================================================================
+// Four additions, each extending an existing Phase-3 shop-floor pattern
+// rather than inventing a parallel one:
+//   1. Machines & work centres        -- a real register; stages/templates
+//      above now carry workCentreId/machineId snapshots alongside the old
+//      free-text workCentre column (kept for backward compatibility).
+//   2. Machine time                   -- an append-only ledger, same shape
+//      and idempotency discipline as LabourRecord.
+//   3. Quality plans & measurements   -- an optional, reusable "what to
+//      check and its tolerances" layer that recordInspection (quality-
+//      service.ts) can attach measurements to; the existing pass/fail
+//      (QualityRecord.outcome, driven by rejectedQty) is UNCHANGED and
+//      remains the one gate stage completion/job completion check --
+//      per-characteristic pass/fail recorded here is diagnostic detail, not
+//      a second, competing gate.
+//   4. Corrective actions             -- a lightweight tracker linkable to
+//      a failed inspection (quality_record), separate from disposition
+//      (which only ever decides what happens to the REJECTED UNITS, never
+//      to the root cause).
+// None of this touches StockMovement/StockBalance or the costing tables'
+// write paths -- JobCostEstimateLine/JobCostActualLine.estimatedOverheadCost/
+// actualOverheadCost remain untouched (still null = "unavailable until an
+// overhead allocation method is approved": see job-service.ts/completion-
+// snapshot.ts). Machine time is captured here for genuine shop-floor
+// visibility and reporting; it is deliberately NOT auto-rolled into
+// actualOverheadCost, which would silently invent an allocation methodology
+// nobody has approved (§11/§6 of the mandate).
+
+enum JobPriority {
+  low
+  normal
+  high
+  urgent
+}
+
+enum MachineStatus {
+  available
+  in_use
+  down
+  maintenance
+  retired
+}
+
+enum DowntimeCategory {
+  breakdown
+  changeover
+  no_material
+  no_operator
+  planned_maintenance
+  other
+}
+
+enum MaintenanceType {
+  scheduled
+  unscheduled
+}
+
+enum CorrectiveActionStatus {
+  open
+  in_progress
+  completed
+  cancelled
+}
+
+// A department/area on the shop floor (e.g. "Extrusion", "Assembly Line 2").
+// Branch-scoped, same level as Warehouse -- stock lives in a branch's
+// warehouses, work happens in a branch's work centres.
+model WorkCentre {
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId    String  @map("org_id") @db.Uuid
+  branchId String  @map("branch_id") @db.Uuid
+  branch   Branch  @relation(fields: [orgId, branchId], references: [orgId, id])
+  code     String
+  name     String
+  // Optional configured capacity for the capacity-visibility report
+  // (capacity-service.ts). Null = "not configured" -- the report then shows
+  // assigned load only, with no utilisation percentage, rather than
+  // guessing a capacity. This is deliberately a simple daily-minutes figure,
+  // not a shift calendar or finite-capacity model (mandate §6: "avoid
+  // claiming finite-capacity scheduling if the implementation only performs
+  // simple date allocation").
+  dailyCapacityMinutes Int?    @map("daily_capacity_minutes")
+  isActive Boolean @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  machines         Machine[]
+  stageTemplates   ProductionStageTemplate[]
+  jobStages        ProductionJobStage[] @relation("StageWorkCentre")
+
+  @@unique([orgId, id])
+  @@unique([branchId, code])
+  @@map("work_centre")
+}
+
+// A specific piece of equipment within a work centre.
+model Machine {
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId        String        @map("org_id") @db.Uuid
+  workCentreId String        @map("work_centre_id") @db.Uuid
+  workCentre   WorkCentre    @relation(fields: [orgId, workCentreId], references: [orgId, id])
+  code         String
+  name         String
+  status       MachineStatus @default(available)
+  isActive     Boolean       @default(true) @map("is_active")
+  createdAt    DateTime      @default(now()) @map("created_at")
+
+  jobStages           ProductionJobStage[]
+  machineTimeRecords  MachineTimeRecord[]
+  downtimeRecords     MachineDowntimeRecord[]
+  maintenanceRecords  MachineMaintenanceRecord[]
+  // Milestone 6
+  mouldCompatibilities MouldMachineCompatibility[]
+
+  @@unique([orgId, id])
+  @@unique([workCentreId, code])
+  @@map("machine")
+}
+
+// Append-only downtime log. A machine's current `status` is the operator's
+// own explicit signal (set via machine-service.ts); this table is the
+// historical record of WHY and for how long -- closing a record (setting
+// endedAt) never edits or removes the open record, it is the same row
+// transitioning from open (endedAt null) to closed, same convention stage
+// blocking already uses (blockedReason/blockedAt vs this table's started/
+// ended) -- never a second, competing "is it down" source of truth: a
+// machine can only be set to `down` while a downtime record is opened for
+// it, and leaving `down` requires closing that record first (machine-
+// service.ts).
+model MachineDowntimeRecord {
+  id         String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId      String            @map("org_id") @db.Uuid
+  machineId  String            @map("machine_id") @db.Uuid
+  machine    Machine           @relation(fields: [orgId, machineId], references: [orgId, id])
+  category   DowntimeCategory
+  reason     String
+  startedAt  DateTime          @default(now()) @map("started_at")
+  endedAt    DateTime?         @map("ended_at")
+  loggedById String?           @map("logged_by") @db.Uuid
+
+  @@unique([orgId, id])
+  @@index([machineId, endedAt])
+  @@map("machine_downtime_record")
+}
+
+// Maintenance schedule AND history in one append-only table: a row with
+// completedAt null and a future scheduledAt is a planned/scheduled entry; a
+// row with completedAt set is history. Never edited once completed -- a
+// mistaken completion is corrected by a new row, same "never edit immutable
+// historical records" rule as everywhere else in this codebase (see output-
+// service.ts's header comment for the canonical statement of it).
+model MachineMaintenanceRecord {
+  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId         String          @map("org_id") @db.Uuid
+  machineId     String          @map("machine_id") @db.Uuid
+  machine       Machine         @relation(fields: [orgId, machineId], references: [orgId, id])
+  type          MaintenanceType
+  scheduledAt   DateTime?       @map("scheduled_at")
+  completedAt   DateTime?       @map("completed_at")
+  notes         String?
+  performedById String?         @map("performed_by") @db.Uuid
+  createdAt     DateTime        @default(now()) @map("created_at")
+
+  @@unique([orgId, id])
+  @@index([machineId])
+  @@map("machine_maintenance_record")
+}
+
+// Actual setup/run time against a job (optionally a specific stage and
+// machine). Idempotent by (orgId, clientRequestId), same discipline as
+// LabourRecord/ProductionOutput -- an offline client can retry safely.
+model MachineTimeRecord {
+  id              String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId           String              @map("org_id") @db.Uuid
+  jobId           String              @map("job_id") @db.Uuid
+  job             ProductionJob       @relation(fields: [orgId, jobId], references: [orgId, id])
+  jobStageId      String?             @map("job_stage_id") @db.Uuid
+  jobStage        ProductionJobStage? @relation(fields: [orgId, jobStageId], references: [orgId, id])
+  machineId       String              @map("machine_id") @db.Uuid
+  machine         Machine             @relation(fields: [orgId, machineId], references: [orgId, id])
+  setupMinutes    Int                 @default(0) @map("setup_minutes")
+  runMinutes      Int                 @default(0) @map("run_minutes")
+  operatorUserId  String?             @map("operator_user_id") @db.Uuid
+  clientRequestId String?             @map("client_request_id") @db.Uuid
+  recordedAt      DateTime            @default(now()) @map("recorded_at")
+
+  @@unique([orgId, clientRequestId])
+  @@index([jobId])
+  @@index([machineId])
+  @@map("machine_time_record")
+}
+
+// "What to check and its tolerances" for an item (material OR finished
+// product -- itemId, not productItemId, so the same model serves incoming
+// inspection of a purchased material and in-process/final inspection of a
+// manufactured product). Deliberately NOT versioned like BillOfMaterial: a
+// plan is a checklist template, not a value that must be preserved
+// unchanged for costing/history reasons -- every recorded measurement
+// already freezes its own characteristic's name/tolerances by copying them
+// (see QualityMeasurement below), so an edited plan can't retroactively
+// change what a past measurement meant. A characteristic already used by a
+// measurement is retired (isActive=false), never deleted, so old
+// measurements keep a live FK.
+model InspectionPlan {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId     String   @map("org_id") @db.Uuid
+  itemId    String   @map("item_id") @db.Uuid
+  item      Item     @relation(fields: [orgId, itemId], references: [orgId, id])
+  name      String
+  isActive  Boolean  @default(true) @map("is_active")
+  createdById String? @map("created_by") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  characteristics InspectionCharacteristic[]
+  qualityRecords  QualityRecord[]
+
+  @@unique([orgId, id])
+  @@index([itemId])
+  @@map("inspection_plan")
+}
+
+model InspectionCharacteristic {
+  id         String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId      String         @map("org_id") @db.Uuid
+  planId     String         @map("plan_id") @db.Uuid
+  plan       InspectionPlan @relation(fields: [orgId, planId], references: [orgId, id], onDelete: Cascade)
+  name       String
+  uom        String?
+  minValue   Decimal?       @map("min_value") @db.Decimal(14, 4)
+  maxValue   Decimal?       @map("max_value") @db.Decimal(14, 4)
+  targetValue Decimal?      @map("target_value") @db.Decimal(14, 4)
+  sequence   Int
+  isActive   Boolean        @default(true) @map("is_active")
+
+  measurements QualityMeasurement[]
+
+  @@unique([orgId, id])
+  @@index([planId])
+  @@map("inspection_characteristic")
+}
+
+// One measured value against one characteristic, recorded alongside an
+// inspection (quality_record). `passed` is computed and stored at write time
+// from the characteristic's min/max AS THEY STOOD then (characteristicName/
+// Uom/MinValue/MaxValue below are a snapshot copy, same reasoning as
+// MaterialRequirement snapshotting its BOM line) -- editing or retiring the
+// characteristic later never changes what a past measurement's pass/fail meant.
+// This is diagnostic detail: it does NOT feed QualityRecord.outcome or
+// rejectedQty, which stay driven entirely by what the inspector explicitly
+// recorded as rejected (quality-service.ts recordInspection) -- one gate,
+// not two that could disagree.
+model QualityMeasurement {
+  id                 String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId              String          @map("org_id") @db.Uuid
+  qualityRecordId    String          @map("quality_record_id") @db.Uuid
+  qualityRecord      QualityRecord   @relation(fields: [orgId, qualityRecordId], references: [orgId, id], onDelete: Cascade)
+  characteristicId   String          @map("characteristic_id") @db.Uuid
+  characteristic     InspectionCharacteristic @relation(fields: [orgId, characteristicId], references: [orgId, id])
+  characteristicName String          @map("characteristic_name")
+  uom                String?
+  minValue           Decimal?        @map("min_value") @db.Decimal(14, 4)
+  maxValue           Decimal?        @map("max_value") @db.Decimal(14, 4)
+  measuredValue      Decimal         @map("measured_value") @db.Decimal(14, 4)
+  passed             Boolean
+  recordedAt         DateTime        @default(now()) @map("recorded_at")
+
+  @@unique([orgId, id])
+  @@index([qualityRecordId])
+  @@map("quality_measurement")
+}
+
+// A tracked follow-up on a quality problem -- separate from
+// QualityDisposition, which only ever decides what happens to the rejected
+// UNITS (scrap/rework/use_as_is). A corrective action tracks the ROOT-CAUSE
+// response (e.g. "recalibrate machine X", "retrain operator on stage Y"),
+// which may well outlive the job the triggering inspection belonged to.
+// jobId is required (every corrective action is raised in the context of
+// some job); qualityRecordId is optional, since a corrective action can
+// also be raised generally (e.g. from a recurring pattern across jobs)
+// without pointing at one specific inspection.
+model CorrectiveAction {
+  id               String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId            String                 @map("org_id") @db.Uuid
+  jobId            String                 @map("job_id") @db.Uuid
+  job              ProductionJob          @relation(fields: [orgId, jobId], references: [orgId, id])
+  qualityRecordId  String?                @map("quality_record_id") @db.Uuid
+  qualityRecord    QualityRecord?         @relation(fields: [orgId, qualityRecordId], references: [orgId, id])
+  description      String
+  assignedToUserId String?                @map("assigned_to") @db.Uuid
+  status           CorrectiveActionStatus @default(open)
+  dueDate          DateTime?              @map("due_date") @db.Date
+  resolvedAt       DateTime?              @map("resolved_at")
+  resolutionNotes  String?                @map("resolution_notes")
+  createdById      String?                @map("created_by") @db.Uuid
+  createdAt        DateTime               @default(now()) @map("created_at")
+  updatedAt        DateTime               @updatedAt @map("updated_at")
+
+  @@unique([orgId, id])
+  @@index([jobId])
+  @@index([status])
+  @@map("corrective_action")
+}
+
+// ---------------------------------------------------------------------------
+// MILESTONE 6 — PLASTICS MANUFACTURING VERTICAL
+//
+// Everything below is the plastics industry profile's concrete extension of
+// the shared manufacturing core (Milestone 5's architecture principle:
+// "industry-specific behaviour belongs in explicit extensions"). Every
+// *write* path into these models additionally checks
+// Organization.industryProfile === "plastics" (plastics-item-service.ts /
+// mould-service.ts / regrind-service.ts / plastics-process-service.ts) --
+// deliberately NOT a DB-level constraint, because a profile change must
+// never retroactively invalidate historical rows (Milestone 5's "changing
+// an organisation's profile cannot corrupt historical transactions"). Read
+// paths are never profile-gated, only capability/branch-scoped, so existing
+// plastics data stays fully visible even if an organization later switches
+// profiles.
+//
+// Quality management for plastics products is NOT reimplemented here --
+// Milestone 4's InspectionPlan/InspectionCharacteristic mechanism is already
+// fully generic (per-item, configurable name/UOM/min/max/target), which is
+// exactly what the mandate's "allow tolerances to be configured by product
+// or quality plan ... do not assume every plastics product uses the same
+// measurements" asks for. Building a second, plastics-specific quality
+// model would duplicate working shared-core functionality, the opposite of
+// this milestone's own architecture principle.
+// ---------------------------------------------------------------------------
+
+enum MouldStatus {
+  available
+  in_use
+  maintenance
+  retired
+}
+
+model Mould {
+  id        String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId     String      @map("org_id") @db.Uuid
+  branchId  String      @map("branch_id") @db.Uuid
+  branch    Branch      @relation(fields: [orgId, branchId], references: [orgId, id])
+  code      String
+  name      String
+  cavityCount Int       @map("cavity_count")
+  status    MouldStatus @default(available)
+  // A mould's cavity geometry is cut for one product; multi-product moulds
+  // are a real but rarer case this milestone does not model (see
+  // IMPLEMENTATION_MANIFEST.md's known limitations) -- a single optional FK,
+  // not a join table, deliberately kept proportionate to that scope.
+  compatibleProductItemId String? @map("compatible_product_item_id") @db.Uuid
+  compatibleProductItem   Item?   @relation(fields: [orgId, compatibleProductItemId], references: [orgId, id])
+  isActive  Boolean     @default(true) @map("is_active")
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
+
+  machineCompatibilities MouldMachineCompatibility[]
+  maintenanceRecords     MouldMaintenanceRecord[]
+  processDetails         PlasticsProcessDetail[]
+
+  @@unique([orgId, id])
+  @@unique([branchId, code])
+  @@map("mould")
+}
+
+// Many-to-many: unlike product compatibility (one mould, cut for one
+// product), several presses can genuinely share one mould when tonnage and
+// platen size match, so this direction is a real join table, not a single FK.
+model MouldMachineCompatibility {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId     String   @map("org_id") @db.Uuid
+  mouldId   String   @map("mould_id") @db.Uuid
+  mould     Mould    @relation(fields: [orgId, mouldId], references: [orgId, id])
+  machineId String   @map("machine_id") @db.Uuid
+  machine   Machine  @relation(fields: [orgId, machineId], references: [orgId, id])
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([orgId, id])
+  @@unique([mouldId, machineId])
+  @@map("mould_machine_compatibility")
+}
+
+// Mirrors MachineMaintenanceRecord exactly (same fields, same reuse of
+// MaintenanceType -- scheduled/unscheduled applies identically to tooling),
+// append-only usage history being a query over this table plus
+// PlasticsProcessDetail.mouldId, never a separately stored total.
+model MouldMaintenanceRecord {
+  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId         String          @map("org_id") @db.Uuid
+  mouldId       String          @map("mould_id") @db.Uuid
+  mould         Mould           @relation(fields: [orgId, mouldId], references: [orgId, id])
+  type          MaintenanceType
+  scheduledAt   DateTime?       @map("scheduled_at")
+  completedAt   DateTime?       @map("completed_at")
+  notes         String?
+  performedById String?         @map("performed_by") @db.Uuid
+  createdAt     DateTime        @default(now()) @map("created_at")
+
+  @@unique([orgId, id])
+  @@index([mouldId])
+  @@map("mould_maintenance_record")
+}
+
+// 1:1 with Item. Only ever meaningful for raw_material/consumable items;
+// enforced in plastics-item-service.ts, not a CHECK (itemType is on Item,
+// not here, and cross-table CHECKs are avoided elsewhere in this schema too).
+// blendComposition is a small, fixed-shape JSON array
+// ({component: string, percentage: number}[]), validated by Zod at the
+// service layer -- descriptive/record-keeping only (what this material
+// SKU's own spec sheet says it's blended from), never consumption-affecting;
+// actual material deduction always goes through the normal BOM/lot-issue
+// path against this item's own single SKU, regardless of what it's blended
+// from. There is no file-upload/attachment subsystem anywhere in this
+// codebase (confirmed by inspection), so materialCertificateReference is a
+// free-text reference/URL, not a stored document.
+model PlasticsMaterialAttributes {
+  id                          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId                       String   @map("org_id") @db.Uuid
+  itemId                      String   @map("item_id") @db.Uuid
+  item                        Item     @relation(fields: [orgId, itemId], references: [orgId, id])
+  // Free text with suggested values (PET/HDPE/PP/...) offered by the
+  // frontend, not a closed enum -- the mandate explicitly calls for "other
+  // configured polymer grades" and "do not hardcode the system to only PET
+  // bottles"; a Prisma enum would need a migration for every new grade.
+  polymerGrade                String?  @map("polymer_grade")
+  resinSpec                   String?  @map("resin_spec")
+  colourMasterbatch           String?  @map("colour_masterbatch")
+  additiveNotes               String?  @map("additive_notes")
+  recycledContentPct          Decimal? @map("recycled_content_pct") @db.Decimal(5, 2)
+  supplierMaterialRef         String?  @map("supplier_material_ref")
+  materialCertificateReference String? @map("material_certificate_reference")
+  blendComposition            Json?    @map("blend_composition")
+  createdAt                   DateTime @default(now()) @map("created_at")
+  updatedAt                   DateTime @updatedAt @map("updated_at")
+
+  @@unique([orgId, id])
+  @@unique([orgId, itemId])
+  @@map("plastics_material_attributes")
+}
+
+// 1:1 with Item (finished_good/wip side). Same free-text-with-suggestions
+// choice as polymerGrade above for productType -- "configurable product
+// characteristics", not a fixed catalogue. otherAttributes is a small,
+// UI-rendered key/value JSON bag for anything not covered by the structured
+// columns (display/reference only, never read by any calculation in this
+// delivery) -- a deliberately bounded escape hatch, not this model's primary
+// mechanism, so it does not become the generic EAV model the mandate warns
+// against.
+model PlasticsProductSpec {
+  id                        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId                     String   @map("org_id") @db.Uuid
+  itemId                    String   @map("item_id") @db.Uuid
+  item                      Item     @relation(fields: [orgId, itemId], references: [orgId, id])
+  productType               String   @map("product_type")
+  resinType                 String?  @map("resin_type")
+  colour                    String?
+  nominalWeightGrams        Decimal? @map("nominal_weight_grams") @db.Decimal(10, 3)
+  capacityMl                Decimal? @map("capacity_ml") @db.Decimal(12, 3)
+  heightMm                  Decimal? @map("height_mm") @db.Decimal(10, 2)
+  diameterMm                Decimal? @map("diameter_mm") @db.Decimal(10, 2)
+  neckFinish                String?  @map("neck_finish")
+  closureCompatibilityNotes String?  @map("closure_compatibility_notes")
+  otherAttributes           Json?    @map("other_attributes")
+  createdAt                 DateTime @default(now()) @map("created_at")
+  updatedAt                 DateTime @updatedAt @map("updated_at")
+
+  @@unique([orgId, id])
+  @@unique([orgId, itemId])
+  @@map("plastics_product_spec")
+}
+
+// 1:1 with ProductionJobStage -- the plastics-specific process detail for
+// one stage of one job (which mould, which process type, target vs. actual
+// cycle time, cavity performance). Mutable while the stage is active, but
+// the service layer (plastics-process-service.ts) refuses further changes
+// once the stage itself reaches a terminal status -- the same
+// service-layer-enforced "closed means closed" discipline CorrectiveAction
+// already uses (no DB trigger needed there either), not a gap relative to
+// machine_time_record/quality_measurement's trigger-enforced immutability:
+// those are append-only EVENT logs; this is a single result/configuration
+// row per stage, same category as ProductionJobStage itself (which is also
+// not trigger-immutable).
+//
+// actualCycleTimeSeconds is always an operator-entered figure -- there is no
+// connected press/PLC telemetry anywhere in this codebase, and the mandate
+// is explicit: "do not invent machine telemetry ... when no connected
+// equipment provides them." The frontend labels it accordingly.
+model PlasticsProcessDetail {
+  id                     String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId                  String   @map("org_id") @db.Uuid
+  jobStageId             String   @map("job_stage_id") @db.Uuid
+  jobStage               ProductionJobStage @relation(fields: [orgId, jobStageId], references: [orgId, id])
+  // Free text with suggested values (injection_moulding/blow_moulding/isbm/
+  // preform_production/bottle_production/cap_closure_production/...), same
+  // reasoning as polymerGrade/productType above -- "represent these as
+  // configurable process types ... not one hardcoded universal sequence."
+  processType            String   @map("process_type")
+  mouldId                String?  @map("mould_id") @db.Uuid
+  mould                  Mould?   @relation(fields: [orgId, mouldId], references: [orgId, id])
+  targetCycleTimeSeconds Decimal? @map("target_cycle_time_seconds") @db.Decimal(10, 2)
+  actualCycleTimeSeconds Decimal? @map("actual_cycle_time_seconds") @db.Decimal(10, 2)
+  totalCavities          Int?     @map("total_cavities")
+  goodCavities           Int?     @map("good_cavities")
+  createdAt              DateTime @default(now()) @map("created_at")
+  updatedAt              DateTime @updatedAt @map("updated_at")
+
+  @@unique([orgId, id])
+  @@unique([orgId, jobStageId])
+  @@index([mouldId])
+  @@map("plastics_process_detail")
 }

@@ -15,10 +15,22 @@ import { IdempotentRequest } from "@/lib/idempotency";
 import { REJECT_REASON_OPTIONS } from "@/lib/labels";
 import { parseDecimalInput } from "@/lib/validate";
 
+export interface InspectionPlanOption {
+  id: string;
+  name: string;
+  characteristics: { id: string; name: string; uom: string | null; minValue: string | null; maxValue: string | null; targetValue: string | null; isActive: boolean }[];
+}
+
 // Records an inspection RESULT: how many units were inspected and how many were
 // rejected, with the defect category. Inspectors record; they can't decide the
 // fate of rejected units (that needs quality:approve, see DispositionDialog).
-export function InspectionForm({ jobId, uom, stages }: { jobId: string; uom: string; stages: { id: string; label: string }[] }) {
+//
+// Optionally, picking an inspection plan (Milestone 4) also shows one numeric
+// input per active characteristic; values typed there are sent as
+// `measurements` alongside the pass/fail result above. Measurements are
+// diagnostic detail only -- they never change the accepted/rejected counts,
+// which stay exactly what the inspector enters above.
+export function InspectionForm({ jobId, uom, stages, plans = [] }: { jobId: string; uom: string; stages: { id: string; label: string }[]; plans?: InspectionPlanOption[] }) {
   const router = useRouter();
   const sub = useSubmission();
   const idem = useRef(new IdempotentRequest());
@@ -28,9 +40,13 @@ export function InspectionForm({ jobId, uom, stages }: { jobId: string; uom: str
   const [defect, setDefect] = useState("");
   const [notes, setNotes] = useState("");
   const [evidence, setEvidence] = useState("");
+  const [planId, setPlanId] = useState("");
+  const [measurements, setMeasurements] = useState<Record<string, string>>({});
   const [local, setLocal] = useState<Record<string, string>>({});
   const [done, setDone] = useState<{ text: string; replayed: boolean; fail: boolean } | null>(null);
   const errors = { ...sub.fieldErrors, ...local };
+  const plan = plans.find((p) => p.id === planId) ?? null;
+  const activeCharacteristics = plan ? plan.characteristics.filter((c) => c.isActive) : [];
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -43,6 +59,16 @@ export function InspectionForm({ jobId, uom, stages }: { jobId: string; uom: str
     if (!r.ok) problems.rejectedQty = r.message;
     if (i.ok && r.ok && r.value > i.value) problems.rejectedQty = "Can't exceed the units inspected.";
     if (r.ok && r.value > 0 && !defect) problems.rejectReason = "Choose the defect category.";
+
+    const measurementRows: { characteristicId: string; measuredValue: number }[] = [];
+    for (const c of activeCharacteristics) {
+      const raw = measurements[c.id] ?? "";
+      if (raw.trim() === "") continue;
+      const v = Number(raw);
+      if (!Number.isFinite(v)) problems[`measurement.${c.id}`] = `${c.name} must be a number.`;
+      else measurementRows.push({ characteristicId: c.id, measuredValue: v });
+    }
+
     setLocal(problems);
     if (Object.keys(problems).length || !i.ok || !r.ok) return sub.fail("Fix the highlighted fields and try again.");
 
@@ -53,6 +79,7 @@ export function InspectionForm({ jobId, uom, stages }: { jobId: string; uom: str
       ...(r.value > 0 ? { rejectReason: defect } : {}),
       ...(notes.trim() ? { notes: notes.trim() } : {}),
       ...(evidence.trim() ? { evidenceRef: evidence.trim() } : {}),
+      ...(plan && measurementRows.length > 0 ? { inspectionPlanId: plan.id, measurements: measurementRows } : {}),
     };
     const prepared = idem.current.prepare(payload);
     if (!prepared.ok) return sub.fail(prepared.reason);
@@ -62,7 +89,7 @@ export function InspectionForm({ jobId, uom, stages }: { jobId: string; uom: str
     });
     if (res?.ok) {
       setDone({ text: r.value > 0 ? `Recorded: ${r.value} of ${i.value} ${uom} rejected. A manager must decide what happens to them.` : `Recorded: ${i.value} ${uom} passed.`, replayed: res.replayed, fail: r.value > 0 });
-      setInspected(""); setRejected(""); setDefect(""); setNotes(""); setEvidence("");
+      setInspected(""); setRejected(""); setDefect(""); setNotes(""); setEvidence(""); setMeasurements({});
       router.refresh();
     }
   }
@@ -109,6 +136,50 @@ export function InspectionForm({ jobId, uom, stages }: { jobId: string; uom: str
           <Input id="in-evid" value={evidence} maxLength={500} onChange={(e) => setEvidence(e.target.value)} />
         </Field>
       </div>
+
+      {plans.length > 0 ? (
+        <div className="space-y-3 rounded-lg border border-border bg-muted/30 p-3">
+          <Field id="in-plan" label="Measure against an inspection plan" hint="Optional -- diagnostic detail only, never changes the pass/fail counts above.">
+            <Select
+              id="in-plan"
+              value={planId}
+              onChange={(e) => {
+                setPlanId(e.target.value);
+                setMeasurements({});
+              }}
+            >
+              <option value="">No plan</option>
+              {plans.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </Select>
+          </Field>
+          {plan && activeCharacteristics.length > 0 ? (
+            <div className="grid gap-3 sm:grid-cols-2">
+              {activeCharacteristics.map((c) => (
+                <Field
+                  key={c.id}
+                  id={`meas-${c.id}`}
+                  label={`${c.name}${c.uom ? ` (${c.uom})` : ""}`}
+                  error={errors[`measurement.${c.id}`]}
+                  hint={c.minValue != null || c.maxValue != null ? `Range ${c.minValue ?? "—"}–${c.maxValue ?? "—"}` : undefined}
+                >
+                  <Input
+                    id={`meas-${c.id}`}
+                    inputMode="decimal"
+                    value={measurements[c.id] ?? ""}
+                    onChange={(e) => setMeasurements((m) => ({ ...m, [c.id]: e.target.value }))}
+                    aria-invalid={Boolean(errors[`measurement.${c.id}`]) || undefined}
+                  />
+                </Field>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+
       <SubmitButton pending={sub.pending} pendingLabel="Recording…">
         Record inspection
       </SubmitButton>

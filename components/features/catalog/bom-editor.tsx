@@ -26,6 +26,10 @@ interface Row {
   materialItemId: string;
   quantity: string;
   uom: string;
+  // Milestone 4, both optional on every line -- blank means "unchanged
+  // behaviour" (no scrap factor applied, no yield figure recorded), never 0.
+  scrapPct: string;
+  yieldPct: string;
 }
 
 // Creating a BOM version never edits an existing one: it posts a new draft
@@ -39,7 +43,7 @@ export function BomEditor({
   activeVersion,
 }: {
   productId: string;
-  seedLines: { materialItemId: string; quantity: string; uom: string }[];
+  seedLines: { materialItemId: string; quantity: string; uom: string; scrapPct?: string; yieldPct?: string }[];
   materials: MaterialOption[];
   nextVersion: number;
   activeVersion: number | null;
@@ -48,9 +52,12 @@ export function BomEditor({
   const sub = useSubmission();
   const [nextKey, setNextKey] = useState(seedLines.length || 1);
   const [rows, setRows] = useState<Row[]>(
-    seedLines.length > 0 ? seedLines.map((l, i) => ({ key: i, ...l })) : [{ key: 0, materialItemId: "", quantity: "", uom: "" }],
+    seedLines.length > 0
+      ? seedLines.map((l, i) => ({ key: i, scrapPct: "", yieldPct: "", ...l }))
+      : [{ key: 0, materialItemId: "", quantity: "", uom: "", scrapPct: "", yieldPct: "" }],
   );
-  const [rowErrors, setRowErrors] = useState<Record<number, { material?: string; quantity?: string; uom?: string }>>({});
+  const [effectiveTo, setEffectiveTo] = useState("");
+  const [rowErrors, setRowErrors] = useState<Record<number, { material?: string; quantity?: string; uom?: string; scrapPct?: string; yieldPct?: string }>>({});
   const byId = new Map(materials.map((m) => [m.id, m]));
 
   function update(key: number, patch: Partial<Row>) {
@@ -64,26 +71,46 @@ export function BomEditor({
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const errs: Record<number, { material?: string; quantity?: string; uom?: string }> = {};
+    const errs: Record<number, { material?: string; quantity?: string; uom?: string; scrapPct?: string; yieldPct?: string }> = {};
     const seen = new Set<string>();
-    const lines: { materialItemId: string; quantity: number; uom: string }[] = [];
+    const lines: { materialItemId: string; quantity: number; uom: string; expectedScrapPct?: number; expectedYieldPct?: number }[] = [];
     for (const r of rows) {
-      const e1: { material?: string; quantity?: string; uom?: string } = {};
+      const e1: { material?: string; quantity?: string; uom?: string; scrapPct?: string; yieldPct?: string } = {};
       if (!r.materialItemId) e1.material = "Choose a material.";
       else if (seen.has(r.materialItemId)) e1.material = "This material is already on another line.";
       else seen.add(r.materialItemId);
       const q = parseDecimalInput(r.quantity, { maxDecimals: 4, min: "positive", label: "Quantity" });
       if (!q.ok) e1.quantity = q.message;
       if (!r.uom.trim()) e1.uom = "Required.";
+
+      let scrapPct: number | undefined;
+      if (r.scrapPct.trim() !== "") {
+        const s = parseDecimalInput(r.scrapPct, { maxDecimals: 2, min: "nonnegative", label: "Expected scrap %" });
+        if (!s.ok) e1.scrapPct = s.message;
+        else if (s.value >= 100) e1.scrapPct = "Expected scrap % must be less than 100 -- 100% would mean the material is never consumed.";
+        else scrapPct = s.value;
+      }
+      let yieldPct: number | undefined;
+      if (r.yieldPct.trim() !== "") {
+        const y = parseDecimalInput(r.yieldPct, { maxDecimals: 2, min: "positive", label: "Expected yield %" });
+        if (!y.ok) e1.yieldPct = y.message;
+        else if (y.value > 100) e1.yieldPct = "Expected yield % can't be more than 100.";
+        else yieldPct = y.value;
+      }
+
       if (Object.keys(e1).length) errs[r.key] = e1;
-      else if (q.ok) lines.push({ materialItemId: r.materialItemId, quantity: q.value, uom: r.uom.trim() });
+      else if (q.ok) lines.push({ materialItemId: r.materialItemId, quantity: q.value, uom: r.uom.trim(), expectedScrapPct: scrapPct, expectedYieldPct: yieldPct });
     }
+    let effectiveToValue: string | undefined;
+    if (effectiveTo.trim() !== "") effectiveToValue = effectiveTo;
     setRowErrors(errs);
     if (Object.keys(errs).length > 0) {
       sub.fail("Fix the highlighted lines and try again.");
       return;
     }
-    const result = await sub.run(() => apiRequest<Bom>(`/api/v1/items/${productId}/boms`, { method: "POST", body: { lines } }));
+    const result = await sub.run(() =>
+      apiRequest<Bom>(`/api/v1/items/${productId}/boms`, { method: "POST", body: { lines, ...(effectiveToValue ? { effectiveTo: effectiveToValue } : {}) } }),
+    );
     if (result?.ok) {
       router.push(`/catalog/items/${productId}?tab=bom`);
       router.refresh();
@@ -147,6 +174,22 @@ export function BomEditor({
                   </Button>
                 </div>
               </div>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2 sm:max-w-sm">
+                <div className="space-y-1">
+                  <label htmlFor={`sp-${r.key}`} className="text-xs font-medium text-muted-foreground">
+                    Expected scrap % <span className="font-normal">(optional)</span>
+                  </label>
+                  <Input id={`sp-${r.key}`} inputMode="decimal" value={r.scrapPct} onChange={(e) => update(r.key, { scrapPct: e.target.value })} aria-invalid={Boolean(err.scrapPct) || undefined} />
+                  {err.scrapPct ? <p role="alert" className="text-xs text-destructive">{err.scrapPct}</p> : null}
+                </div>
+                <div className="space-y-1">
+                  <label htmlFor={`yp-${r.key}`} className="text-xs font-medium text-muted-foreground">
+                    Expected yield % <span className="font-normal">(optional, informational only)</span>
+                  </label>
+                  <Input id={`yp-${r.key}`} inputMode="decimal" value={r.yieldPct} onChange={(e) => update(r.key, { yieldPct: e.target.value })} aria-invalid={Boolean(err.yieldPct) || undefined} />
+                  {err.yieldPct ? <p role="alert" className="text-xs text-destructive">{err.yieldPct}</p> : null}
+                </div>
+              </div>
               {mismatch ? (
                 <p className="mt-2 text-xs text-status-warning">
                   This line uses {r.uom.trim()}, but the material is stocked in {m?.uom}. Jobs can&apos;t price this line until the units match.
@@ -162,12 +205,20 @@ export function BomEditor({
         variant="outline"
         disabled={sub.pending || rows.length >= 200}
         onClick={() => {
-          setRows((rs) => [...rs, { key: nextKey, materialItemId: "", quantity: "", uom: "" }]);
+          setRows((rs) => [...rs, { key: nextKey, materialItemId: "", quantity: "", uom: "", scrapPct: "", yieldPct: "" }]);
           setNextKey((k) => k + 1);
         }}
       >
         <Plus /> Add line
       </Button>
+
+      <div className="max-w-xs space-y-1 border-t border-border pt-4">
+        <label htmlFor="effective-to" className="text-xs font-medium text-muted-foreground">
+          Effective to <span className="font-normal">(optional)</span>
+        </label>
+        <Input id="effective-to" type="date" value={effectiveTo} onChange={(e) => setEffectiveTo(e.target.value)} />
+        <p className="text-xs text-muted-foreground">Informational only -- it does not automatically supersede or deactivate this version.</p>
+      </div>
 
       <div className="flex gap-2 border-t border-border pt-4">
         <SubmitButton pending={sub.pending} pendingLabel="Saving…">
