@@ -1,4 +1,4 @@
-﻿INSERT INTO currency (code, name, decimals)
+INSERT INTO currency (code, name, decimals)
 VALUES
   ('USD', 'United States Dollar', 2),
   ('ZIG', 'Zimbabwe Gold', 2),

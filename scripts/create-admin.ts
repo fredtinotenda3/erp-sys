@@ -20,19 +20,19 @@ async function main() {
   if (!password || password.length < 12) {
     throw new Error("Set ADMIN_PASSWORD (at least 12 characters) before running this script.");
   }
-  const slug = (process.env.ORG_SLUG ?? "willsgrove").trim().toLowerCase();
-  const email = (process.env.ADMIN_EMAIL ?? "debtors2@willsgrove.co.zw").trim().toLowerCase();
+  const slug = (process.env.ORG_SLUG ?? "stanleyverse").trim().toLowerCase();
+  const email = (process.env.ADMIN_EMAIL ?? "fredtinotenda@gmail.com").trim().toLowerCase();
 
   const org = await prisma.organization.findUnique({ where: { slug }, select: { id: true, name: true } });
 
   if (!org) {
     const result = await bootstrapOrganization({
-      organizationName: process.env.ORG_NAME ?? "Wills Grove",
+      organizationName: process.env.ORG_NAME ?? "StanleyVerse",
       organizationSlug: slug,
       baseCurrency: process.env.BASE_CURRENCY ?? "USD",
       firstBranchName: process.env.BRANCH_NAME ?? "Main",
       ownerEmail: email,
-      ownerFullName: process.env.ADMIN_NAME ?? "Wills Grove Admin",
+      ownerFullName: process.env.ADMIN_NAME ?? "Stanley",
       ownerPassword: password,
     });
     await login({ organizationSlug: result.organizationSlug, email, password });
