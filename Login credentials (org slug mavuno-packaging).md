@@ -1,0 +1,9 @@
+owner@mavunopackaging.test                Mavuno2026!Owner#Harare
+production.manager@mavunopackaging.test   Mavuno2026!Team#Harare
+purchasing@mavunopackaging.test           Mavuno2026!Team#Harare
+warehouse@mavunopackaging.test            Mavuno2026!Team#Harare
+supervisor@mavunopackaging.test           Mavuno2026!Team#Harare
+operator@mavunopackaging.test             Mavuno2026!Team#Harare
+quality@mavunopackaging.test              Mavuno2026!Team#Harare
+sales@mavunopackaging.test                Mavuno2026!Team#Harare
+Organization: mavuno-packaging

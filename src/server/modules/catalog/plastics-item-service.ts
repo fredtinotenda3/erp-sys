@@ -9,7 +9,6 @@
 // READ operations do not, for the same historical-integrity reason as
 // mould-service.ts's header comment.
 import { z } from "zod";
-import { Prisma } from "../../../generated/prisma/client";
 import { prisma } from "../../shared/db";
 import { assertCapability } from "../../shared/authz";
 import { NotFoundError, ValidationError } from "../../shared/errors";
@@ -104,18 +103,49 @@ export async function setPlasticsMaterialAttributes(session: AuthenticatedSessio
     recycledContentPct: merged(d.recycledContentPct, existing?.recycledContentPct?.toNumber() ?? null),
     supplierMaterialRef: merged(d.supplierMaterialRef, existing?.supplierMaterialRef),
     materialCertificateReference: merged(d.materialCertificateReference, existing?.materialCertificateReference),
-    // Prisma's generated input types for a nullable Json column don't accept
-    // a plain `null` (it's ambiguous with "column not provided") -- the
-    // Prisma.JsonNull sentinel is how a caller asks for the SQL/JSON null
-    // merged() already decided on. No behaviour change, just the type the
-    // client requires for the same outcome.
-    blendComposition: merged(d.blendComposition, existing?.blendComposition as unknown as { component: string; percentage: number }[] | null | undefined) ?? Prisma.JsonNull,
-  };
+  } as Record<string, unknown>;
+
+  // blendComposition is handled separately from the scalar fields above, and
+  // deliberately never via the Prisma.DbNull/Prisma.JsonNull sentinels the
+  // previous version of this function used. CONFIRMED BY ACTUAL RUNTIME
+  // FAILURE (not just reasoning about the type docs): against this
+  // project's real Prisma 7 + @prisma/adapter-pg configuration,
+  // `Prisma.DbNull` did not reach the database as real SQL NULL -- it was
+  // stored as a JSON null, which fails this column's own CHECK constraint
+  // (plastics_material_attributes_blend_is_array: "blend_composition IS
+  // NULL OR jsonb_typeof(blend_composition) = 'array'") on *every*
+  // create/update with no blend composition supplied, which is the common
+  // case. The fix below never sends the sentinel at all:
+  //   - caller omitted the key entirely (d.blendComposition === undefined):
+  //     don't put `blendComposition` in `data` at all. On create, an absent
+  //     key leaves the column to its table default (no @default on this
+  //     column, so plain SQL NULL -- satisfies the constraint's first
+  //     branch). On update, an absent key leaves the column untouched,
+  //     which is the intended "omitted key keeps existing value" semantic.
+  //   - caller explicitly provided a real array: set `blendComposition` to
+  //     that plain array. This is ordinary JSON serialization of a real
+  //     value, not a null sentinel, and is unaffected by the bug above.
+  //   - caller explicitly provided `null` (an explicit clear request) on an
+  //     UPDATE of a row that currently has a non-null value: this is the
+  //     one case that must force the column to real SQL NULL. Rather than
+  //     trust any Prisma null sentinel again, this is done with a raw,
+  //     parameterized UPDATE in the same transaction, which talks to
+  //     Postgres directly and has no sentinel-translation step to get wrong.
+  const explicitClear = d.blendComposition === null && !!existing?.blendComposition;
+  if (Array.isArray(d.blendComposition)) {
+    data.blendComposition = d.blendComposition;
+  }
+  // (If d.blendComposition is undefined, or an explicit null with nothing
+  // to clear, `data` simply never gets a blendComposition key -- correct
+  // for both create and update, per the reasoning above.)
 
   return prisma.$transaction(async (tx) => {
     const row = existing
       ? await tx.plasticsMaterialAttributes.update({ where: { id: existing.id }, data })
-      : await tx.plasticsMaterialAttributes.create({ data });
+      : await tx.plasticsMaterialAttributes.create({ data: data as Parameters<typeof tx.plasticsMaterialAttributes.create>[0]["data"] });
+    if (explicitClear) {
+      await tx.$executeRaw`UPDATE plastics_material_attributes SET blend_composition = NULL WHERE id = ${row.id}::uuid`;
+    }
     await recordAudit(tx, {
       orgId: session.orgId,
       actorUserId: session.userId,
@@ -125,7 +155,7 @@ export async function setPlasticsMaterialAttributes(session: AuthenticatedSessio
       beforeValue: existing ? { polymerGrade: existing.polymerGrade, resinSpec: existing.resinSpec } : undefined,
       afterValue: { itemId, polymerGrade: data.polymerGrade, resinSpec: data.resinSpec },
     });
-    return row;
+    return explicitClear ? { ...row, blendComposition: null } : row;
   });
 }
 
@@ -191,13 +221,29 @@ export async function setPlasticsProductSpec(session: AuthenticatedSession, item
     diameterMm: merged(d.diameterMm, existing?.diameterMm?.toNumber() ?? null),
     neckFinish: merged(d.neckFinish, existing?.neckFinish),
     closureCompatibilityNotes: merged(d.closureCompatibilityNotes, existing?.closureCompatibilityNotes),
-    otherAttributes: merged(d.otherAttributes, existing?.otherAttributes as unknown as Record<string, string> | null | undefined),
   } as { productType: string } & Record<string, unknown>;
+
+  // otherAttributes is also a nullable Json column (no CHECK constraint on
+  // this one, unlike blendComposition above, but the same underlying Prisma
+  // 7 + @prisma/adapter-pg null-sentinel risk applies in principle -- see
+  // setPlasticsMaterialAttributes's comment on blendComposition for the
+  // confirmed failure mode). Applying the identical, proven-safe pattern
+  // here pre-emptively, rather than waiting to find out the hard way a few
+  // seconds into seeding every product's spec: omit the key entirely unless
+  // there's a real object to set; force an explicit clear with raw SQL
+  // rather than any null sentinel.
+  const explicitClearOtherAttributes = d.otherAttributes === null && !!existing?.otherAttributes;
+  if (d.otherAttributes && typeof d.otherAttributes === "object") {
+    data.otherAttributes = d.otherAttributes;
+  }
 
   return prisma.$transaction(async (tx) => {
     const row = existing
       ? await tx.plasticsProductSpec.update({ where: { id: existing.id }, data })
       : await tx.plasticsProductSpec.create({ data: data as Parameters<typeof tx.plasticsProductSpec.create>[0]["data"] });
+    if (explicitClearOtherAttributes) {
+      await tx.$executeRaw`UPDATE plastics_product_spec SET other_attributes = NULL WHERE id = ${row.id}::uuid`;
+    }
     await recordAudit(tx, {
       orgId: session.orgId,
       actorUserId: session.userId,
@@ -207,6 +253,6 @@ export async function setPlasticsProductSpec(session: AuthenticatedSession, item
       beforeValue: existing ? { productType: existing.productType, resinType: existing.resinType } : undefined,
       afterValue: { itemId, productType: data.productType, resinType: data.resinType },
     });
-    return row;
+    return explicitClearOtherAttributes ? { ...row, otherAttributes: null } : row;
   });
 }
