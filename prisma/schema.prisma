@@ -919,6 +919,14 @@ model FinishedGoodsBatch {
   transferredFromBatch      FinishedGoodsBatch? @relation("FgBatchTransferLineage", fields: [orgId, transferredFromBatchId], references: [orgId, id])
   transferChildBatches      FinishedGoodsBatch[] @relation("FgBatchTransferLineage")
   transferredFromMovementId String?             @map("transferred_from_movement_id") @db.Uuid
+  // @@unique below is required, not cosmetic: fgBatchTransferredInTo on
+  // StockMovement is declared singular/optional ("FinishedGoodsBatch?"),
+  // which makes this a one-to-one relation to Prisma, and a one-to-one
+  // relation's defining side must be backed by a unique constraint on
+  // exactly these fields -- same requirement producedMovementId already
+  // satisfies two fields above. It also matches the real invariant: one
+  // transfer spawns exactly one child batch, so a given StockMovement is
+  // never the transfer-in movement for more than one FinishedGoodsBatch.
   transferredFromMovement   StockMovement?      @relation("FgBatchTransferInMovement", fields: [orgId, transferredFromMovementId], references: [orgId, id])
 
   movements        FgBatchMovement[]
@@ -929,6 +937,7 @@ model FinishedGoodsBatch {
   @@unique([orgId, batchNumber])
   @@unique([orgId, id])
   @@unique([orgId, producedMovementId])
+  @@unique([orgId, transferredFromMovementId])
   @@index([orgId, productItemId, warehouseId])
   @@index([orgId, jobId])
   @@map("finished_goods_batch")

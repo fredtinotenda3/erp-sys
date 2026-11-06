@@ -430,6 +430,11 @@ export type SupplierScalarRelationFilter = {
   isNot?: Prisma.SupplierWhereInput
 }
 
+export type SupplierNullableScalarRelationFilter = {
+  is?: Prisma.SupplierWhereInput | null
+  isNot?: Prisma.SupplierWhereInput | null
+}
+
 export type SupplierCreateNestedManyWithoutOrgInput = {
   create?: Prisma.XOR<Prisma.SupplierCreateWithoutOrgInput, Prisma.SupplierUncheckedCreateWithoutOrgInput> | Prisma.SupplierCreateWithoutOrgInput[] | Prisma.SupplierUncheckedCreateWithoutOrgInput[]
   connectOrCreate?: Prisma.SupplierCreateOrConnectWithoutOrgInput | Prisma.SupplierCreateOrConnectWithoutOrgInput[]
@@ -496,10 +501,12 @@ export type SupplierCreateNestedOneWithoutMaterialLotsInput = {
   connect?: Prisma.SupplierWhereUniqueInput
 }
 
-export type SupplierUpdateOneRequiredWithoutMaterialLotsNestedInput = {
+export type SupplierUpdateOneWithoutMaterialLotsNestedInput = {
   create?: Prisma.XOR<Prisma.SupplierCreateWithoutMaterialLotsInput, Prisma.SupplierUncheckedCreateWithoutMaterialLotsInput>
   connectOrCreate?: Prisma.SupplierCreateOrConnectWithoutMaterialLotsInput
   upsert?: Prisma.SupplierUpsertWithoutMaterialLotsInput
+  disconnect?: Prisma.SupplierWhereInput | boolean
+  delete?: Prisma.SupplierWhereInput | boolean
   connect?: Prisma.SupplierWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.SupplierUpdateToOneWithWhereWithoutMaterialLotsInput, Prisma.SupplierUpdateWithoutMaterialLotsInput>, Prisma.SupplierUncheckedUpdateWithoutMaterialLotsInput>
 }

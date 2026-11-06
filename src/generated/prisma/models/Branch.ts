@@ -198,6 +198,10 @@ export type BranchWhereInput = {
   auditLogs?: Prisma.AuditLogListRelationFilter
   purchaseOrders?: Prisma.PurchaseOrderListRelationFilter
   goodsReceipts?: Prisma.GoodsReceiptListRelationFilter
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchListRelationFilter
+  dispatches?: Prisma.DispatchListRelationFilter
+  workCentres?: Prisma.WorkCentreListRelationFilter
+  moulds?: Prisma.MouldListRelationFilter
 }
 
 export type BranchOrderByWithRelationInput = {
@@ -215,6 +219,10 @@ export type BranchOrderByWithRelationInput = {
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
   purchaseOrders?: Prisma.PurchaseOrderOrderByRelationAggregateInput
   goodsReceipts?: Prisma.GoodsReceiptOrderByRelationAggregateInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchOrderByRelationAggregateInput
+  dispatches?: Prisma.DispatchOrderByRelationAggregateInput
+  workCentres?: Prisma.WorkCentreOrderByRelationAggregateInput
+  moulds?: Prisma.MouldOrderByRelationAggregateInput
 }
 
 export type BranchWhereUniqueInput = Prisma.AtLeast<{
@@ -237,6 +245,10 @@ export type BranchWhereUniqueInput = Prisma.AtLeast<{
   auditLogs?: Prisma.AuditLogListRelationFilter
   purchaseOrders?: Prisma.PurchaseOrderListRelationFilter
   goodsReceipts?: Prisma.GoodsReceiptListRelationFilter
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchListRelationFilter
+  dispatches?: Prisma.DispatchListRelationFilter
+  workCentres?: Prisma.WorkCentreListRelationFilter
+  moulds?: Prisma.MouldListRelationFilter
 }, "id" | "orgId_name" | "orgId_id">
 
 export type BranchOrderByWithAggregationInput = {
@@ -277,6 +289,10 @@ export type BranchCreateInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutBranchInput
   purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
   goodsReceipts?: Prisma.GoodsReceiptCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUncheckedCreateInput = {
@@ -293,6 +309,10 @@ export type BranchUncheckedCreateInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutBranchInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
   goodsReceipts?: Prisma.GoodsReceiptUncheckedCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreUncheckedCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUpdateInput = {
@@ -309,6 +329,10 @@ export type BranchUpdateInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
   goodsReceipts?: Prisma.GoodsReceiptUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateInput = {
@@ -325,6 +349,10 @@ export type BranchUncheckedUpdateInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
   goodsReceipts?: Prisma.GoodsReceiptUncheckedUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUncheckedUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchCreateManyInput = {
@@ -514,6 +542,20 @@ export type BranchUpdateOneRequiredWithoutGoodsReceiptsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutGoodsReceiptsInput, Prisma.BranchUpdateWithoutGoodsReceiptsInput>, Prisma.BranchUncheckedUpdateWithoutGoodsReceiptsInput>
 }
 
+export type BranchCreateNestedOneWithoutFinishedGoodsBatchesInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutFinishedGoodsBatchesInput, Prisma.BranchUncheckedCreateWithoutFinishedGoodsBatchesInput>
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutFinishedGoodsBatchesInput
+  connect?: Prisma.BranchWhereUniqueInput
+}
+
+export type BranchUpdateOneRequiredWithoutFinishedGoodsBatchesNestedInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutFinishedGoodsBatchesInput, Prisma.BranchUncheckedCreateWithoutFinishedGoodsBatchesInput>
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutFinishedGoodsBatchesInput
+  upsert?: Prisma.BranchUpsertWithoutFinishedGoodsBatchesInput
+  connect?: Prisma.BranchWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutFinishedGoodsBatchesInput, Prisma.BranchUpdateWithoutFinishedGoodsBatchesInput>, Prisma.BranchUncheckedUpdateWithoutFinishedGoodsBatchesInput>
+}
+
 export type BranchCreateNestedOneWithoutSalesOrdersInput = {
   create?: Prisma.XOR<Prisma.BranchCreateWithoutSalesOrdersInput, Prisma.BranchUncheckedCreateWithoutSalesOrdersInput>
   connectOrCreate?: Prisma.BranchCreateOrConnectWithoutSalesOrdersInput
@@ -526,6 +568,20 @@ export type BranchUpdateOneRequiredWithoutSalesOrdersNestedInput = {
   upsert?: Prisma.BranchUpsertWithoutSalesOrdersInput
   connect?: Prisma.BranchWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutSalesOrdersInput, Prisma.BranchUpdateWithoutSalesOrdersInput>, Prisma.BranchUncheckedUpdateWithoutSalesOrdersInput>
+}
+
+export type BranchCreateNestedOneWithoutDispatchesInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutDispatchesInput, Prisma.BranchUncheckedCreateWithoutDispatchesInput>
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutDispatchesInput
+  connect?: Prisma.BranchWhereUniqueInput
+}
+
+export type BranchUpdateOneRequiredWithoutDispatchesNestedInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutDispatchesInput, Prisma.BranchUncheckedCreateWithoutDispatchesInput>
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutDispatchesInput
+  upsert?: Prisma.BranchUpsertWithoutDispatchesInput
+  connect?: Prisma.BranchWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutDispatchesInput, Prisma.BranchUpdateWithoutDispatchesInput>, Prisma.BranchUncheckedUpdateWithoutDispatchesInput>
 }
 
 export type BranchCreateNestedOneWithoutProductionJobsInput = {
@@ -556,6 +612,34 @@ export type BranchUpdateOneRequiredWithoutWarehousesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutWarehousesInput, Prisma.BranchUpdateWithoutWarehousesInput>, Prisma.BranchUncheckedUpdateWithoutWarehousesInput>
 }
 
+export type BranchCreateNestedOneWithoutWorkCentresInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutWorkCentresInput, Prisma.BranchUncheckedCreateWithoutWorkCentresInput>
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutWorkCentresInput
+  connect?: Prisma.BranchWhereUniqueInput
+}
+
+export type BranchUpdateOneRequiredWithoutWorkCentresNestedInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutWorkCentresInput, Prisma.BranchUncheckedCreateWithoutWorkCentresInput>
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutWorkCentresInput
+  upsert?: Prisma.BranchUpsertWithoutWorkCentresInput
+  connect?: Prisma.BranchWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutWorkCentresInput, Prisma.BranchUpdateWithoutWorkCentresInput>, Prisma.BranchUncheckedUpdateWithoutWorkCentresInput>
+}
+
+export type BranchCreateNestedOneWithoutMouldsInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutMouldsInput, Prisma.BranchUncheckedCreateWithoutMouldsInput>
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutMouldsInput
+  connect?: Prisma.BranchWhereUniqueInput
+}
+
+export type BranchUpdateOneRequiredWithoutMouldsNestedInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutMouldsInput, Prisma.BranchUncheckedCreateWithoutMouldsInput>
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutMouldsInput
+  upsert?: Prisma.BranchUpsertWithoutMouldsInput
+  connect?: Prisma.BranchWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutMouldsInput, Prisma.BranchUpdateWithoutMouldsInput>, Prisma.BranchUncheckedUpdateWithoutMouldsInput>
+}
+
 export type BranchCreateWithoutOrgInput = {
   id?: string
   name: string
@@ -569,6 +653,10 @@ export type BranchCreateWithoutOrgInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutBranchInput
   purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
   goodsReceipts?: Prisma.GoodsReceiptCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUncheckedCreateWithoutOrgInput = {
@@ -584,6 +672,10 @@ export type BranchUncheckedCreateWithoutOrgInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutBranchInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
   goodsReceipts?: Prisma.GoodsReceiptUncheckedCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreUncheckedCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type BranchCreateOrConnectWithoutOrgInput = {
@@ -637,6 +729,10 @@ export type BranchCreateWithoutUserAccessInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutBranchInput
   purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
   goodsReceipts?: Prisma.GoodsReceiptCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUncheckedCreateWithoutUserAccessInput = {
@@ -652,6 +748,10 @@ export type BranchUncheckedCreateWithoutUserAccessInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutBranchInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
   goodsReceipts?: Prisma.GoodsReceiptUncheckedCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreUncheckedCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type BranchCreateOrConnectWithoutUserAccessInput = {
@@ -683,6 +783,10 @@ export type BranchUpdateWithoutUserAccessInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
   goodsReceipts?: Prisma.GoodsReceiptUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateWithoutUserAccessInput = {
@@ -698,6 +802,10 @@ export type BranchUncheckedUpdateWithoutUserAccessInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
   goodsReceipts?: Prisma.GoodsReceiptUncheckedUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUncheckedUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchCreateWithoutAuditLogsInput = {
@@ -713,6 +821,10 @@ export type BranchCreateWithoutAuditLogsInput = {
   salesOrders?: Prisma.SalesOrderCreateNestedManyWithoutBranchInput
   purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
   goodsReceipts?: Prisma.GoodsReceiptCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUncheckedCreateWithoutAuditLogsInput = {
@@ -728,6 +840,10 @@ export type BranchUncheckedCreateWithoutAuditLogsInput = {
   salesOrders?: Prisma.SalesOrderUncheckedCreateNestedManyWithoutBranchInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
   goodsReceipts?: Prisma.GoodsReceiptUncheckedCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreUncheckedCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type BranchCreateOrConnectWithoutAuditLogsInput = {
@@ -759,6 +875,10 @@ export type BranchUpdateWithoutAuditLogsInput = {
   salesOrders?: Prisma.SalesOrderUpdateManyWithoutBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
   goodsReceipts?: Prisma.GoodsReceiptUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateWithoutAuditLogsInput = {
@@ -774,6 +894,10 @@ export type BranchUncheckedUpdateWithoutAuditLogsInput = {
   salesOrders?: Prisma.SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
   goodsReceipts?: Prisma.GoodsReceiptUncheckedUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUncheckedUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchCreateWithoutPurchaseOrdersInput = {
@@ -789,6 +913,10 @@ export type BranchCreateWithoutPurchaseOrdersInput = {
   salesOrders?: Prisma.SalesOrderCreateNestedManyWithoutBranchInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutBranchInput
   goodsReceipts?: Prisma.GoodsReceiptCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUncheckedCreateWithoutPurchaseOrdersInput = {
@@ -804,6 +932,10 @@ export type BranchUncheckedCreateWithoutPurchaseOrdersInput = {
   salesOrders?: Prisma.SalesOrderUncheckedCreateNestedManyWithoutBranchInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutBranchInput
   goodsReceipts?: Prisma.GoodsReceiptUncheckedCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreUncheckedCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type BranchCreateOrConnectWithoutPurchaseOrdersInput = {
@@ -835,6 +967,10 @@ export type BranchUpdateWithoutPurchaseOrdersInput = {
   salesOrders?: Prisma.SalesOrderUpdateManyWithoutBranchNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutBranchNestedInput
   goodsReceipts?: Prisma.GoodsReceiptUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateWithoutPurchaseOrdersInput = {
@@ -850,6 +986,10 @@ export type BranchUncheckedUpdateWithoutPurchaseOrdersInput = {
   salesOrders?: Prisma.SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutBranchNestedInput
   goodsReceipts?: Prisma.GoodsReceiptUncheckedUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUncheckedUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchCreateWithoutGoodsReceiptsInput = {
@@ -865,6 +1005,10 @@ export type BranchCreateWithoutGoodsReceiptsInput = {
   salesOrders?: Prisma.SalesOrderCreateNestedManyWithoutBranchInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutBranchInput
   purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUncheckedCreateWithoutGoodsReceiptsInput = {
@@ -880,6 +1024,10 @@ export type BranchUncheckedCreateWithoutGoodsReceiptsInput = {
   salesOrders?: Prisma.SalesOrderUncheckedCreateNestedManyWithoutBranchInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutBranchInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreUncheckedCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type BranchCreateOrConnectWithoutGoodsReceiptsInput = {
@@ -911,6 +1059,10 @@ export type BranchUpdateWithoutGoodsReceiptsInput = {
   salesOrders?: Prisma.SalesOrderUpdateManyWithoutBranchNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateWithoutGoodsReceiptsInput = {
@@ -926,6 +1078,102 @@ export type BranchUncheckedUpdateWithoutGoodsReceiptsInput = {
   salesOrders?: Prisma.SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUncheckedUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUncheckedUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchCreateWithoutFinishedGoodsBatchesInput = {
+  id?: string
+  name: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  org: Prisma.OrganizationCreateNestedOneWithoutBranchesInput
+  userAccess?: Prisma.UserBranchAccessCreateNestedManyWithoutBranchInput
+  warehouses?: Prisma.WarehouseCreateNestedManyWithoutBranchInput
+  productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutBranchInput
+  salesOrders?: Prisma.SalesOrderCreateNestedManyWithoutBranchInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldCreateNestedManyWithoutBranchInput
+}
+
+export type BranchUncheckedCreateWithoutFinishedGoodsBatchesInput = {
+  id?: string
+  orgId: string
+  name: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userAccess?: Prisma.UserBranchAccessUncheckedCreateNestedManyWithoutBranchInput
+  warehouses?: Prisma.WarehouseUncheckedCreateNestedManyWithoutBranchInput
+  productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutBranchInput
+  salesOrders?: Prisma.SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreUncheckedCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldUncheckedCreateNestedManyWithoutBranchInput
+}
+
+export type BranchCreateOrConnectWithoutFinishedGoodsBatchesInput = {
+  where: Prisma.BranchWhereUniqueInput
+  create: Prisma.XOR<Prisma.BranchCreateWithoutFinishedGoodsBatchesInput, Prisma.BranchUncheckedCreateWithoutFinishedGoodsBatchesInput>
+}
+
+export type BranchUpsertWithoutFinishedGoodsBatchesInput = {
+  update: Prisma.XOR<Prisma.BranchUpdateWithoutFinishedGoodsBatchesInput, Prisma.BranchUncheckedUpdateWithoutFinishedGoodsBatchesInput>
+  create: Prisma.XOR<Prisma.BranchCreateWithoutFinishedGoodsBatchesInput, Prisma.BranchUncheckedCreateWithoutFinishedGoodsBatchesInput>
+  where?: Prisma.BranchWhereInput
+}
+
+export type BranchUpdateToOneWithWhereWithoutFinishedGoodsBatchesInput = {
+  where?: Prisma.BranchWhereInput
+  data: Prisma.XOR<Prisma.BranchUpdateWithoutFinishedGoodsBatchesInput, Prisma.BranchUncheckedUpdateWithoutFinishedGoodsBatchesInput>
+}
+
+export type BranchUpdateWithoutFinishedGoodsBatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  org?: Prisma.OrganizationUpdateOneRequiredWithoutBranchesNestedInput
+  userAccess?: Prisma.UserBranchAccessUpdateManyWithoutBranchNestedInput
+  warehouses?: Prisma.WarehouseUpdateManyWithoutBranchNestedInput
+  productionJobs?: Prisma.ProductionJobUpdateManyWithoutBranchNestedInput
+  salesOrders?: Prisma.SalesOrderUpdateManyWithoutBranchNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchUncheckedUpdateWithoutFinishedGoodsBatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userAccess?: Prisma.UserBranchAccessUncheckedUpdateManyWithoutBranchNestedInput
+  warehouses?: Prisma.WarehouseUncheckedUpdateManyWithoutBranchNestedInput
+  productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutBranchNestedInput
+  salesOrders?: Prisma.SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUncheckedUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchCreateWithoutSalesOrdersInput = {
@@ -941,6 +1189,10 @@ export type BranchCreateWithoutSalesOrdersInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutBranchInput
   purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
   goodsReceipts?: Prisma.GoodsReceiptCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUncheckedCreateWithoutSalesOrdersInput = {
@@ -956,6 +1208,10 @@ export type BranchUncheckedCreateWithoutSalesOrdersInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutBranchInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
   goodsReceipts?: Prisma.GoodsReceiptUncheckedCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreUncheckedCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type BranchCreateOrConnectWithoutSalesOrdersInput = {
@@ -987,6 +1243,10 @@ export type BranchUpdateWithoutSalesOrdersInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
   goodsReceipts?: Prisma.GoodsReceiptUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateWithoutSalesOrdersInput = {
@@ -1002,6 +1262,102 @@ export type BranchUncheckedUpdateWithoutSalesOrdersInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
   goodsReceipts?: Prisma.GoodsReceiptUncheckedUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUncheckedUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUncheckedUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchCreateWithoutDispatchesInput = {
+  id?: string
+  name: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  org: Prisma.OrganizationCreateNestedOneWithoutBranchesInput
+  userAccess?: Prisma.UserBranchAccessCreateNestedManyWithoutBranchInput
+  warehouses?: Prisma.WarehouseCreateNestedManyWithoutBranchInput
+  productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutBranchInput
+  salesOrders?: Prisma.SalesOrderCreateNestedManyWithoutBranchInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldCreateNestedManyWithoutBranchInput
+}
+
+export type BranchUncheckedCreateWithoutDispatchesInput = {
+  id?: string
+  orgId: string
+  name: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userAccess?: Prisma.UserBranchAccessUncheckedCreateNestedManyWithoutBranchInput
+  warehouses?: Prisma.WarehouseUncheckedCreateNestedManyWithoutBranchInput
+  productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutBranchInput
+  salesOrders?: Prisma.SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreUncheckedCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldUncheckedCreateNestedManyWithoutBranchInput
+}
+
+export type BranchCreateOrConnectWithoutDispatchesInput = {
+  where: Prisma.BranchWhereUniqueInput
+  create: Prisma.XOR<Prisma.BranchCreateWithoutDispatchesInput, Prisma.BranchUncheckedCreateWithoutDispatchesInput>
+}
+
+export type BranchUpsertWithoutDispatchesInput = {
+  update: Prisma.XOR<Prisma.BranchUpdateWithoutDispatchesInput, Prisma.BranchUncheckedUpdateWithoutDispatchesInput>
+  create: Prisma.XOR<Prisma.BranchCreateWithoutDispatchesInput, Prisma.BranchUncheckedCreateWithoutDispatchesInput>
+  where?: Prisma.BranchWhereInput
+}
+
+export type BranchUpdateToOneWithWhereWithoutDispatchesInput = {
+  where?: Prisma.BranchWhereInput
+  data: Prisma.XOR<Prisma.BranchUpdateWithoutDispatchesInput, Prisma.BranchUncheckedUpdateWithoutDispatchesInput>
+}
+
+export type BranchUpdateWithoutDispatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  org?: Prisma.OrganizationUpdateOneRequiredWithoutBranchesNestedInput
+  userAccess?: Prisma.UserBranchAccessUpdateManyWithoutBranchNestedInput
+  warehouses?: Prisma.WarehouseUpdateManyWithoutBranchNestedInput
+  productionJobs?: Prisma.ProductionJobUpdateManyWithoutBranchNestedInput
+  salesOrders?: Prisma.SalesOrderUpdateManyWithoutBranchNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchUncheckedUpdateWithoutDispatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userAccess?: Prisma.UserBranchAccessUncheckedUpdateManyWithoutBranchNestedInput
+  warehouses?: Prisma.WarehouseUncheckedUpdateManyWithoutBranchNestedInput
+  productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutBranchNestedInput
+  salesOrders?: Prisma.SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUncheckedUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchCreateWithoutProductionJobsInput = {
@@ -1017,6 +1373,10 @@ export type BranchCreateWithoutProductionJobsInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutBranchInput
   purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
   goodsReceipts?: Prisma.GoodsReceiptCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUncheckedCreateWithoutProductionJobsInput = {
@@ -1032,6 +1392,10 @@ export type BranchUncheckedCreateWithoutProductionJobsInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutBranchInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
   goodsReceipts?: Prisma.GoodsReceiptUncheckedCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreUncheckedCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type BranchCreateOrConnectWithoutProductionJobsInput = {
@@ -1063,6 +1427,10 @@ export type BranchUpdateWithoutProductionJobsInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
   goodsReceipts?: Prisma.GoodsReceiptUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateWithoutProductionJobsInput = {
@@ -1078,6 +1446,10 @@ export type BranchUncheckedUpdateWithoutProductionJobsInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
   goodsReceipts?: Prisma.GoodsReceiptUncheckedUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUncheckedUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchCreateWithoutWarehousesInput = {
@@ -1093,6 +1465,10 @@ export type BranchCreateWithoutWarehousesInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutBranchInput
   purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
   goodsReceipts?: Prisma.GoodsReceiptCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUncheckedCreateWithoutWarehousesInput = {
@@ -1108,6 +1484,10 @@ export type BranchUncheckedCreateWithoutWarehousesInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutBranchInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
   goodsReceipts?: Prisma.GoodsReceiptUncheckedCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreUncheckedCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type BranchCreateOrConnectWithoutWarehousesInput = {
@@ -1139,6 +1519,10 @@ export type BranchUpdateWithoutWarehousesInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
   goodsReceipts?: Prisma.GoodsReceiptUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateWithoutWarehousesInput = {
@@ -1154,6 +1538,194 @@ export type BranchUncheckedUpdateWithoutWarehousesInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
   goodsReceipts?: Prisma.GoodsReceiptUncheckedUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUncheckedUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUncheckedUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchCreateWithoutWorkCentresInput = {
+  id?: string
+  name: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  org: Prisma.OrganizationCreateNestedOneWithoutBranchesInput
+  userAccess?: Prisma.UserBranchAccessCreateNestedManyWithoutBranchInput
+  warehouses?: Prisma.WarehouseCreateNestedManyWithoutBranchInput
+  productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutBranchInput
+  salesOrders?: Prisma.SalesOrderCreateNestedManyWithoutBranchInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldCreateNestedManyWithoutBranchInput
+}
+
+export type BranchUncheckedCreateWithoutWorkCentresInput = {
+  id?: string
+  orgId: string
+  name: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userAccess?: Prisma.UserBranchAccessUncheckedCreateNestedManyWithoutBranchInput
+  warehouses?: Prisma.WarehouseUncheckedCreateNestedManyWithoutBranchInput
+  productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutBranchInput
+  salesOrders?: Prisma.SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutBranchInput
+  moulds?: Prisma.MouldUncheckedCreateNestedManyWithoutBranchInput
+}
+
+export type BranchCreateOrConnectWithoutWorkCentresInput = {
+  where: Prisma.BranchWhereUniqueInput
+  create: Prisma.XOR<Prisma.BranchCreateWithoutWorkCentresInput, Prisma.BranchUncheckedCreateWithoutWorkCentresInput>
+}
+
+export type BranchUpsertWithoutWorkCentresInput = {
+  update: Prisma.XOR<Prisma.BranchUpdateWithoutWorkCentresInput, Prisma.BranchUncheckedUpdateWithoutWorkCentresInput>
+  create: Prisma.XOR<Prisma.BranchCreateWithoutWorkCentresInput, Prisma.BranchUncheckedCreateWithoutWorkCentresInput>
+  where?: Prisma.BranchWhereInput
+}
+
+export type BranchUpdateToOneWithWhereWithoutWorkCentresInput = {
+  where?: Prisma.BranchWhereInput
+  data: Prisma.XOR<Prisma.BranchUpdateWithoutWorkCentresInput, Prisma.BranchUncheckedUpdateWithoutWorkCentresInput>
+}
+
+export type BranchUpdateWithoutWorkCentresInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  org?: Prisma.OrganizationUpdateOneRequiredWithoutBranchesNestedInput
+  userAccess?: Prisma.UserBranchAccessUpdateManyWithoutBranchNestedInput
+  warehouses?: Prisma.WarehouseUpdateManyWithoutBranchNestedInput
+  productionJobs?: Prisma.ProductionJobUpdateManyWithoutBranchNestedInput
+  salesOrders?: Prisma.SalesOrderUpdateManyWithoutBranchNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchUncheckedUpdateWithoutWorkCentresInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userAccess?: Prisma.UserBranchAccessUncheckedUpdateManyWithoutBranchNestedInput
+  warehouses?: Prisma.WarehouseUncheckedUpdateManyWithoutBranchNestedInput
+  productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutBranchNestedInput
+  salesOrders?: Prisma.SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUncheckedUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchCreateWithoutMouldsInput = {
+  id?: string
+  name: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  org: Prisma.OrganizationCreateNestedOneWithoutBranchesInput
+  userAccess?: Prisma.UserBranchAccessCreateNestedManyWithoutBranchInput
+  warehouses?: Prisma.WarehouseCreateNestedManyWithoutBranchInput
+  productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutBranchInput
+  salesOrders?: Prisma.SalesOrderCreateNestedManyWithoutBranchInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreCreateNestedManyWithoutBranchInput
+}
+
+export type BranchUncheckedCreateWithoutMouldsInput = {
+  id?: string
+  orgId: string
+  name: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userAccess?: Prisma.UserBranchAccessUncheckedCreateNestedManyWithoutBranchInput
+  warehouses?: Prisma.WarehouseUncheckedCreateNestedManyWithoutBranchInput
+  productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutBranchInput
+  salesOrders?: Prisma.SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedCreateNestedManyWithoutBranchInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedCreateNestedManyWithoutBranchInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutBranchInput
+  workCentres?: Prisma.WorkCentreUncheckedCreateNestedManyWithoutBranchInput
+}
+
+export type BranchCreateOrConnectWithoutMouldsInput = {
+  where: Prisma.BranchWhereUniqueInput
+  create: Prisma.XOR<Prisma.BranchCreateWithoutMouldsInput, Prisma.BranchUncheckedCreateWithoutMouldsInput>
+}
+
+export type BranchUpsertWithoutMouldsInput = {
+  update: Prisma.XOR<Prisma.BranchUpdateWithoutMouldsInput, Prisma.BranchUncheckedUpdateWithoutMouldsInput>
+  create: Prisma.XOR<Prisma.BranchCreateWithoutMouldsInput, Prisma.BranchUncheckedCreateWithoutMouldsInput>
+  where?: Prisma.BranchWhereInput
+}
+
+export type BranchUpdateToOneWithWhereWithoutMouldsInput = {
+  where?: Prisma.BranchWhereInput
+  data: Prisma.XOR<Prisma.BranchUpdateWithoutMouldsInput, Prisma.BranchUncheckedUpdateWithoutMouldsInput>
+}
+
+export type BranchUpdateWithoutMouldsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  org?: Prisma.OrganizationUpdateOneRequiredWithoutBranchesNestedInput
+  userAccess?: Prisma.UserBranchAccessUpdateManyWithoutBranchNestedInput
+  warehouses?: Prisma.WarehouseUpdateManyWithoutBranchNestedInput
+  productionJobs?: Prisma.ProductionJobUpdateManyWithoutBranchNestedInput
+  salesOrders?: Prisma.SalesOrderUpdateManyWithoutBranchNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchUncheckedUpdateWithoutMouldsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userAccess?: Prisma.UserBranchAccessUncheckedUpdateManyWithoutBranchNestedInput
+  warehouses?: Prisma.WarehouseUncheckedUpdateManyWithoutBranchNestedInput
+  productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutBranchNestedInput
+  salesOrders?: Prisma.SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+  goodsReceipts?: Prisma.GoodsReceiptUncheckedUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchCreateManyOrgInput = {
@@ -1177,6 +1749,10 @@ export type BranchUpdateWithoutOrgInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
   goodsReceipts?: Prisma.GoodsReceiptUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateWithoutOrgInput = {
@@ -1192,6 +1768,10 @@ export type BranchUncheckedUpdateWithoutOrgInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
   goodsReceipts?: Prisma.GoodsReceiptUncheckedUpdateManyWithoutBranchNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedUpdateManyWithoutBranchNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutBranchNestedInput
+  workCentres?: Prisma.WorkCentreUncheckedUpdateManyWithoutBranchNestedInput
+  moulds?: Prisma.MouldUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateManyWithoutOrgInput = {
@@ -1215,6 +1795,10 @@ export type BranchCountOutputType = {
   auditLogs: number
   purchaseOrders: number
   goodsReceipts: number
+  finishedGoodsBatches: number
+  dispatches: number
+  workCentres: number
+  moulds: number
 }
 
 export type BranchCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1225,6 +1809,10 @@ export type BranchCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions
   auditLogs?: boolean | BranchCountOutputTypeCountAuditLogsArgs
   purchaseOrders?: boolean | BranchCountOutputTypeCountPurchaseOrdersArgs
   goodsReceipts?: boolean | BranchCountOutputTypeCountGoodsReceiptsArgs
+  finishedGoodsBatches?: boolean | BranchCountOutputTypeCountFinishedGoodsBatchesArgs
+  dispatches?: boolean | BranchCountOutputTypeCountDispatchesArgs
+  workCentres?: boolean | BranchCountOutputTypeCountWorkCentresArgs
+  moulds?: boolean | BranchCountOutputTypeCountMouldsArgs
 }
 
 /**
@@ -1286,6 +1874,34 @@ export type BranchCountOutputTypeCountGoodsReceiptsArgs<ExtArgs extends runtime.
   where?: Prisma.GoodsReceiptWhereInput
 }
 
+/**
+ * BranchCountOutputType without action
+ */
+export type BranchCountOutputTypeCountFinishedGoodsBatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FinishedGoodsBatchWhereInput
+}
+
+/**
+ * BranchCountOutputType without action
+ */
+export type BranchCountOutputTypeCountDispatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DispatchWhereInput
+}
+
+/**
+ * BranchCountOutputType without action
+ */
+export type BranchCountOutputTypeCountWorkCentresArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkCentreWhereInput
+}
+
+/**
+ * BranchCountOutputType without action
+ */
+export type BranchCountOutputTypeCountMouldsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MouldWhereInput
+}
+
 
 export type BranchSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1302,6 +1918,10 @@ export type BranchSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   auditLogs?: boolean | Prisma.Branch$auditLogsArgs<ExtArgs>
   purchaseOrders?: boolean | Prisma.Branch$purchaseOrdersArgs<ExtArgs>
   goodsReceipts?: boolean | Prisma.Branch$goodsReceiptsArgs<ExtArgs>
+  finishedGoodsBatches?: boolean | Prisma.Branch$finishedGoodsBatchesArgs<ExtArgs>
+  dispatches?: boolean | Prisma.Branch$dispatchesArgs<ExtArgs>
+  workCentres?: boolean | Prisma.Branch$workCentresArgs<ExtArgs>
+  moulds?: boolean | Prisma.Branch$mouldsArgs<ExtArgs>
   _count?: boolean | Prisma.BranchCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["branch"]>
 
@@ -1344,6 +1964,10 @@ export type BranchInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   auditLogs?: boolean | Prisma.Branch$auditLogsArgs<ExtArgs>
   purchaseOrders?: boolean | Prisma.Branch$purchaseOrdersArgs<ExtArgs>
   goodsReceipts?: boolean | Prisma.Branch$goodsReceiptsArgs<ExtArgs>
+  finishedGoodsBatches?: boolean | Prisma.Branch$finishedGoodsBatchesArgs<ExtArgs>
+  dispatches?: boolean | Prisma.Branch$dispatchesArgs<ExtArgs>
+  workCentres?: boolean | Prisma.Branch$workCentresArgs<ExtArgs>
+  moulds?: boolean | Prisma.Branch$mouldsArgs<ExtArgs>
   _count?: boolean | Prisma.BranchCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type BranchIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1364,6 +1988,10 @@ export type $BranchPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
     purchaseOrders: Prisma.$PurchaseOrderPayload<ExtArgs>[]
     goodsReceipts: Prisma.$GoodsReceiptPayload<ExtArgs>[]
+    finishedGoodsBatches: Prisma.$FinishedGoodsBatchPayload<ExtArgs>[]
+    dispatches: Prisma.$DispatchPayload<ExtArgs>[]
+    workCentres: Prisma.$WorkCentrePayload<ExtArgs>[]
+    moulds: Prisma.$MouldPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1774,6 +2402,10 @@ export interface Prisma__BranchClient<T, Null = never, ExtArgs extends runtime.T
   auditLogs<T extends Prisma.Branch$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   purchaseOrders<T extends Prisma.Branch$purchaseOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$purchaseOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PurchaseOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   goodsReceipts<T extends Prisma.Branch$goodsReceiptsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$goodsReceiptsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GoodsReceiptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  finishedGoodsBatches<T extends Prisma.Branch$finishedGoodsBatchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$finishedGoodsBatchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FinishedGoodsBatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  dispatches<T extends Prisma.Branch$dispatchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$dispatchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DispatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  workCentres<T extends Prisma.Branch$workCentresArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$workCentresArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkCentrePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  moulds<T extends Prisma.Branch$mouldsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$mouldsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MouldPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2375,6 +3007,102 @@ export type Branch$goodsReceiptsArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.GoodsReceiptScalarFieldEnum | Prisma.GoodsReceiptScalarFieldEnum[]
+}
+
+/**
+ * Branch.finishedGoodsBatches
+ */
+export type Branch$finishedGoodsBatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FinishedGoodsBatch
+   */
+  select?: Prisma.FinishedGoodsBatchSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FinishedGoodsBatch
+   */
+  omit?: Prisma.FinishedGoodsBatchOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FinishedGoodsBatchInclude<ExtArgs> | null
+  where?: Prisma.FinishedGoodsBatchWhereInput
+  orderBy?: Prisma.FinishedGoodsBatchOrderByWithRelationInput | Prisma.FinishedGoodsBatchOrderByWithRelationInput[]
+  cursor?: Prisma.FinishedGoodsBatchWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FinishedGoodsBatchScalarFieldEnum | Prisma.FinishedGoodsBatchScalarFieldEnum[]
+}
+
+/**
+ * Branch.dispatches
+ */
+export type Branch$dispatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Dispatch
+   */
+  select?: Prisma.DispatchSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Dispatch
+   */
+  omit?: Prisma.DispatchOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DispatchInclude<ExtArgs> | null
+  where?: Prisma.DispatchWhereInput
+  orderBy?: Prisma.DispatchOrderByWithRelationInput | Prisma.DispatchOrderByWithRelationInput[]
+  cursor?: Prisma.DispatchWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DispatchScalarFieldEnum | Prisma.DispatchScalarFieldEnum[]
+}
+
+/**
+ * Branch.workCentres
+ */
+export type Branch$workCentresArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkCentre
+   */
+  select?: Prisma.WorkCentreSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkCentre
+   */
+  omit?: Prisma.WorkCentreOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkCentreInclude<ExtArgs> | null
+  where?: Prisma.WorkCentreWhereInput
+  orderBy?: Prisma.WorkCentreOrderByWithRelationInput | Prisma.WorkCentreOrderByWithRelationInput[]
+  cursor?: Prisma.WorkCentreWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkCentreScalarFieldEnum | Prisma.WorkCentreScalarFieldEnum[]
+}
+
+/**
+ * Branch.moulds
+ */
+export type Branch$mouldsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Mould
+   */
+  select?: Prisma.MouldSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Mould
+   */
+  omit?: Prisma.MouldOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MouldInclude<ExtArgs> | null
+  where?: Prisma.MouldWhereInput
+  orderBy?: Prisma.MouldOrderByWithRelationInput | Prisma.MouldOrderByWithRelationInput[]
+  cursor?: Prisma.MouldWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MouldScalarFieldEnum | Prisma.MouldScalarFieldEnum[]
 }
 
 /**

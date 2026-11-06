@@ -123,6 +123,26 @@ export type MaterialLot = Prisma.MaterialLotModel
  */
 export type LotConsumption = Prisma.LotConsumptionModel
 /**
+ * Model FinishedGoodsBatch
+ * 
+ */
+export type FinishedGoodsBatch = Prisma.FinishedGoodsBatchModel
+/**
+ * Model FgBatchMovement
+ * 
+ */
+export type FgBatchMovement = Prisma.FgBatchMovementModel
+/**
+ * Model FgBatchMaterialLot
+ * 
+ */
+export type FgBatchMaterialLot = Prisma.FgBatchMaterialLotModel
+/**
+ * Model FinishedGoodsBatchCostLine
+ * 
+ */
+export type FinishedGoodsBatchCostLine = Prisma.FinishedGoodsBatchCostLineModel
+/**
  * Model SalesOrder
  * 
  */
@@ -132,6 +152,21 @@ export type SalesOrder = Prisma.SalesOrderModel
  * 
  */
 export type SalesOrderLine = Prisma.SalesOrderLineModel
+/**
+ * Model Dispatch
+ * 
+ */
+export type Dispatch = Prisma.DispatchModel
+/**
+ * Model DispatchLine
+ * 
+ */
+export type DispatchLine = Prisma.DispatchLineModel
+/**
+ * Model DispatchBatchAllocation
+ * 
+ */
+export type DispatchBatchAllocation = Prisma.DispatchBatchAllocationModel
 /**
  * Model ProductionJob
  * 
@@ -222,3 +257,78 @@ export type ProductionOutputVoid = Prisma.ProductionOutputVoidModel
  * 
  */
 export type QualityDisposition = Prisma.QualityDispositionModel
+/**
+ * Model WorkCentre
+ * 
+ */
+export type WorkCentre = Prisma.WorkCentreModel
+/**
+ * Model Machine
+ * 
+ */
+export type Machine = Prisma.MachineModel
+/**
+ * Model MachineDowntimeRecord
+ * 
+ */
+export type MachineDowntimeRecord = Prisma.MachineDowntimeRecordModel
+/**
+ * Model MachineMaintenanceRecord
+ * 
+ */
+export type MachineMaintenanceRecord = Prisma.MachineMaintenanceRecordModel
+/**
+ * Model MachineTimeRecord
+ * 
+ */
+export type MachineTimeRecord = Prisma.MachineTimeRecordModel
+/**
+ * Model InspectionPlan
+ * 
+ */
+export type InspectionPlan = Prisma.InspectionPlanModel
+/**
+ * Model InspectionCharacteristic
+ * 
+ */
+export type InspectionCharacteristic = Prisma.InspectionCharacteristicModel
+/**
+ * Model QualityMeasurement
+ * 
+ */
+export type QualityMeasurement = Prisma.QualityMeasurementModel
+/**
+ * Model CorrectiveAction
+ * 
+ */
+export type CorrectiveAction = Prisma.CorrectiveActionModel
+/**
+ * Model Mould
+ * 
+ */
+export type Mould = Prisma.MouldModel
+/**
+ * Model MouldMachineCompatibility
+ * 
+ */
+export type MouldMachineCompatibility = Prisma.MouldMachineCompatibilityModel
+/**
+ * Model MouldMaintenanceRecord
+ * 
+ */
+export type MouldMaintenanceRecord = Prisma.MouldMaintenanceRecordModel
+/**
+ * Model PlasticsMaterialAttributes
+ * 
+ */
+export type PlasticsMaterialAttributes = Prisma.PlasticsMaterialAttributesModel
+/**
+ * Model PlasticsProductSpec
+ * 
+ */
+export type PlasticsProductSpec = Prisma.PlasticsProductSpecModel
+/**
+ * Model PlasticsProcessDetail
+ * 
+ */
+export type PlasticsProcessDetail = Prisma.PlasticsProcessDetailModel

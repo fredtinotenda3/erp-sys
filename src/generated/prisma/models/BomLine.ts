@@ -28,10 +28,14 @@ export type AggregateBomLine = {
 
 export type BomLineAvgAggregateOutputType = {
   quantity: runtime.Decimal | null
+  expectedScrapPct: runtime.Decimal | null
+  expectedYieldPct: runtime.Decimal | null
 }
 
 export type BomLineSumAggregateOutputType = {
   quantity: runtime.Decimal | null
+  expectedScrapPct: runtime.Decimal | null
+  expectedYieldPct: runtime.Decimal | null
 }
 
 export type BomLineMinAggregateOutputType = {
@@ -41,6 +45,8 @@ export type BomLineMinAggregateOutputType = {
   materialItemId: string | null
   quantity: runtime.Decimal | null
   uom: string | null
+  expectedScrapPct: runtime.Decimal | null
+  expectedYieldPct: runtime.Decimal | null
 }
 
 export type BomLineMaxAggregateOutputType = {
@@ -50,6 +56,8 @@ export type BomLineMaxAggregateOutputType = {
   materialItemId: string | null
   quantity: runtime.Decimal | null
   uom: string | null
+  expectedScrapPct: runtime.Decimal | null
+  expectedYieldPct: runtime.Decimal | null
 }
 
 export type BomLineCountAggregateOutputType = {
@@ -59,16 +67,22 @@ export type BomLineCountAggregateOutputType = {
   materialItemId: number
   quantity: number
   uom: number
+  expectedScrapPct: number
+  expectedYieldPct: number
   _all: number
 }
 
 
 export type BomLineAvgAggregateInputType = {
   quantity?: true
+  expectedScrapPct?: true
+  expectedYieldPct?: true
 }
 
 export type BomLineSumAggregateInputType = {
   quantity?: true
+  expectedScrapPct?: true
+  expectedYieldPct?: true
 }
 
 export type BomLineMinAggregateInputType = {
@@ -78,6 +92,8 @@ export type BomLineMinAggregateInputType = {
   materialItemId?: true
   quantity?: true
   uom?: true
+  expectedScrapPct?: true
+  expectedYieldPct?: true
 }
 
 export type BomLineMaxAggregateInputType = {
@@ -87,6 +103,8 @@ export type BomLineMaxAggregateInputType = {
   materialItemId?: true
   quantity?: true
   uom?: true
+  expectedScrapPct?: true
+  expectedYieldPct?: true
 }
 
 export type BomLineCountAggregateInputType = {
@@ -96,6 +114,8 @@ export type BomLineCountAggregateInputType = {
   materialItemId?: true
   quantity?: true
   uom?: true
+  expectedScrapPct?: true
+  expectedYieldPct?: true
   _all?: true
 }
 
@@ -192,6 +212,8 @@ export type BomLineGroupByOutputType = {
   materialItemId: string
   quantity: runtime.Decimal
   uom: string
+  expectedScrapPct: runtime.Decimal | null
+  expectedYieldPct: runtime.Decimal | null
   _count: BomLineCountAggregateOutputType | null
   _avg: BomLineAvgAggregateOutputType | null
   _sum: BomLineSumAggregateOutputType | null
@@ -224,6 +246,8 @@ export type BomLineWhereInput = {
   materialItemId?: Prisma.UuidFilter<"BomLine"> | string
   quantity?: Prisma.DecimalFilter<"BomLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFilter<"BomLine"> | string
+  expectedScrapPct?: Prisma.DecimalNullableFilter<"BomLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: Prisma.DecimalNullableFilter<"BomLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   bom?: Prisma.XOR<Prisma.BillOfMaterialScalarRelationFilter, Prisma.BillOfMaterialWhereInput>
   materialItem?: Prisma.XOR<Prisma.ItemScalarRelationFilter, Prisma.ItemWhereInput>
 }
@@ -235,6 +259,8 @@ export type BomLineOrderByWithRelationInput = {
   materialItemId?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   uom?: Prisma.SortOrder
+  expectedScrapPct?: Prisma.SortOrderInput | Prisma.SortOrder
+  expectedYieldPct?: Prisma.SortOrderInput | Prisma.SortOrder
   bom?: Prisma.BillOfMaterialOrderByWithRelationInput
   materialItem?: Prisma.ItemOrderByWithRelationInput
 }
@@ -249,6 +275,8 @@ export type BomLineWhereUniqueInput = Prisma.AtLeast<{
   materialItemId?: Prisma.UuidFilter<"BomLine"> | string
   quantity?: Prisma.DecimalFilter<"BomLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFilter<"BomLine"> | string
+  expectedScrapPct?: Prisma.DecimalNullableFilter<"BomLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: Prisma.DecimalNullableFilter<"BomLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   bom?: Prisma.XOR<Prisma.BillOfMaterialScalarRelationFilter, Prisma.BillOfMaterialWhereInput>
   materialItem?: Prisma.XOR<Prisma.ItemScalarRelationFilter, Prisma.ItemWhereInput>
 }, "id">
@@ -260,6 +288,8 @@ export type BomLineOrderByWithAggregationInput = {
   materialItemId?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   uom?: Prisma.SortOrder
+  expectedScrapPct?: Prisma.SortOrderInput | Prisma.SortOrder
+  expectedYieldPct?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.BomLineCountOrderByAggregateInput
   _avg?: Prisma.BomLineAvgOrderByAggregateInput
   _max?: Prisma.BomLineMaxOrderByAggregateInput
@@ -277,12 +307,16 @@ export type BomLineScalarWhereWithAggregatesInput = {
   materialItemId?: Prisma.UuidWithAggregatesFilter<"BomLine"> | string
   quantity?: Prisma.DecimalWithAggregatesFilter<"BomLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringWithAggregatesFilter<"BomLine"> | string
+  expectedScrapPct?: Prisma.DecimalNullableWithAggregatesFilter<"BomLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: Prisma.DecimalNullableWithAggregatesFilter<"BomLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type BomLineCreateInput = {
   id?: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   uom: string
+  expectedScrapPct?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   bom: Prisma.BillOfMaterialCreateNestedOneWithoutLinesInput
   materialItem: Prisma.ItemCreateNestedOneWithoutBomLinesAsMaterialInput
 }
@@ -294,12 +328,16 @@ export type BomLineUncheckedCreateInput = {
   materialItemId: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   uom: string
+  expectedScrapPct?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type BomLineUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFieldUpdateOperationsInput | string
+  expectedScrapPct?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   bom?: Prisma.BillOfMaterialUpdateOneRequiredWithoutLinesNestedInput
   materialItem?: Prisma.ItemUpdateOneRequiredWithoutBomLinesAsMaterialNestedInput
 }
@@ -311,6 +349,8 @@ export type BomLineUncheckedUpdateInput = {
   materialItemId?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFieldUpdateOperationsInput | string
+  expectedScrapPct?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type BomLineCreateManyInput = {
@@ -320,12 +360,16 @@ export type BomLineCreateManyInput = {
   materialItemId: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   uom: string
+  expectedScrapPct?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type BomLineUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFieldUpdateOperationsInput | string
+  expectedScrapPct?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type BomLineUncheckedUpdateManyInput = {
@@ -335,6 +379,8 @@ export type BomLineUncheckedUpdateManyInput = {
   materialItemId?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFieldUpdateOperationsInput | string
+  expectedScrapPct?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type BomLineListRelationFilter = {
@@ -354,10 +400,14 @@ export type BomLineCountOrderByAggregateInput = {
   materialItemId?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   uom?: Prisma.SortOrder
+  expectedScrapPct?: Prisma.SortOrder
+  expectedYieldPct?: Prisma.SortOrder
 }
 
 export type BomLineAvgOrderByAggregateInput = {
   quantity?: Prisma.SortOrder
+  expectedScrapPct?: Prisma.SortOrder
+  expectedYieldPct?: Prisma.SortOrder
 }
 
 export type BomLineMaxOrderByAggregateInput = {
@@ -367,6 +417,8 @@ export type BomLineMaxOrderByAggregateInput = {
   materialItemId?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   uom?: Prisma.SortOrder
+  expectedScrapPct?: Prisma.SortOrder
+  expectedYieldPct?: Prisma.SortOrder
 }
 
 export type BomLineMinOrderByAggregateInput = {
@@ -376,10 +428,14 @@ export type BomLineMinOrderByAggregateInput = {
   materialItemId?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   uom?: Prisma.SortOrder
+  expectedScrapPct?: Prisma.SortOrder
+  expectedYieldPct?: Prisma.SortOrder
 }
 
 export type BomLineSumOrderByAggregateInput = {
   quantity?: Prisma.SortOrder
+  expectedScrapPct?: Prisma.SortOrder
+  expectedYieldPct?: Prisma.SortOrder
 }
 
 export type BomLineCreateNestedManyWithoutMaterialItemInput = {
@@ -470,6 +526,8 @@ export type BomLineCreateWithoutMaterialItemInput = {
   id?: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   uom: string
+  expectedScrapPct?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   bom: Prisma.BillOfMaterialCreateNestedOneWithoutLinesInput
 }
 
@@ -478,6 +536,8 @@ export type BomLineUncheckedCreateWithoutMaterialItemInput = {
   bomId: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   uom: string
+  expectedScrapPct?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type BomLineCreateOrConnectWithoutMaterialItemInput = {
@@ -516,12 +576,16 @@ export type BomLineScalarWhereInput = {
   materialItemId?: Prisma.UuidFilter<"BomLine"> | string
   quantity?: Prisma.DecimalFilter<"BomLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFilter<"BomLine"> | string
+  expectedScrapPct?: Prisma.DecimalNullableFilter<"BomLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: Prisma.DecimalNullableFilter<"BomLine"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type BomLineCreateWithoutBomInput = {
   id?: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   uom: string
+  expectedScrapPct?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   materialItem: Prisma.ItemCreateNestedOneWithoutBomLinesAsMaterialInput
 }
 
@@ -530,6 +594,8 @@ export type BomLineUncheckedCreateWithoutBomInput = {
   materialItemId: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   uom: string
+  expectedScrapPct?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type BomLineCreateOrConnectWithoutBomInput = {
@@ -563,12 +629,16 @@ export type BomLineCreateManyMaterialItemInput = {
   bomId: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   uom: string
+  expectedScrapPct?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type BomLineUpdateWithoutMaterialItemInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFieldUpdateOperationsInput | string
+  expectedScrapPct?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   bom?: Prisma.BillOfMaterialUpdateOneRequiredWithoutLinesNestedInput
 }
 
@@ -577,6 +647,8 @@ export type BomLineUncheckedUpdateWithoutMaterialItemInput = {
   bomId?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFieldUpdateOperationsInput | string
+  expectedScrapPct?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type BomLineUncheckedUpdateManyWithoutMaterialItemInput = {
@@ -584,6 +656,8 @@ export type BomLineUncheckedUpdateManyWithoutMaterialItemInput = {
   bomId?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFieldUpdateOperationsInput | string
+  expectedScrapPct?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type BomLineCreateManyBomInput = {
@@ -591,12 +665,16 @@ export type BomLineCreateManyBomInput = {
   materialItemId: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   uom: string
+  expectedScrapPct?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type BomLineUpdateWithoutBomInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFieldUpdateOperationsInput | string
+  expectedScrapPct?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   materialItem?: Prisma.ItemUpdateOneRequiredWithoutBomLinesAsMaterialNestedInput
 }
 
@@ -605,6 +683,8 @@ export type BomLineUncheckedUpdateWithoutBomInput = {
   materialItemId?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFieldUpdateOperationsInput | string
+  expectedScrapPct?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type BomLineUncheckedUpdateManyWithoutBomInput = {
@@ -612,6 +692,8 @@ export type BomLineUncheckedUpdateManyWithoutBomInput = {
   materialItemId?: Prisma.StringFieldUpdateOperationsInput | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   uom?: Prisma.StringFieldUpdateOperationsInput | string
+  expectedScrapPct?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  expectedYieldPct?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 
@@ -623,6 +705,8 @@ export type BomLineSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   materialItemId?: boolean
   quantity?: boolean
   uom?: boolean
+  expectedScrapPct?: boolean
+  expectedYieldPct?: boolean
   bom?: boolean | Prisma.BillOfMaterialDefaultArgs<ExtArgs>
   materialItem?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["bomLine"]>
@@ -634,6 +718,8 @@ export type BomLineSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   materialItemId?: boolean
   quantity?: boolean
   uom?: boolean
+  expectedScrapPct?: boolean
+  expectedYieldPct?: boolean
   bom?: boolean | Prisma.BillOfMaterialDefaultArgs<ExtArgs>
   materialItem?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["bomLine"]>
@@ -645,6 +731,8 @@ export type BomLineSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   materialItemId?: boolean
   quantity?: boolean
   uom?: boolean
+  expectedScrapPct?: boolean
+  expectedYieldPct?: boolean
   bom?: boolean | Prisma.BillOfMaterialDefaultArgs<ExtArgs>
   materialItem?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["bomLine"]>
@@ -656,9 +744,11 @@ export type BomLineSelectScalar = {
   materialItemId?: boolean
   quantity?: boolean
   uom?: boolean
+  expectedScrapPct?: boolean
+  expectedYieldPct?: boolean
 }
 
-export type BomLineOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orgId" | "bomId" | "materialItemId" | "quantity" | "uom", ExtArgs["result"]["bomLine"]>
+export type BomLineOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orgId" | "bomId" | "materialItemId" | "quantity" | "uom" | "expectedScrapPct" | "expectedYieldPct", ExtArgs["result"]["bomLine"]>
 export type BomLineInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   bom?: boolean | Prisma.BillOfMaterialDefaultArgs<ExtArgs>
   materialItem?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
@@ -685,6 +775,8 @@ export type $BomLinePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     materialItemId: string
     quantity: runtime.Decimal
     uom: string
+    expectedScrapPct: runtime.Decimal | null
+    expectedYieldPct: runtime.Decimal | null
   }, ExtArgs["result"]["bomLine"]>
   composites: {}
 }
@@ -1116,6 +1208,8 @@ export interface BomLineFieldRefs {
   readonly materialItemId: Prisma.FieldRef<"BomLine", 'String'>
   readonly quantity: Prisma.FieldRef<"BomLine", 'Decimal'>
   readonly uom: Prisma.FieldRef<"BomLine", 'String'>
+  readonly expectedScrapPct: Prisma.FieldRef<"BomLine", 'Decimal'>
+  readonly expectedYieldPct: Prisma.FieldRef<"BomLine", 'Decimal'>
 }
     
 

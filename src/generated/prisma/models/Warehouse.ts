@@ -187,6 +187,8 @@ export type WarehouseWhereInput = {
   stockBalances?: Prisma.StockBalanceListRelationFilter
   goodsReceiptLines?: Prisma.GoodsReceiptLineListRelationFilter
   materialLots?: Prisma.MaterialLotListRelationFilter
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchListRelationFilter
+  dispatches?: Prisma.DispatchListRelationFilter
 }
 
 export type WarehouseOrderByWithRelationInput = {
@@ -200,6 +202,8 @@ export type WarehouseOrderByWithRelationInput = {
   stockBalances?: Prisma.StockBalanceOrderByRelationAggregateInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineOrderByRelationAggregateInput
   materialLots?: Prisma.MaterialLotOrderByRelationAggregateInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchOrderByRelationAggregateInput
+  dispatches?: Prisma.DispatchOrderByRelationAggregateInput
 }
 
 export type WarehouseWhereUniqueInput = Prisma.AtLeast<{
@@ -218,6 +222,8 @@ export type WarehouseWhereUniqueInput = Prisma.AtLeast<{
   stockBalances?: Prisma.StockBalanceListRelationFilter
   goodsReceiptLines?: Prisma.GoodsReceiptLineListRelationFilter
   materialLots?: Prisma.MaterialLotListRelationFilter
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchListRelationFilter
+  dispatches?: Prisma.DispatchListRelationFilter
 }, "id" | "branchId_name" | "orgId_id">
 
 export type WarehouseOrderByWithAggregationInput = {
@@ -251,6 +257,8 @@ export type WarehouseCreateInput = {
   stockBalances?: Prisma.StockBalanceCreateNestedManyWithoutWarehouseInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineCreateNestedManyWithoutWarehouseInput
   materialLots?: Prisma.MaterialLotCreateNestedManyWithoutWarehouseInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchCreateNestedManyWithoutWarehouseInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutWarehouseInput
 }
 
 export type WarehouseUncheckedCreateInput = {
@@ -263,6 +271,8 @@ export type WarehouseUncheckedCreateInput = {
   stockBalances?: Prisma.StockBalanceUncheckedCreateNestedManyWithoutWarehouseInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedCreateNestedManyWithoutWarehouseInput
   materialLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutWarehouseInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedCreateNestedManyWithoutWarehouseInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutWarehouseInput
 }
 
 export type WarehouseUpdateInput = {
@@ -274,6 +284,8 @@ export type WarehouseUpdateInput = {
   stockBalances?: Prisma.StockBalanceUpdateManyWithoutWarehouseNestedInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineUpdateManyWithoutWarehouseNestedInput
   materialLots?: Prisma.MaterialLotUpdateManyWithoutWarehouseNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUpdateManyWithoutWarehouseNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutWarehouseNestedInput
 }
 
 export type WarehouseUncheckedUpdateInput = {
@@ -286,6 +298,8 @@ export type WarehouseUncheckedUpdateInput = {
   stockBalances?: Prisma.StockBalanceUncheckedUpdateManyWithoutWarehouseNestedInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedUpdateManyWithoutWarehouseNestedInput
   materialLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutWarehouseNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedUpdateManyWithoutWarehouseNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutWarehouseNestedInput
 }
 
 export type WarehouseCreateManyInput = {
@@ -429,6 +443,34 @@ export type WarehouseUpdateOneRequiredWithoutMaterialLotsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WarehouseUpdateToOneWithWhereWithoutMaterialLotsInput, Prisma.WarehouseUpdateWithoutMaterialLotsInput>, Prisma.WarehouseUncheckedUpdateWithoutMaterialLotsInput>
 }
 
+export type WarehouseCreateNestedOneWithoutFinishedGoodsBatchesInput = {
+  create?: Prisma.XOR<Prisma.WarehouseCreateWithoutFinishedGoodsBatchesInput, Prisma.WarehouseUncheckedCreateWithoutFinishedGoodsBatchesInput>
+  connectOrCreate?: Prisma.WarehouseCreateOrConnectWithoutFinishedGoodsBatchesInput
+  connect?: Prisma.WarehouseWhereUniqueInput
+}
+
+export type WarehouseUpdateOneRequiredWithoutFinishedGoodsBatchesNestedInput = {
+  create?: Prisma.XOR<Prisma.WarehouseCreateWithoutFinishedGoodsBatchesInput, Prisma.WarehouseUncheckedCreateWithoutFinishedGoodsBatchesInput>
+  connectOrCreate?: Prisma.WarehouseCreateOrConnectWithoutFinishedGoodsBatchesInput
+  upsert?: Prisma.WarehouseUpsertWithoutFinishedGoodsBatchesInput
+  connect?: Prisma.WarehouseWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WarehouseUpdateToOneWithWhereWithoutFinishedGoodsBatchesInput, Prisma.WarehouseUpdateWithoutFinishedGoodsBatchesInput>, Prisma.WarehouseUncheckedUpdateWithoutFinishedGoodsBatchesInput>
+}
+
+export type WarehouseCreateNestedOneWithoutDispatchesInput = {
+  create?: Prisma.XOR<Prisma.WarehouseCreateWithoutDispatchesInput, Prisma.WarehouseUncheckedCreateWithoutDispatchesInput>
+  connectOrCreate?: Prisma.WarehouseCreateOrConnectWithoutDispatchesInput
+  connect?: Prisma.WarehouseWhereUniqueInput
+}
+
+export type WarehouseUpdateOneRequiredWithoutDispatchesNestedInput = {
+  create?: Prisma.XOR<Prisma.WarehouseCreateWithoutDispatchesInput, Prisma.WarehouseUncheckedCreateWithoutDispatchesInput>
+  connectOrCreate?: Prisma.WarehouseCreateOrConnectWithoutDispatchesInput
+  upsert?: Prisma.WarehouseUpsertWithoutDispatchesInput
+  connect?: Prisma.WarehouseWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WarehouseUpdateToOneWithWhereWithoutDispatchesInput, Prisma.WarehouseUpdateWithoutDispatchesInput>, Prisma.WarehouseUncheckedUpdateWithoutDispatchesInput>
+}
+
 export type WarehouseCreateNestedOneWithoutStockMovementsInput = {
   create?: Prisma.XOR<Prisma.WarehouseCreateWithoutStockMovementsInput, Prisma.WarehouseUncheckedCreateWithoutStockMovementsInput>
   connectOrCreate?: Prisma.WarehouseCreateOrConnectWithoutStockMovementsInput
@@ -465,6 +507,8 @@ export type WarehouseCreateWithoutBranchInput = {
   stockBalances?: Prisma.StockBalanceCreateNestedManyWithoutWarehouseInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineCreateNestedManyWithoutWarehouseInput
   materialLots?: Prisma.MaterialLotCreateNestedManyWithoutWarehouseInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchCreateNestedManyWithoutWarehouseInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutWarehouseInput
 }
 
 export type WarehouseUncheckedCreateWithoutBranchInput = {
@@ -475,6 +519,8 @@ export type WarehouseUncheckedCreateWithoutBranchInput = {
   stockBalances?: Prisma.StockBalanceUncheckedCreateNestedManyWithoutWarehouseInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedCreateNestedManyWithoutWarehouseInput
   materialLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutWarehouseInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedCreateNestedManyWithoutWarehouseInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutWarehouseInput
 }
 
 export type WarehouseCreateOrConnectWithoutBranchInput = {
@@ -522,6 +568,8 @@ export type WarehouseCreateWithoutGoodsReceiptLinesInput = {
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutWarehouseInput
   stockBalances?: Prisma.StockBalanceCreateNestedManyWithoutWarehouseInput
   materialLots?: Prisma.MaterialLotCreateNestedManyWithoutWarehouseInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchCreateNestedManyWithoutWarehouseInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutWarehouseInput
 }
 
 export type WarehouseUncheckedCreateWithoutGoodsReceiptLinesInput = {
@@ -533,6 +581,8 @@ export type WarehouseUncheckedCreateWithoutGoodsReceiptLinesInput = {
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutWarehouseInput
   stockBalances?: Prisma.StockBalanceUncheckedCreateNestedManyWithoutWarehouseInput
   materialLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutWarehouseInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedCreateNestedManyWithoutWarehouseInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutWarehouseInput
 }
 
 export type WarehouseCreateOrConnectWithoutGoodsReceiptLinesInput = {
@@ -559,6 +609,8 @@ export type WarehouseUpdateWithoutGoodsReceiptLinesInput = {
   stockMovements?: Prisma.StockMovementUpdateManyWithoutWarehouseNestedInput
   stockBalances?: Prisma.StockBalanceUpdateManyWithoutWarehouseNestedInput
   materialLots?: Prisma.MaterialLotUpdateManyWithoutWarehouseNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUpdateManyWithoutWarehouseNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutWarehouseNestedInput
 }
 
 export type WarehouseUncheckedUpdateWithoutGoodsReceiptLinesInput = {
@@ -570,6 +622,8 @@ export type WarehouseUncheckedUpdateWithoutGoodsReceiptLinesInput = {
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutWarehouseNestedInput
   stockBalances?: Prisma.StockBalanceUncheckedUpdateManyWithoutWarehouseNestedInput
   materialLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutWarehouseNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedUpdateManyWithoutWarehouseNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutWarehouseNestedInput
 }
 
 export type WarehouseCreateWithoutMaterialLotsInput = {
@@ -580,6 +634,8 @@ export type WarehouseCreateWithoutMaterialLotsInput = {
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutWarehouseInput
   stockBalances?: Prisma.StockBalanceCreateNestedManyWithoutWarehouseInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineCreateNestedManyWithoutWarehouseInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchCreateNestedManyWithoutWarehouseInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutWarehouseInput
 }
 
 export type WarehouseUncheckedCreateWithoutMaterialLotsInput = {
@@ -591,6 +647,8 @@ export type WarehouseUncheckedCreateWithoutMaterialLotsInput = {
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutWarehouseInput
   stockBalances?: Prisma.StockBalanceUncheckedCreateNestedManyWithoutWarehouseInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedCreateNestedManyWithoutWarehouseInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedCreateNestedManyWithoutWarehouseInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutWarehouseInput
 }
 
 export type WarehouseCreateOrConnectWithoutMaterialLotsInput = {
@@ -617,6 +675,8 @@ export type WarehouseUpdateWithoutMaterialLotsInput = {
   stockMovements?: Prisma.StockMovementUpdateManyWithoutWarehouseNestedInput
   stockBalances?: Prisma.StockBalanceUpdateManyWithoutWarehouseNestedInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineUpdateManyWithoutWarehouseNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUpdateManyWithoutWarehouseNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutWarehouseNestedInput
 }
 
 export type WarehouseUncheckedUpdateWithoutMaterialLotsInput = {
@@ -628,6 +688,140 @@ export type WarehouseUncheckedUpdateWithoutMaterialLotsInput = {
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutWarehouseNestedInput
   stockBalances?: Prisma.StockBalanceUncheckedUpdateManyWithoutWarehouseNestedInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedUpdateManyWithoutWarehouseNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedUpdateManyWithoutWarehouseNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutWarehouseNestedInput
+}
+
+export type WarehouseCreateWithoutFinishedGoodsBatchesInput = {
+  id?: string
+  name: string
+  isActive?: boolean
+  branch: Prisma.BranchCreateNestedOneWithoutWarehousesInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutWarehouseInput
+  stockBalances?: Prisma.StockBalanceCreateNestedManyWithoutWarehouseInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineCreateNestedManyWithoutWarehouseInput
+  materialLots?: Prisma.MaterialLotCreateNestedManyWithoutWarehouseInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutWarehouseInput
+}
+
+export type WarehouseUncheckedCreateWithoutFinishedGoodsBatchesInput = {
+  id?: string
+  orgId: string
+  branchId: string
+  name: string
+  isActive?: boolean
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutWarehouseInput
+  stockBalances?: Prisma.StockBalanceUncheckedCreateNestedManyWithoutWarehouseInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedCreateNestedManyWithoutWarehouseInput
+  materialLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutWarehouseInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutWarehouseInput
+}
+
+export type WarehouseCreateOrConnectWithoutFinishedGoodsBatchesInput = {
+  where: Prisma.WarehouseWhereUniqueInput
+  create: Prisma.XOR<Prisma.WarehouseCreateWithoutFinishedGoodsBatchesInput, Prisma.WarehouseUncheckedCreateWithoutFinishedGoodsBatchesInput>
+}
+
+export type WarehouseUpsertWithoutFinishedGoodsBatchesInput = {
+  update: Prisma.XOR<Prisma.WarehouseUpdateWithoutFinishedGoodsBatchesInput, Prisma.WarehouseUncheckedUpdateWithoutFinishedGoodsBatchesInput>
+  create: Prisma.XOR<Prisma.WarehouseCreateWithoutFinishedGoodsBatchesInput, Prisma.WarehouseUncheckedCreateWithoutFinishedGoodsBatchesInput>
+  where?: Prisma.WarehouseWhereInput
+}
+
+export type WarehouseUpdateToOneWithWhereWithoutFinishedGoodsBatchesInput = {
+  where?: Prisma.WarehouseWhereInput
+  data: Prisma.XOR<Prisma.WarehouseUpdateWithoutFinishedGoodsBatchesInput, Prisma.WarehouseUncheckedUpdateWithoutFinishedGoodsBatchesInput>
+}
+
+export type WarehouseUpdateWithoutFinishedGoodsBatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  branch?: Prisma.BranchUpdateOneRequiredWithoutWarehousesNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutWarehouseNestedInput
+  stockBalances?: Prisma.StockBalanceUpdateManyWithoutWarehouseNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUpdateManyWithoutWarehouseNestedInput
+  materialLots?: Prisma.MaterialLotUpdateManyWithoutWarehouseNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutWarehouseNestedInput
+}
+
+export type WarehouseUncheckedUpdateWithoutFinishedGoodsBatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutWarehouseNestedInput
+  stockBalances?: Prisma.StockBalanceUncheckedUpdateManyWithoutWarehouseNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedUpdateManyWithoutWarehouseNestedInput
+  materialLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutWarehouseNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutWarehouseNestedInput
+}
+
+export type WarehouseCreateWithoutDispatchesInput = {
+  id?: string
+  name: string
+  isActive?: boolean
+  branch: Prisma.BranchCreateNestedOneWithoutWarehousesInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutWarehouseInput
+  stockBalances?: Prisma.StockBalanceCreateNestedManyWithoutWarehouseInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineCreateNestedManyWithoutWarehouseInput
+  materialLots?: Prisma.MaterialLotCreateNestedManyWithoutWarehouseInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchCreateNestedManyWithoutWarehouseInput
+}
+
+export type WarehouseUncheckedCreateWithoutDispatchesInput = {
+  id?: string
+  orgId: string
+  branchId: string
+  name: string
+  isActive?: boolean
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutWarehouseInput
+  stockBalances?: Prisma.StockBalanceUncheckedCreateNestedManyWithoutWarehouseInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedCreateNestedManyWithoutWarehouseInput
+  materialLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutWarehouseInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedCreateNestedManyWithoutWarehouseInput
+}
+
+export type WarehouseCreateOrConnectWithoutDispatchesInput = {
+  where: Prisma.WarehouseWhereUniqueInput
+  create: Prisma.XOR<Prisma.WarehouseCreateWithoutDispatchesInput, Prisma.WarehouseUncheckedCreateWithoutDispatchesInput>
+}
+
+export type WarehouseUpsertWithoutDispatchesInput = {
+  update: Prisma.XOR<Prisma.WarehouseUpdateWithoutDispatchesInput, Prisma.WarehouseUncheckedUpdateWithoutDispatchesInput>
+  create: Prisma.XOR<Prisma.WarehouseCreateWithoutDispatchesInput, Prisma.WarehouseUncheckedCreateWithoutDispatchesInput>
+  where?: Prisma.WarehouseWhereInput
+}
+
+export type WarehouseUpdateToOneWithWhereWithoutDispatchesInput = {
+  where?: Prisma.WarehouseWhereInput
+  data: Prisma.XOR<Prisma.WarehouseUpdateWithoutDispatchesInput, Prisma.WarehouseUncheckedUpdateWithoutDispatchesInput>
+}
+
+export type WarehouseUpdateWithoutDispatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  branch?: Prisma.BranchUpdateOneRequiredWithoutWarehousesNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutWarehouseNestedInput
+  stockBalances?: Prisma.StockBalanceUpdateManyWithoutWarehouseNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUpdateManyWithoutWarehouseNestedInput
+  materialLots?: Prisma.MaterialLotUpdateManyWithoutWarehouseNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUpdateManyWithoutWarehouseNestedInput
+}
+
+export type WarehouseUncheckedUpdateWithoutDispatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutWarehouseNestedInput
+  stockBalances?: Prisma.StockBalanceUncheckedUpdateManyWithoutWarehouseNestedInput
+  goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedUpdateManyWithoutWarehouseNestedInput
+  materialLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutWarehouseNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedUpdateManyWithoutWarehouseNestedInput
 }
 
 export type WarehouseCreateWithoutStockMovementsInput = {
@@ -638,6 +832,8 @@ export type WarehouseCreateWithoutStockMovementsInput = {
   stockBalances?: Prisma.StockBalanceCreateNestedManyWithoutWarehouseInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineCreateNestedManyWithoutWarehouseInput
   materialLots?: Prisma.MaterialLotCreateNestedManyWithoutWarehouseInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchCreateNestedManyWithoutWarehouseInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutWarehouseInput
 }
 
 export type WarehouseUncheckedCreateWithoutStockMovementsInput = {
@@ -649,6 +845,8 @@ export type WarehouseUncheckedCreateWithoutStockMovementsInput = {
   stockBalances?: Prisma.StockBalanceUncheckedCreateNestedManyWithoutWarehouseInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedCreateNestedManyWithoutWarehouseInput
   materialLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutWarehouseInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedCreateNestedManyWithoutWarehouseInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutWarehouseInput
 }
 
 export type WarehouseCreateOrConnectWithoutStockMovementsInput = {
@@ -675,6 +873,8 @@ export type WarehouseUpdateWithoutStockMovementsInput = {
   stockBalances?: Prisma.StockBalanceUpdateManyWithoutWarehouseNestedInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineUpdateManyWithoutWarehouseNestedInput
   materialLots?: Prisma.MaterialLotUpdateManyWithoutWarehouseNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUpdateManyWithoutWarehouseNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutWarehouseNestedInput
 }
 
 export type WarehouseUncheckedUpdateWithoutStockMovementsInput = {
@@ -686,6 +886,8 @@ export type WarehouseUncheckedUpdateWithoutStockMovementsInput = {
   stockBalances?: Prisma.StockBalanceUncheckedUpdateManyWithoutWarehouseNestedInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedUpdateManyWithoutWarehouseNestedInput
   materialLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutWarehouseNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedUpdateManyWithoutWarehouseNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutWarehouseNestedInput
 }
 
 export type WarehouseCreateWithoutStockBalancesInput = {
@@ -696,6 +898,8 @@ export type WarehouseCreateWithoutStockBalancesInput = {
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutWarehouseInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineCreateNestedManyWithoutWarehouseInput
   materialLots?: Prisma.MaterialLotCreateNestedManyWithoutWarehouseInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchCreateNestedManyWithoutWarehouseInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutWarehouseInput
 }
 
 export type WarehouseUncheckedCreateWithoutStockBalancesInput = {
@@ -707,6 +911,8 @@ export type WarehouseUncheckedCreateWithoutStockBalancesInput = {
   stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutWarehouseInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedCreateNestedManyWithoutWarehouseInput
   materialLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutWarehouseInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedCreateNestedManyWithoutWarehouseInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutWarehouseInput
 }
 
 export type WarehouseCreateOrConnectWithoutStockBalancesInput = {
@@ -733,6 +939,8 @@ export type WarehouseUpdateWithoutStockBalancesInput = {
   stockMovements?: Prisma.StockMovementUpdateManyWithoutWarehouseNestedInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineUpdateManyWithoutWarehouseNestedInput
   materialLots?: Prisma.MaterialLotUpdateManyWithoutWarehouseNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUpdateManyWithoutWarehouseNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutWarehouseNestedInput
 }
 
 export type WarehouseUncheckedUpdateWithoutStockBalancesInput = {
@@ -744,6 +952,8 @@ export type WarehouseUncheckedUpdateWithoutStockBalancesInput = {
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutWarehouseNestedInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedUpdateManyWithoutWarehouseNestedInput
   materialLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutWarehouseNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedUpdateManyWithoutWarehouseNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutWarehouseNestedInput
 }
 
 export type WarehouseCreateManyBranchInput = {
@@ -760,6 +970,8 @@ export type WarehouseUpdateWithoutBranchInput = {
   stockBalances?: Prisma.StockBalanceUpdateManyWithoutWarehouseNestedInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineUpdateManyWithoutWarehouseNestedInput
   materialLots?: Prisma.MaterialLotUpdateManyWithoutWarehouseNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUpdateManyWithoutWarehouseNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutWarehouseNestedInput
 }
 
 export type WarehouseUncheckedUpdateWithoutBranchInput = {
@@ -770,6 +982,8 @@ export type WarehouseUncheckedUpdateWithoutBranchInput = {
   stockBalances?: Prisma.StockBalanceUncheckedUpdateManyWithoutWarehouseNestedInput
   goodsReceiptLines?: Prisma.GoodsReceiptLineUncheckedUpdateManyWithoutWarehouseNestedInput
   materialLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutWarehouseNestedInput
+  finishedGoodsBatches?: Prisma.FinishedGoodsBatchUncheckedUpdateManyWithoutWarehouseNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutWarehouseNestedInput
 }
 
 export type WarehouseUncheckedUpdateManyWithoutBranchInput = {
@@ -788,6 +1002,8 @@ export type WarehouseCountOutputType = {
   stockBalances: number
   goodsReceiptLines: number
   materialLots: number
+  finishedGoodsBatches: number
+  dispatches: number
 }
 
 export type WarehouseCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -795,6 +1011,8 @@ export type WarehouseCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensi
   stockBalances?: boolean | WarehouseCountOutputTypeCountStockBalancesArgs
   goodsReceiptLines?: boolean | WarehouseCountOutputTypeCountGoodsReceiptLinesArgs
   materialLots?: boolean | WarehouseCountOutputTypeCountMaterialLotsArgs
+  finishedGoodsBatches?: boolean | WarehouseCountOutputTypeCountFinishedGoodsBatchesArgs
+  dispatches?: boolean | WarehouseCountOutputTypeCountDispatchesArgs
 }
 
 /**
@@ -835,6 +1053,20 @@ export type WarehouseCountOutputTypeCountMaterialLotsArgs<ExtArgs extends runtim
   where?: Prisma.MaterialLotWhereInput
 }
 
+/**
+ * WarehouseCountOutputType without action
+ */
+export type WarehouseCountOutputTypeCountFinishedGoodsBatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FinishedGoodsBatchWhereInput
+}
+
+/**
+ * WarehouseCountOutputType without action
+ */
+export type WarehouseCountOutputTypeCountDispatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DispatchWhereInput
+}
+
 
 export type WarehouseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -847,6 +1079,8 @@ export type WarehouseSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   stockBalances?: boolean | Prisma.Warehouse$stockBalancesArgs<ExtArgs>
   goodsReceiptLines?: boolean | Prisma.Warehouse$goodsReceiptLinesArgs<ExtArgs>
   materialLots?: boolean | Prisma.Warehouse$materialLotsArgs<ExtArgs>
+  finishedGoodsBatches?: boolean | Prisma.Warehouse$finishedGoodsBatchesArgs<ExtArgs>
+  dispatches?: boolean | Prisma.Warehouse$dispatchesArgs<ExtArgs>
   _count?: boolean | Prisma.WarehouseCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["warehouse"]>
 
@@ -883,6 +1117,8 @@ export type WarehouseInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   stockBalances?: boolean | Prisma.Warehouse$stockBalancesArgs<ExtArgs>
   goodsReceiptLines?: boolean | Prisma.Warehouse$goodsReceiptLinesArgs<ExtArgs>
   materialLots?: boolean | Prisma.Warehouse$materialLotsArgs<ExtArgs>
+  finishedGoodsBatches?: boolean | Prisma.Warehouse$finishedGoodsBatchesArgs<ExtArgs>
+  dispatches?: boolean | Prisma.Warehouse$dispatchesArgs<ExtArgs>
   _count?: boolean | Prisma.WarehouseCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WarehouseIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -900,6 +1136,8 @@ export type $WarehousePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     stockBalances: Prisma.$StockBalancePayload<ExtArgs>[]
     goodsReceiptLines: Prisma.$GoodsReceiptLinePayload<ExtArgs>[]
     materialLots: Prisma.$MaterialLotPayload<ExtArgs>[]
+    finishedGoodsBatches: Prisma.$FinishedGoodsBatchPayload<ExtArgs>[]
+    dispatches: Prisma.$DispatchPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1306,6 +1544,8 @@ export interface Prisma__WarehouseClient<T, Null = never, ExtArgs extends runtim
   stockBalances<T extends Prisma.Warehouse$stockBalancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Warehouse$stockBalancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StockBalancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   goodsReceiptLines<T extends Prisma.Warehouse$goodsReceiptLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Warehouse$goodsReceiptLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GoodsReceiptLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   materialLots<T extends Prisma.Warehouse$materialLotsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Warehouse$materialLotsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaterialLotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  finishedGoodsBatches<T extends Prisma.Warehouse$finishedGoodsBatchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Warehouse$finishedGoodsBatchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FinishedGoodsBatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  dispatches<T extends Prisma.Warehouse$dispatchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Warehouse$dispatchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DispatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1834,6 +2074,54 @@ export type Warehouse$materialLotsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.MaterialLotScalarFieldEnum | Prisma.MaterialLotScalarFieldEnum[]
+}
+
+/**
+ * Warehouse.finishedGoodsBatches
+ */
+export type Warehouse$finishedGoodsBatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FinishedGoodsBatch
+   */
+  select?: Prisma.FinishedGoodsBatchSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FinishedGoodsBatch
+   */
+  omit?: Prisma.FinishedGoodsBatchOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FinishedGoodsBatchInclude<ExtArgs> | null
+  where?: Prisma.FinishedGoodsBatchWhereInput
+  orderBy?: Prisma.FinishedGoodsBatchOrderByWithRelationInput | Prisma.FinishedGoodsBatchOrderByWithRelationInput[]
+  cursor?: Prisma.FinishedGoodsBatchWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FinishedGoodsBatchScalarFieldEnum | Prisma.FinishedGoodsBatchScalarFieldEnum[]
+}
+
+/**
+ * Warehouse.dispatches
+ */
+export type Warehouse$dispatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Dispatch
+   */
+  select?: Prisma.DispatchSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Dispatch
+   */
+  omit?: Prisma.DispatchOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DispatchInclude<ExtArgs> | null
+  where?: Prisma.DispatchWhereInput
+  orderBy?: Prisma.DispatchOrderByWithRelationInput | Prisma.DispatchOrderByWithRelationInput[]
+  cursor?: Prisma.DispatchWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DispatchScalarFieldEnum | Prisma.DispatchScalarFieldEnum[]
 }
 
 /**

@@ -52,6 +52,8 @@ export type MaterialLotMinAggregateOutputType = {
   sourceReturnOfLotId: string | null
   sourceReturnJobId: string | null
   sourceReturnMovementId: string | null
+  sourceRegrindJobId: string | null
+  sourceRegrindMovementId: string | null
 }
 
 export type MaterialLotMaxAggregateOutputType = {
@@ -72,6 +74,8 @@ export type MaterialLotMaxAggregateOutputType = {
   sourceReturnOfLotId: string | null
   sourceReturnJobId: string | null
   sourceReturnMovementId: string | null
+  sourceRegrindJobId: string | null
+  sourceRegrindMovementId: string | null
 }
 
 export type MaterialLotCountAggregateOutputType = {
@@ -92,6 +96,8 @@ export type MaterialLotCountAggregateOutputType = {
   sourceReturnOfLotId: number
   sourceReturnJobId: number
   sourceReturnMovementId: number
+  sourceRegrindJobId: number
+  sourceRegrindMovementId: number
   _all: number
 }
 
@@ -122,6 +128,8 @@ export type MaterialLotMinAggregateInputType = {
   sourceReturnOfLotId?: true
   sourceReturnJobId?: true
   sourceReturnMovementId?: true
+  sourceRegrindJobId?: true
+  sourceRegrindMovementId?: true
 }
 
 export type MaterialLotMaxAggregateInputType = {
@@ -142,6 +150,8 @@ export type MaterialLotMaxAggregateInputType = {
   sourceReturnOfLotId?: true
   sourceReturnJobId?: true
   sourceReturnMovementId?: true
+  sourceRegrindJobId?: true
+  sourceRegrindMovementId?: true
 }
 
 export type MaterialLotCountAggregateInputType = {
@@ -162,6 +172,8 @@ export type MaterialLotCountAggregateInputType = {
   sourceReturnOfLotId?: true
   sourceReturnJobId?: true
   sourceReturnMovementId?: true
+  sourceRegrindJobId?: true
+  sourceRegrindMovementId?: true
   _all?: true
 }
 
@@ -256,7 +268,7 @@ export type MaterialLotGroupByOutputType = {
   orgId: string
   lotNumber: string
   itemId: string
-  supplierId: string
+  supplierId: string | null
   supplierLotRef: string | null
   receiptLineId: string | null
   warehouseId: string
@@ -269,6 +281,8 @@ export type MaterialLotGroupByOutputType = {
   sourceReturnOfLotId: string | null
   sourceReturnJobId: string | null
   sourceReturnMovementId: string | null
+  sourceRegrindJobId: string | null
+  sourceRegrindMovementId: string | null
   _count: MaterialLotCountAggregateOutputType | null
   _avg: MaterialLotAvgAggregateOutputType | null
   _sum: MaterialLotSumAggregateOutputType | null
@@ -299,7 +313,7 @@ export type MaterialLotWhereInput = {
   orgId?: Prisma.UuidFilter<"MaterialLot"> | string
   lotNumber?: Prisma.StringFilter<"MaterialLot"> | string
   itemId?: Prisma.UuidFilter<"MaterialLot"> | string
-  supplierId?: Prisma.UuidFilter<"MaterialLot"> | string
+  supplierId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
   supplierLotRef?: Prisma.StringNullableFilter<"MaterialLot"> | string | null
   receiptLineId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
   warehouseId?: Prisma.UuidFilter<"MaterialLot"> | string
@@ -312,15 +326,20 @@ export type MaterialLotWhereInput = {
   sourceReturnOfLotId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
   sourceReturnJobId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
   sourceReturnMovementId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
+  sourceRegrindJobId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
+  sourceRegrindMovementId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
   item?: Prisma.XOR<Prisma.ItemScalarRelationFilter, Prisma.ItemWhereInput>
-  supplier?: Prisma.XOR<Prisma.SupplierScalarRelationFilter, Prisma.SupplierWhereInput>
+  supplier?: Prisma.XOR<Prisma.SupplierNullableScalarRelationFilter, Prisma.SupplierWhereInput> | null
   receiptLine?: Prisma.XOR<Prisma.GoodsReceiptLineNullableScalarRelationFilter, Prisma.GoodsReceiptLineWhereInput> | null
   warehouse?: Prisma.XOR<Prisma.WarehouseScalarRelationFilter, Prisma.WarehouseWhereInput>
   sourceReturnOfLot?: Prisma.XOR<Prisma.MaterialLotNullableScalarRelationFilter, Prisma.MaterialLotWhereInput> | null
   returnChildLots?: Prisma.MaterialLotListRelationFilter
   sourceReturnJob?: Prisma.XOR<Prisma.ProductionJobNullableScalarRelationFilter, Prisma.ProductionJobWhereInput> | null
   sourceReturnMovement?: Prisma.XOR<Prisma.StockMovementNullableScalarRelationFilter, Prisma.StockMovementWhereInput> | null
+  sourceRegrindJob?: Prisma.XOR<Prisma.ProductionJobNullableScalarRelationFilter, Prisma.ProductionJobWhereInput> | null
+  sourceRegrindMovement?: Prisma.XOR<Prisma.StockMovementNullableScalarRelationFilter, Prisma.StockMovementWhereInput> | null
   consumptions?: Prisma.LotConsumptionListRelationFilter
+  fgAllocations?: Prisma.FgBatchMaterialLotListRelationFilter
 }
 
 export type MaterialLotOrderByWithRelationInput = {
@@ -328,7 +347,7 @@ export type MaterialLotOrderByWithRelationInput = {
   orgId?: Prisma.SortOrder
   lotNumber?: Prisma.SortOrder
   itemId?: Prisma.SortOrder
-  supplierId?: Prisma.SortOrder
+  supplierId?: Prisma.SortOrderInput | Prisma.SortOrder
   supplierLotRef?: Prisma.SortOrderInput | Prisma.SortOrder
   receiptLineId?: Prisma.SortOrderInput | Prisma.SortOrder
   warehouseId?: Prisma.SortOrder
@@ -341,6 +360,8 @@ export type MaterialLotOrderByWithRelationInput = {
   sourceReturnOfLotId?: Prisma.SortOrderInput | Prisma.SortOrder
   sourceReturnJobId?: Prisma.SortOrderInput | Prisma.SortOrder
   sourceReturnMovementId?: Prisma.SortOrderInput | Prisma.SortOrder
+  sourceRegrindJobId?: Prisma.SortOrderInput | Prisma.SortOrder
+  sourceRegrindMovementId?: Prisma.SortOrderInput | Prisma.SortOrder
   item?: Prisma.ItemOrderByWithRelationInput
   supplier?: Prisma.SupplierOrderByWithRelationInput
   receiptLine?: Prisma.GoodsReceiptLineOrderByWithRelationInput
@@ -349,7 +370,10 @@ export type MaterialLotOrderByWithRelationInput = {
   returnChildLots?: Prisma.MaterialLotOrderByRelationAggregateInput
   sourceReturnJob?: Prisma.ProductionJobOrderByWithRelationInput
   sourceReturnMovement?: Prisma.StockMovementOrderByWithRelationInput
+  sourceRegrindJob?: Prisma.ProductionJobOrderByWithRelationInput
+  sourceRegrindMovement?: Prisma.StockMovementOrderByWithRelationInput
   consumptions?: Prisma.LotConsumptionOrderByRelationAggregateInput
+  fgAllocations?: Prisma.FgBatchMaterialLotOrderByRelationAggregateInput
 }
 
 export type MaterialLotWhereUniqueInput = Prisma.AtLeast<{
@@ -363,7 +387,7 @@ export type MaterialLotWhereUniqueInput = Prisma.AtLeast<{
   orgId?: Prisma.UuidFilter<"MaterialLot"> | string
   lotNumber?: Prisma.StringFilter<"MaterialLot"> | string
   itemId?: Prisma.UuidFilter<"MaterialLot"> | string
-  supplierId?: Prisma.UuidFilter<"MaterialLot"> | string
+  supplierId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
   supplierLotRef?: Prisma.StringNullableFilter<"MaterialLot"> | string | null
   receiptLineId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
   warehouseId?: Prisma.UuidFilter<"MaterialLot"> | string
@@ -376,15 +400,20 @@ export type MaterialLotWhereUniqueInput = Prisma.AtLeast<{
   sourceReturnOfLotId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
   sourceReturnJobId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
   sourceReturnMovementId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
+  sourceRegrindJobId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
+  sourceRegrindMovementId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
   item?: Prisma.XOR<Prisma.ItemScalarRelationFilter, Prisma.ItemWhereInput>
-  supplier?: Prisma.XOR<Prisma.SupplierScalarRelationFilter, Prisma.SupplierWhereInput>
+  supplier?: Prisma.XOR<Prisma.SupplierNullableScalarRelationFilter, Prisma.SupplierWhereInput> | null
   receiptLine?: Prisma.XOR<Prisma.GoodsReceiptLineNullableScalarRelationFilter, Prisma.GoodsReceiptLineWhereInput> | null
   warehouse?: Prisma.XOR<Prisma.WarehouseScalarRelationFilter, Prisma.WarehouseWhereInput>
   sourceReturnOfLot?: Prisma.XOR<Prisma.MaterialLotNullableScalarRelationFilter, Prisma.MaterialLotWhereInput> | null
   returnChildLots?: Prisma.MaterialLotListRelationFilter
   sourceReturnJob?: Prisma.XOR<Prisma.ProductionJobNullableScalarRelationFilter, Prisma.ProductionJobWhereInput> | null
   sourceReturnMovement?: Prisma.XOR<Prisma.StockMovementNullableScalarRelationFilter, Prisma.StockMovementWhereInput> | null
+  sourceRegrindJob?: Prisma.XOR<Prisma.ProductionJobNullableScalarRelationFilter, Prisma.ProductionJobWhereInput> | null
+  sourceRegrindMovement?: Prisma.XOR<Prisma.StockMovementNullableScalarRelationFilter, Prisma.StockMovementWhereInput> | null
   consumptions?: Prisma.LotConsumptionListRelationFilter
+  fgAllocations?: Prisma.FgBatchMaterialLotListRelationFilter
 }, "id" | "orgId_lotNumber" | "orgId_id" | "orgId_receiptLineId">
 
 export type MaterialLotOrderByWithAggregationInput = {
@@ -392,7 +421,7 @@ export type MaterialLotOrderByWithAggregationInput = {
   orgId?: Prisma.SortOrder
   lotNumber?: Prisma.SortOrder
   itemId?: Prisma.SortOrder
-  supplierId?: Prisma.SortOrder
+  supplierId?: Prisma.SortOrderInput | Prisma.SortOrder
   supplierLotRef?: Prisma.SortOrderInput | Prisma.SortOrder
   receiptLineId?: Prisma.SortOrderInput | Prisma.SortOrder
   warehouseId?: Prisma.SortOrder
@@ -405,6 +434,8 @@ export type MaterialLotOrderByWithAggregationInput = {
   sourceReturnOfLotId?: Prisma.SortOrderInput | Prisma.SortOrder
   sourceReturnJobId?: Prisma.SortOrderInput | Prisma.SortOrder
   sourceReturnMovementId?: Prisma.SortOrderInput | Prisma.SortOrder
+  sourceRegrindJobId?: Prisma.SortOrderInput | Prisma.SortOrder
+  sourceRegrindMovementId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.MaterialLotCountOrderByAggregateInput
   _avg?: Prisma.MaterialLotAvgOrderByAggregateInput
   _max?: Prisma.MaterialLotMaxOrderByAggregateInput
@@ -420,7 +451,7 @@ export type MaterialLotScalarWhereWithAggregatesInput = {
   orgId?: Prisma.UuidWithAggregatesFilter<"MaterialLot"> | string
   lotNumber?: Prisma.StringWithAggregatesFilter<"MaterialLot"> | string
   itemId?: Prisma.UuidWithAggregatesFilter<"MaterialLot"> | string
-  supplierId?: Prisma.UuidWithAggregatesFilter<"MaterialLot"> | string
+  supplierId?: Prisma.UuidNullableWithAggregatesFilter<"MaterialLot"> | string | null
   supplierLotRef?: Prisma.StringNullableWithAggregatesFilter<"MaterialLot"> | string | null
   receiptLineId?: Prisma.UuidNullableWithAggregatesFilter<"MaterialLot"> | string | null
   warehouseId?: Prisma.UuidWithAggregatesFilter<"MaterialLot"> | string
@@ -433,6 +464,8 @@ export type MaterialLotScalarWhereWithAggregatesInput = {
   sourceReturnOfLotId?: Prisma.UuidNullableWithAggregatesFilter<"MaterialLot"> | string | null
   sourceReturnJobId?: Prisma.UuidNullableWithAggregatesFilter<"MaterialLot"> | string | null
   sourceReturnMovementId?: Prisma.UuidNullableWithAggregatesFilter<"MaterialLot"> | string | null
+  sourceRegrindJobId?: Prisma.UuidNullableWithAggregatesFilter<"MaterialLot"> | string | null
+  sourceRegrindMovementId?: Prisma.UuidNullableWithAggregatesFilter<"MaterialLot"> | string | null
 }
 
 export type MaterialLotCreateInput = {
@@ -446,14 +479,17 @@ export type MaterialLotCreateInput = {
   receivedAt: Date | string
   createdAt?: Date | string
   item: Prisma.ItemCreateNestedOneWithoutMaterialLotsInput
-  supplier: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
+  supplier?: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
   receiptLine?: Prisma.GoodsReceiptLineCreateNestedOneWithoutLotInput
   warehouse: Prisma.WarehouseCreateNestedOneWithoutMaterialLotsInput
   sourceReturnOfLot?: Prisma.MaterialLotCreateNestedOneWithoutReturnChildLotsInput
   returnChildLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnOfLotInput
   sourceReturnJob?: Prisma.ProductionJobCreateNestedOneWithoutReturnSpawnedLotsInput
   sourceReturnMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsReturnedFromInput
+  sourceRegrindJob?: Prisma.ProductionJobCreateNestedOneWithoutRegrindSpawnedLotsInput
+  sourceRegrindMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsFromRegrindInput
   consumptions?: Prisma.LotConsumptionCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotCreateNestedManyWithoutLotInput
 }
 
 export type MaterialLotUncheckedCreateInput = {
@@ -461,7 +497,7 @@ export type MaterialLotUncheckedCreateInput = {
   orgId: string
   lotNumber: string
   itemId: string
-  supplierId: string
+  supplierId?: string | null
   supplierLotRef?: string | null
   receiptLineId?: string | null
   warehouseId: string
@@ -474,8 +510,11 @@ export type MaterialLotUncheckedCreateInput = {
   sourceReturnOfLotId?: string | null
   sourceReturnJobId?: string | null
   sourceReturnMovementId?: string | null
+  sourceRegrindJobId?: string | null
+  sourceRegrindMovementId?: string | null
   returnChildLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnOfLotInput
   consumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedCreateNestedManyWithoutLotInput
 }
 
 export type MaterialLotUpdateInput = {
@@ -489,14 +528,17 @@ export type MaterialLotUpdateInput = {
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   item?: Prisma.ItemUpdateOneRequiredWithoutMaterialLotsNestedInput
-  supplier?: Prisma.SupplierUpdateOneRequiredWithoutMaterialLotsNestedInput
+  supplier?: Prisma.SupplierUpdateOneWithoutMaterialLotsNestedInput
   receiptLine?: Prisma.GoodsReceiptLineUpdateOneWithoutLotNestedInput
   warehouse?: Prisma.WarehouseUpdateOneRequiredWithoutMaterialLotsNestedInput
   sourceReturnOfLot?: Prisma.MaterialLotUpdateOneWithoutReturnChildLotsNestedInput
   returnChildLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnOfLotNestedInput
   sourceReturnJob?: Prisma.ProductionJobUpdateOneWithoutReturnSpawnedLotsNestedInput
   sourceReturnMovement?: Prisma.StockMovementUpdateOneWithoutLotsReturnedFromNestedInput
+  sourceRegrindJob?: Prisma.ProductionJobUpdateOneWithoutRegrindSpawnedLotsNestedInput
+  sourceRegrindMovement?: Prisma.StockMovementUpdateOneWithoutLotsFromRegrindNestedInput
   consumptions?: Prisma.LotConsumptionUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUpdateManyWithoutLotNestedInput
 }
 
 export type MaterialLotUncheckedUpdateInput = {
@@ -504,7 +546,7 @@ export type MaterialLotUncheckedUpdateInput = {
   orgId?: Prisma.StringFieldUpdateOperationsInput | string
   lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
-  supplierId?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiptLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -517,8 +559,11 @@ export type MaterialLotUncheckedUpdateInput = {
   sourceReturnOfLotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   returnChildLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnOfLotNestedInput
   consumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedUpdateManyWithoutLotNestedInput
 }
 
 export type MaterialLotCreateManyInput = {
@@ -526,7 +571,7 @@ export type MaterialLotCreateManyInput = {
   orgId: string
   lotNumber: string
   itemId: string
-  supplierId: string
+  supplierId?: string | null
   supplierLotRef?: string | null
   receiptLineId?: string | null
   warehouseId: string
@@ -539,6 +584,8 @@ export type MaterialLotCreateManyInput = {
   sourceReturnOfLotId?: string | null
   sourceReturnJobId?: string | null
   sourceReturnMovementId?: string | null
+  sourceRegrindJobId?: string | null
+  sourceRegrindMovementId?: string | null
 }
 
 export type MaterialLotUpdateManyMutationInput = {
@@ -558,7 +605,7 @@ export type MaterialLotUncheckedUpdateManyInput = {
   orgId?: Prisma.StringFieldUpdateOperationsInput | string
   lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
-  supplierId?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiptLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -571,6 +618,8 @@ export type MaterialLotUncheckedUpdateManyInput = {
   sourceReturnOfLotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MaterialLotListRelationFilter = {
@@ -621,6 +670,8 @@ export type MaterialLotCountOrderByAggregateInput = {
   sourceReturnOfLotId?: Prisma.SortOrder
   sourceReturnJobId?: Prisma.SortOrder
   sourceReturnMovementId?: Prisma.SortOrder
+  sourceRegrindJobId?: Prisma.SortOrder
+  sourceRegrindMovementId?: Prisma.SortOrder
 }
 
 export type MaterialLotAvgOrderByAggregateInput = {
@@ -645,6 +696,8 @@ export type MaterialLotMaxOrderByAggregateInput = {
   sourceReturnOfLotId?: Prisma.SortOrder
   sourceReturnJobId?: Prisma.SortOrder
   sourceReturnMovementId?: Prisma.SortOrder
+  sourceRegrindJobId?: Prisma.SortOrder
+  sourceRegrindMovementId?: Prisma.SortOrder
 }
 
 export type MaterialLotMinOrderByAggregateInput = {
@@ -665,6 +718,8 @@ export type MaterialLotMinOrderByAggregateInput = {
   sourceReturnOfLotId?: Prisma.SortOrder
   sourceReturnJobId?: Prisma.SortOrder
   sourceReturnMovementId?: Prisma.SortOrder
+  sourceRegrindJobId?: Prisma.SortOrder
+  sourceRegrindMovementId?: Prisma.SortOrder
 }
 
 export type MaterialLotSumOrderByAggregateInput = {
@@ -868,6 +923,20 @@ export type MaterialLotUpdateOneRequiredWithoutConsumptionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.MaterialLotUpdateToOneWithWhereWithoutConsumptionsInput, Prisma.MaterialLotUpdateWithoutConsumptionsInput>, Prisma.MaterialLotUncheckedUpdateWithoutConsumptionsInput>
 }
 
+export type MaterialLotCreateNestedOneWithoutFgAllocationsInput = {
+  create?: Prisma.XOR<Prisma.MaterialLotCreateWithoutFgAllocationsInput, Prisma.MaterialLotUncheckedCreateWithoutFgAllocationsInput>
+  connectOrCreate?: Prisma.MaterialLotCreateOrConnectWithoutFgAllocationsInput
+  connect?: Prisma.MaterialLotWhereUniqueInput
+}
+
+export type MaterialLotUpdateOneRequiredWithoutFgAllocationsNestedInput = {
+  create?: Prisma.XOR<Prisma.MaterialLotCreateWithoutFgAllocationsInput, Prisma.MaterialLotUncheckedCreateWithoutFgAllocationsInput>
+  connectOrCreate?: Prisma.MaterialLotCreateOrConnectWithoutFgAllocationsInput
+  upsert?: Prisma.MaterialLotUpsertWithoutFgAllocationsInput
+  connect?: Prisma.MaterialLotWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MaterialLotUpdateToOneWithWhereWithoutFgAllocationsInput, Prisma.MaterialLotUpdateWithoutFgAllocationsInput>, Prisma.MaterialLotUncheckedUpdateWithoutFgAllocationsInput>
+}
+
 export type MaterialLotCreateNestedManyWithoutSourceReturnJobInput = {
   create?: Prisma.XOR<Prisma.MaterialLotCreateWithoutSourceReturnJobInput, Prisma.MaterialLotUncheckedCreateWithoutSourceReturnJobInput> | Prisma.MaterialLotCreateWithoutSourceReturnJobInput[] | Prisma.MaterialLotUncheckedCreateWithoutSourceReturnJobInput[]
   connectOrCreate?: Prisma.MaterialLotCreateOrConnectWithoutSourceReturnJobInput | Prisma.MaterialLotCreateOrConnectWithoutSourceReturnJobInput[]
@@ -875,10 +944,24 @@ export type MaterialLotCreateNestedManyWithoutSourceReturnJobInput = {
   connect?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
 }
 
+export type MaterialLotCreateNestedManyWithoutSourceRegrindJobInput = {
+  create?: Prisma.XOR<Prisma.MaterialLotCreateWithoutSourceRegrindJobInput, Prisma.MaterialLotUncheckedCreateWithoutSourceRegrindJobInput> | Prisma.MaterialLotCreateWithoutSourceRegrindJobInput[] | Prisma.MaterialLotUncheckedCreateWithoutSourceRegrindJobInput[]
+  connectOrCreate?: Prisma.MaterialLotCreateOrConnectWithoutSourceRegrindJobInput | Prisma.MaterialLotCreateOrConnectWithoutSourceRegrindJobInput[]
+  createMany?: Prisma.MaterialLotCreateManySourceRegrindJobInputEnvelope
+  connect?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
+}
+
 export type MaterialLotUncheckedCreateNestedManyWithoutSourceReturnJobInput = {
   create?: Prisma.XOR<Prisma.MaterialLotCreateWithoutSourceReturnJobInput, Prisma.MaterialLotUncheckedCreateWithoutSourceReturnJobInput> | Prisma.MaterialLotCreateWithoutSourceReturnJobInput[] | Prisma.MaterialLotUncheckedCreateWithoutSourceReturnJobInput[]
   connectOrCreate?: Prisma.MaterialLotCreateOrConnectWithoutSourceReturnJobInput | Prisma.MaterialLotCreateOrConnectWithoutSourceReturnJobInput[]
   createMany?: Prisma.MaterialLotCreateManySourceReturnJobInputEnvelope
+  connect?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
+}
+
+export type MaterialLotUncheckedCreateNestedManyWithoutSourceRegrindJobInput = {
+  create?: Prisma.XOR<Prisma.MaterialLotCreateWithoutSourceRegrindJobInput, Prisma.MaterialLotUncheckedCreateWithoutSourceRegrindJobInput> | Prisma.MaterialLotCreateWithoutSourceRegrindJobInput[] | Prisma.MaterialLotUncheckedCreateWithoutSourceRegrindJobInput[]
+  connectOrCreate?: Prisma.MaterialLotCreateOrConnectWithoutSourceRegrindJobInput | Prisma.MaterialLotCreateOrConnectWithoutSourceRegrindJobInput[]
+  createMany?: Prisma.MaterialLotCreateManySourceRegrindJobInputEnvelope
   connect?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
 }
 
@@ -896,6 +979,20 @@ export type MaterialLotUpdateManyWithoutSourceReturnJobNestedInput = {
   deleteMany?: Prisma.MaterialLotScalarWhereInput | Prisma.MaterialLotScalarWhereInput[]
 }
 
+export type MaterialLotUpdateManyWithoutSourceRegrindJobNestedInput = {
+  create?: Prisma.XOR<Prisma.MaterialLotCreateWithoutSourceRegrindJobInput, Prisma.MaterialLotUncheckedCreateWithoutSourceRegrindJobInput> | Prisma.MaterialLotCreateWithoutSourceRegrindJobInput[] | Prisma.MaterialLotUncheckedCreateWithoutSourceRegrindJobInput[]
+  connectOrCreate?: Prisma.MaterialLotCreateOrConnectWithoutSourceRegrindJobInput | Prisma.MaterialLotCreateOrConnectWithoutSourceRegrindJobInput[]
+  upsert?: Prisma.MaterialLotUpsertWithWhereUniqueWithoutSourceRegrindJobInput | Prisma.MaterialLotUpsertWithWhereUniqueWithoutSourceRegrindJobInput[]
+  createMany?: Prisma.MaterialLotCreateManySourceRegrindJobInputEnvelope
+  set?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
+  disconnect?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
+  delete?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
+  connect?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
+  update?: Prisma.MaterialLotUpdateWithWhereUniqueWithoutSourceRegrindJobInput | Prisma.MaterialLotUpdateWithWhereUniqueWithoutSourceRegrindJobInput[]
+  updateMany?: Prisma.MaterialLotUpdateManyWithWhereWithoutSourceRegrindJobInput | Prisma.MaterialLotUpdateManyWithWhereWithoutSourceRegrindJobInput[]
+  deleteMany?: Prisma.MaterialLotScalarWhereInput | Prisma.MaterialLotScalarWhereInput[]
+}
+
 export type MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput = {
   create?: Prisma.XOR<Prisma.MaterialLotCreateWithoutSourceReturnJobInput, Prisma.MaterialLotUncheckedCreateWithoutSourceReturnJobInput> | Prisma.MaterialLotCreateWithoutSourceReturnJobInput[] | Prisma.MaterialLotUncheckedCreateWithoutSourceReturnJobInput[]
   connectOrCreate?: Prisma.MaterialLotCreateOrConnectWithoutSourceReturnJobInput | Prisma.MaterialLotCreateOrConnectWithoutSourceReturnJobInput[]
@@ -907,6 +1004,20 @@ export type MaterialLotUncheckedUpdateManyWithoutSourceReturnJobNestedInput = {
   connect?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
   update?: Prisma.MaterialLotUpdateWithWhereUniqueWithoutSourceReturnJobInput | Prisma.MaterialLotUpdateWithWhereUniqueWithoutSourceReturnJobInput[]
   updateMany?: Prisma.MaterialLotUpdateManyWithWhereWithoutSourceReturnJobInput | Prisma.MaterialLotUpdateManyWithWhereWithoutSourceReturnJobInput[]
+  deleteMany?: Prisma.MaterialLotScalarWhereInput | Prisma.MaterialLotScalarWhereInput[]
+}
+
+export type MaterialLotUncheckedUpdateManyWithoutSourceRegrindJobNestedInput = {
+  create?: Prisma.XOR<Prisma.MaterialLotCreateWithoutSourceRegrindJobInput, Prisma.MaterialLotUncheckedCreateWithoutSourceRegrindJobInput> | Prisma.MaterialLotCreateWithoutSourceRegrindJobInput[] | Prisma.MaterialLotUncheckedCreateWithoutSourceRegrindJobInput[]
+  connectOrCreate?: Prisma.MaterialLotCreateOrConnectWithoutSourceRegrindJobInput | Prisma.MaterialLotCreateOrConnectWithoutSourceRegrindJobInput[]
+  upsert?: Prisma.MaterialLotUpsertWithWhereUniqueWithoutSourceRegrindJobInput | Prisma.MaterialLotUpsertWithWhereUniqueWithoutSourceRegrindJobInput[]
+  createMany?: Prisma.MaterialLotCreateManySourceRegrindJobInputEnvelope
+  set?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
+  disconnect?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
+  delete?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
+  connect?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
+  update?: Prisma.MaterialLotUpdateWithWhereUniqueWithoutSourceRegrindJobInput | Prisma.MaterialLotUpdateWithWhereUniqueWithoutSourceRegrindJobInput[]
+  updateMany?: Prisma.MaterialLotUpdateManyWithWhereWithoutSourceRegrindJobInput | Prisma.MaterialLotUpdateManyWithWhereWithoutSourceRegrindJobInput[]
   deleteMany?: Prisma.MaterialLotScalarWhereInput | Prisma.MaterialLotScalarWhereInput[]
 }
 
@@ -959,10 +1070,24 @@ export type MaterialLotCreateNestedManyWithoutSourceReturnMovementInput = {
   connect?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
 }
 
+export type MaterialLotCreateNestedManyWithoutSourceRegrindMovementInput = {
+  create?: Prisma.XOR<Prisma.MaterialLotCreateWithoutSourceRegrindMovementInput, Prisma.MaterialLotUncheckedCreateWithoutSourceRegrindMovementInput> | Prisma.MaterialLotCreateWithoutSourceRegrindMovementInput[] | Prisma.MaterialLotUncheckedCreateWithoutSourceRegrindMovementInput[]
+  connectOrCreate?: Prisma.MaterialLotCreateOrConnectWithoutSourceRegrindMovementInput | Prisma.MaterialLotCreateOrConnectWithoutSourceRegrindMovementInput[]
+  createMany?: Prisma.MaterialLotCreateManySourceRegrindMovementInputEnvelope
+  connect?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
+}
+
 export type MaterialLotUncheckedCreateNestedManyWithoutSourceReturnMovementInput = {
   create?: Prisma.XOR<Prisma.MaterialLotCreateWithoutSourceReturnMovementInput, Prisma.MaterialLotUncheckedCreateWithoutSourceReturnMovementInput> | Prisma.MaterialLotCreateWithoutSourceReturnMovementInput[] | Prisma.MaterialLotUncheckedCreateWithoutSourceReturnMovementInput[]
   connectOrCreate?: Prisma.MaterialLotCreateOrConnectWithoutSourceReturnMovementInput | Prisma.MaterialLotCreateOrConnectWithoutSourceReturnMovementInput[]
   createMany?: Prisma.MaterialLotCreateManySourceReturnMovementInputEnvelope
+  connect?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
+}
+
+export type MaterialLotUncheckedCreateNestedManyWithoutSourceRegrindMovementInput = {
+  create?: Prisma.XOR<Prisma.MaterialLotCreateWithoutSourceRegrindMovementInput, Prisma.MaterialLotUncheckedCreateWithoutSourceRegrindMovementInput> | Prisma.MaterialLotCreateWithoutSourceRegrindMovementInput[] | Prisma.MaterialLotUncheckedCreateWithoutSourceRegrindMovementInput[]
+  connectOrCreate?: Prisma.MaterialLotCreateOrConnectWithoutSourceRegrindMovementInput | Prisma.MaterialLotCreateOrConnectWithoutSourceRegrindMovementInput[]
+  createMany?: Prisma.MaterialLotCreateManySourceRegrindMovementInputEnvelope
   connect?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
 }
 
@@ -980,6 +1105,20 @@ export type MaterialLotUpdateManyWithoutSourceReturnMovementNestedInput = {
   deleteMany?: Prisma.MaterialLotScalarWhereInput | Prisma.MaterialLotScalarWhereInput[]
 }
 
+export type MaterialLotUpdateManyWithoutSourceRegrindMovementNestedInput = {
+  create?: Prisma.XOR<Prisma.MaterialLotCreateWithoutSourceRegrindMovementInput, Prisma.MaterialLotUncheckedCreateWithoutSourceRegrindMovementInput> | Prisma.MaterialLotCreateWithoutSourceRegrindMovementInput[] | Prisma.MaterialLotUncheckedCreateWithoutSourceRegrindMovementInput[]
+  connectOrCreate?: Prisma.MaterialLotCreateOrConnectWithoutSourceRegrindMovementInput | Prisma.MaterialLotCreateOrConnectWithoutSourceRegrindMovementInput[]
+  upsert?: Prisma.MaterialLotUpsertWithWhereUniqueWithoutSourceRegrindMovementInput | Prisma.MaterialLotUpsertWithWhereUniqueWithoutSourceRegrindMovementInput[]
+  createMany?: Prisma.MaterialLotCreateManySourceRegrindMovementInputEnvelope
+  set?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
+  disconnect?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
+  delete?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
+  connect?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
+  update?: Prisma.MaterialLotUpdateWithWhereUniqueWithoutSourceRegrindMovementInput | Prisma.MaterialLotUpdateWithWhereUniqueWithoutSourceRegrindMovementInput[]
+  updateMany?: Prisma.MaterialLotUpdateManyWithWhereWithoutSourceRegrindMovementInput | Prisma.MaterialLotUpdateManyWithWhereWithoutSourceRegrindMovementInput[]
+  deleteMany?: Prisma.MaterialLotScalarWhereInput | Prisma.MaterialLotScalarWhereInput[]
+}
+
 export type MaterialLotUncheckedUpdateManyWithoutSourceReturnMovementNestedInput = {
   create?: Prisma.XOR<Prisma.MaterialLotCreateWithoutSourceReturnMovementInput, Prisma.MaterialLotUncheckedCreateWithoutSourceReturnMovementInput> | Prisma.MaterialLotCreateWithoutSourceReturnMovementInput[] | Prisma.MaterialLotUncheckedCreateWithoutSourceReturnMovementInput[]
   connectOrCreate?: Prisma.MaterialLotCreateOrConnectWithoutSourceReturnMovementInput | Prisma.MaterialLotCreateOrConnectWithoutSourceReturnMovementInput[]
@@ -994,6 +1133,20 @@ export type MaterialLotUncheckedUpdateManyWithoutSourceReturnMovementNestedInput
   deleteMany?: Prisma.MaterialLotScalarWhereInput | Prisma.MaterialLotScalarWhereInput[]
 }
 
+export type MaterialLotUncheckedUpdateManyWithoutSourceRegrindMovementNestedInput = {
+  create?: Prisma.XOR<Prisma.MaterialLotCreateWithoutSourceRegrindMovementInput, Prisma.MaterialLotUncheckedCreateWithoutSourceRegrindMovementInput> | Prisma.MaterialLotCreateWithoutSourceRegrindMovementInput[] | Prisma.MaterialLotUncheckedCreateWithoutSourceRegrindMovementInput[]
+  connectOrCreate?: Prisma.MaterialLotCreateOrConnectWithoutSourceRegrindMovementInput | Prisma.MaterialLotCreateOrConnectWithoutSourceRegrindMovementInput[]
+  upsert?: Prisma.MaterialLotUpsertWithWhereUniqueWithoutSourceRegrindMovementInput | Prisma.MaterialLotUpsertWithWhereUniqueWithoutSourceRegrindMovementInput[]
+  createMany?: Prisma.MaterialLotCreateManySourceRegrindMovementInputEnvelope
+  set?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
+  disconnect?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
+  delete?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
+  connect?: Prisma.MaterialLotWhereUniqueInput | Prisma.MaterialLotWhereUniqueInput[]
+  update?: Prisma.MaterialLotUpdateWithWhereUniqueWithoutSourceRegrindMovementInput | Prisma.MaterialLotUpdateWithWhereUniqueWithoutSourceRegrindMovementInput[]
+  updateMany?: Prisma.MaterialLotUpdateManyWithWhereWithoutSourceRegrindMovementInput | Prisma.MaterialLotUpdateManyWithWhereWithoutSourceRegrindMovementInput[]
+  deleteMany?: Prisma.MaterialLotScalarWhereInput | Prisma.MaterialLotScalarWhereInput[]
+}
+
 export type MaterialLotCreateWithoutItemInput = {
   id?: string
   lotNumber: string
@@ -1004,20 +1157,23 @@ export type MaterialLotCreateWithoutItemInput = {
   expiryDate?: Date | string | null
   receivedAt: Date | string
   createdAt?: Date | string
-  supplier: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
+  supplier?: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
   receiptLine?: Prisma.GoodsReceiptLineCreateNestedOneWithoutLotInput
   warehouse: Prisma.WarehouseCreateNestedOneWithoutMaterialLotsInput
   sourceReturnOfLot?: Prisma.MaterialLotCreateNestedOneWithoutReturnChildLotsInput
   returnChildLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnOfLotInput
   sourceReturnJob?: Prisma.ProductionJobCreateNestedOneWithoutReturnSpawnedLotsInput
   sourceReturnMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsReturnedFromInput
+  sourceRegrindJob?: Prisma.ProductionJobCreateNestedOneWithoutRegrindSpawnedLotsInput
+  sourceRegrindMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsFromRegrindInput
   consumptions?: Prisma.LotConsumptionCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotCreateNestedManyWithoutLotInput
 }
 
 export type MaterialLotUncheckedCreateWithoutItemInput = {
   id?: string
   lotNumber: string
-  supplierId: string
+  supplierId?: string | null
   supplierLotRef?: string | null
   receiptLineId?: string | null
   warehouseId: string
@@ -1030,8 +1186,11 @@ export type MaterialLotUncheckedCreateWithoutItemInput = {
   sourceReturnOfLotId?: string | null
   sourceReturnJobId?: string | null
   sourceReturnMovementId?: string | null
+  sourceRegrindJobId?: string | null
+  sourceRegrindMovementId?: string | null
   returnChildLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnOfLotInput
   consumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedCreateNestedManyWithoutLotInput
 }
 
 export type MaterialLotCreateOrConnectWithoutItemInput = {
@@ -1068,7 +1227,7 @@ export type MaterialLotScalarWhereInput = {
   orgId?: Prisma.UuidFilter<"MaterialLot"> | string
   lotNumber?: Prisma.StringFilter<"MaterialLot"> | string
   itemId?: Prisma.UuidFilter<"MaterialLot"> | string
-  supplierId?: Prisma.UuidFilter<"MaterialLot"> | string
+  supplierId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
   supplierLotRef?: Prisma.StringNullableFilter<"MaterialLot"> | string | null
   receiptLineId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
   warehouseId?: Prisma.UuidFilter<"MaterialLot"> | string
@@ -1081,6 +1240,8 @@ export type MaterialLotScalarWhereInput = {
   sourceReturnOfLotId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
   sourceReturnJobId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
   sourceReturnMovementId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
+  sourceRegrindJobId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
+  sourceRegrindMovementId?: Prisma.UuidNullableFilter<"MaterialLot"> | string | null
 }
 
 export type MaterialLotCreateWithoutSupplierInput = {
@@ -1100,7 +1261,10 @@ export type MaterialLotCreateWithoutSupplierInput = {
   returnChildLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnOfLotInput
   sourceReturnJob?: Prisma.ProductionJobCreateNestedOneWithoutReturnSpawnedLotsInput
   sourceReturnMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsReturnedFromInput
+  sourceRegrindJob?: Prisma.ProductionJobCreateNestedOneWithoutRegrindSpawnedLotsInput
+  sourceRegrindMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsFromRegrindInput
   consumptions?: Prisma.LotConsumptionCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotCreateNestedManyWithoutLotInput
 }
 
 export type MaterialLotUncheckedCreateWithoutSupplierInput = {
@@ -1119,8 +1283,11 @@ export type MaterialLotUncheckedCreateWithoutSupplierInput = {
   sourceReturnOfLotId?: string | null
   sourceReturnJobId?: string | null
   sourceReturnMovementId?: string | null
+  sourceRegrindJobId?: string | null
+  sourceRegrindMovementId?: string | null
   returnChildLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnOfLotInput
   consumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedCreateNestedManyWithoutLotInput
 }
 
 export type MaterialLotCreateOrConnectWithoutSupplierInput = {
@@ -1160,20 +1327,23 @@ export type MaterialLotCreateWithoutReceiptLineInput = {
   receivedAt: Date | string
   createdAt?: Date | string
   item: Prisma.ItemCreateNestedOneWithoutMaterialLotsInput
-  supplier: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
+  supplier?: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
   warehouse: Prisma.WarehouseCreateNestedOneWithoutMaterialLotsInput
   sourceReturnOfLot?: Prisma.MaterialLotCreateNestedOneWithoutReturnChildLotsInput
   returnChildLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnOfLotInput
   sourceReturnJob?: Prisma.ProductionJobCreateNestedOneWithoutReturnSpawnedLotsInput
   sourceReturnMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsReturnedFromInput
+  sourceRegrindJob?: Prisma.ProductionJobCreateNestedOneWithoutRegrindSpawnedLotsInput
+  sourceRegrindMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsFromRegrindInput
   consumptions?: Prisma.LotConsumptionCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotCreateNestedManyWithoutLotInput
 }
 
 export type MaterialLotUncheckedCreateWithoutReceiptLineInput = {
   id?: string
   lotNumber: string
   itemId: string
-  supplierId: string
+  supplierId?: string | null
   supplierLotRef?: string | null
   warehouseId: string
   quantityReceived: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1185,8 +1355,11 @@ export type MaterialLotUncheckedCreateWithoutReceiptLineInput = {
   sourceReturnOfLotId?: string | null
   sourceReturnJobId?: string | null
   sourceReturnMovementId?: string | null
+  sourceRegrindJobId?: string | null
+  sourceRegrindMovementId?: string | null
   returnChildLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnOfLotInput
   consumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedCreateNestedManyWithoutLotInput
 }
 
 export type MaterialLotCreateOrConnectWithoutReceiptLineInput = {
@@ -1216,20 +1389,23 @@ export type MaterialLotUpdateWithoutReceiptLineInput = {
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   item?: Prisma.ItemUpdateOneRequiredWithoutMaterialLotsNestedInput
-  supplier?: Prisma.SupplierUpdateOneRequiredWithoutMaterialLotsNestedInput
+  supplier?: Prisma.SupplierUpdateOneWithoutMaterialLotsNestedInput
   warehouse?: Prisma.WarehouseUpdateOneRequiredWithoutMaterialLotsNestedInput
   sourceReturnOfLot?: Prisma.MaterialLotUpdateOneWithoutReturnChildLotsNestedInput
   returnChildLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnOfLotNestedInput
   sourceReturnJob?: Prisma.ProductionJobUpdateOneWithoutReturnSpawnedLotsNestedInput
   sourceReturnMovement?: Prisma.StockMovementUpdateOneWithoutLotsReturnedFromNestedInput
+  sourceRegrindJob?: Prisma.ProductionJobUpdateOneWithoutRegrindSpawnedLotsNestedInput
+  sourceRegrindMovement?: Prisma.StockMovementUpdateOneWithoutLotsFromRegrindNestedInput
   consumptions?: Prisma.LotConsumptionUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUpdateManyWithoutLotNestedInput
 }
 
 export type MaterialLotUncheckedUpdateWithoutReceiptLineInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
-  supplierId?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
   quantityReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1241,8 +1417,11 @@ export type MaterialLotUncheckedUpdateWithoutReceiptLineInput = {
   sourceReturnOfLotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   returnChildLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnOfLotNestedInput
   consumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedUpdateManyWithoutLotNestedInput
 }
 
 export type MaterialLotCreateWithoutReturnChildLotsInput = {
@@ -1256,13 +1435,16 @@ export type MaterialLotCreateWithoutReturnChildLotsInput = {
   receivedAt: Date | string
   createdAt?: Date | string
   item: Prisma.ItemCreateNestedOneWithoutMaterialLotsInput
-  supplier: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
+  supplier?: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
   receiptLine?: Prisma.GoodsReceiptLineCreateNestedOneWithoutLotInput
   warehouse: Prisma.WarehouseCreateNestedOneWithoutMaterialLotsInput
   sourceReturnOfLot?: Prisma.MaterialLotCreateNestedOneWithoutReturnChildLotsInput
   sourceReturnJob?: Prisma.ProductionJobCreateNestedOneWithoutReturnSpawnedLotsInput
   sourceReturnMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsReturnedFromInput
+  sourceRegrindJob?: Prisma.ProductionJobCreateNestedOneWithoutRegrindSpawnedLotsInput
+  sourceRegrindMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsFromRegrindInput
   consumptions?: Prisma.LotConsumptionCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotCreateNestedManyWithoutLotInput
 }
 
 export type MaterialLotUncheckedCreateWithoutReturnChildLotsInput = {
@@ -1270,7 +1452,7 @@ export type MaterialLotUncheckedCreateWithoutReturnChildLotsInput = {
   orgId: string
   lotNumber: string
   itemId: string
-  supplierId: string
+  supplierId?: string | null
   supplierLotRef?: string | null
   receiptLineId?: string | null
   warehouseId: string
@@ -1283,7 +1465,10 @@ export type MaterialLotUncheckedCreateWithoutReturnChildLotsInput = {
   sourceReturnOfLotId?: string | null
   sourceReturnJobId?: string | null
   sourceReturnMovementId?: string | null
+  sourceRegrindJobId?: string | null
+  sourceRegrindMovementId?: string | null
   consumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedCreateNestedManyWithoutLotInput
 }
 
 export type MaterialLotCreateOrConnectWithoutReturnChildLotsInput = {
@@ -1302,20 +1487,23 @@ export type MaterialLotCreateWithoutSourceReturnOfLotInput = {
   receivedAt: Date | string
   createdAt?: Date | string
   item: Prisma.ItemCreateNestedOneWithoutMaterialLotsInput
-  supplier: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
+  supplier?: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
   receiptLine?: Prisma.GoodsReceiptLineCreateNestedOneWithoutLotInput
   warehouse: Prisma.WarehouseCreateNestedOneWithoutMaterialLotsInput
   returnChildLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnOfLotInput
   sourceReturnJob?: Prisma.ProductionJobCreateNestedOneWithoutReturnSpawnedLotsInput
   sourceReturnMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsReturnedFromInput
+  sourceRegrindJob?: Prisma.ProductionJobCreateNestedOneWithoutRegrindSpawnedLotsInput
+  sourceRegrindMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsFromRegrindInput
   consumptions?: Prisma.LotConsumptionCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotCreateNestedManyWithoutLotInput
 }
 
 export type MaterialLotUncheckedCreateWithoutSourceReturnOfLotInput = {
   id?: string
   lotNumber: string
   itemId: string
-  supplierId: string
+  supplierId?: string | null
   supplierLotRef?: string | null
   receiptLineId?: string | null
   warehouseId: string
@@ -1327,8 +1515,11 @@ export type MaterialLotUncheckedCreateWithoutSourceReturnOfLotInput = {
   createdAt?: Date | string
   sourceReturnJobId?: string | null
   sourceReturnMovementId?: string | null
+  sourceRegrindJobId?: string | null
+  sourceRegrindMovementId?: string | null
   returnChildLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnOfLotInput
   consumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedCreateNestedManyWithoutLotInput
 }
 
 export type MaterialLotCreateOrConnectWithoutSourceReturnOfLotInput = {
@@ -1363,13 +1554,16 @@ export type MaterialLotUpdateWithoutReturnChildLotsInput = {
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   item?: Prisma.ItemUpdateOneRequiredWithoutMaterialLotsNestedInput
-  supplier?: Prisma.SupplierUpdateOneRequiredWithoutMaterialLotsNestedInput
+  supplier?: Prisma.SupplierUpdateOneWithoutMaterialLotsNestedInput
   receiptLine?: Prisma.GoodsReceiptLineUpdateOneWithoutLotNestedInput
   warehouse?: Prisma.WarehouseUpdateOneRequiredWithoutMaterialLotsNestedInput
   sourceReturnOfLot?: Prisma.MaterialLotUpdateOneWithoutReturnChildLotsNestedInput
   sourceReturnJob?: Prisma.ProductionJobUpdateOneWithoutReturnSpawnedLotsNestedInput
   sourceReturnMovement?: Prisma.StockMovementUpdateOneWithoutLotsReturnedFromNestedInput
+  sourceRegrindJob?: Prisma.ProductionJobUpdateOneWithoutRegrindSpawnedLotsNestedInput
+  sourceRegrindMovement?: Prisma.StockMovementUpdateOneWithoutLotsFromRegrindNestedInput
   consumptions?: Prisma.LotConsumptionUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUpdateManyWithoutLotNestedInput
 }
 
 export type MaterialLotUncheckedUpdateWithoutReturnChildLotsInput = {
@@ -1377,7 +1571,7 @@ export type MaterialLotUncheckedUpdateWithoutReturnChildLotsInput = {
   orgId?: Prisma.StringFieldUpdateOperationsInput | string
   lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
-  supplierId?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiptLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1390,7 +1584,10 @@ export type MaterialLotUncheckedUpdateWithoutReturnChildLotsInput = {
   sourceReturnOfLotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   consumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedUpdateManyWithoutLotNestedInput
 }
 
 export type MaterialLotUpsertWithWhereUniqueWithoutSourceReturnOfLotInput = {
@@ -1420,13 +1617,16 @@ export type MaterialLotCreateWithoutConsumptionsInput = {
   receivedAt: Date | string
   createdAt?: Date | string
   item: Prisma.ItemCreateNestedOneWithoutMaterialLotsInput
-  supplier: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
+  supplier?: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
   receiptLine?: Prisma.GoodsReceiptLineCreateNestedOneWithoutLotInput
   warehouse: Prisma.WarehouseCreateNestedOneWithoutMaterialLotsInput
   sourceReturnOfLot?: Prisma.MaterialLotCreateNestedOneWithoutReturnChildLotsInput
   returnChildLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnOfLotInput
   sourceReturnJob?: Prisma.ProductionJobCreateNestedOneWithoutReturnSpawnedLotsInput
   sourceReturnMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsReturnedFromInput
+  sourceRegrindJob?: Prisma.ProductionJobCreateNestedOneWithoutRegrindSpawnedLotsInput
+  sourceRegrindMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsFromRegrindInput
+  fgAllocations?: Prisma.FgBatchMaterialLotCreateNestedManyWithoutLotInput
 }
 
 export type MaterialLotUncheckedCreateWithoutConsumptionsInput = {
@@ -1434,7 +1634,7 @@ export type MaterialLotUncheckedCreateWithoutConsumptionsInput = {
   orgId: string
   lotNumber: string
   itemId: string
-  supplierId: string
+  supplierId?: string | null
   supplierLotRef?: string | null
   receiptLineId?: string | null
   warehouseId: string
@@ -1447,7 +1647,10 @@ export type MaterialLotUncheckedCreateWithoutConsumptionsInput = {
   sourceReturnOfLotId?: string | null
   sourceReturnJobId?: string | null
   sourceReturnMovementId?: string | null
+  sourceRegrindJobId?: string | null
+  sourceRegrindMovementId?: string | null
   returnChildLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnOfLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedCreateNestedManyWithoutLotInput
 }
 
 export type MaterialLotCreateOrConnectWithoutConsumptionsInput = {
@@ -1477,13 +1680,16 @@ export type MaterialLotUpdateWithoutConsumptionsInput = {
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   item?: Prisma.ItemUpdateOneRequiredWithoutMaterialLotsNestedInput
-  supplier?: Prisma.SupplierUpdateOneRequiredWithoutMaterialLotsNestedInput
+  supplier?: Prisma.SupplierUpdateOneWithoutMaterialLotsNestedInput
   receiptLine?: Prisma.GoodsReceiptLineUpdateOneWithoutLotNestedInput
   warehouse?: Prisma.WarehouseUpdateOneRequiredWithoutMaterialLotsNestedInput
   sourceReturnOfLot?: Prisma.MaterialLotUpdateOneWithoutReturnChildLotsNestedInput
   returnChildLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnOfLotNestedInput
   sourceReturnJob?: Prisma.ProductionJobUpdateOneWithoutReturnSpawnedLotsNestedInput
   sourceReturnMovement?: Prisma.StockMovementUpdateOneWithoutLotsReturnedFromNestedInput
+  sourceRegrindJob?: Prisma.ProductionJobUpdateOneWithoutRegrindSpawnedLotsNestedInput
+  sourceRegrindMovement?: Prisma.StockMovementUpdateOneWithoutLotsFromRegrindNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUpdateManyWithoutLotNestedInput
 }
 
 export type MaterialLotUncheckedUpdateWithoutConsumptionsInput = {
@@ -1491,7 +1697,7 @@ export type MaterialLotUncheckedUpdateWithoutConsumptionsInput = {
   orgId?: Prisma.StringFieldUpdateOperationsInput | string
   lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
-  supplierId?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiptLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1504,7 +1710,120 @@ export type MaterialLotUncheckedUpdateWithoutConsumptionsInput = {
   sourceReturnOfLotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   returnChildLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnOfLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedUpdateManyWithoutLotNestedInput
+}
+
+export type MaterialLotCreateWithoutFgAllocationsInput = {
+  id?: string
+  lotNumber: string
+  supplierLotRef?: string | null
+  quantityReceived: runtime.Decimal | runtime.DecimalJsLike | number | string
+  uom: string
+  status?: $Enums.MaterialLotStatus
+  expiryDate?: Date | string | null
+  receivedAt: Date | string
+  createdAt?: Date | string
+  item: Prisma.ItemCreateNestedOneWithoutMaterialLotsInput
+  supplier?: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
+  receiptLine?: Prisma.GoodsReceiptLineCreateNestedOneWithoutLotInput
+  warehouse: Prisma.WarehouseCreateNestedOneWithoutMaterialLotsInput
+  sourceReturnOfLot?: Prisma.MaterialLotCreateNestedOneWithoutReturnChildLotsInput
+  returnChildLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnOfLotInput
+  sourceReturnJob?: Prisma.ProductionJobCreateNestedOneWithoutReturnSpawnedLotsInput
+  sourceReturnMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsReturnedFromInput
+  sourceRegrindJob?: Prisma.ProductionJobCreateNestedOneWithoutRegrindSpawnedLotsInput
+  sourceRegrindMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsFromRegrindInput
+  consumptions?: Prisma.LotConsumptionCreateNestedManyWithoutLotInput
+}
+
+export type MaterialLotUncheckedCreateWithoutFgAllocationsInput = {
+  id?: string
+  orgId: string
+  lotNumber: string
+  itemId: string
+  supplierId?: string | null
+  supplierLotRef?: string | null
+  receiptLineId?: string | null
+  warehouseId: string
+  quantityReceived: runtime.Decimal | runtime.DecimalJsLike | number | string
+  uom: string
+  status?: $Enums.MaterialLotStatus
+  expiryDate?: Date | string | null
+  receivedAt: Date | string
+  createdAt?: Date | string
+  sourceReturnOfLotId?: string | null
+  sourceReturnJobId?: string | null
+  sourceReturnMovementId?: string | null
+  sourceRegrindJobId?: string | null
+  sourceRegrindMovementId?: string | null
+  returnChildLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnOfLotInput
+  consumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutLotInput
+}
+
+export type MaterialLotCreateOrConnectWithoutFgAllocationsInput = {
+  where: Prisma.MaterialLotWhereUniqueInput
+  create: Prisma.XOR<Prisma.MaterialLotCreateWithoutFgAllocationsInput, Prisma.MaterialLotUncheckedCreateWithoutFgAllocationsInput>
+}
+
+export type MaterialLotUpsertWithoutFgAllocationsInput = {
+  update: Prisma.XOR<Prisma.MaterialLotUpdateWithoutFgAllocationsInput, Prisma.MaterialLotUncheckedUpdateWithoutFgAllocationsInput>
+  create: Prisma.XOR<Prisma.MaterialLotCreateWithoutFgAllocationsInput, Prisma.MaterialLotUncheckedCreateWithoutFgAllocationsInput>
+  where?: Prisma.MaterialLotWhereInput
+}
+
+export type MaterialLotUpdateToOneWithWhereWithoutFgAllocationsInput = {
+  where?: Prisma.MaterialLotWhereInput
+  data: Prisma.XOR<Prisma.MaterialLotUpdateWithoutFgAllocationsInput, Prisma.MaterialLotUncheckedUpdateWithoutFgAllocationsInput>
+}
+
+export type MaterialLotUpdateWithoutFgAllocationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quantityReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  uom?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumMaterialLotStatusFieldUpdateOperationsInput | $Enums.MaterialLotStatus
+  expiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  item?: Prisma.ItemUpdateOneRequiredWithoutMaterialLotsNestedInput
+  supplier?: Prisma.SupplierUpdateOneWithoutMaterialLotsNestedInput
+  receiptLine?: Prisma.GoodsReceiptLineUpdateOneWithoutLotNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneRequiredWithoutMaterialLotsNestedInput
+  sourceReturnOfLot?: Prisma.MaterialLotUpdateOneWithoutReturnChildLotsNestedInput
+  returnChildLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnOfLotNestedInput
+  sourceReturnJob?: Prisma.ProductionJobUpdateOneWithoutReturnSpawnedLotsNestedInput
+  sourceReturnMovement?: Prisma.StockMovementUpdateOneWithoutLotsReturnedFromNestedInput
+  sourceRegrindJob?: Prisma.ProductionJobUpdateOneWithoutRegrindSpawnedLotsNestedInput
+  sourceRegrindMovement?: Prisma.StockMovementUpdateOneWithoutLotsFromRegrindNestedInput
+  consumptions?: Prisma.LotConsumptionUpdateManyWithoutLotNestedInput
+}
+
+export type MaterialLotUncheckedUpdateWithoutFgAllocationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  receiptLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
+  quantityReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  uom?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumMaterialLotStatusFieldUpdateOperationsInput | $Enums.MaterialLotStatus
+  expiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceReturnOfLotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceReturnJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceReturnMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  returnChildLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnOfLotNestedInput
+  consumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutLotNestedInput
 }
 
 export type MaterialLotCreateWithoutSourceReturnJobInput = {
@@ -1518,20 +1837,23 @@ export type MaterialLotCreateWithoutSourceReturnJobInput = {
   receivedAt: Date | string
   createdAt?: Date | string
   item: Prisma.ItemCreateNestedOneWithoutMaterialLotsInput
-  supplier: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
+  supplier?: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
   receiptLine?: Prisma.GoodsReceiptLineCreateNestedOneWithoutLotInput
   warehouse: Prisma.WarehouseCreateNestedOneWithoutMaterialLotsInput
   sourceReturnOfLot?: Prisma.MaterialLotCreateNestedOneWithoutReturnChildLotsInput
   returnChildLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnOfLotInput
   sourceReturnMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsReturnedFromInput
+  sourceRegrindJob?: Prisma.ProductionJobCreateNestedOneWithoutRegrindSpawnedLotsInput
+  sourceRegrindMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsFromRegrindInput
   consumptions?: Prisma.LotConsumptionCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotCreateNestedManyWithoutLotInput
 }
 
 export type MaterialLotUncheckedCreateWithoutSourceReturnJobInput = {
   id?: string
   lotNumber: string
   itemId: string
-  supplierId: string
+  supplierId?: string | null
   supplierLotRef?: string | null
   receiptLineId?: string | null
   warehouseId: string
@@ -1543,8 +1865,11 @@ export type MaterialLotUncheckedCreateWithoutSourceReturnJobInput = {
   createdAt?: Date | string
   sourceReturnOfLotId?: string | null
   sourceReturnMovementId?: string | null
+  sourceRegrindJobId?: string | null
+  sourceRegrindMovementId?: string | null
   returnChildLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnOfLotInput
   consumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedCreateNestedManyWithoutLotInput
 }
 
 export type MaterialLotCreateOrConnectWithoutSourceReturnJobInput = {
@@ -1554,6 +1879,62 @@ export type MaterialLotCreateOrConnectWithoutSourceReturnJobInput = {
 
 export type MaterialLotCreateManySourceReturnJobInputEnvelope = {
   data: Prisma.MaterialLotCreateManySourceReturnJobInput | Prisma.MaterialLotCreateManySourceReturnJobInput[]
+  skipDuplicates?: boolean
+}
+
+export type MaterialLotCreateWithoutSourceRegrindJobInput = {
+  id?: string
+  lotNumber: string
+  supplierLotRef?: string | null
+  quantityReceived: runtime.Decimal | runtime.DecimalJsLike | number | string
+  uom: string
+  status?: $Enums.MaterialLotStatus
+  expiryDate?: Date | string | null
+  receivedAt: Date | string
+  createdAt?: Date | string
+  item: Prisma.ItemCreateNestedOneWithoutMaterialLotsInput
+  supplier?: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
+  receiptLine?: Prisma.GoodsReceiptLineCreateNestedOneWithoutLotInput
+  warehouse: Prisma.WarehouseCreateNestedOneWithoutMaterialLotsInput
+  sourceReturnOfLot?: Prisma.MaterialLotCreateNestedOneWithoutReturnChildLotsInput
+  returnChildLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnOfLotInput
+  sourceReturnJob?: Prisma.ProductionJobCreateNestedOneWithoutReturnSpawnedLotsInput
+  sourceReturnMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsReturnedFromInput
+  sourceRegrindMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsFromRegrindInput
+  consumptions?: Prisma.LotConsumptionCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotCreateNestedManyWithoutLotInput
+}
+
+export type MaterialLotUncheckedCreateWithoutSourceRegrindJobInput = {
+  id?: string
+  lotNumber: string
+  itemId: string
+  supplierId?: string | null
+  supplierLotRef?: string | null
+  receiptLineId?: string | null
+  warehouseId: string
+  quantityReceived: runtime.Decimal | runtime.DecimalJsLike | number | string
+  uom: string
+  status?: $Enums.MaterialLotStatus
+  expiryDate?: Date | string | null
+  receivedAt: Date | string
+  createdAt?: Date | string
+  sourceReturnOfLotId?: string | null
+  sourceReturnJobId?: string | null
+  sourceReturnMovementId?: string | null
+  sourceRegrindMovementId?: string | null
+  returnChildLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnOfLotInput
+  consumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedCreateNestedManyWithoutLotInput
+}
+
+export type MaterialLotCreateOrConnectWithoutSourceRegrindJobInput = {
+  where: Prisma.MaterialLotWhereUniqueInput
+  create: Prisma.XOR<Prisma.MaterialLotCreateWithoutSourceRegrindJobInput, Prisma.MaterialLotUncheckedCreateWithoutSourceRegrindJobInput>
+}
+
+export type MaterialLotCreateManySourceRegrindJobInputEnvelope = {
+  data: Prisma.MaterialLotCreateManySourceRegrindJobInput | Prisma.MaterialLotCreateManySourceRegrindJobInput[]
   skipDuplicates?: boolean
 }
 
@@ -1573,6 +1954,22 @@ export type MaterialLotUpdateManyWithWhereWithoutSourceReturnJobInput = {
   data: Prisma.XOR<Prisma.MaterialLotUpdateManyMutationInput, Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnJobInput>
 }
 
+export type MaterialLotUpsertWithWhereUniqueWithoutSourceRegrindJobInput = {
+  where: Prisma.MaterialLotWhereUniqueInput
+  update: Prisma.XOR<Prisma.MaterialLotUpdateWithoutSourceRegrindJobInput, Prisma.MaterialLotUncheckedUpdateWithoutSourceRegrindJobInput>
+  create: Prisma.XOR<Prisma.MaterialLotCreateWithoutSourceRegrindJobInput, Prisma.MaterialLotUncheckedCreateWithoutSourceRegrindJobInput>
+}
+
+export type MaterialLotUpdateWithWhereUniqueWithoutSourceRegrindJobInput = {
+  where: Prisma.MaterialLotWhereUniqueInput
+  data: Prisma.XOR<Prisma.MaterialLotUpdateWithoutSourceRegrindJobInput, Prisma.MaterialLotUncheckedUpdateWithoutSourceRegrindJobInput>
+}
+
+export type MaterialLotUpdateManyWithWhereWithoutSourceRegrindJobInput = {
+  where: Prisma.MaterialLotScalarWhereInput
+  data: Prisma.XOR<Prisma.MaterialLotUpdateManyMutationInput, Prisma.MaterialLotUncheckedUpdateManyWithoutSourceRegrindJobInput>
+}
+
 export type MaterialLotCreateWithoutWarehouseInput = {
   id?: string
   lotNumber: string
@@ -1584,20 +1981,23 @@ export type MaterialLotCreateWithoutWarehouseInput = {
   receivedAt: Date | string
   createdAt?: Date | string
   item: Prisma.ItemCreateNestedOneWithoutMaterialLotsInput
-  supplier: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
+  supplier?: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
   receiptLine?: Prisma.GoodsReceiptLineCreateNestedOneWithoutLotInput
   sourceReturnOfLot?: Prisma.MaterialLotCreateNestedOneWithoutReturnChildLotsInput
   returnChildLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnOfLotInput
   sourceReturnJob?: Prisma.ProductionJobCreateNestedOneWithoutReturnSpawnedLotsInput
   sourceReturnMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsReturnedFromInput
+  sourceRegrindJob?: Prisma.ProductionJobCreateNestedOneWithoutRegrindSpawnedLotsInput
+  sourceRegrindMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsFromRegrindInput
   consumptions?: Prisma.LotConsumptionCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotCreateNestedManyWithoutLotInput
 }
 
 export type MaterialLotUncheckedCreateWithoutWarehouseInput = {
   id?: string
   lotNumber: string
   itemId: string
-  supplierId: string
+  supplierId?: string | null
   supplierLotRef?: string | null
   receiptLineId?: string | null
   quantityReceived: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1609,8 +2009,11 @@ export type MaterialLotUncheckedCreateWithoutWarehouseInput = {
   sourceReturnOfLotId?: string | null
   sourceReturnJobId?: string | null
   sourceReturnMovementId?: string | null
+  sourceRegrindJobId?: string | null
+  sourceRegrindMovementId?: string | null
   returnChildLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnOfLotInput
   consumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedCreateNestedManyWithoutLotInput
 }
 
 export type MaterialLotCreateOrConnectWithoutWarehouseInput = {
@@ -1650,20 +2053,23 @@ export type MaterialLotCreateWithoutSourceReturnMovementInput = {
   receivedAt: Date | string
   createdAt?: Date | string
   item: Prisma.ItemCreateNestedOneWithoutMaterialLotsInput
-  supplier: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
+  supplier?: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
   receiptLine?: Prisma.GoodsReceiptLineCreateNestedOneWithoutLotInput
   warehouse: Prisma.WarehouseCreateNestedOneWithoutMaterialLotsInput
   sourceReturnOfLot?: Prisma.MaterialLotCreateNestedOneWithoutReturnChildLotsInput
   returnChildLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnOfLotInput
   sourceReturnJob?: Prisma.ProductionJobCreateNestedOneWithoutReturnSpawnedLotsInput
+  sourceRegrindJob?: Prisma.ProductionJobCreateNestedOneWithoutRegrindSpawnedLotsInput
+  sourceRegrindMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsFromRegrindInput
   consumptions?: Prisma.LotConsumptionCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotCreateNestedManyWithoutLotInput
 }
 
 export type MaterialLotUncheckedCreateWithoutSourceReturnMovementInput = {
   id?: string
   lotNumber: string
   itemId: string
-  supplierId: string
+  supplierId?: string | null
   supplierLotRef?: string | null
   receiptLineId?: string | null
   warehouseId: string
@@ -1675,8 +2081,11 @@ export type MaterialLotUncheckedCreateWithoutSourceReturnMovementInput = {
   createdAt?: Date | string
   sourceReturnOfLotId?: string | null
   sourceReturnJobId?: string | null
+  sourceRegrindJobId?: string | null
+  sourceRegrindMovementId?: string | null
   returnChildLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnOfLotInput
   consumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedCreateNestedManyWithoutLotInput
 }
 
 export type MaterialLotCreateOrConnectWithoutSourceReturnMovementInput = {
@@ -1686,6 +2095,62 @@ export type MaterialLotCreateOrConnectWithoutSourceReturnMovementInput = {
 
 export type MaterialLotCreateManySourceReturnMovementInputEnvelope = {
   data: Prisma.MaterialLotCreateManySourceReturnMovementInput | Prisma.MaterialLotCreateManySourceReturnMovementInput[]
+  skipDuplicates?: boolean
+}
+
+export type MaterialLotCreateWithoutSourceRegrindMovementInput = {
+  id?: string
+  lotNumber: string
+  supplierLotRef?: string | null
+  quantityReceived: runtime.Decimal | runtime.DecimalJsLike | number | string
+  uom: string
+  status?: $Enums.MaterialLotStatus
+  expiryDate?: Date | string | null
+  receivedAt: Date | string
+  createdAt?: Date | string
+  item: Prisma.ItemCreateNestedOneWithoutMaterialLotsInput
+  supplier?: Prisma.SupplierCreateNestedOneWithoutMaterialLotsInput
+  receiptLine?: Prisma.GoodsReceiptLineCreateNestedOneWithoutLotInput
+  warehouse: Prisma.WarehouseCreateNestedOneWithoutMaterialLotsInput
+  sourceReturnOfLot?: Prisma.MaterialLotCreateNestedOneWithoutReturnChildLotsInput
+  returnChildLots?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnOfLotInput
+  sourceReturnJob?: Prisma.ProductionJobCreateNestedOneWithoutReturnSpawnedLotsInput
+  sourceReturnMovement?: Prisma.StockMovementCreateNestedOneWithoutLotsReturnedFromInput
+  sourceRegrindJob?: Prisma.ProductionJobCreateNestedOneWithoutRegrindSpawnedLotsInput
+  consumptions?: Prisma.LotConsumptionCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotCreateNestedManyWithoutLotInput
+}
+
+export type MaterialLotUncheckedCreateWithoutSourceRegrindMovementInput = {
+  id?: string
+  lotNumber: string
+  itemId: string
+  supplierId?: string | null
+  supplierLotRef?: string | null
+  receiptLineId?: string | null
+  warehouseId: string
+  quantityReceived: runtime.Decimal | runtime.DecimalJsLike | number | string
+  uom: string
+  status?: $Enums.MaterialLotStatus
+  expiryDate?: Date | string | null
+  receivedAt: Date | string
+  createdAt?: Date | string
+  sourceReturnOfLotId?: string | null
+  sourceReturnJobId?: string | null
+  sourceReturnMovementId?: string | null
+  sourceRegrindJobId?: string | null
+  returnChildLots?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnOfLotInput
+  consumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutLotInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedCreateNestedManyWithoutLotInput
+}
+
+export type MaterialLotCreateOrConnectWithoutSourceRegrindMovementInput = {
+  where: Prisma.MaterialLotWhereUniqueInput
+  create: Prisma.XOR<Prisma.MaterialLotCreateWithoutSourceRegrindMovementInput, Prisma.MaterialLotUncheckedCreateWithoutSourceRegrindMovementInput>
+}
+
+export type MaterialLotCreateManySourceRegrindMovementInputEnvelope = {
+  data: Prisma.MaterialLotCreateManySourceRegrindMovementInput | Prisma.MaterialLotCreateManySourceRegrindMovementInput[]
   skipDuplicates?: boolean
 }
 
@@ -1705,10 +2170,26 @@ export type MaterialLotUpdateManyWithWhereWithoutSourceReturnMovementInput = {
   data: Prisma.XOR<Prisma.MaterialLotUpdateManyMutationInput, Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnMovementInput>
 }
 
+export type MaterialLotUpsertWithWhereUniqueWithoutSourceRegrindMovementInput = {
+  where: Prisma.MaterialLotWhereUniqueInput
+  update: Prisma.XOR<Prisma.MaterialLotUpdateWithoutSourceRegrindMovementInput, Prisma.MaterialLotUncheckedUpdateWithoutSourceRegrindMovementInput>
+  create: Prisma.XOR<Prisma.MaterialLotCreateWithoutSourceRegrindMovementInput, Prisma.MaterialLotUncheckedCreateWithoutSourceRegrindMovementInput>
+}
+
+export type MaterialLotUpdateWithWhereUniqueWithoutSourceRegrindMovementInput = {
+  where: Prisma.MaterialLotWhereUniqueInput
+  data: Prisma.XOR<Prisma.MaterialLotUpdateWithoutSourceRegrindMovementInput, Prisma.MaterialLotUncheckedUpdateWithoutSourceRegrindMovementInput>
+}
+
+export type MaterialLotUpdateManyWithWhereWithoutSourceRegrindMovementInput = {
+  where: Prisma.MaterialLotScalarWhereInput
+  data: Prisma.XOR<Prisma.MaterialLotUpdateManyMutationInput, Prisma.MaterialLotUncheckedUpdateManyWithoutSourceRegrindMovementInput>
+}
+
 export type MaterialLotCreateManyItemInput = {
   id?: string
   lotNumber: string
-  supplierId: string
+  supplierId?: string | null
   supplierLotRef?: string | null
   receiptLineId?: string | null
   warehouseId: string
@@ -1721,6 +2202,8 @@ export type MaterialLotCreateManyItemInput = {
   sourceReturnOfLotId?: string | null
   sourceReturnJobId?: string | null
   sourceReturnMovementId?: string | null
+  sourceRegrindJobId?: string | null
+  sourceRegrindMovementId?: string | null
 }
 
 export type MaterialLotUpdateWithoutItemInput = {
@@ -1733,20 +2216,23 @@ export type MaterialLotUpdateWithoutItemInput = {
   expiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  supplier?: Prisma.SupplierUpdateOneRequiredWithoutMaterialLotsNestedInput
+  supplier?: Prisma.SupplierUpdateOneWithoutMaterialLotsNestedInput
   receiptLine?: Prisma.GoodsReceiptLineUpdateOneWithoutLotNestedInput
   warehouse?: Prisma.WarehouseUpdateOneRequiredWithoutMaterialLotsNestedInput
   sourceReturnOfLot?: Prisma.MaterialLotUpdateOneWithoutReturnChildLotsNestedInput
   returnChildLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnOfLotNestedInput
   sourceReturnJob?: Prisma.ProductionJobUpdateOneWithoutReturnSpawnedLotsNestedInput
   sourceReturnMovement?: Prisma.StockMovementUpdateOneWithoutLotsReturnedFromNestedInput
+  sourceRegrindJob?: Prisma.ProductionJobUpdateOneWithoutRegrindSpawnedLotsNestedInput
+  sourceRegrindMovement?: Prisma.StockMovementUpdateOneWithoutLotsFromRegrindNestedInput
   consumptions?: Prisma.LotConsumptionUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUpdateManyWithoutLotNestedInput
 }
 
 export type MaterialLotUncheckedUpdateWithoutItemInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  supplierId?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiptLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1759,14 +2245,17 @@ export type MaterialLotUncheckedUpdateWithoutItemInput = {
   sourceReturnOfLotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   returnChildLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnOfLotNestedInput
   consumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedUpdateManyWithoutLotNestedInput
 }
 
 export type MaterialLotUncheckedUpdateManyWithoutItemInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  supplierId?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiptLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1779,6 +2268,8 @@ export type MaterialLotUncheckedUpdateManyWithoutItemInput = {
   sourceReturnOfLotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MaterialLotCreateManySupplierInput = {
@@ -1797,6 +2288,8 @@ export type MaterialLotCreateManySupplierInput = {
   sourceReturnOfLotId?: string | null
   sourceReturnJobId?: string | null
   sourceReturnMovementId?: string | null
+  sourceRegrindJobId?: string | null
+  sourceRegrindMovementId?: string | null
 }
 
 export type MaterialLotUpdateWithoutSupplierInput = {
@@ -1816,7 +2309,10 @@ export type MaterialLotUpdateWithoutSupplierInput = {
   returnChildLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnOfLotNestedInput
   sourceReturnJob?: Prisma.ProductionJobUpdateOneWithoutReturnSpawnedLotsNestedInput
   sourceReturnMovement?: Prisma.StockMovementUpdateOneWithoutLotsReturnedFromNestedInput
+  sourceRegrindJob?: Prisma.ProductionJobUpdateOneWithoutRegrindSpawnedLotsNestedInput
+  sourceRegrindMovement?: Prisma.StockMovementUpdateOneWithoutLotsFromRegrindNestedInput
   consumptions?: Prisma.LotConsumptionUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUpdateManyWithoutLotNestedInput
 }
 
 export type MaterialLotUncheckedUpdateWithoutSupplierInput = {
@@ -1835,8 +2331,11 @@ export type MaterialLotUncheckedUpdateWithoutSupplierInput = {
   sourceReturnOfLotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   returnChildLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnOfLotNestedInput
   consumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedUpdateManyWithoutLotNestedInput
 }
 
 export type MaterialLotUncheckedUpdateManyWithoutSupplierInput = {
@@ -1855,13 +2354,15 @@ export type MaterialLotUncheckedUpdateManyWithoutSupplierInput = {
   sourceReturnOfLotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MaterialLotCreateManySourceReturnOfLotInput = {
   id?: string
   lotNumber: string
   itemId: string
-  supplierId: string
+  supplierId?: string | null
   supplierLotRef?: string | null
   receiptLineId?: string | null
   warehouseId: string
@@ -1873,6 +2374,8 @@ export type MaterialLotCreateManySourceReturnOfLotInput = {
   createdAt?: Date | string
   sourceReturnJobId?: string | null
   sourceReturnMovementId?: string | null
+  sourceRegrindJobId?: string | null
+  sourceRegrindMovementId?: string | null
 }
 
 export type MaterialLotUpdateWithoutSourceReturnOfLotInput = {
@@ -1886,20 +2389,23 @@ export type MaterialLotUpdateWithoutSourceReturnOfLotInput = {
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   item?: Prisma.ItemUpdateOneRequiredWithoutMaterialLotsNestedInput
-  supplier?: Prisma.SupplierUpdateOneRequiredWithoutMaterialLotsNestedInput
+  supplier?: Prisma.SupplierUpdateOneWithoutMaterialLotsNestedInput
   receiptLine?: Prisma.GoodsReceiptLineUpdateOneWithoutLotNestedInput
   warehouse?: Prisma.WarehouseUpdateOneRequiredWithoutMaterialLotsNestedInput
   returnChildLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnOfLotNestedInput
   sourceReturnJob?: Prisma.ProductionJobUpdateOneWithoutReturnSpawnedLotsNestedInput
   sourceReturnMovement?: Prisma.StockMovementUpdateOneWithoutLotsReturnedFromNestedInput
+  sourceRegrindJob?: Prisma.ProductionJobUpdateOneWithoutRegrindSpawnedLotsNestedInput
+  sourceRegrindMovement?: Prisma.StockMovementUpdateOneWithoutLotsFromRegrindNestedInput
   consumptions?: Prisma.LotConsumptionUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUpdateManyWithoutLotNestedInput
 }
 
 export type MaterialLotUncheckedUpdateWithoutSourceReturnOfLotInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
-  supplierId?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiptLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1911,15 +2417,18 @@ export type MaterialLotUncheckedUpdateWithoutSourceReturnOfLotInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceReturnJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   returnChildLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnOfLotNestedInput
   consumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedUpdateManyWithoutLotNestedInput
 }
 
 export type MaterialLotUncheckedUpdateManyWithoutSourceReturnOfLotInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
-  supplierId?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiptLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1931,13 +2440,15 @@ export type MaterialLotUncheckedUpdateManyWithoutSourceReturnOfLotInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceReturnJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MaterialLotCreateManySourceReturnJobInput = {
   id?: string
   lotNumber: string
   itemId: string
-  supplierId: string
+  supplierId?: string | null
   supplierLotRef?: string | null
   receiptLineId?: string | null
   warehouseId: string
@@ -1949,6 +2460,28 @@ export type MaterialLotCreateManySourceReturnJobInput = {
   createdAt?: Date | string
   sourceReturnOfLotId?: string | null
   sourceReturnMovementId?: string | null
+  sourceRegrindJobId?: string | null
+  sourceRegrindMovementId?: string | null
+}
+
+export type MaterialLotCreateManySourceRegrindJobInput = {
+  id?: string
+  lotNumber: string
+  itemId: string
+  supplierId?: string | null
+  supplierLotRef?: string | null
+  receiptLineId?: string | null
+  warehouseId: string
+  quantityReceived: runtime.Decimal | runtime.DecimalJsLike | number | string
+  uom: string
+  status?: $Enums.MaterialLotStatus
+  expiryDate?: Date | string | null
+  receivedAt: Date | string
+  createdAt?: Date | string
+  sourceReturnOfLotId?: string | null
+  sourceReturnJobId?: string | null
+  sourceReturnMovementId?: string | null
+  sourceRegrindMovementId?: string | null
 }
 
 export type MaterialLotUpdateWithoutSourceReturnJobInput = {
@@ -1962,20 +2495,23 @@ export type MaterialLotUpdateWithoutSourceReturnJobInput = {
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   item?: Prisma.ItemUpdateOneRequiredWithoutMaterialLotsNestedInput
-  supplier?: Prisma.SupplierUpdateOneRequiredWithoutMaterialLotsNestedInput
+  supplier?: Prisma.SupplierUpdateOneWithoutMaterialLotsNestedInput
   receiptLine?: Prisma.GoodsReceiptLineUpdateOneWithoutLotNestedInput
   warehouse?: Prisma.WarehouseUpdateOneRequiredWithoutMaterialLotsNestedInput
   sourceReturnOfLot?: Prisma.MaterialLotUpdateOneWithoutReturnChildLotsNestedInput
   returnChildLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnOfLotNestedInput
   sourceReturnMovement?: Prisma.StockMovementUpdateOneWithoutLotsReturnedFromNestedInput
+  sourceRegrindJob?: Prisma.ProductionJobUpdateOneWithoutRegrindSpawnedLotsNestedInput
+  sourceRegrindMovement?: Prisma.StockMovementUpdateOneWithoutLotsFromRegrindNestedInput
   consumptions?: Prisma.LotConsumptionUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUpdateManyWithoutLotNestedInput
 }
 
 export type MaterialLotUncheckedUpdateWithoutSourceReturnJobInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
-  supplierId?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiptLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1987,15 +2523,18 @@ export type MaterialLotUncheckedUpdateWithoutSourceReturnJobInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceReturnOfLotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   returnChildLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnOfLotNestedInput
   consumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedUpdateManyWithoutLotNestedInput
 }
 
 export type MaterialLotUncheckedUpdateManyWithoutSourceReturnJobInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
-  supplierId?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiptLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2007,13 +2546,81 @@ export type MaterialLotUncheckedUpdateManyWithoutSourceReturnJobInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceReturnOfLotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type MaterialLotUpdateWithoutSourceRegrindJobInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quantityReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  uom?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumMaterialLotStatusFieldUpdateOperationsInput | $Enums.MaterialLotStatus
+  expiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  item?: Prisma.ItemUpdateOneRequiredWithoutMaterialLotsNestedInput
+  supplier?: Prisma.SupplierUpdateOneWithoutMaterialLotsNestedInput
+  receiptLine?: Prisma.GoodsReceiptLineUpdateOneWithoutLotNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneRequiredWithoutMaterialLotsNestedInput
+  sourceReturnOfLot?: Prisma.MaterialLotUpdateOneWithoutReturnChildLotsNestedInput
+  returnChildLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnOfLotNestedInput
+  sourceReturnJob?: Prisma.ProductionJobUpdateOneWithoutReturnSpawnedLotsNestedInput
+  sourceReturnMovement?: Prisma.StockMovementUpdateOneWithoutLotsReturnedFromNestedInput
+  sourceRegrindMovement?: Prisma.StockMovementUpdateOneWithoutLotsFromRegrindNestedInput
+  consumptions?: Prisma.LotConsumptionUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUpdateManyWithoutLotNestedInput
+}
+
+export type MaterialLotUncheckedUpdateWithoutSourceRegrindJobInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  receiptLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
+  quantityReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  uom?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumMaterialLotStatusFieldUpdateOperationsInput | $Enums.MaterialLotStatus
+  expiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceReturnOfLotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceReturnJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceReturnMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  returnChildLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnOfLotNestedInput
+  consumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedUpdateManyWithoutLotNestedInput
+}
+
+export type MaterialLotUncheckedUpdateManyWithoutSourceRegrindJobInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  receiptLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
+  quantityReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  uom?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumMaterialLotStatusFieldUpdateOperationsInput | $Enums.MaterialLotStatus
+  expiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceReturnOfLotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceReturnJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceReturnMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MaterialLotCreateManyWarehouseInput = {
   id?: string
   lotNumber: string
   itemId: string
-  supplierId: string
+  supplierId?: string | null
   supplierLotRef?: string | null
   receiptLineId?: string | null
   quantityReceived: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -2025,6 +2632,8 @@ export type MaterialLotCreateManyWarehouseInput = {
   sourceReturnOfLotId?: string | null
   sourceReturnJobId?: string | null
   sourceReturnMovementId?: string | null
+  sourceRegrindJobId?: string | null
+  sourceRegrindMovementId?: string | null
 }
 
 export type MaterialLotUpdateWithoutWarehouseInput = {
@@ -2038,20 +2647,23 @@ export type MaterialLotUpdateWithoutWarehouseInput = {
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   item?: Prisma.ItemUpdateOneRequiredWithoutMaterialLotsNestedInput
-  supplier?: Prisma.SupplierUpdateOneRequiredWithoutMaterialLotsNestedInput
+  supplier?: Prisma.SupplierUpdateOneWithoutMaterialLotsNestedInput
   receiptLine?: Prisma.GoodsReceiptLineUpdateOneWithoutLotNestedInput
   sourceReturnOfLot?: Prisma.MaterialLotUpdateOneWithoutReturnChildLotsNestedInput
   returnChildLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnOfLotNestedInput
   sourceReturnJob?: Prisma.ProductionJobUpdateOneWithoutReturnSpawnedLotsNestedInput
   sourceReturnMovement?: Prisma.StockMovementUpdateOneWithoutLotsReturnedFromNestedInput
+  sourceRegrindJob?: Prisma.ProductionJobUpdateOneWithoutRegrindSpawnedLotsNestedInput
+  sourceRegrindMovement?: Prisma.StockMovementUpdateOneWithoutLotsFromRegrindNestedInput
   consumptions?: Prisma.LotConsumptionUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUpdateManyWithoutLotNestedInput
 }
 
 export type MaterialLotUncheckedUpdateWithoutWarehouseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
-  supplierId?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiptLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantityReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -2063,15 +2675,18 @@ export type MaterialLotUncheckedUpdateWithoutWarehouseInput = {
   sourceReturnOfLotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   returnChildLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnOfLotNestedInput
   consumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedUpdateManyWithoutLotNestedInput
 }
 
 export type MaterialLotUncheckedUpdateManyWithoutWarehouseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
-  supplierId?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiptLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantityReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -2083,13 +2698,15 @@ export type MaterialLotUncheckedUpdateManyWithoutWarehouseInput = {
   sourceReturnOfLotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MaterialLotCreateManySourceReturnMovementInput = {
   id?: string
   lotNumber: string
   itemId: string
-  supplierId: string
+  supplierId?: string | null
   supplierLotRef?: string | null
   receiptLineId?: string | null
   warehouseId: string
@@ -2101,6 +2718,28 @@ export type MaterialLotCreateManySourceReturnMovementInput = {
   createdAt?: Date | string
   sourceReturnOfLotId?: string | null
   sourceReturnJobId?: string | null
+  sourceRegrindJobId?: string | null
+  sourceRegrindMovementId?: string | null
+}
+
+export type MaterialLotCreateManySourceRegrindMovementInput = {
+  id?: string
+  lotNumber: string
+  itemId: string
+  supplierId?: string | null
+  supplierLotRef?: string | null
+  receiptLineId?: string | null
+  warehouseId: string
+  quantityReceived: runtime.Decimal | runtime.DecimalJsLike | number | string
+  uom: string
+  status?: $Enums.MaterialLotStatus
+  expiryDate?: Date | string | null
+  receivedAt: Date | string
+  createdAt?: Date | string
+  sourceReturnOfLotId?: string | null
+  sourceReturnJobId?: string | null
+  sourceReturnMovementId?: string | null
+  sourceRegrindJobId?: string | null
 }
 
 export type MaterialLotUpdateWithoutSourceReturnMovementInput = {
@@ -2114,20 +2753,23 @@ export type MaterialLotUpdateWithoutSourceReturnMovementInput = {
   receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   item?: Prisma.ItemUpdateOneRequiredWithoutMaterialLotsNestedInput
-  supplier?: Prisma.SupplierUpdateOneRequiredWithoutMaterialLotsNestedInput
+  supplier?: Prisma.SupplierUpdateOneWithoutMaterialLotsNestedInput
   receiptLine?: Prisma.GoodsReceiptLineUpdateOneWithoutLotNestedInput
   warehouse?: Prisma.WarehouseUpdateOneRequiredWithoutMaterialLotsNestedInput
   sourceReturnOfLot?: Prisma.MaterialLotUpdateOneWithoutReturnChildLotsNestedInput
   returnChildLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnOfLotNestedInput
   sourceReturnJob?: Prisma.ProductionJobUpdateOneWithoutReturnSpawnedLotsNestedInput
+  sourceRegrindJob?: Prisma.ProductionJobUpdateOneWithoutRegrindSpawnedLotsNestedInput
+  sourceRegrindMovement?: Prisma.StockMovementUpdateOneWithoutLotsFromRegrindNestedInput
   consumptions?: Prisma.LotConsumptionUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUpdateManyWithoutLotNestedInput
 }
 
 export type MaterialLotUncheckedUpdateWithoutSourceReturnMovementInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
-  supplierId?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiptLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2139,15 +2781,18 @@ export type MaterialLotUncheckedUpdateWithoutSourceReturnMovementInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceReturnOfLotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   returnChildLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnOfLotNestedInput
   consumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedUpdateManyWithoutLotNestedInput
 }
 
 export type MaterialLotUncheckedUpdateManyWithoutSourceReturnMovementInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
-  supplierId?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiptLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2159,6 +2804,74 @@ export type MaterialLotUncheckedUpdateManyWithoutSourceReturnMovementInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceReturnOfLotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sourceReturnJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type MaterialLotUpdateWithoutSourceRegrindMovementInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quantityReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  uom?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumMaterialLotStatusFieldUpdateOperationsInput | $Enums.MaterialLotStatus
+  expiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  item?: Prisma.ItemUpdateOneRequiredWithoutMaterialLotsNestedInput
+  supplier?: Prisma.SupplierUpdateOneWithoutMaterialLotsNestedInput
+  receiptLine?: Prisma.GoodsReceiptLineUpdateOneWithoutLotNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneRequiredWithoutMaterialLotsNestedInput
+  sourceReturnOfLot?: Prisma.MaterialLotUpdateOneWithoutReturnChildLotsNestedInput
+  returnChildLots?: Prisma.MaterialLotUpdateManyWithoutSourceReturnOfLotNestedInput
+  sourceReturnJob?: Prisma.ProductionJobUpdateOneWithoutReturnSpawnedLotsNestedInput
+  sourceReturnMovement?: Prisma.StockMovementUpdateOneWithoutLotsReturnedFromNestedInput
+  sourceRegrindJob?: Prisma.ProductionJobUpdateOneWithoutRegrindSpawnedLotsNestedInput
+  consumptions?: Prisma.LotConsumptionUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUpdateManyWithoutLotNestedInput
+}
+
+export type MaterialLotUncheckedUpdateWithoutSourceRegrindMovementInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  receiptLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
+  quantityReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  uom?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumMaterialLotStatusFieldUpdateOperationsInput | $Enums.MaterialLotStatus
+  expiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceReturnOfLotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceReturnJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceReturnMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  returnChildLots?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnOfLotNestedInput
+  consumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutLotNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedUpdateManyWithoutLotNestedInput
+}
+
+export type MaterialLotUncheckedUpdateManyWithoutSourceRegrindMovementInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  lotNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  supplierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supplierLotRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  receiptLineId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
+  quantityReceived?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  uom?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumMaterialLotStatusFieldUpdateOperationsInput | $Enums.MaterialLotStatus
+  expiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceReturnOfLotId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceReturnJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceReturnMovementId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceRegrindJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -2169,11 +2882,13 @@ export type MaterialLotUncheckedUpdateManyWithoutSourceReturnMovementInput = {
 export type MaterialLotCountOutputType = {
   returnChildLots: number
   consumptions: number
+  fgAllocations: number
 }
 
 export type MaterialLotCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   returnChildLots?: boolean | MaterialLotCountOutputTypeCountReturnChildLotsArgs
   consumptions?: boolean | MaterialLotCountOutputTypeCountConsumptionsArgs
+  fgAllocations?: boolean | MaterialLotCountOutputTypeCountFgAllocationsArgs
 }
 
 /**
@@ -2200,6 +2915,13 @@ export type MaterialLotCountOutputTypeCountConsumptionsArgs<ExtArgs extends runt
   where?: Prisma.LotConsumptionWhereInput
 }
 
+/**
+ * MaterialLotCountOutputType without action
+ */
+export type MaterialLotCountOutputTypeCountFgAllocationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FgBatchMaterialLotWhereInput
+}
+
 
 export type MaterialLotSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2219,15 +2941,20 @@ export type MaterialLotSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   sourceReturnOfLotId?: boolean
   sourceReturnJobId?: boolean
   sourceReturnMovementId?: boolean
+  sourceRegrindJobId?: boolean
+  sourceRegrindMovementId?: boolean
   item?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
-  supplier?: boolean | Prisma.SupplierDefaultArgs<ExtArgs>
+  supplier?: boolean | Prisma.MaterialLot$supplierArgs<ExtArgs>
   receiptLine?: boolean | Prisma.MaterialLot$receiptLineArgs<ExtArgs>
   warehouse?: boolean | Prisma.WarehouseDefaultArgs<ExtArgs>
   sourceReturnOfLot?: boolean | Prisma.MaterialLot$sourceReturnOfLotArgs<ExtArgs>
   returnChildLots?: boolean | Prisma.MaterialLot$returnChildLotsArgs<ExtArgs>
   sourceReturnJob?: boolean | Prisma.MaterialLot$sourceReturnJobArgs<ExtArgs>
   sourceReturnMovement?: boolean | Prisma.MaterialLot$sourceReturnMovementArgs<ExtArgs>
+  sourceRegrindJob?: boolean | Prisma.MaterialLot$sourceRegrindJobArgs<ExtArgs>
+  sourceRegrindMovement?: boolean | Prisma.MaterialLot$sourceRegrindMovementArgs<ExtArgs>
   consumptions?: boolean | Prisma.MaterialLot$consumptionsArgs<ExtArgs>
+  fgAllocations?: boolean | Prisma.MaterialLot$fgAllocationsArgs<ExtArgs>
   _count?: boolean | Prisma.MaterialLotCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["materialLot"]>
 
@@ -2249,13 +2976,17 @@ export type MaterialLotSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   sourceReturnOfLotId?: boolean
   sourceReturnJobId?: boolean
   sourceReturnMovementId?: boolean
+  sourceRegrindJobId?: boolean
+  sourceRegrindMovementId?: boolean
   item?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
-  supplier?: boolean | Prisma.SupplierDefaultArgs<ExtArgs>
+  supplier?: boolean | Prisma.MaterialLot$supplierArgs<ExtArgs>
   receiptLine?: boolean | Prisma.MaterialLot$receiptLineArgs<ExtArgs>
   warehouse?: boolean | Prisma.WarehouseDefaultArgs<ExtArgs>
   sourceReturnOfLot?: boolean | Prisma.MaterialLot$sourceReturnOfLotArgs<ExtArgs>
   sourceReturnJob?: boolean | Prisma.MaterialLot$sourceReturnJobArgs<ExtArgs>
   sourceReturnMovement?: boolean | Prisma.MaterialLot$sourceReturnMovementArgs<ExtArgs>
+  sourceRegrindJob?: boolean | Prisma.MaterialLot$sourceRegrindJobArgs<ExtArgs>
+  sourceRegrindMovement?: boolean | Prisma.MaterialLot$sourceRegrindMovementArgs<ExtArgs>
 }, ExtArgs["result"]["materialLot"]>
 
 export type MaterialLotSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -2276,13 +3007,17 @@ export type MaterialLotSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   sourceReturnOfLotId?: boolean
   sourceReturnJobId?: boolean
   sourceReturnMovementId?: boolean
+  sourceRegrindJobId?: boolean
+  sourceRegrindMovementId?: boolean
   item?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
-  supplier?: boolean | Prisma.SupplierDefaultArgs<ExtArgs>
+  supplier?: boolean | Prisma.MaterialLot$supplierArgs<ExtArgs>
   receiptLine?: boolean | Prisma.MaterialLot$receiptLineArgs<ExtArgs>
   warehouse?: boolean | Prisma.WarehouseDefaultArgs<ExtArgs>
   sourceReturnOfLot?: boolean | Prisma.MaterialLot$sourceReturnOfLotArgs<ExtArgs>
   sourceReturnJob?: boolean | Prisma.MaterialLot$sourceReturnJobArgs<ExtArgs>
   sourceReturnMovement?: boolean | Prisma.MaterialLot$sourceReturnMovementArgs<ExtArgs>
+  sourceRegrindJob?: boolean | Prisma.MaterialLot$sourceRegrindJobArgs<ExtArgs>
+  sourceRegrindMovement?: boolean | Prisma.MaterialLot$sourceRegrindMovementArgs<ExtArgs>
 }, ExtArgs["result"]["materialLot"]>
 
 export type MaterialLotSelectScalar = {
@@ -2303,59 +3038,71 @@ export type MaterialLotSelectScalar = {
   sourceReturnOfLotId?: boolean
   sourceReturnJobId?: boolean
   sourceReturnMovementId?: boolean
+  sourceRegrindJobId?: boolean
+  sourceRegrindMovementId?: boolean
 }
 
-export type MaterialLotOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orgId" | "lotNumber" | "itemId" | "supplierId" | "supplierLotRef" | "receiptLineId" | "warehouseId" | "quantityReceived" | "uom" | "status" | "expiryDate" | "receivedAt" | "createdAt" | "sourceReturnOfLotId" | "sourceReturnJobId" | "sourceReturnMovementId", ExtArgs["result"]["materialLot"]>
+export type MaterialLotOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orgId" | "lotNumber" | "itemId" | "supplierId" | "supplierLotRef" | "receiptLineId" | "warehouseId" | "quantityReceived" | "uom" | "status" | "expiryDate" | "receivedAt" | "createdAt" | "sourceReturnOfLotId" | "sourceReturnJobId" | "sourceReturnMovementId" | "sourceRegrindJobId" | "sourceRegrindMovementId", ExtArgs["result"]["materialLot"]>
 export type MaterialLotInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   item?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
-  supplier?: boolean | Prisma.SupplierDefaultArgs<ExtArgs>
+  supplier?: boolean | Prisma.MaterialLot$supplierArgs<ExtArgs>
   receiptLine?: boolean | Prisma.MaterialLot$receiptLineArgs<ExtArgs>
   warehouse?: boolean | Prisma.WarehouseDefaultArgs<ExtArgs>
   sourceReturnOfLot?: boolean | Prisma.MaterialLot$sourceReturnOfLotArgs<ExtArgs>
   returnChildLots?: boolean | Prisma.MaterialLot$returnChildLotsArgs<ExtArgs>
   sourceReturnJob?: boolean | Prisma.MaterialLot$sourceReturnJobArgs<ExtArgs>
   sourceReturnMovement?: boolean | Prisma.MaterialLot$sourceReturnMovementArgs<ExtArgs>
+  sourceRegrindJob?: boolean | Prisma.MaterialLot$sourceRegrindJobArgs<ExtArgs>
+  sourceRegrindMovement?: boolean | Prisma.MaterialLot$sourceRegrindMovementArgs<ExtArgs>
   consumptions?: boolean | Prisma.MaterialLot$consumptionsArgs<ExtArgs>
+  fgAllocations?: boolean | Prisma.MaterialLot$fgAllocationsArgs<ExtArgs>
   _count?: boolean | Prisma.MaterialLotCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type MaterialLotIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   item?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
-  supplier?: boolean | Prisma.SupplierDefaultArgs<ExtArgs>
+  supplier?: boolean | Prisma.MaterialLot$supplierArgs<ExtArgs>
   receiptLine?: boolean | Prisma.MaterialLot$receiptLineArgs<ExtArgs>
   warehouse?: boolean | Prisma.WarehouseDefaultArgs<ExtArgs>
   sourceReturnOfLot?: boolean | Prisma.MaterialLot$sourceReturnOfLotArgs<ExtArgs>
   sourceReturnJob?: boolean | Prisma.MaterialLot$sourceReturnJobArgs<ExtArgs>
   sourceReturnMovement?: boolean | Prisma.MaterialLot$sourceReturnMovementArgs<ExtArgs>
+  sourceRegrindJob?: boolean | Prisma.MaterialLot$sourceRegrindJobArgs<ExtArgs>
+  sourceRegrindMovement?: boolean | Prisma.MaterialLot$sourceRegrindMovementArgs<ExtArgs>
 }
 export type MaterialLotIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   item?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
-  supplier?: boolean | Prisma.SupplierDefaultArgs<ExtArgs>
+  supplier?: boolean | Prisma.MaterialLot$supplierArgs<ExtArgs>
   receiptLine?: boolean | Prisma.MaterialLot$receiptLineArgs<ExtArgs>
   warehouse?: boolean | Prisma.WarehouseDefaultArgs<ExtArgs>
   sourceReturnOfLot?: boolean | Prisma.MaterialLot$sourceReturnOfLotArgs<ExtArgs>
   sourceReturnJob?: boolean | Prisma.MaterialLot$sourceReturnJobArgs<ExtArgs>
   sourceReturnMovement?: boolean | Prisma.MaterialLot$sourceReturnMovementArgs<ExtArgs>
+  sourceRegrindJob?: boolean | Prisma.MaterialLot$sourceRegrindJobArgs<ExtArgs>
+  sourceRegrindMovement?: boolean | Prisma.MaterialLot$sourceRegrindMovementArgs<ExtArgs>
 }
 
 export type $MaterialLotPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "MaterialLot"
   objects: {
     item: Prisma.$ItemPayload<ExtArgs>
-    supplier: Prisma.$SupplierPayload<ExtArgs>
+    supplier: Prisma.$SupplierPayload<ExtArgs> | null
     receiptLine: Prisma.$GoodsReceiptLinePayload<ExtArgs> | null
     warehouse: Prisma.$WarehousePayload<ExtArgs>
     sourceReturnOfLot: Prisma.$MaterialLotPayload<ExtArgs> | null
     returnChildLots: Prisma.$MaterialLotPayload<ExtArgs>[]
     sourceReturnJob: Prisma.$ProductionJobPayload<ExtArgs> | null
     sourceReturnMovement: Prisma.$StockMovementPayload<ExtArgs> | null
+    sourceRegrindJob: Prisma.$ProductionJobPayload<ExtArgs> | null
+    sourceRegrindMovement: Prisma.$StockMovementPayload<ExtArgs> | null
     consumptions: Prisma.$LotConsumptionPayload<ExtArgs>[]
+    fgAllocations: Prisma.$FgBatchMaterialLotPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     orgId: string
     lotNumber: string
     itemId: string
-    supplierId: string
+    supplierId: string | null
     supplierLotRef: string | null
     receiptLineId: string | null
     warehouseId: string
@@ -2368,6 +3115,8 @@ export type $MaterialLotPayload<ExtArgs extends runtime.Types.Extensions.Interna
     sourceReturnOfLotId: string | null
     sourceReturnJobId: string | null
     sourceReturnMovementId: string | null
+    sourceRegrindJobId: string | null
+    sourceRegrindMovementId: string | null
   }, ExtArgs["result"]["materialLot"]>
   composites: {}
 }
@@ -2763,14 +3512,17 @@ readonly fields: MaterialLotFieldRefs;
 export interface Prisma__MaterialLotClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   item<T extends Prisma.ItemDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ItemDefaultArgs<ExtArgs>>): Prisma.Prisma__ItemClient<runtime.Types.Result.GetResult<Prisma.$ItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  supplier<T extends Prisma.SupplierDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SupplierDefaultArgs<ExtArgs>>): Prisma.Prisma__SupplierClient<runtime.Types.Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  supplier<T extends Prisma.MaterialLot$supplierArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MaterialLot$supplierArgs<ExtArgs>>): Prisma.Prisma__SupplierClient<runtime.Types.Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   receiptLine<T extends Prisma.MaterialLot$receiptLineArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MaterialLot$receiptLineArgs<ExtArgs>>): Prisma.Prisma__GoodsReceiptLineClient<runtime.Types.Result.GetResult<Prisma.$GoodsReceiptLinePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   warehouse<T extends Prisma.WarehouseDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WarehouseDefaultArgs<ExtArgs>>): Prisma.Prisma__WarehouseClient<runtime.Types.Result.GetResult<Prisma.$WarehousePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   sourceReturnOfLot<T extends Prisma.MaterialLot$sourceReturnOfLotArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MaterialLot$sourceReturnOfLotArgs<ExtArgs>>): Prisma.Prisma__MaterialLotClient<runtime.Types.Result.GetResult<Prisma.$MaterialLotPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   returnChildLots<T extends Prisma.MaterialLot$returnChildLotsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MaterialLot$returnChildLotsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaterialLotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sourceReturnJob<T extends Prisma.MaterialLot$sourceReturnJobArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MaterialLot$sourceReturnJobArgs<ExtArgs>>): Prisma.Prisma__ProductionJobClient<runtime.Types.Result.GetResult<Prisma.$ProductionJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   sourceReturnMovement<T extends Prisma.MaterialLot$sourceReturnMovementArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MaterialLot$sourceReturnMovementArgs<ExtArgs>>): Prisma.Prisma__StockMovementClient<runtime.Types.Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  sourceRegrindJob<T extends Prisma.MaterialLot$sourceRegrindJobArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MaterialLot$sourceRegrindJobArgs<ExtArgs>>): Prisma.Prisma__ProductionJobClient<runtime.Types.Result.GetResult<Prisma.$ProductionJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  sourceRegrindMovement<T extends Prisma.MaterialLot$sourceRegrindMovementArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MaterialLot$sourceRegrindMovementArgs<ExtArgs>>): Prisma.Prisma__StockMovementClient<runtime.Types.Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   consumptions<T extends Prisma.MaterialLot$consumptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MaterialLot$consumptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LotConsumptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  fgAllocations<T extends Prisma.MaterialLot$fgAllocationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MaterialLot$fgAllocationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FgBatchMaterialLotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2817,6 +3569,8 @@ export interface MaterialLotFieldRefs {
   readonly sourceReturnOfLotId: Prisma.FieldRef<"MaterialLot", 'String'>
   readonly sourceReturnJobId: Prisma.FieldRef<"MaterialLot", 'String'>
   readonly sourceReturnMovementId: Prisma.FieldRef<"MaterialLot", 'String'>
+  readonly sourceRegrindJobId: Prisma.FieldRef<"MaterialLot", 'String'>
+  readonly sourceRegrindMovementId: Prisma.FieldRef<"MaterialLot", 'String'>
 }
     
 
@@ -3218,6 +3972,25 @@ export type MaterialLotDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
 }
 
 /**
+ * MaterialLot.supplier
+ */
+export type MaterialLot$supplierArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Supplier
+   */
+  select?: Prisma.SupplierSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Supplier
+   */
+  omit?: Prisma.SupplierOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SupplierInclude<ExtArgs> | null
+  where?: Prisma.SupplierWhereInput
+}
+
+/**
  * MaterialLot.receiptLine
  */
 export type MaterialLot$receiptLineArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3318,6 +4091,44 @@ export type MaterialLot$sourceReturnMovementArgs<ExtArgs extends runtime.Types.E
 }
 
 /**
+ * MaterialLot.sourceRegrindJob
+ */
+export type MaterialLot$sourceRegrindJobArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProductionJob
+   */
+  select?: Prisma.ProductionJobSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProductionJob
+   */
+  omit?: Prisma.ProductionJobOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductionJobInclude<ExtArgs> | null
+  where?: Prisma.ProductionJobWhereInput
+}
+
+/**
+ * MaterialLot.sourceRegrindMovement
+ */
+export type MaterialLot$sourceRegrindMovementArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the StockMovement
+   */
+  select?: Prisma.StockMovementSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the StockMovement
+   */
+  omit?: Prisma.StockMovementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StockMovementInclude<ExtArgs> | null
+  where?: Prisma.StockMovementWhereInput
+}
+
+/**
  * MaterialLot.consumptions
  */
 export type MaterialLot$consumptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3339,6 +4150,30 @@ export type MaterialLot$consumptionsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.LotConsumptionScalarFieldEnum | Prisma.LotConsumptionScalarFieldEnum[]
+}
+
+/**
+ * MaterialLot.fgAllocations
+ */
+export type MaterialLot$fgAllocationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FgBatchMaterialLot
+   */
+  select?: Prisma.FgBatchMaterialLotSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FgBatchMaterialLot
+   */
+  omit?: Prisma.FgBatchMaterialLotOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FgBatchMaterialLotInclude<ExtArgs> | null
+  where?: Prisma.FgBatchMaterialLotWhereInput
+  orderBy?: Prisma.FgBatchMaterialLotOrderByWithRelationInput | Prisma.FgBatchMaterialLotOrderByWithRelationInput[]
+  cursor?: Prisma.FgBatchMaterialLotWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FgBatchMaterialLotScalarFieldEnum | Prisma.FgBatchMaterialLotScalarFieldEnum[]
 }
 
 /**

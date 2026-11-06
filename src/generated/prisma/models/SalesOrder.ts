@@ -225,6 +225,7 @@ export type SalesOrderWhereInput = {
   branch?: Prisma.XOR<Prisma.BranchScalarRelationFilter, Prisma.BranchWhereInput>
   customer?: Prisma.XOR<Prisma.CustomerScalarRelationFilter, Prisma.CustomerWhereInput>
   lines?: Prisma.SalesOrderLineListRelationFilter
+  dispatches?: Prisma.DispatchListRelationFilter
 }
 
 export type SalesOrderOrderByWithRelationInput = {
@@ -241,6 +242,7 @@ export type SalesOrderOrderByWithRelationInput = {
   branch?: Prisma.BranchOrderByWithRelationInput
   customer?: Prisma.CustomerOrderByWithRelationInput
   lines?: Prisma.SalesOrderLineOrderByRelationAggregateInput
+  dispatches?: Prisma.DispatchOrderByRelationAggregateInput
 }
 
 export type SalesOrderWhereUniqueInput = Prisma.AtLeast<{
@@ -262,6 +264,7 @@ export type SalesOrderWhereUniqueInput = Prisma.AtLeast<{
   branch?: Prisma.XOR<Prisma.BranchScalarRelationFilter, Prisma.BranchWhereInput>
   customer?: Prisma.XOR<Prisma.CustomerScalarRelationFilter, Prisma.CustomerWhereInput>
   lines?: Prisma.SalesOrderLineListRelationFilter
+  dispatches?: Prisma.DispatchListRelationFilter
 }, "id" | "orgId_orderNumber" | "orgId_id">
 
 export type SalesOrderOrderByWithAggregationInput = {
@@ -307,6 +310,7 @@ export type SalesOrderCreateInput = {
   branch: Prisma.BranchCreateNestedOneWithoutSalesOrdersInput
   customer: Prisma.CustomerCreateNestedOneWithoutSalesOrdersInput
   lines?: Prisma.SalesOrderLineCreateNestedManyWithoutSalesOrderInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutSalesOrderInput
 }
 
 export type SalesOrderUncheckedCreateInput = {
@@ -321,6 +325,7 @@ export type SalesOrderUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lines?: Prisma.SalesOrderLineUncheckedCreateNestedManyWithoutSalesOrderInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutSalesOrderInput
 }
 
 export type SalesOrderUpdateInput = {
@@ -334,6 +339,7 @@ export type SalesOrderUpdateInput = {
   branch?: Prisma.BranchUpdateOneRequiredWithoutSalesOrdersNestedInput
   customer?: Prisma.CustomerUpdateOneRequiredWithoutSalesOrdersNestedInput
   lines?: Prisma.SalesOrderLineUpdateManyWithoutSalesOrderNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutSalesOrderNestedInput
 }
 
 export type SalesOrderUncheckedUpdateInput = {
@@ -348,6 +354,7 @@ export type SalesOrderUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lines?: Prisma.SalesOrderLineUncheckedUpdateManyWithoutSalesOrderNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutSalesOrderNestedInput
 }
 
 export type SalesOrderCreateManyInput = {
@@ -552,6 +559,20 @@ export type SalesOrderUpdateOneRequiredWithoutLinesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SalesOrderUpdateToOneWithWhereWithoutLinesInput, Prisma.SalesOrderUpdateWithoutLinesInput>, Prisma.SalesOrderUncheckedUpdateWithoutLinesInput>
 }
 
+export type SalesOrderCreateNestedOneWithoutDispatchesInput = {
+  create?: Prisma.XOR<Prisma.SalesOrderCreateWithoutDispatchesInput, Prisma.SalesOrderUncheckedCreateWithoutDispatchesInput>
+  connectOrCreate?: Prisma.SalesOrderCreateOrConnectWithoutDispatchesInput
+  connect?: Prisma.SalesOrderWhereUniqueInput
+}
+
+export type SalesOrderUpdateOneRequiredWithoutDispatchesNestedInput = {
+  create?: Prisma.XOR<Prisma.SalesOrderCreateWithoutDispatchesInput, Prisma.SalesOrderUncheckedCreateWithoutDispatchesInput>
+  connectOrCreate?: Prisma.SalesOrderCreateOrConnectWithoutDispatchesInput
+  upsert?: Prisma.SalesOrderUpsertWithoutDispatchesInput
+  connect?: Prisma.SalesOrderWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SalesOrderUpdateToOneWithWhereWithoutDispatchesInput, Prisma.SalesOrderUpdateWithoutDispatchesInput>, Prisma.SalesOrderUncheckedUpdateWithoutDispatchesInput>
+}
+
 export type SalesOrderCreateWithoutBranchInput = {
   id?: string
   orderNumber: string
@@ -562,6 +583,7 @@ export type SalesOrderCreateWithoutBranchInput = {
   updatedAt?: Date | string
   customer: Prisma.CustomerCreateNestedOneWithoutSalesOrdersInput
   lines?: Prisma.SalesOrderLineCreateNestedManyWithoutSalesOrderInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutSalesOrderInput
 }
 
 export type SalesOrderUncheckedCreateWithoutBranchInput = {
@@ -574,6 +596,7 @@ export type SalesOrderUncheckedCreateWithoutBranchInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lines?: Prisma.SalesOrderLineUncheckedCreateNestedManyWithoutSalesOrderInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutSalesOrderInput
 }
 
 export type SalesOrderCreateOrConnectWithoutBranchInput = {
@@ -628,6 +651,7 @@ export type SalesOrderCreateWithoutCustomerInput = {
   updatedAt?: Date | string
   branch: Prisma.BranchCreateNestedOneWithoutSalesOrdersInput
   lines?: Prisma.SalesOrderLineCreateNestedManyWithoutSalesOrderInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutSalesOrderInput
 }
 
 export type SalesOrderUncheckedCreateWithoutCustomerInput = {
@@ -640,6 +664,7 @@ export type SalesOrderUncheckedCreateWithoutCustomerInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   lines?: Prisma.SalesOrderLineUncheckedCreateNestedManyWithoutSalesOrderInput
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutSalesOrderInput
 }
 
 export type SalesOrderCreateOrConnectWithoutCustomerInput = {
@@ -678,6 +703,7 @@ export type SalesOrderCreateWithoutLinesInput = {
   updatedAt?: Date | string
   branch: Prisma.BranchCreateNestedOneWithoutSalesOrdersInput
   customer: Prisma.CustomerCreateNestedOneWithoutSalesOrdersInput
+  dispatches?: Prisma.DispatchCreateNestedManyWithoutSalesOrderInput
 }
 
 export type SalesOrderUncheckedCreateWithoutLinesInput = {
@@ -691,6 +717,7 @@ export type SalesOrderUncheckedCreateWithoutLinesInput = {
   requestedDeliveryDate?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  dispatches?: Prisma.DispatchUncheckedCreateNestedManyWithoutSalesOrderInput
 }
 
 export type SalesOrderCreateOrConnectWithoutLinesInput = {
@@ -719,6 +746,7 @@ export type SalesOrderUpdateWithoutLinesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneRequiredWithoutSalesOrdersNestedInput
   customer?: Prisma.CustomerUpdateOneRequiredWithoutSalesOrdersNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutSalesOrderNestedInput
 }
 
 export type SalesOrderUncheckedUpdateWithoutLinesInput = {
@@ -732,6 +760,77 @@ export type SalesOrderUncheckedUpdateWithoutLinesInput = {
   requestedDeliveryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutSalesOrderNestedInput
+}
+
+export type SalesOrderCreateWithoutDispatchesInput = {
+  id?: string
+  orderNumber: string
+  status?: $Enums.SalesOrderStatus
+  currency: string
+  requestedDeliveryDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branch: Prisma.BranchCreateNestedOneWithoutSalesOrdersInput
+  customer: Prisma.CustomerCreateNestedOneWithoutSalesOrdersInput
+  lines?: Prisma.SalesOrderLineCreateNestedManyWithoutSalesOrderInput
+}
+
+export type SalesOrderUncheckedCreateWithoutDispatchesInput = {
+  id?: string
+  orgId: string
+  branchId: string
+  orderNumber: string
+  customerId: string
+  status?: $Enums.SalesOrderStatus
+  currency: string
+  requestedDeliveryDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  lines?: Prisma.SalesOrderLineUncheckedCreateNestedManyWithoutSalesOrderInput
+}
+
+export type SalesOrderCreateOrConnectWithoutDispatchesInput = {
+  where: Prisma.SalesOrderWhereUniqueInput
+  create: Prisma.XOR<Prisma.SalesOrderCreateWithoutDispatchesInput, Prisma.SalesOrderUncheckedCreateWithoutDispatchesInput>
+}
+
+export type SalesOrderUpsertWithoutDispatchesInput = {
+  update: Prisma.XOR<Prisma.SalesOrderUpdateWithoutDispatchesInput, Prisma.SalesOrderUncheckedUpdateWithoutDispatchesInput>
+  create: Prisma.XOR<Prisma.SalesOrderCreateWithoutDispatchesInput, Prisma.SalesOrderUncheckedCreateWithoutDispatchesInput>
+  where?: Prisma.SalesOrderWhereInput
+}
+
+export type SalesOrderUpdateToOneWithWhereWithoutDispatchesInput = {
+  where?: Prisma.SalesOrderWhereInput
+  data: Prisma.XOR<Prisma.SalesOrderUpdateWithoutDispatchesInput, Prisma.SalesOrderUncheckedUpdateWithoutDispatchesInput>
+}
+
+export type SalesOrderUpdateWithoutDispatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumSalesOrderStatusFieldUpdateOperationsInput | $Enums.SalesOrderStatus
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  requestedDeliveryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneRequiredWithoutSalesOrdersNestedInput
+  customer?: Prisma.CustomerUpdateOneRequiredWithoutSalesOrdersNestedInput
+  lines?: Prisma.SalesOrderLineUpdateManyWithoutSalesOrderNestedInput
+}
+
+export type SalesOrderUncheckedUpdateWithoutDispatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumSalesOrderStatusFieldUpdateOperationsInput | $Enums.SalesOrderStatus
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  requestedDeliveryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lines?: Prisma.SalesOrderLineUncheckedUpdateManyWithoutSalesOrderNestedInput
 }
 
 export type SalesOrderCreateManyBranchInput = {
@@ -755,6 +854,7 @@ export type SalesOrderUpdateWithoutBranchInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneRequiredWithoutSalesOrdersNestedInput
   lines?: Prisma.SalesOrderLineUpdateManyWithoutSalesOrderNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutSalesOrderNestedInput
 }
 
 export type SalesOrderUncheckedUpdateWithoutBranchInput = {
@@ -767,6 +867,7 @@ export type SalesOrderUncheckedUpdateWithoutBranchInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lines?: Prisma.SalesOrderLineUncheckedUpdateManyWithoutSalesOrderNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutSalesOrderNestedInput
 }
 
 export type SalesOrderUncheckedUpdateManyWithoutBranchInput = {
@@ -801,6 +902,7 @@ export type SalesOrderUpdateWithoutCustomerInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneRequiredWithoutSalesOrdersNestedInput
   lines?: Prisma.SalesOrderLineUpdateManyWithoutSalesOrderNestedInput
+  dispatches?: Prisma.DispatchUpdateManyWithoutSalesOrderNestedInput
 }
 
 export type SalesOrderUncheckedUpdateWithoutCustomerInput = {
@@ -813,6 +915,7 @@ export type SalesOrderUncheckedUpdateWithoutCustomerInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lines?: Prisma.SalesOrderLineUncheckedUpdateManyWithoutSalesOrderNestedInput
+  dispatches?: Prisma.DispatchUncheckedUpdateManyWithoutSalesOrderNestedInput
 }
 
 export type SalesOrderUncheckedUpdateManyWithoutCustomerInput = {
@@ -833,10 +936,12 @@ export type SalesOrderUncheckedUpdateManyWithoutCustomerInput = {
 
 export type SalesOrderCountOutputType = {
   lines: number
+  dispatches: number
 }
 
 export type SalesOrderCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   lines?: boolean | SalesOrderCountOutputTypeCountLinesArgs
+  dispatches?: boolean | SalesOrderCountOutputTypeCountDispatchesArgs
 }
 
 /**
@@ -856,6 +961,13 @@ export type SalesOrderCountOutputTypeCountLinesArgs<ExtArgs extends runtime.Type
   where?: Prisma.SalesOrderLineWhereInput
 }
 
+/**
+ * SalesOrderCountOutputType without action
+ */
+export type SalesOrderCountOutputTypeCountDispatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DispatchWhereInput
+}
+
 
 export type SalesOrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -871,6 +983,7 @@ export type SalesOrderSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   branch?: boolean | Prisma.BranchDefaultArgs<ExtArgs>
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
   lines?: boolean | Prisma.SalesOrder$linesArgs<ExtArgs>
+  dispatches?: boolean | Prisma.SalesOrder$dispatchesArgs<ExtArgs>
   _count?: boolean | Prisma.SalesOrderCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["salesOrder"]>
 
@@ -922,6 +1035,7 @@ export type SalesOrderInclude<ExtArgs extends runtime.Types.Extensions.InternalA
   branch?: boolean | Prisma.BranchDefaultArgs<ExtArgs>
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
   lines?: boolean | Prisma.SalesOrder$linesArgs<ExtArgs>
+  dispatches?: boolean | Prisma.SalesOrder$dispatchesArgs<ExtArgs>
   _count?: boolean | Prisma.SalesOrderCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type SalesOrderIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -939,6 +1053,7 @@ export type $SalesOrderPayload<ExtArgs extends runtime.Types.Extensions.Internal
     branch: Prisma.$BranchPayload<ExtArgs>
     customer: Prisma.$CustomerPayload<ExtArgs>
     lines: Prisma.$SalesOrderLinePayload<ExtArgs>[]
+    dispatches: Prisma.$DispatchPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1348,6 +1463,7 @@ export interface Prisma__SalesOrderClient<T, Null = never, ExtArgs extends runti
   branch<T extends Prisma.BranchDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BranchDefaultArgs<ExtArgs>>): Prisma.Prisma__BranchClient<runtime.Types.Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   customer<T extends Prisma.CustomerDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CustomerDefaultArgs<ExtArgs>>): Prisma.Prisma__CustomerClient<runtime.Types.Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   lines<T extends Prisma.SalesOrder$linesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SalesOrder$linesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SalesOrderLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  dispatches<T extends Prisma.SalesOrder$dispatchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SalesOrder$dispatchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DispatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1809,6 +1925,30 @@ export type SalesOrder$linesArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.SalesOrderLineScalarFieldEnum | Prisma.SalesOrderLineScalarFieldEnum[]
+}
+
+/**
+ * SalesOrder.dispatches
+ */
+export type SalesOrder$dispatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Dispatch
+   */
+  select?: Prisma.DispatchSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Dispatch
+   */
+  omit?: Prisma.DispatchOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DispatchInclude<ExtArgs> | null
+  where?: Prisma.DispatchWhereInput
+  orderBy?: Prisma.DispatchOrderByWithRelationInput | Prisma.DispatchOrderByWithRelationInput[]
+  cursor?: Prisma.DispatchWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DispatchScalarFieldEnum | Prisma.DispatchScalarFieldEnum[]
 }
 
 /**

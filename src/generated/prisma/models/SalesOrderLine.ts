@@ -239,6 +239,7 @@ export type SalesOrderLineWhereInput = {
   salesOrder?: Prisma.XOR<Prisma.SalesOrderScalarRelationFilter, Prisma.SalesOrderWhereInput>
   item?: Prisma.XOR<Prisma.ItemScalarRelationFilter, Prisma.ItemWhereInput>
   productionJob?: Prisma.XOR<Prisma.ProductionJobNullableScalarRelationFilter, Prisma.ProductionJobWhereInput> | null
+  dispatchLines?: Prisma.DispatchLineListRelationFilter
 }
 
 export type SalesOrderLineOrderByWithRelationInput = {
@@ -252,6 +253,7 @@ export type SalesOrderLineOrderByWithRelationInput = {
   salesOrder?: Prisma.SalesOrderOrderByWithRelationInput
   item?: Prisma.ItemOrderByWithRelationInput
   productionJob?: Prisma.ProductionJobOrderByWithRelationInput
+  dispatchLines?: Prisma.DispatchLineOrderByRelationAggregateInput
 }
 
 export type SalesOrderLineWhereUniqueInput = Prisma.AtLeast<{
@@ -269,6 +271,7 @@ export type SalesOrderLineWhereUniqueInput = Prisma.AtLeast<{
   salesOrder?: Prisma.XOR<Prisma.SalesOrderScalarRelationFilter, Prisma.SalesOrderWhereInput>
   item?: Prisma.XOR<Prisma.ItemScalarRelationFilter, Prisma.ItemWhereInput>
   productionJob?: Prisma.XOR<Prisma.ProductionJobNullableScalarRelationFilter, Prisma.ProductionJobWhereInput> | null
+  dispatchLines?: Prisma.DispatchLineListRelationFilter
 }, "id" | "orgId_id">
 
 export type SalesOrderLineOrderByWithAggregationInput = {
@@ -307,6 +310,7 @@ export type SalesOrderLineCreateInput = {
   salesOrder: Prisma.SalesOrderCreateNestedOneWithoutLinesInput
   item: Prisma.ItemCreateNestedOneWithoutSalesOrderLinesInput
   productionJob?: Prisma.ProductionJobCreateNestedOneWithoutSalesOrderLineInput
+  dispatchLines?: Prisma.DispatchLineCreateNestedManyWithoutSalesOrderLineInput
 }
 
 export type SalesOrderLineUncheckedCreateInput = {
@@ -318,6 +322,7 @@ export type SalesOrderLineUncheckedCreateInput = {
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
   productionJob?: Prisma.ProductionJobUncheckedCreateNestedOneWithoutSalesOrderLineInput
+  dispatchLines?: Prisma.DispatchLineUncheckedCreateNestedManyWithoutSalesOrderLineInput
 }
 
 export type SalesOrderLineUpdateInput = {
@@ -328,6 +333,7 @@ export type SalesOrderLineUpdateInput = {
   salesOrder?: Prisma.SalesOrderUpdateOneRequiredWithoutLinesNestedInput
   item?: Prisma.ItemUpdateOneRequiredWithoutSalesOrderLinesNestedInput
   productionJob?: Prisma.ProductionJobUpdateOneWithoutSalesOrderLineNestedInput
+  dispatchLines?: Prisma.DispatchLineUpdateManyWithoutSalesOrderLineNestedInput
 }
 
 export type SalesOrderLineUncheckedUpdateInput = {
@@ -339,6 +345,7 @@ export type SalesOrderLineUncheckedUpdateInput = {
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   productionJob?: Prisma.ProductionJobUncheckedUpdateOneWithoutSalesOrderLineNestedInput
+  dispatchLines?: Prisma.DispatchLineUncheckedUpdateManyWithoutSalesOrderLineNestedInput
 }
 
 export type SalesOrderLineCreateManyInput = {
@@ -421,6 +428,11 @@ export type SalesOrderLineMinOrderByAggregateInput = {
 export type SalesOrderLineSumOrderByAggregateInput = {
   quantity?: Prisma.SortOrder
   unitPrice?: Prisma.SortOrder
+}
+
+export type SalesOrderLineScalarRelationFilter = {
+  is?: Prisma.SalesOrderLineWhereInput
+  isNot?: Prisma.SalesOrderLineWhereInput
 }
 
 export type SalesOrderLineNullableScalarRelationFilter = {
@@ -512,6 +524,20 @@ export type SalesOrderLineUncheckedUpdateManyWithoutSalesOrderNestedInput = {
   deleteMany?: Prisma.SalesOrderLineScalarWhereInput | Prisma.SalesOrderLineScalarWhereInput[]
 }
 
+export type SalesOrderLineCreateNestedOneWithoutDispatchLinesInput = {
+  create?: Prisma.XOR<Prisma.SalesOrderLineCreateWithoutDispatchLinesInput, Prisma.SalesOrderLineUncheckedCreateWithoutDispatchLinesInput>
+  connectOrCreate?: Prisma.SalesOrderLineCreateOrConnectWithoutDispatchLinesInput
+  connect?: Prisma.SalesOrderLineWhereUniqueInput
+}
+
+export type SalesOrderLineUpdateOneRequiredWithoutDispatchLinesNestedInput = {
+  create?: Prisma.XOR<Prisma.SalesOrderLineCreateWithoutDispatchLinesInput, Prisma.SalesOrderLineUncheckedCreateWithoutDispatchLinesInput>
+  connectOrCreate?: Prisma.SalesOrderLineCreateOrConnectWithoutDispatchLinesInput
+  upsert?: Prisma.SalesOrderLineUpsertWithoutDispatchLinesInput
+  connect?: Prisma.SalesOrderLineWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SalesOrderLineUpdateToOneWithWhereWithoutDispatchLinesInput, Prisma.SalesOrderLineUpdateWithoutDispatchLinesInput>, Prisma.SalesOrderLineUncheckedUpdateWithoutDispatchLinesInput>
+}
+
 export type SalesOrderLineCreateNestedOneWithoutProductionJobInput = {
   create?: Prisma.XOR<Prisma.SalesOrderLineCreateWithoutProductionJobInput, Prisma.SalesOrderLineUncheckedCreateWithoutProductionJobInput>
   connectOrCreate?: Prisma.SalesOrderLineCreateOrConnectWithoutProductionJobInput
@@ -535,6 +561,7 @@ export type SalesOrderLineCreateWithoutItemInput = {
   currency: string
   salesOrder: Prisma.SalesOrderCreateNestedOneWithoutLinesInput
   productionJob?: Prisma.ProductionJobCreateNestedOneWithoutSalesOrderLineInput
+  dispatchLines?: Prisma.DispatchLineCreateNestedManyWithoutSalesOrderLineInput
 }
 
 export type SalesOrderLineUncheckedCreateWithoutItemInput = {
@@ -544,6 +571,7 @@ export type SalesOrderLineUncheckedCreateWithoutItemInput = {
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
   productionJob?: Prisma.ProductionJobUncheckedCreateNestedOneWithoutSalesOrderLineInput
+  dispatchLines?: Prisma.DispatchLineUncheckedCreateNestedManyWithoutSalesOrderLineInput
 }
 
 export type SalesOrderLineCreateOrConnectWithoutItemInput = {
@@ -592,6 +620,7 @@ export type SalesOrderLineCreateWithoutSalesOrderInput = {
   currency: string
   item: Prisma.ItemCreateNestedOneWithoutSalesOrderLinesInput
   productionJob?: Prisma.ProductionJobCreateNestedOneWithoutSalesOrderLineInput
+  dispatchLines?: Prisma.DispatchLineCreateNestedManyWithoutSalesOrderLineInput
 }
 
 export type SalesOrderLineUncheckedCreateWithoutSalesOrderInput = {
@@ -601,6 +630,7 @@ export type SalesOrderLineUncheckedCreateWithoutSalesOrderInput = {
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
   productionJob?: Prisma.ProductionJobUncheckedCreateNestedOneWithoutSalesOrderLineInput
+  dispatchLines?: Prisma.DispatchLineUncheckedCreateNestedManyWithoutSalesOrderLineInput
 }
 
 export type SalesOrderLineCreateOrConnectWithoutSalesOrderInput = {
@@ -629,6 +659,64 @@ export type SalesOrderLineUpdateManyWithWhereWithoutSalesOrderInput = {
   data: Prisma.XOR<Prisma.SalesOrderLineUpdateManyMutationInput, Prisma.SalesOrderLineUncheckedUpdateManyWithoutSalesOrderInput>
 }
 
+export type SalesOrderLineCreateWithoutDispatchLinesInput = {
+  id?: string
+  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency: string
+  salesOrder: Prisma.SalesOrderCreateNestedOneWithoutLinesInput
+  item: Prisma.ItemCreateNestedOneWithoutSalesOrderLinesInput
+  productionJob?: Prisma.ProductionJobCreateNestedOneWithoutSalesOrderLineInput
+}
+
+export type SalesOrderLineUncheckedCreateWithoutDispatchLinesInput = {
+  id?: string
+  orgId: string
+  salesOrderId: string
+  itemId: string
+  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency: string
+  productionJob?: Prisma.ProductionJobUncheckedCreateNestedOneWithoutSalesOrderLineInput
+}
+
+export type SalesOrderLineCreateOrConnectWithoutDispatchLinesInput = {
+  where: Prisma.SalesOrderLineWhereUniqueInput
+  create: Prisma.XOR<Prisma.SalesOrderLineCreateWithoutDispatchLinesInput, Prisma.SalesOrderLineUncheckedCreateWithoutDispatchLinesInput>
+}
+
+export type SalesOrderLineUpsertWithoutDispatchLinesInput = {
+  update: Prisma.XOR<Prisma.SalesOrderLineUpdateWithoutDispatchLinesInput, Prisma.SalesOrderLineUncheckedUpdateWithoutDispatchLinesInput>
+  create: Prisma.XOR<Prisma.SalesOrderLineCreateWithoutDispatchLinesInput, Prisma.SalesOrderLineUncheckedCreateWithoutDispatchLinesInput>
+  where?: Prisma.SalesOrderLineWhereInput
+}
+
+export type SalesOrderLineUpdateToOneWithWhereWithoutDispatchLinesInput = {
+  where?: Prisma.SalesOrderLineWhereInput
+  data: Prisma.XOR<Prisma.SalesOrderLineUpdateWithoutDispatchLinesInput, Prisma.SalesOrderLineUncheckedUpdateWithoutDispatchLinesInput>
+}
+
+export type SalesOrderLineUpdateWithoutDispatchLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  salesOrder?: Prisma.SalesOrderUpdateOneRequiredWithoutLinesNestedInput
+  item?: Prisma.ItemUpdateOneRequiredWithoutSalesOrderLinesNestedInput
+  productionJob?: Prisma.ProductionJobUpdateOneWithoutSalesOrderLineNestedInput
+}
+
+export type SalesOrderLineUncheckedUpdateWithoutDispatchLinesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  salesOrderId?: Prisma.StringFieldUpdateOperationsInput | string
+  itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  productionJob?: Prisma.ProductionJobUncheckedUpdateOneWithoutSalesOrderLineNestedInput
+}
+
 export type SalesOrderLineCreateWithoutProductionJobInput = {
   id?: string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -636,6 +724,7 @@ export type SalesOrderLineCreateWithoutProductionJobInput = {
   currency: string
   salesOrder: Prisma.SalesOrderCreateNestedOneWithoutLinesInput
   item: Prisma.ItemCreateNestedOneWithoutSalesOrderLinesInput
+  dispatchLines?: Prisma.DispatchLineCreateNestedManyWithoutSalesOrderLineInput
 }
 
 export type SalesOrderLineUncheckedCreateWithoutProductionJobInput = {
@@ -646,6 +735,7 @@ export type SalesOrderLineUncheckedCreateWithoutProductionJobInput = {
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  dispatchLines?: Prisma.DispatchLineUncheckedCreateNestedManyWithoutSalesOrderLineInput
 }
 
 export type SalesOrderLineCreateOrConnectWithoutProductionJobInput = {
@@ -671,6 +761,7 @@ export type SalesOrderLineUpdateWithoutProductionJobInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   salesOrder?: Prisma.SalesOrderUpdateOneRequiredWithoutLinesNestedInput
   item?: Prisma.ItemUpdateOneRequiredWithoutSalesOrderLinesNestedInput
+  dispatchLines?: Prisma.DispatchLineUpdateManyWithoutSalesOrderLineNestedInput
 }
 
 export type SalesOrderLineUncheckedUpdateWithoutProductionJobInput = {
@@ -681,6 +772,7 @@ export type SalesOrderLineUncheckedUpdateWithoutProductionJobInput = {
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  dispatchLines?: Prisma.DispatchLineUncheckedUpdateManyWithoutSalesOrderLineNestedInput
 }
 
 export type SalesOrderLineCreateManyItemInput = {
@@ -698,6 +790,7 @@ export type SalesOrderLineUpdateWithoutItemInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   salesOrder?: Prisma.SalesOrderUpdateOneRequiredWithoutLinesNestedInput
   productionJob?: Prisma.ProductionJobUpdateOneWithoutSalesOrderLineNestedInput
+  dispatchLines?: Prisma.DispatchLineUpdateManyWithoutSalesOrderLineNestedInput
 }
 
 export type SalesOrderLineUncheckedUpdateWithoutItemInput = {
@@ -707,6 +800,7 @@ export type SalesOrderLineUncheckedUpdateWithoutItemInput = {
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   productionJob?: Prisma.ProductionJobUncheckedUpdateOneWithoutSalesOrderLineNestedInput
+  dispatchLines?: Prisma.DispatchLineUncheckedUpdateManyWithoutSalesOrderLineNestedInput
 }
 
 export type SalesOrderLineUncheckedUpdateManyWithoutItemInput = {
@@ -732,6 +826,7 @@ export type SalesOrderLineUpdateWithoutSalesOrderInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   item?: Prisma.ItemUpdateOneRequiredWithoutSalesOrderLinesNestedInput
   productionJob?: Prisma.ProductionJobUpdateOneWithoutSalesOrderLineNestedInput
+  dispatchLines?: Prisma.DispatchLineUpdateManyWithoutSalesOrderLineNestedInput
 }
 
 export type SalesOrderLineUncheckedUpdateWithoutSalesOrderInput = {
@@ -741,6 +836,7 @@ export type SalesOrderLineUncheckedUpdateWithoutSalesOrderInput = {
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   productionJob?: Prisma.ProductionJobUncheckedUpdateOneWithoutSalesOrderLineNestedInput
+  dispatchLines?: Prisma.DispatchLineUncheckedUpdateManyWithoutSalesOrderLineNestedInput
 }
 
 export type SalesOrderLineUncheckedUpdateManyWithoutSalesOrderInput = {
@@ -751,6 +847,35 @@ export type SalesOrderLineUncheckedUpdateManyWithoutSalesOrderInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
+
+/**
+ * Count Type SalesOrderLineCountOutputType
+ */
+
+export type SalesOrderLineCountOutputType = {
+  dispatchLines: number
+}
+
+export type SalesOrderLineCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  dispatchLines?: boolean | SalesOrderLineCountOutputTypeCountDispatchLinesArgs
+}
+
+/**
+ * SalesOrderLineCountOutputType without action
+ */
+export type SalesOrderLineCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SalesOrderLineCountOutputType
+   */
+  select?: Prisma.SalesOrderLineCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * SalesOrderLineCountOutputType without action
+ */
+export type SalesOrderLineCountOutputTypeCountDispatchLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DispatchLineWhereInput
+}
 
 
 export type SalesOrderLineSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -764,6 +889,8 @@ export type SalesOrderLineSelect<ExtArgs extends runtime.Types.Extensions.Intern
   salesOrder?: boolean | Prisma.SalesOrderDefaultArgs<ExtArgs>
   item?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
   productionJob?: boolean | Prisma.SalesOrderLine$productionJobArgs<ExtArgs>
+  dispatchLines?: boolean | Prisma.SalesOrderLine$dispatchLinesArgs<ExtArgs>
+  _count?: boolean | Prisma.SalesOrderLineCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["salesOrderLine"]>
 
 export type SalesOrderLineSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -805,6 +932,8 @@ export type SalesOrderLineInclude<ExtArgs extends runtime.Types.Extensions.Inter
   salesOrder?: boolean | Prisma.SalesOrderDefaultArgs<ExtArgs>
   item?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
   productionJob?: boolean | Prisma.SalesOrderLine$productionJobArgs<ExtArgs>
+  dispatchLines?: boolean | Prisma.SalesOrderLine$dispatchLinesArgs<ExtArgs>
+  _count?: boolean | Prisma.SalesOrderLineCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type SalesOrderLineIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   salesOrder?: boolean | Prisma.SalesOrderDefaultArgs<ExtArgs>
@@ -821,6 +950,7 @@ export type $SalesOrderLinePayload<ExtArgs extends runtime.Types.Extensions.Inte
     salesOrder: Prisma.$SalesOrderPayload<ExtArgs>
     item: Prisma.$ItemPayload<ExtArgs>
     productionJob: Prisma.$ProductionJobPayload<ExtArgs> | null
+    dispatchLines: Prisma.$DispatchLinePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1227,6 +1357,7 @@ export interface Prisma__SalesOrderLineClient<T, Null = never, ExtArgs extends r
   salesOrder<T extends Prisma.SalesOrderDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SalesOrderDefaultArgs<ExtArgs>>): Prisma.Prisma__SalesOrderClient<runtime.Types.Result.GetResult<Prisma.$SalesOrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   item<T extends Prisma.ItemDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ItemDefaultArgs<ExtArgs>>): Prisma.Prisma__ItemClient<runtime.Types.Result.GetResult<Prisma.$ItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   productionJob<T extends Prisma.SalesOrderLine$productionJobArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SalesOrderLine$productionJobArgs<ExtArgs>>): Prisma.Prisma__ProductionJobClient<runtime.Types.Result.GetResult<Prisma.$ProductionJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  dispatchLines<T extends Prisma.SalesOrderLine$dispatchLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SalesOrderLine$dispatchLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DispatchLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1680,6 +1811,30 @@ export type SalesOrderLine$productionJobArgs<ExtArgs extends runtime.Types.Exten
    */
   include?: Prisma.ProductionJobInclude<ExtArgs> | null
   where?: Prisma.ProductionJobWhereInput
+}
+
+/**
+ * SalesOrderLine.dispatchLines
+ */
+export type SalesOrderLine$dispatchLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DispatchLine
+   */
+  select?: Prisma.DispatchLineSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DispatchLine
+   */
+  omit?: Prisma.DispatchLineOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DispatchLineInclude<ExtArgs> | null
+  where?: Prisma.DispatchLineWhereInput
+  orderBy?: Prisma.DispatchLineOrderByWithRelationInput | Prisma.DispatchLineOrderByWithRelationInput[]
+  cursor?: Prisma.DispatchLineWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DispatchLineScalarFieldEnum | Prisma.DispatchLineScalarFieldEnum[]
 }
 
 /**

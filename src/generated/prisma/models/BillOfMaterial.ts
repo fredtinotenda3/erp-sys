@@ -41,6 +41,7 @@ export type BillOfMaterialMinAggregateOutputType = {
   version: number | null
   status: $Enums.BomStatus | null
   effectiveFrom: Date | null
+  effectiveTo: Date | null
   createdById: string | null
   createdAt: Date | null
 }
@@ -52,6 +53,7 @@ export type BillOfMaterialMaxAggregateOutputType = {
   version: number | null
   status: $Enums.BomStatus | null
   effectiveFrom: Date | null
+  effectiveTo: Date | null
   createdById: string | null
   createdAt: Date | null
 }
@@ -63,6 +65,7 @@ export type BillOfMaterialCountAggregateOutputType = {
   version: number
   status: number
   effectiveFrom: number
+  effectiveTo: number
   createdById: number
   createdAt: number
   _all: number
@@ -84,6 +87,7 @@ export type BillOfMaterialMinAggregateInputType = {
   version?: true
   status?: true
   effectiveFrom?: true
+  effectiveTo?: true
   createdById?: true
   createdAt?: true
 }
@@ -95,6 +99,7 @@ export type BillOfMaterialMaxAggregateInputType = {
   version?: true
   status?: true
   effectiveFrom?: true
+  effectiveTo?: true
   createdById?: true
   createdAt?: true
 }
@@ -106,6 +111,7 @@ export type BillOfMaterialCountAggregateInputType = {
   version?: true
   status?: true
   effectiveFrom?: true
+  effectiveTo?: true
   createdById?: true
   createdAt?: true
   _all?: true
@@ -204,6 +210,7 @@ export type BillOfMaterialGroupByOutputType = {
   version: number
   status: $Enums.BomStatus
   effectiveFrom: Date | null
+  effectiveTo: Date | null
   createdById: string | null
   createdAt: Date
   _count: BillOfMaterialCountAggregateOutputType | null
@@ -238,6 +245,7 @@ export type BillOfMaterialWhereInput = {
   version?: Prisma.IntFilter<"BillOfMaterial"> | number
   status?: Prisma.EnumBomStatusFilter<"BillOfMaterial"> | $Enums.BomStatus
   effectiveFrom?: Prisma.DateTimeNullableFilter<"BillOfMaterial"> | Date | string | null
+  effectiveTo?: Prisma.DateTimeNullableFilter<"BillOfMaterial"> | Date | string | null
   createdById?: Prisma.UuidNullableFilter<"BillOfMaterial"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BillOfMaterial"> | Date | string
   productItem?: Prisma.XOR<Prisma.ItemScalarRelationFilter, Prisma.ItemWhereInput>
@@ -252,6 +260,7 @@ export type BillOfMaterialOrderByWithRelationInput = {
   version?: Prisma.SortOrder
   status?: Prisma.SortOrder
   effectiveFrom?: Prisma.SortOrderInput | Prisma.SortOrder
+  effectiveTo?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   productItem?: Prisma.ItemOrderByWithRelationInput
@@ -271,6 +280,7 @@ export type BillOfMaterialWhereUniqueInput = Prisma.AtLeast<{
   version?: Prisma.IntFilter<"BillOfMaterial"> | number
   status?: Prisma.EnumBomStatusFilter<"BillOfMaterial"> | $Enums.BomStatus
   effectiveFrom?: Prisma.DateTimeNullableFilter<"BillOfMaterial"> | Date | string | null
+  effectiveTo?: Prisma.DateTimeNullableFilter<"BillOfMaterial"> | Date | string | null
   createdById?: Prisma.UuidNullableFilter<"BillOfMaterial"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BillOfMaterial"> | Date | string
   productItem?: Prisma.XOR<Prisma.ItemScalarRelationFilter, Prisma.ItemWhereInput>
@@ -285,6 +295,7 @@ export type BillOfMaterialOrderByWithAggregationInput = {
   version?: Prisma.SortOrder
   status?: Prisma.SortOrder
   effectiveFrom?: Prisma.SortOrderInput | Prisma.SortOrder
+  effectiveTo?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.BillOfMaterialCountOrderByAggregateInput
@@ -304,6 +315,7 @@ export type BillOfMaterialScalarWhereWithAggregatesInput = {
   version?: Prisma.IntWithAggregatesFilter<"BillOfMaterial"> | number
   status?: Prisma.EnumBomStatusWithAggregatesFilter<"BillOfMaterial"> | $Enums.BomStatus
   effectiveFrom?: Prisma.DateTimeNullableWithAggregatesFilter<"BillOfMaterial"> | Date | string | null
+  effectiveTo?: Prisma.DateTimeNullableWithAggregatesFilter<"BillOfMaterial"> | Date | string | null
   createdById?: Prisma.UuidNullableWithAggregatesFilter<"BillOfMaterial"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"BillOfMaterial"> | Date | string
 }
@@ -313,6 +325,7 @@ export type BillOfMaterialCreateInput = {
   version: number
   status?: $Enums.BomStatus
   effectiveFrom?: Date | string | null
+  effectiveTo?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   productItem: Prisma.ItemCreateNestedOneWithoutBomsAsProductInput
@@ -327,6 +340,7 @@ export type BillOfMaterialUncheckedCreateInput = {
   version: number
   status?: $Enums.BomStatus
   effectiveFrom?: Date | string | null
+  effectiveTo?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   lines?: Prisma.BomLineUncheckedCreateNestedManyWithoutBomInput
@@ -338,6 +352,7 @@ export type BillOfMaterialUpdateInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumBomStatusFieldUpdateOperationsInput | $Enums.BomStatus
   effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   productItem?: Prisma.ItemUpdateOneRequiredWithoutBomsAsProductNestedInput
@@ -352,6 +367,7 @@ export type BillOfMaterialUncheckedUpdateInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumBomStatusFieldUpdateOperationsInput | $Enums.BomStatus
   effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lines?: Prisma.BomLineUncheckedUpdateManyWithoutBomNestedInput
@@ -365,6 +381,7 @@ export type BillOfMaterialCreateManyInput = {
   version: number
   status?: $Enums.BomStatus
   effectiveFrom?: Date | string | null
+  effectiveTo?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
 }
@@ -374,6 +391,7 @@ export type BillOfMaterialUpdateManyMutationInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumBomStatusFieldUpdateOperationsInput | $Enums.BomStatus
   effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -385,6 +403,7 @@ export type BillOfMaterialUncheckedUpdateManyInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumBomStatusFieldUpdateOperationsInput | $Enums.BomStatus
   effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -416,6 +435,7 @@ export type BillOfMaterialCountOrderByAggregateInput = {
   version?: Prisma.SortOrder
   status?: Prisma.SortOrder
   effectiveFrom?: Prisma.SortOrder
+  effectiveTo?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -431,6 +451,7 @@ export type BillOfMaterialMaxOrderByAggregateInput = {
   version?: Prisma.SortOrder
   status?: Prisma.SortOrder
   effectiveFrom?: Prisma.SortOrder
+  effectiveTo?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -442,6 +463,7 @@ export type BillOfMaterialMinOrderByAggregateInput = {
   version?: Prisma.SortOrder
   status?: Prisma.SortOrder
   effectiveFrom?: Prisma.SortOrder
+  effectiveTo?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -534,6 +556,7 @@ export type BillOfMaterialCreateWithoutProductItemInput = {
   version: number
   status?: $Enums.BomStatus
   effectiveFrom?: Date | string | null
+  effectiveTo?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   lines?: Prisma.BomLineCreateNestedManyWithoutBomInput
@@ -545,6 +568,7 @@ export type BillOfMaterialUncheckedCreateWithoutProductItemInput = {
   version: number
   status?: $Enums.BomStatus
   effectiveFrom?: Date | string | null
+  effectiveTo?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   lines?: Prisma.BomLineUncheckedCreateNestedManyWithoutBomInput
@@ -587,6 +611,7 @@ export type BillOfMaterialScalarWhereInput = {
   version?: Prisma.IntFilter<"BillOfMaterial"> | number
   status?: Prisma.EnumBomStatusFilter<"BillOfMaterial"> | $Enums.BomStatus
   effectiveFrom?: Prisma.DateTimeNullableFilter<"BillOfMaterial"> | Date | string | null
+  effectiveTo?: Prisma.DateTimeNullableFilter<"BillOfMaterial"> | Date | string | null
   createdById?: Prisma.UuidNullableFilter<"BillOfMaterial"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BillOfMaterial"> | Date | string
 }
@@ -596,6 +621,7 @@ export type BillOfMaterialCreateWithoutLinesInput = {
   version: number
   status?: $Enums.BomStatus
   effectiveFrom?: Date | string | null
+  effectiveTo?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   productItem: Prisma.ItemCreateNestedOneWithoutBomsAsProductInput
@@ -609,6 +635,7 @@ export type BillOfMaterialUncheckedCreateWithoutLinesInput = {
   version: number
   status?: $Enums.BomStatus
   effectiveFrom?: Date | string | null
+  effectiveTo?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutBomInput
@@ -635,6 +662,7 @@ export type BillOfMaterialUpdateWithoutLinesInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumBomStatusFieldUpdateOperationsInput | $Enums.BomStatus
   effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   productItem?: Prisma.ItemUpdateOneRequiredWithoutBomsAsProductNestedInput
@@ -648,6 +676,7 @@ export type BillOfMaterialUncheckedUpdateWithoutLinesInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumBomStatusFieldUpdateOperationsInput | $Enums.BomStatus
   effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutBomNestedInput
@@ -658,6 +687,7 @@ export type BillOfMaterialCreateWithoutProductionJobsInput = {
   version: number
   status?: $Enums.BomStatus
   effectiveFrom?: Date | string | null
+  effectiveTo?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   productItem: Prisma.ItemCreateNestedOneWithoutBomsAsProductInput
@@ -671,6 +701,7 @@ export type BillOfMaterialUncheckedCreateWithoutProductionJobsInput = {
   version: number
   status?: $Enums.BomStatus
   effectiveFrom?: Date | string | null
+  effectiveTo?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   lines?: Prisma.BomLineUncheckedCreateNestedManyWithoutBomInput
@@ -697,6 +728,7 @@ export type BillOfMaterialUpdateWithoutProductionJobsInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumBomStatusFieldUpdateOperationsInput | $Enums.BomStatus
   effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   productItem?: Prisma.ItemUpdateOneRequiredWithoutBomsAsProductNestedInput
@@ -710,6 +742,7 @@ export type BillOfMaterialUncheckedUpdateWithoutProductionJobsInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumBomStatusFieldUpdateOperationsInput | $Enums.BomStatus
   effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lines?: Prisma.BomLineUncheckedUpdateManyWithoutBomNestedInput
@@ -720,6 +753,7 @@ export type BillOfMaterialCreateManyProductItemInput = {
   version: number
   status?: $Enums.BomStatus
   effectiveFrom?: Date | string | null
+  effectiveTo?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
 }
@@ -729,6 +763,7 @@ export type BillOfMaterialUpdateWithoutProductItemInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumBomStatusFieldUpdateOperationsInput | $Enums.BomStatus
   effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lines?: Prisma.BomLineUpdateManyWithoutBomNestedInput
@@ -740,6 +775,7 @@ export type BillOfMaterialUncheckedUpdateWithoutProductItemInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumBomStatusFieldUpdateOperationsInput | $Enums.BomStatus
   effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lines?: Prisma.BomLineUncheckedUpdateManyWithoutBomNestedInput
@@ -751,6 +787,7 @@ export type BillOfMaterialUncheckedUpdateManyWithoutProductItemInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumBomStatusFieldUpdateOperationsInput | $Enums.BomStatus
   effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -802,6 +839,7 @@ export type BillOfMaterialSelect<ExtArgs extends runtime.Types.Extensions.Intern
   version?: boolean
   status?: boolean
   effectiveFrom?: boolean
+  effectiveTo?: boolean
   createdById?: boolean
   createdAt?: boolean
   productItem?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
@@ -817,6 +855,7 @@ export type BillOfMaterialSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   version?: boolean
   status?: boolean
   effectiveFrom?: boolean
+  effectiveTo?: boolean
   createdById?: boolean
   createdAt?: boolean
   productItem?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
@@ -829,6 +868,7 @@ export type BillOfMaterialSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   version?: boolean
   status?: boolean
   effectiveFrom?: boolean
+  effectiveTo?: boolean
   createdById?: boolean
   createdAt?: boolean
   productItem?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
@@ -841,11 +881,12 @@ export type BillOfMaterialSelectScalar = {
   version?: boolean
   status?: boolean
   effectiveFrom?: boolean
+  effectiveTo?: boolean
   createdById?: boolean
   createdAt?: boolean
 }
 
-export type BillOfMaterialOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orgId" | "productItemId" | "version" | "status" | "effectiveFrom" | "createdById" | "createdAt", ExtArgs["result"]["billOfMaterial"]>
+export type BillOfMaterialOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orgId" | "productItemId" | "version" | "status" | "effectiveFrom" | "effectiveTo" | "createdById" | "createdAt", ExtArgs["result"]["billOfMaterial"]>
 export type BillOfMaterialInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   productItem?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
   lines?: boolean | Prisma.BillOfMaterial$linesArgs<ExtArgs>
@@ -873,6 +914,7 @@ export type $BillOfMaterialPayload<ExtArgs extends runtime.Types.Extensions.Inte
     version: number
     status: $Enums.BomStatus
     effectiveFrom: Date | null
+    effectiveTo: Date | null
     createdById: string | null
     createdAt: Date
   }, ExtArgs["result"]["billOfMaterial"]>
@@ -1307,6 +1349,7 @@ export interface BillOfMaterialFieldRefs {
   readonly version: Prisma.FieldRef<"BillOfMaterial", 'Int'>
   readonly status: Prisma.FieldRef<"BillOfMaterial", 'BomStatus'>
   readonly effectiveFrom: Prisma.FieldRef<"BillOfMaterial", 'DateTime'>
+  readonly effectiveTo: Prisma.FieldRef<"BillOfMaterial", 'DateTime'>
   readonly createdById: Prisma.FieldRef<"BillOfMaterial", 'String'>
   readonly createdAt: Prisma.FieldRef<"BillOfMaterial", 'DateTime'>
 }

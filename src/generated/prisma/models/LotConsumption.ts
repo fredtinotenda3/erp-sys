@@ -259,6 +259,7 @@ export type LotConsumptionWhereInput = {
   lot?: Prisma.XOR<Prisma.MaterialLotScalarRelationFilter, Prisma.MaterialLotWhereInput>
   job?: Prisma.XOR<Prisma.ProductionJobScalarRelationFilter, Prisma.ProductionJobWhereInput>
   movement?: Prisma.XOR<Prisma.StockMovementScalarRelationFilter, Prisma.StockMovementWhereInput>
+  fgAllocations?: Prisma.FgBatchMaterialLotListRelationFilter
 }
 
 export type LotConsumptionOrderByWithRelationInput = {
@@ -275,6 +276,7 @@ export type LotConsumptionOrderByWithRelationInput = {
   lot?: Prisma.MaterialLotOrderByWithRelationInput
   job?: Prisma.ProductionJobOrderByWithRelationInput
   movement?: Prisma.StockMovementOrderByWithRelationInput
+  fgAllocations?: Prisma.FgBatchMaterialLotOrderByRelationAggregateInput
 }
 
 export type LotConsumptionWhereUniqueInput = Prisma.AtLeast<{
@@ -295,6 +297,7 @@ export type LotConsumptionWhereUniqueInput = Prisma.AtLeast<{
   lot?: Prisma.XOR<Prisma.MaterialLotScalarRelationFilter, Prisma.MaterialLotWhereInput>
   job?: Prisma.XOR<Prisma.ProductionJobScalarRelationFilter, Prisma.ProductionJobWhereInput>
   movement?: Prisma.XOR<Prisma.StockMovementScalarRelationFilter, Prisma.StockMovementWhereInput>
+  fgAllocations?: Prisma.FgBatchMaterialLotListRelationFilter
 }, "id" | "orgId_id">
 
 export type LotConsumptionOrderByWithAggregationInput = {
@@ -341,6 +344,7 @@ export type LotConsumptionCreateInput = {
   lot: Prisma.MaterialLotCreateNestedOneWithoutConsumptionsInput
   job: Prisma.ProductionJobCreateNestedOneWithoutLotConsumptionsInput
   movement: Prisma.StockMovementCreateNestedOneWithoutLotConsumptionsInput
+  fgAllocations?: Prisma.FgBatchMaterialLotCreateNestedManyWithoutLotConsumptionInput
 }
 
 export type LotConsumptionUncheckedCreateInput = {
@@ -354,6 +358,7 @@ export type LotConsumptionUncheckedCreateInput = {
   notes?: string | null
   createdById?: string | null
   createdAt?: Date | string
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedCreateNestedManyWithoutLotConsumptionInput
 }
 
 export type LotConsumptionUpdateInput = {
@@ -366,6 +371,7 @@ export type LotConsumptionUpdateInput = {
   lot?: Prisma.MaterialLotUpdateOneRequiredWithoutConsumptionsNestedInput
   job?: Prisma.ProductionJobUpdateOneRequiredWithoutLotConsumptionsNestedInput
   movement?: Prisma.StockMovementUpdateOneRequiredWithoutLotConsumptionsNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUpdateManyWithoutLotConsumptionNestedInput
 }
 
 export type LotConsumptionUncheckedUpdateInput = {
@@ -379,6 +385,7 @@ export type LotConsumptionUncheckedUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedUpdateManyWithoutLotConsumptionNestedInput
 }
 
 export type LotConsumptionCreateManyInput = {
@@ -478,6 +485,11 @@ export type LotConsumptionSumOrderByAggregateInput = {
   quantity?: Prisma.SortOrder
 }
 
+export type LotConsumptionNullableScalarRelationFilter = {
+  is?: Prisma.LotConsumptionWhereInput | null
+  isNot?: Prisma.LotConsumptionWhereInput | null
+}
+
 export type LotConsumptionCreateNestedManyWithoutLotInput = {
   create?: Prisma.XOR<Prisma.LotConsumptionCreateWithoutLotInput, Prisma.LotConsumptionUncheckedCreateWithoutLotInput> | Prisma.LotConsumptionCreateWithoutLotInput[] | Prisma.LotConsumptionUncheckedCreateWithoutLotInput[]
   connectOrCreate?: Prisma.LotConsumptionCreateOrConnectWithoutLotInput | Prisma.LotConsumptionCreateOrConnectWithoutLotInput[]
@@ -522,6 +534,22 @@ export type LotConsumptionUncheckedUpdateManyWithoutLotNestedInput = {
 
 export type EnumLotConsumptionTypeFieldUpdateOperationsInput = {
   set?: $Enums.LotConsumptionType
+}
+
+export type LotConsumptionCreateNestedOneWithoutFgAllocationsInput = {
+  create?: Prisma.XOR<Prisma.LotConsumptionCreateWithoutFgAllocationsInput, Prisma.LotConsumptionUncheckedCreateWithoutFgAllocationsInput>
+  connectOrCreate?: Prisma.LotConsumptionCreateOrConnectWithoutFgAllocationsInput
+  connect?: Prisma.LotConsumptionWhereUniqueInput
+}
+
+export type LotConsumptionUpdateOneWithoutFgAllocationsNestedInput = {
+  create?: Prisma.XOR<Prisma.LotConsumptionCreateWithoutFgAllocationsInput, Prisma.LotConsumptionUncheckedCreateWithoutFgAllocationsInput>
+  connectOrCreate?: Prisma.LotConsumptionCreateOrConnectWithoutFgAllocationsInput
+  upsert?: Prisma.LotConsumptionUpsertWithoutFgAllocationsInput
+  disconnect?: Prisma.LotConsumptionWhereInput | boolean
+  delete?: Prisma.LotConsumptionWhereInput | boolean
+  connect?: Prisma.LotConsumptionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LotConsumptionUpdateToOneWithWhereWithoutFgAllocationsInput, Prisma.LotConsumptionUpdateWithoutFgAllocationsInput>, Prisma.LotConsumptionUncheckedUpdateWithoutFgAllocationsInput>
 }
 
 export type LotConsumptionCreateNestedManyWithoutJobInput = {
@@ -617,6 +645,7 @@ export type LotConsumptionCreateWithoutLotInput = {
   createdAt?: Date | string
   job: Prisma.ProductionJobCreateNestedOneWithoutLotConsumptionsInput
   movement: Prisma.StockMovementCreateNestedOneWithoutLotConsumptionsInput
+  fgAllocations?: Prisma.FgBatchMaterialLotCreateNestedManyWithoutLotConsumptionInput
 }
 
 export type LotConsumptionUncheckedCreateWithoutLotInput = {
@@ -628,6 +657,7 @@ export type LotConsumptionUncheckedCreateWithoutLotInput = {
   notes?: string | null
   createdById?: string | null
   createdAt?: Date | string
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedCreateNestedManyWithoutLotConsumptionInput
 }
 
 export type LotConsumptionCreateOrConnectWithoutLotInput = {
@@ -672,6 +702,72 @@ export type LotConsumptionScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"LotConsumption"> | Date | string
 }
 
+export type LotConsumptionCreateWithoutFgAllocationsInput = {
+  id?: string
+  type: $Enums.LotConsumptionType
+  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
+  notes?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  lot: Prisma.MaterialLotCreateNestedOneWithoutConsumptionsInput
+  job: Prisma.ProductionJobCreateNestedOneWithoutLotConsumptionsInput
+  movement: Prisma.StockMovementCreateNestedOneWithoutLotConsumptionsInput
+}
+
+export type LotConsumptionUncheckedCreateWithoutFgAllocationsInput = {
+  id?: string
+  orgId: string
+  lotId: string
+  jobId: string
+  movementId: string
+  type: $Enums.LotConsumptionType
+  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
+  notes?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+}
+
+export type LotConsumptionCreateOrConnectWithoutFgAllocationsInput = {
+  where: Prisma.LotConsumptionWhereUniqueInput
+  create: Prisma.XOR<Prisma.LotConsumptionCreateWithoutFgAllocationsInput, Prisma.LotConsumptionUncheckedCreateWithoutFgAllocationsInput>
+}
+
+export type LotConsumptionUpsertWithoutFgAllocationsInput = {
+  update: Prisma.XOR<Prisma.LotConsumptionUpdateWithoutFgAllocationsInput, Prisma.LotConsumptionUncheckedUpdateWithoutFgAllocationsInput>
+  create: Prisma.XOR<Prisma.LotConsumptionCreateWithoutFgAllocationsInput, Prisma.LotConsumptionUncheckedCreateWithoutFgAllocationsInput>
+  where?: Prisma.LotConsumptionWhereInput
+}
+
+export type LotConsumptionUpdateToOneWithWhereWithoutFgAllocationsInput = {
+  where?: Prisma.LotConsumptionWhereInput
+  data: Prisma.XOR<Prisma.LotConsumptionUpdateWithoutFgAllocationsInput, Prisma.LotConsumptionUncheckedUpdateWithoutFgAllocationsInput>
+}
+
+export type LotConsumptionUpdateWithoutFgAllocationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumLotConsumptionTypeFieldUpdateOperationsInput | $Enums.LotConsumptionType
+  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lot?: Prisma.MaterialLotUpdateOneRequiredWithoutConsumptionsNestedInput
+  job?: Prisma.ProductionJobUpdateOneRequiredWithoutLotConsumptionsNestedInput
+  movement?: Prisma.StockMovementUpdateOneRequiredWithoutLotConsumptionsNestedInput
+}
+
+export type LotConsumptionUncheckedUpdateWithoutFgAllocationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  lotId?: Prisma.StringFieldUpdateOperationsInput | string
+  jobId?: Prisma.StringFieldUpdateOperationsInput | string
+  movementId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumLotConsumptionTypeFieldUpdateOperationsInput | $Enums.LotConsumptionType
+  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type LotConsumptionCreateWithoutJobInput = {
   id?: string
   type: $Enums.LotConsumptionType
@@ -681,6 +777,7 @@ export type LotConsumptionCreateWithoutJobInput = {
   createdAt?: Date | string
   lot: Prisma.MaterialLotCreateNestedOneWithoutConsumptionsInput
   movement: Prisma.StockMovementCreateNestedOneWithoutLotConsumptionsInput
+  fgAllocations?: Prisma.FgBatchMaterialLotCreateNestedManyWithoutLotConsumptionInput
 }
 
 export type LotConsumptionUncheckedCreateWithoutJobInput = {
@@ -692,6 +789,7 @@ export type LotConsumptionUncheckedCreateWithoutJobInput = {
   notes?: string | null
   createdById?: string | null
   createdAt?: Date | string
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedCreateNestedManyWithoutLotConsumptionInput
 }
 
 export type LotConsumptionCreateOrConnectWithoutJobInput = {
@@ -729,6 +827,7 @@ export type LotConsumptionCreateWithoutMovementInput = {
   createdAt?: Date | string
   lot: Prisma.MaterialLotCreateNestedOneWithoutConsumptionsInput
   job: Prisma.ProductionJobCreateNestedOneWithoutLotConsumptionsInput
+  fgAllocations?: Prisma.FgBatchMaterialLotCreateNestedManyWithoutLotConsumptionInput
 }
 
 export type LotConsumptionUncheckedCreateWithoutMovementInput = {
@@ -740,6 +839,7 @@ export type LotConsumptionUncheckedCreateWithoutMovementInput = {
   notes?: string | null
   createdById?: string | null
   createdAt?: Date | string
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedCreateNestedManyWithoutLotConsumptionInput
 }
 
 export type LotConsumptionCreateOrConnectWithoutMovementInput = {
@@ -788,6 +888,7 @@ export type LotConsumptionUpdateWithoutLotInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   job?: Prisma.ProductionJobUpdateOneRequiredWithoutLotConsumptionsNestedInput
   movement?: Prisma.StockMovementUpdateOneRequiredWithoutLotConsumptionsNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUpdateManyWithoutLotConsumptionNestedInput
 }
 
 export type LotConsumptionUncheckedUpdateWithoutLotInput = {
@@ -799,6 +900,7 @@ export type LotConsumptionUncheckedUpdateWithoutLotInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedUpdateManyWithoutLotConsumptionNestedInput
 }
 
 export type LotConsumptionUncheckedUpdateManyWithoutLotInput = {
@@ -832,6 +934,7 @@ export type LotConsumptionUpdateWithoutJobInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lot?: Prisma.MaterialLotUpdateOneRequiredWithoutConsumptionsNestedInput
   movement?: Prisma.StockMovementUpdateOneRequiredWithoutLotConsumptionsNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUpdateManyWithoutLotConsumptionNestedInput
 }
 
 export type LotConsumptionUncheckedUpdateWithoutJobInput = {
@@ -843,6 +946,7 @@ export type LotConsumptionUncheckedUpdateWithoutJobInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedUpdateManyWithoutLotConsumptionNestedInput
 }
 
 export type LotConsumptionUncheckedUpdateManyWithoutJobInput = {
@@ -876,6 +980,7 @@ export type LotConsumptionUpdateWithoutMovementInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lot?: Prisma.MaterialLotUpdateOneRequiredWithoutConsumptionsNestedInput
   job?: Prisma.ProductionJobUpdateOneRequiredWithoutLotConsumptionsNestedInput
+  fgAllocations?: Prisma.FgBatchMaterialLotUpdateManyWithoutLotConsumptionNestedInput
 }
 
 export type LotConsumptionUncheckedUpdateWithoutMovementInput = {
@@ -887,6 +992,7 @@ export type LotConsumptionUncheckedUpdateWithoutMovementInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fgAllocations?: Prisma.FgBatchMaterialLotUncheckedUpdateManyWithoutLotConsumptionNestedInput
 }
 
 export type LotConsumptionUncheckedUpdateManyWithoutMovementInput = {
@@ -900,6 +1006,35 @@ export type LotConsumptionUncheckedUpdateManyWithoutMovementInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type LotConsumptionCountOutputType
+ */
+
+export type LotConsumptionCountOutputType = {
+  fgAllocations: number
+}
+
+export type LotConsumptionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  fgAllocations?: boolean | LotConsumptionCountOutputTypeCountFgAllocationsArgs
+}
+
+/**
+ * LotConsumptionCountOutputType without action
+ */
+export type LotConsumptionCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LotConsumptionCountOutputType
+   */
+  select?: Prisma.LotConsumptionCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * LotConsumptionCountOutputType without action
+ */
+export type LotConsumptionCountOutputTypeCountFgAllocationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FgBatchMaterialLotWhereInput
+}
 
 
 export type LotConsumptionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -916,6 +1051,8 @@ export type LotConsumptionSelect<ExtArgs extends runtime.Types.Extensions.Intern
   lot?: boolean | Prisma.MaterialLotDefaultArgs<ExtArgs>
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
   movement?: boolean | Prisma.StockMovementDefaultArgs<ExtArgs>
+  fgAllocations?: boolean | Prisma.LotConsumption$fgAllocationsArgs<ExtArgs>
+  _count?: boolean | Prisma.LotConsumptionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["lotConsumption"]>
 
 export type LotConsumptionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -968,6 +1105,8 @@ export type LotConsumptionInclude<ExtArgs extends runtime.Types.Extensions.Inter
   lot?: boolean | Prisma.MaterialLotDefaultArgs<ExtArgs>
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
   movement?: boolean | Prisma.StockMovementDefaultArgs<ExtArgs>
+  fgAllocations?: boolean | Prisma.LotConsumption$fgAllocationsArgs<ExtArgs>
+  _count?: boolean | Prisma.LotConsumptionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LotConsumptionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   lot?: boolean | Prisma.MaterialLotDefaultArgs<ExtArgs>
@@ -986,6 +1125,7 @@ export type $LotConsumptionPayload<ExtArgs extends runtime.Types.Extensions.Inte
     lot: Prisma.$MaterialLotPayload<ExtArgs>
     job: Prisma.$ProductionJobPayload<ExtArgs>
     movement: Prisma.$StockMovementPayload<ExtArgs>
+    fgAllocations: Prisma.$FgBatchMaterialLotPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1395,6 +1535,7 @@ export interface Prisma__LotConsumptionClient<T, Null = never, ExtArgs extends r
   lot<T extends Prisma.MaterialLotDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MaterialLotDefaultArgs<ExtArgs>>): Prisma.Prisma__MaterialLotClient<runtime.Types.Result.GetResult<Prisma.$MaterialLotPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   job<T extends Prisma.ProductionJobDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductionJobDefaultArgs<ExtArgs>>): Prisma.Prisma__ProductionJobClient<runtime.Types.Result.GetResult<Prisma.$ProductionJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   movement<T extends Prisma.StockMovementDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StockMovementDefaultArgs<ExtArgs>>): Prisma.Prisma__StockMovementClient<runtime.Types.Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  fgAllocations<T extends Prisma.LotConsumption$fgAllocationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LotConsumption$fgAllocationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FgBatchMaterialLotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1832,6 +1973,30 @@ export type LotConsumptionDeleteManyArgs<ExtArgs extends runtime.Types.Extension
    * Limit how many LotConsumptions to delete.
    */
   limit?: number
+}
+
+/**
+ * LotConsumption.fgAllocations
+ */
+export type LotConsumption$fgAllocationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FgBatchMaterialLot
+   */
+  select?: Prisma.FgBatchMaterialLotSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FgBatchMaterialLot
+   */
+  omit?: Prisma.FgBatchMaterialLotOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FgBatchMaterialLotInclude<ExtArgs> | null
+  where?: Prisma.FgBatchMaterialLotWhereInput
+  orderBy?: Prisma.FgBatchMaterialLotOrderByWithRelationInput | Prisma.FgBatchMaterialLotOrderByWithRelationInput[]
+  cursor?: Prisma.FgBatchMaterialLotWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FgBatchMaterialLotScalarFieldEnum | Prisma.FgBatchMaterialLotScalarFieldEnum[]
 }
 
 /**

@@ -312,6 +312,10 @@ export type StockMovementWhereInput = {
   warehouse?: Prisma.XOR<Prisma.WarehouseScalarRelationFilter, Prisma.WarehouseWhereInput>
   lotConsumptions?: Prisma.LotConsumptionListRelationFilter
   lotsReturnedFrom?: Prisma.MaterialLotListRelationFilter
+  lotsFromRegrind?: Prisma.MaterialLotListRelationFilter
+  fgBatchProduced?: Prisma.XOR<Prisma.FinishedGoodsBatchNullableScalarRelationFilter, Prisma.FinishedGoodsBatchWhereInput> | null
+  fgBatchTransferredInTo?: Prisma.XOR<Prisma.FinishedGoodsBatchNullableScalarRelationFilter, Prisma.FinishedGoodsBatchWhereInput> | null
+  fgBatchMovements?: Prisma.FgBatchMovementListRelationFilter
 }
 
 export type StockMovementOrderByWithRelationInput = {
@@ -335,6 +339,10 @@ export type StockMovementOrderByWithRelationInput = {
   warehouse?: Prisma.WarehouseOrderByWithRelationInput
   lotConsumptions?: Prisma.LotConsumptionOrderByRelationAggregateInput
   lotsReturnedFrom?: Prisma.MaterialLotOrderByRelationAggregateInput
+  lotsFromRegrind?: Prisma.MaterialLotOrderByRelationAggregateInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchOrderByWithRelationInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchOrderByWithRelationInput
+  fgBatchMovements?: Prisma.FgBatchMovementOrderByRelationAggregateInput
 }
 
 export type StockMovementWhereUniqueInput = Prisma.AtLeast<{
@@ -363,6 +371,10 @@ export type StockMovementWhereUniqueInput = Prisma.AtLeast<{
   warehouse?: Prisma.XOR<Prisma.WarehouseScalarRelationFilter, Prisma.WarehouseWhereInput>
   lotConsumptions?: Prisma.LotConsumptionListRelationFilter
   lotsReturnedFrom?: Prisma.MaterialLotListRelationFilter
+  lotsFromRegrind?: Prisma.MaterialLotListRelationFilter
+  fgBatchProduced?: Prisma.XOR<Prisma.FinishedGoodsBatchNullableScalarRelationFilter, Prisma.FinishedGoodsBatchWhereInput> | null
+  fgBatchTransferredInTo?: Prisma.XOR<Prisma.FinishedGoodsBatchNullableScalarRelationFilter, Prisma.FinishedGoodsBatchWhereInput> | null
+  fgBatchMovements?: Prisma.FgBatchMovementListRelationFilter
 }, "id" | "orgId_clientRequestId" | "orgId_id">
 
 export type StockMovementOrderByWithAggregationInput = {
@@ -429,6 +441,10 @@ export type StockMovementCreateInput = {
   warehouse: Prisma.WarehouseCreateNestedOneWithoutStockMovementsInput
   lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutMovementInput
   lotsReturnedFrom?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnMovementInput
+  lotsFromRegrind?: Prisma.MaterialLotCreateNestedManyWithoutSourceRegrindMovementInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchCreateNestedOneWithoutProducedMovementInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchCreateNestedOneWithoutTransferredFromMovementInput
+  fgBatchMovements?: Prisma.FgBatchMovementCreateNestedManyWithoutMovementInput
 }
 
 export type StockMovementUncheckedCreateInput = {
@@ -450,6 +466,10 @@ export type StockMovementUncheckedCreateInput = {
   syncedAt?: Date | string
   lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutMovementInput
   lotsReturnedFrom?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnMovementInput
+  lotsFromRegrind?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceRegrindMovementInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUncheckedCreateNestedOneWithoutProducedMovementInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUncheckedCreateNestedOneWithoutTransferredFromMovementInput
+  fgBatchMovements?: Prisma.FgBatchMovementUncheckedCreateNestedManyWithoutMovementInput
 }
 
 export type StockMovementUpdateInput = {
@@ -470,6 +490,10 @@ export type StockMovementUpdateInput = {
   warehouse?: Prisma.WarehouseUpdateOneRequiredWithoutStockMovementsNestedInput
   lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutMovementNestedInput
   lotsReturnedFrom?: Prisma.MaterialLotUpdateManyWithoutSourceReturnMovementNestedInput
+  lotsFromRegrind?: Prisma.MaterialLotUpdateManyWithoutSourceRegrindMovementNestedInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUpdateOneWithoutProducedMovementNestedInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUpdateOneWithoutTransferredFromMovementNestedInput
+  fgBatchMovements?: Prisma.FgBatchMovementUpdateManyWithoutMovementNestedInput
 }
 
 export type StockMovementUncheckedUpdateInput = {
@@ -491,6 +515,10 @@ export type StockMovementUncheckedUpdateInput = {
   syncedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutMovementNestedInput
   lotsReturnedFrom?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnMovementNestedInput
+  lotsFromRegrind?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceRegrindMovementNestedInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUncheckedUpdateOneWithoutProducedMovementNestedInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUncheckedUpdateOneWithoutTransferredFromMovementNestedInput
+  fgBatchMovements?: Prisma.FgBatchMovementUncheckedUpdateManyWithoutMovementNestedInput
 }
 
 export type StockMovementCreateManyInput = {
@@ -692,6 +720,12 @@ export type StockMovementCreateNestedOneWithoutLotsReturnedFromInput = {
   connect?: Prisma.StockMovementWhereUniqueInput
 }
 
+export type StockMovementCreateNestedOneWithoutLotsFromRegrindInput = {
+  create?: Prisma.XOR<Prisma.StockMovementCreateWithoutLotsFromRegrindInput, Prisma.StockMovementUncheckedCreateWithoutLotsFromRegrindInput>
+  connectOrCreate?: Prisma.StockMovementCreateOrConnectWithoutLotsFromRegrindInput
+  connect?: Prisma.StockMovementWhereUniqueInput
+}
+
 export type StockMovementUpdateOneWithoutLotsReturnedFromNestedInput = {
   create?: Prisma.XOR<Prisma.StockMovementCreateWithoutLotsReturnedFromInput, Prisma.StockMovementUncheckedCreateWithoutLotsReturnedFromInput>
   connectOrCreate?: Prisma.StockMovementCreateOrConnectWithoutLotsReturnedFromInput
@@ -700,6 +734,16 @@ export type StockMovementUpdateOneWithoutLotsReturnedFromNestedInput = {
   delete?: Prisma.StockMovementWhereInput | boolean
   connect?: Prisma.StockMovementWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.StockMovementUpdateToOneWithWhereWithoutLotsReturnedFromInput, Prisma.StockMovementUpdateWithoutLotsReturnedFromInput>, Prisma.StockMovementUncheckedUpdateWithoutLotsReturnedFromInput>
+}
+
+export type StockMovementUpdateOneWithoutLotsFromRegrindNestedInput = {
+  create?: Prisma.XOR<Prisma.StockMovementCreateWithoutLotsFromRegrindInput, Prisma.StockMovementUncheckedCreateWithoutLotsFromRegrindInput>
+  connectOrCreate?: Prisma.StockMovementCreateOrConnectWithoutLotsFromRegrindInput
+  upsert?: Prisma.StockMovementUpsertWithoutLotsFromRegrindInput
+  disconnect?: Prisma.StockMovementWhereInput | boolean
+  delete?: Prisma.StockMovementWhereInput | boolean
+  connect?: Prisma.StockMovementWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StockMovementUpdateToOneWithWhereWithoutLotsFromRegrindInput, Prisma.StockMovementUpdateWithoutLotsFromRegrindInput>, Prisma.StockMovementUncheckedUpdateWithoutLotsFromRegrindInput>
 }
 
 export type StockMovementCreateNestedOneWithoutLotConsumptionsInput = {
@@ -714,6 +758,50 @@ export type StockMovementUpdateOneRequiredWithoutLotConsumptionsNestedInput = {
   upsert?: Prisma.StockMovementUpsertWithoutLotConsumptionsInput
   connect?: Prisma.StockMovementWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.StockMovementUpdateToOneWithWhereWithoutLotConsumptionsInput, Prisma.StockMovementUpdateWithoutLotConsumptionsInput>, Prisma.StockMovementUncheckedUpdateWithoutLotConsumptionsInput>
+}
+
+export type StockMovementCreateNestedOneWithoutFgBatchProducedInput = {
+  create?: Prisma.XOR<Prisma.StockMovementCreateWithoutFgBatchProducedInput, Prisma.StockMovementUncheckedCreateWithoutFgBatchProducedInput>
+  connectOrCreate?: Prisma.StockMovementCreateOrConnectWithoutFgBatchProducedInput
+  connect?: Prisma.StockMovementWhereUniqueInput
+}
+
+export type StockMovementCreateNestedOneWithoutFgBatchTransferredInToInput = {
+  create?: Prisma.XOR<Prisma.StockMovementCreateWithoutFgBatchTransferredInToInput, Prisma.StockMovementUncheckedCreateWithoutFgBatchTransferredInToInput>
+  connectOrCreate?: Prisma.StockMovementCreateOrConnectWithoutFgBatchTransferredInToInput
+  connect?: Prisma.StockMovementWhereUniqueInput
+}
+
+export type StockMovementUpdateOneRequiredWithoutFgBatchProducedNestedInput = {
+  create?: Prisma.XOR<Prisma.StockMovementCreateWithoutFgBatchProducedInput, Prisma.StockMovementUncheckedCreateWithoutFgBatchProducedInput>
+  connectOrCreate?: Prisma.StockMovementCreateOrConnectWithoutFgBatchProducedInput
+  upsert?: Prisma.StockMovementUpsertWithoutFgBatchProducedInput
+  connect?: Prisma.StockMovementWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StockMovementUpdateToOneWithWhereWithoutFgBatchProducedInput, Prisma.StockMovementUpdateWithoutFgBatchProducedInput>, Prisma.StockMovementUncheckedUpdateWithoutFgBatchProducedInput>
+}
+
+export type StockMovementUpdateOneWithoutFgBatchTransferredInToNestedInput = {
+  create?: Prisma.XOR<Prisma.StockMovementCreateWithoutFgBatchTransferredInToInput, Prisma.StockMovementUncheckedCreateWithoutFgBatchTransferredInToInput>
+  connectOrCreate?: Prisma.StockMovementCreateOrConnectWithoutFgBatchTransferredInToInput
+  upsert?: Prisma.StockMovementUpsertWithoutFgBatchTransferredInToInput
+  disconnect?: Prisma.StockMovementWhereInput | boolean
+  delete?: Prisma.StockMovementWhereInput | boolean
+  connect?: Prisma.StockMovementWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StockMovementUpdateToOneWithWhereWithoutFgBatchTransferredInToInput, Prisma.StockMovementUpdateWithoutFgBatchTransferredInToInput>, Prisma.StockMovementUncheckedUpdateWithoutFgBatchTransferredInToInput>
+}
+
+export type StockMovementCreateNestedOneWithoutFgBatchMovementsInput = {
+  create?: Prisma.XOR<Prisma.StockMovementCreateWithoutFgBatchMovementsInput, Prisma.StockMovementUncheckedCreateWithoutFgBatchMovementsInput>
+  connectOrCreate?: Prisma.StockMovementCreateOrConnectWithoutFgBatchMovementsInput
+  connect?: Prisma.StockMovementWhereUniqueInput
+}
+
+export type StockMovementUpdateOneRequiredWithoutFgBatchMovementsNestedInput = {
+  create?: Prisma.XOR<Prisma.StockMovementCreateWithoutFgBatchMovementsInput, Prisma.StockMovementUncheckedCreateWithoutFgBatchMovementsInput>
+  connectOrCreate?: Prisma.StockMovementCreateOrConnectWithoutFgBatchMovementsInput
+  upsert?: Prisma.StockMovementUpsertWithoutFgBatchMovementsInput
+  connect?: Prisma.StockMovementWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StockMovementUpdateToOneWithWhereWithoutFgBatchMovementsInput, Prisma.StockMovementUpdateWithoutFgBatchMovementsInput>, Prisma.StockMovementUncheckedUpdateWithoutFgBatchMovementsInput>
 }
 
 export type StockMovementCreateNestedManyWithoutWarehouseInput = {
@@ -783,6 +871,10 @@ export type StockMovementCreateWithoutItemInput = {
   warehouse: Prisma.WarehouseCreateNestedOneWithoutStockMovementsInput
   lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutMovementInput
   lotsReturnedFrom?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnMovementInput
+  lotsFromRegrind?: Prisma.MaterialLotCreateNestedManyWithoutSourceRegrindMovementInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchCreateNestedOneWithoutProducedMovementInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchCreateNestedOneWithoutTransferredFromMovementInput
+  fgBatchMovements?: Prisma.FgBatchMovementCreateNestedManyWithoutMovementInput
 }
 
 export type StockMovementUncheckedCreateWithoutItemInput = {
@@ -802,6 +894,10 @@ export type StockMovementUncheckedCreateWithoutItemInput = {
   syncedAt?: Date | string
   lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutMovementInput
   lotsReturnedFrom?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnMovementInput
+  lotsFromRegrind?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceRegrindMovementInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUncheckedCreateNestedOneWithoutProducedMovementInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUncheckedCreateNestedOneWithoutTransferredFromMovementInput
+  fgBatchMovements?: Prisma.FgBatchMovementUncheckedCreateNestedManyWithoutMovementInput
 }
 
 export type StockMovementCreateOrConnectWithoutItemInput = {
@@ -869,6 +965,10 @@ export type StockMovementCreateWithoutLotsReturnedFromInput = {
   item: Prisma.ItemCreateNestedOneWithoutStockMovementsInput
   warehouse: Prisma.WarehouseCreateNestedOneWithoutStockMovementsInput
   lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutMovementInput
+  lotsFromRegrind?: Prisma.MaterialLotCreateNestedManyWithoutSourceRegrindMovementInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchCreateNestedOneWithoutProducedMovementInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchCreateNestedOneWithoutTransferredFromMovementInput
+  fgBatchMovements?: Prisma.FgBatchMovementCreateNestedManyWithoutMovementInput
 }
 
 export type StockMovementUncheckedCreateWithoutLotsReturnedFromInput = {
@@ -889,11 +989,67 @@ export type StockMovementUncheckedCreateWithoutLotsReturnedFromInput = {
   occurredAt?: Date | string
   syncedAt?: Date | string
   lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutMovementInput
+  lotsFromRegrind?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceRegrindMovementInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUncheckedCreateNestedOneWithoutProducedMovementInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUncheckedCreateNestedOneWithoutTransferredFromMovementInput
+  fgBatchMovements?: Prisma.FgBatchMovementUncheckedCreateNestedManyWithoutMovementInput
 }
 
 export type StockMovementCreateOrConnectWithoutLotsReturnedFromInput = {
   where: Prisma.StockMovementWhereUniqueInput
   create: Prisma.XOR<Prisma.StockMovementCreateWithoutLotsReturnedFromInput, Prisma.StockMovementUncheckedCreateWithoutLotsReturnedFromInput>
+}
+
+export type StockMovementCreateWithoutLotsFromRegrindInput = {
+  id?: string
+  branchId: string
+  movementType: $Enums.MovementType
+  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: string | null
+  referenceType?: $Enums.ReferenceType | null
+  referenceId?: string | null
+  reason?: string | null
+  clientRequestId?: string | null
+  createdById?: string | null
+  occurredAt?: Date | string
+  syncedAt?: Date | string
+  item: Prisma.ItemCreateNestedOneWithoutStockMovementsInput
+  warehouse: Prisma.WarehouseCreateNestedOneWithoutStockMovementsInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutMovementInput
+  lotsReturnedFrom?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnMovementInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchCreateNestedOneWithoutProducedMovementInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchCreateNestedOneWithoutTransferredFromMovementInput
+  fgBatchMovements?: Prisma.FgBatchMovementCreateNestedManyWithoutMovementInput
+}
+
+export type StockMovementUncheckedCreateWithoutLotsFromRegrindInput = {
+  id?: string
+  orgId: string
+  branchId: string
+  itemId: string
+  warehouseId: string
+  movementType: $Enums.MovementType
+  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: string | null
+  referenceType?: $Enums.ReferenceType | null
+  referenceId?: string | null
+  reason?: string | null
+  clientRequestId?: string | null
+  createdById?: string | null
+  occurredAt?: Date | string
+  syncedAt?: Date | string
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutMovementInput
+  lotsReturnedFrom?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnMovementInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUncheckedCreateNestedOneWithoutProducedMovementInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUncheckedCreateNestedOneWithoutTransferredFromMovementInput
+  fgBatchMovements?: Prisma.FgBatchMovementUncheckedCreateNestedManyWithoutMovementInput
+}
+
+export type StockMovementCreateOrConnectWithoutLotsFromRegrindInput = {
+  where: Prisma.StockMovementWhereUniqueInput
+  create: Prisma.XOR<Prisma.StockMovementCreateWithoutLotsFromRegrindInput, Prisma.StockMovementUncheckedCreateWithoutLotsFromRegrindInput>
 }
 
 export type StockMovementUpsertWithoutLotsReturnedFromInput = {
@@ -924,6 +1080,10 @@ export type StockMovementUpdateWithoutLotsReturnedFromInput = {
   item?: Prisma.ItemUpdateOneRequiredWithoutStockMovementsNestedInput
   warehouse?: Prisma.WarehouseUpdateOneRequiredWithoutStockMovementsNestedInput
   lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutMovementNestedInput
+  lotsFromRegrind?: Prisma.MaterialLotUpdateManyWithoutSourceRegrindMovementNestedInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUpdateOneWithoutProducedMovementNestedInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUpdateOneWithoutTransferredFromMovementNestedInput
+  fgBatchMovements?: Prisma.FgBatchMovementUpdateManyWithoutMovementNestedInput
 }
 
 export type StockMovementUncheckedUpdateWithoutLotsReturnedFromInput = {
@@ -944,6 +1104,68 @@ export type StockMovementUncheckedUpdateWithoutLotsReturnedFromInput = {
   occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   syncedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutMovementNestedInput
+  lotsFromRegrind?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceRegrindMovementNestedInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUncheckedUpdateOneWithoutProducedMovementNestedInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUncheckedUpdateOneWithoutTransferredFromMovementNestedInput
+  fgBatchMovements?: Prisma.FgBatchMovementUncheckedUpdateManyWithoutMovementNestedInput
+}
+
+export type StockMovementUpsertWithoutLotsFromRegrindInput = {
+  update: Prisma.XOR<Prisma.StockMovementUpdateWithoutLotsFromRegrindInput, Prisma.StockMovementUncheckedUpdateWithoutLotsFromRegrindInput>
+  create: Prisma.XOR<Prisma.StockMovementCreateWithoutLotsFromRegrindInput, Prisma.StockMovementUncheckedCreateWithoutLotsFromRegrindInput>
+  where?: Prisma.StockMovementWhereInput
+}
+
+export type StockMovementUpdateToOneWithWhereWithoutLotsFromRegrindInput = {
+  where?: Prisma.StockMovementWhereInput
+  data: Prisma.XOR<Prisma.StockMovementUpdateWithoutLotsFromRegrindInput, Prisma.StockMovementUncheckedUpdateWithoutLotsFromRegrindInput>
+}
+
+export type StockMovementUpdateWithoutLotsFromRegrindInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.StringFieldUpdateOperationsInput | string
+  movementType?: Prisma.EnumMovementTypeFieldUpdateOperationsInput | $Enums.MovementType
+  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceType?: Prisma.NullableEnumReferenceTypeFieldUpdateOperationsInput | $Enums.ReferenceType | null
+  referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  syncedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  item?: Prisma.ItemUpdateOneRequiredWithoutStockMovementsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneRequiredWithoutStockMovementsNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutMovementNestedInput
+  lotsReturnedFrom?: Prisma.MaterialLotUpdateManyWithoutSourceReturnMovementNestedInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUpdateOneWithoutProducedMovementNestedInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUpdateOneWithoutTransferredFromMovementNestedInput
+  fgBatchMovements?: Prisma.FgBatchMovementUpdateManyWithoutMovementNestedInput
+}
+
+export type StockMovementUncheckedUpdateWithoutLotsFromRegrindInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.StringFieldUpdateOperationsInput | string
+  itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
+  movementType?: Prisma.EnumMovementTypeFieldUpdateOperationsInput | $Enums.MovementType
+  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceType?: Prisma.NullableEnumReferenceTypeFieldUpdateOperationsInput | $Enums.ReferenceType | null
+  referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  syncedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutMovementNestedInput
+  lotsReturnedFrom?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnMovementNestedInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUncheckedUpdateOneWithoutProducedMovementNestedInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUncheckedUpdateOneWithoutTransferredFromMovementNestedInput
+  fgBatchMovements?: Prisma.FgBatchMovementUncheckedUpdateManyWithoutMovementNestedInput
 }
 
 export type StockMovementCreateWithoutLotConsumptionsInput = {
@@ -963,6 +1185,10 @@ export type StockMovementCreateWithoutLotConsumptionsInput = {
   item: Prisma.ItemCreateNestedOneWithoutStockMovementsInput
   warehouse: Prisma.WarehouseCreateNestedOneWithoutStockMovementsInput
   lotsReturnedFrom?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnMovementInput
+  lotsFromRegrind?: Prisma.MaterialLotCreateNestedManyWithoutSourceRegrindMovementInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchCreateNestedOneWithoutProducedMovementInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchCreateNestedOneWithoutTransferredFromMovementInput
+  fgBatchMovements?: Prisma.FgBatchMovementCreateNestedManyWithoutMovementInput
 }
 
 export type StockMovementUncheckedCreateWithoutLotConsumptionsInput = {
@@ -983,6 +1209,10 @@ export type StockMovementUncheckedCreateWithoutLotConsumptionsInput = {
   occurredAt?: Date | string
   syncedAt?: Date | string
   lotsReturnedFrom?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnMovementInput
+  lotsFromRegrind?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceRegrindMovementInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUncheckedCreateNestedOneWithoutProducedMovementInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUncheckedCreateNestedOneWithoutTransferredFromMovementInput
+  fgBatchMovements?: Prisma.FgBatchMovementUncheckedCreateNestedManyWithoutMovementInput
 }
 
 export type StockMovementCreateOrConnectWithoutLotConsumptionsInput = {
@@ -1018,6 +1248,10 @@ export type StockMovementUpdateWithoutLotConsumptionsInput = {
   item?: Prisma.ItemUpdateOneRequiredWithoutStockMovementsNestedInput
   warehouse?: Prisma.WarehouseUpdateOneRequiredWithoutStockMovementsNestedInput
   lotsReturnedFrom?: Prisma.MaterialLotUpdateManyWithoutSourceReturnMovementNestedInput
+  lotsFromRegrind?: Prisma.MaterialLotUpdateManyWithoutSourceRegrindMovementNestedInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUpdateOneWithoutProducedMovementNestedInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUpdateOneWithoutTransferredFromMovementNestedInput
+  fgBatchMovements?: Prisma.FgBatchMovementUpdateManyWithoutMovementNestedInput
 }
 
 export type StockMovementUncheckedUpdateWithoutLotConsumptionsInput = {
@@ -1038,6 +1272,340 @@ export type StockMovementUncheckedUpdateWithoutLotConsumptionsInput = {
   occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   syncedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lotsReturnedFrom?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnMovementNestedInput
+  lotsFromRegrind?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceRegrindMovementNestedInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUncheckedUpdateOneWithoutProducedMovementNestedInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUncheckedUpdateOneWithoutTransferredFromMovementNestedInput
+  fgBatchMovements?: Prisma.FgBatchMovementUncheckedUpdateManyWithoutMovementNestedInput
+}
+
+export type StockMovementCreateWithoutFgBatchProducedInput = {
+  id?: string
+  branchId: string
+  movementType: $Enums.MovementType
+  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: string | null
+  referenceType?: $Enums.ReferenceType | null
+  referenceId?: string | null
+  reason?: string | null
+  clientRequestId?: string | null
+  createdById?: string | null
+  occurredAt?: Date | string
+  syncedAt?: Date | string
+  item: Prisma.ItemCreateNestedOneWithoutStockMovementsInput
+  warehouse: Prisma.WarehouseCreateNestedOneWithoutStockMovementsInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutMovementInput
+  lotsReturnedFrom?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnMovementInput
+  lotsFromRegrind?: Prisma.MaterialLotCreateNestedManyWithoutSourceRegrindMovementInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchCreateNestedOneWithoutTransferredFromMovementInput
+  fgBatchMovements?: Prisma.FgBatchMovementCreateNestedManyWithoutMovementInput
+}
+
+export type StockMovementUncheckedCreateWithoutFgBatchProducedInput = {
+  id?: string
+  orgId: string
+  branchId: string
+  itemId: string
+  warehouseId: string
+  movementType: $Enums.MovementType
+  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: string | null
+  referenceType?: $Enums.ReferenceType | null
+  referenceId?: string | null
+  reason?: string | null
+  clientRequestId?: string | null
+  createdById?: string | null
+  occurredAt?: Date | string
+  syncedAt?: Date | string
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutMovementInput
+  lotsReturnedFrom?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnMovementInput
+  lotsFromRegrind?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceRegrindMovementInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUncheckedCreateNestedOneWithoutTransferredFromMovementInput
+  fgBatchMovements?: Prisma.FgBatchMovementUncheckedCreateNestedManyWithoutMovementInput
+}
+
+export type StockMovementCreateOrConnectWithoutFgBatchProducedInput = {
+  where: Prisma.StockMovementWhereUniqueInput
+  create: Prisma.XOR<Prisma.StockMovementCreateWithoutFgBatchProducedInput, Prisma.StockMovementUncheckedCreateWithoutFgBatchProducedInput>
+}
+
+export type StockMovementCreateWithoutFgBatchTransferredInToInput = {
+  id?: string
+  branchId: string
+  movementType: $Enums.MovementType
+  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: string | null
+  referenceType?: $Enums.ReferenceType | null
+  referenceId?: string | null
+  reason?: string | null
+  clientRequestId?: string | null
+  createdById?: string | null
+  occurredAt?: Date | string
+  syncedAt?: Date | string
+  item: Prisma.ItemCreateNestedOneWithoutStockMovementsInput
+  warehouse: Prisma.WarehouseCreateNestedOneWithoutStockMovementsInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutMovementInput
+  lotsReturnedFrom?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnMovementInput
+  lotsFromRegrind?: Prisma.MaterialLotCreateNestedManyWithoutSourceRegrindMovementInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchCreateNestedOneWithoutProducedMovementInput
+  fgBatchMovements?: Prisma.FgBatchMovementCreateNestedManyWithoutMovementInput
+}
+
+export type StockMovementUncheckedCreateWithoutFgBatchTransferredInToInput = {
+  id?: string
+  orgId: string
+  branchId: string
+  itemId: string
+  warehouseId: string
+  movementType: $Enums.MovementType
+  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: string | null
+  referenceType?: $Enums.ReferenceType | null
+  referenceId?: string | null
+  reason?: string | null
+  clientRequestId?: string | null
+  createdById?: string | null
+  occurredAt?: Date | string
+  syncedAt?: Date | string
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutMovementInput
+  lotsReturnedFrom?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnMovementInput
+  lotsFromRegrind?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceRegrindMovementInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUncheckedCreateNestedOneWithoutProducedMovementInput
+  fgBatchMovements?: Prisma.FgBatchMovementUncheckedCreateNestedManyWithoutMovementInput
+}
+
+export type StockMovementCreateOrConnectWithoutFgBatchTransferredInToInput = {
+  where: Prisma.StockMovementWhereUniqueInput
+  create: Prisma.XOR<Prisma.StockMovementCreateWithoutFgBatchTransferredInToInput, Prisma.StockMovementUncheckedCreateWithoutFgBatchTransferredInToInput>
+}
+
+export type StockMovementUpsertWithoutFgBatchProducedInput = {
+  update: Prisma.XOR<Prisma.StockMovementUpdateWithoutFgBatchProducedInput, Prisma.StockMovementUncheckedUpdateWithoutFgBatchProducedInput>
+  create: Prisma.XOR<Prisma.StockMovementCreateWithoutFgBatchProducedInput, Prisma.StockMovementUncheckedCreateWithoutFgBatchProducedInput>
+  where?: Prisma.StockMovementWhereInput
+}
+
+export type StockMovementUpdateToOneWithWhereWithoutFgBatchProducedInput = {
+  where?: Prisma.StockMovementWhereInput
+  data: Prisma.XOR<Prisma.StockMovementUpdateWithoutFgBatchProducedInput, Prisma.StockMovementUncheckedUpdateWithoutFgBatchProducedInput>
+}
+
+export type StockMovementUpdateWithoutFgBatchProducedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.StringFieldUpdateOperationsInput | string
+  movementType?: Prisma.EnumMovementTypeFieldUpdateOperationsInput | $Enums.MovementType
+  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceType?: Prisma.NullableEnumReferenceTypeFieldUpdateOperationsInput | $Enums.ReferenceType | null
+  referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  syncedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  item?: Prisma.ItemUpdateOneRequiredWithoutStockMovementsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneRequiredWithoutStockMovementsNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutMovementNestedInput
+  lotsReturnedFrom?: Prisma.MaterialLotUpdateManyWithoutSourceReturnMovementNestedInput
+  lotsFromRegrind?: Prisma.MaterialLotUpdateManyWithoutSourceRegrindMovementNestedInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUpdateOneWithoutTransferredFromMovementNestedInput
+  fgBatchMovements?: Prisma.FgBatchMovementUpdateManyWithoutMovementNestedInput
+}
+
+export type StockMovementUncheckedUpdateWithoutFgBatchProducedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.StringFieldUpdateOperationsInput | string
+  itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
+  movementType?: Prisma.EnumMovementTypeFieldUpdateOperationsInput | $Enums.MovementType
+  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceType?: Prisma.NullableEnumReferenceTypeFieldUpdateOperationsInput | $Enums.ReferenceType | null
+  referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  syncedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutMovementNestedInput
+  lotsReturnedFrom?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnMovementNestedInput
+  lotsFromRegrind?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceRegrindMovementNestedInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUncheckedUpdateOneWithoutTransferredFromMovementNestedInput
+  fgBatchMovements?: Prisma.FgBatchMovementUncheckedUpdateManyWithoutMovementNestedInput
+}
+
+export type StockMovementUpsertWithoutFgBatchTransferredInToInput = {
+  update: Prisma.XOR<Prisma.StockMovementUpdateWithoutFgBatchTransferredInToInput, Prisma.StockMovementUncheckedUpdateWithoutFgBatchTransferredInToInput>
+  create: Prisma.XOR<Prisma.StockMovementCreateWithoutFgBatchTransferredInToInput, Prisma.StockMovementUncheckedCreateWithoutFgBatchTransferredInToInput>
+  where?: Prisma.StockMovementWhereInput
+}
+
+export type StockMovementUpdateToOneWithWhereWithoutFgBatchTransferredInToInput = {
+  where?: Prisma.StockMovementWhereInput
+  data: Prisma.XOR<Prisma.StockMovementUpdateWithoutFgBatchTransferredInToInput, Prisma.StockMovementUncheckedUpdateWithoutFgBatchTransferredInToInput>
+}
+
+export type StockMovementUpdateWithoutFgBatchTransferredInToInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.StringFieldUpdateOperationsInput | string
+  movementType?: Prisma.EnumMovementTypeFieldUpdateOperationsInput | $Enums.MovementType
+  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceType?: Prisma.NullableEnumReferenceTypeFieldUpdateOperationsInput | $Enums.ReferenceType | null
+  referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  syncedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  item?: Prisma.ItemUpdateOneRequiredWithoutStockMovementsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneRequiredWithoutStockMovementsNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutMovementNestedInput
+  lotsReturnedFrom?: Prisma.MaterialLotUpdateManyWithoutSourceReturnMovementNestedInput
+  lotsFromRegrind?: Prisma.MaterialLotUpdateManyWithoutSourceRegrindMovementNestedInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUpdateOneWithoutProducedMovementNestedInput
+  fgBatchMovements?: Prisma.FgBatchMovementUpdateManyWithoutMovementNestedInput
+}
+
+export type StockMovementUncheckedUpdateWithoutFgBatchTransferredInToInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.StringFieldUpdateOperationsInput | string
+  itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
+  movementType?: Prisma.EnumMovementTypeFieldUpdateOperationsInput | $Enums.MovementType
+  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceType?: Prisma.NullableEnumReferenceTypeFieldUpdateOperationsInput | $Enums.ReferenceType | null
+  referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  syncedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutMovementNestedInput
+  lotsReturnedFrom?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnMovementNestedInput
+  lotsFromRegrind?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceRegrindMovementNestedInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUncheckedUpdateOneWithoutProducedMovementNestedInput
+  fgBatchMovements?: Prisma.FgBatchMovementUncheckedUpdateManyWithoutMovementNestedInput
+}
+
+export type StockMovementCreateWithoutFgBatchMovementsInput = {
+  id?: string
+  branchId: string
+  movementType: $Enums.MovementType
+  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: string | null
+  referenceType?: $Enums.ReferenceType | null
+  referenceId?: string | null
+  reason?: string | null
+  clientRequestId?: string | null
+  createdById?: string | null
+  occurredAt?: Date | string
+  syncedAt?: Date | string
+  item: Prisma.ItemCreateNestedOneWithoutStockMovementsInput
+  warehouse: Prisma.WarehouseCreateNestedOneWithoutStockMovementsInput
+  lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutMovementInput
+  lotsReturnedFrom?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnMovementInput
+  lotsFromRegrind?: Prisma.MaterialLotCreateNestedManyWithoutSourceRegrindMovementInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchCreateNestedOneWithoutProducedMovementInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchCreateNestedOneWithoutTransferredFromMovementInput
+}
+
+export type StockMovementUncheckedCreateWithoutFgBatchMovementsInput = {
+  id?: string
+  orgId: string
+  branchId: string
+  itemId: string
+  warehouseId: string
+  movementType: $Enums.MovementType
+  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: string | null
+  referenceType?: $Enums.ReferenceType | null
+  referenceId?: string | null
+  reason?: string | null
+  clientRequestId?: string | null
+  createdById?: string | null
+  occurredAt?: Date | string
+  syncedAt?: Date | string
+  lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutMovementInput
+  lotsReturnedFrom?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnMovementInput
+  lotsFromRegrind?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceRegrindMovementInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUncheckedCreateNestedOneWithoutProducedMovementInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUncheckedCreateNestedOneWithoutTransferredFromMovementInput
+}
+
+export type StockMovementCreateOrConnectWithoutFgBatchMovementsInput = {
+  where: Prisma.StockMovementWhereUniqueInput
+  create: Prisma.XOR<Prisma.StockMovementCreateWithoutFgBatchMovementsInput, Prisma.StockMovementUncheckedCreateWithoutFgBatchMovementsInput>
+}
+
+export type StockMovementUpsertWithoutFgBatchMovementsInput = {
+  update: Prisma.XOR<Prisma.StockMovementUpdateWithoutFgBatchMovementsInput, Prisma.StockMovementUncheckedUpdateWithoutFgBatchMovementsInput>
+  create: Prisma.XOR<Prisma.StockMovementCreateWithoutFgBatchMovementsInput, Prisma.StockMovementUncheckedCreateWithoutFgBatchMovementsInput>
+  where?: Prisma.StockMovementWhereInput
+}
+
+export type StockMovementUpdateToOneWithWhereWithoutFgBatchMovementsInput = {
+  where?: Prisma.StockMovementWhereInput
+  data: Prisma.XOR<Prisma.StockMovementUpdateWithoutFgBatchMovementsInput, Prisma.StockMovementUncheckedUpdateWithoutFgBatchMovementsInput>
+}
+
+export type StockMovementUpdateWithoutFgBatchMovementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.StringFieldUpdateOperationsInput | string
+  movementType?: Prisma.EnumMovementTypeFieldUpdateOperationsInput | $Enums.MovementType
+  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceType?: Prisma.NullableEnumReferenceTypeFieldUpdateOperationsInput | $Enums.ReferenceType | null
+  referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  syncedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  item?: Prisma.ItemUpdateOneRequiredWithoutStockMovementsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneRequiredWithoutStockMovementsNestedInput
+  lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutMovementNestedInput
+  lotsReturnedFrom?: Prisma.MaterialLotUpdateManyWithoutSourceReturnMovementNestedInput
+  lotsFromRegrind?: Prisma.MaterialLotUpdateManyWithoutSourceRegrindMovementNestedInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUpdateOneWithoutProducedMovementNestedInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUpdateOneWithoutTransferredFromMovementNestedInput
+}
+
+export type StockMovementUncheckedUpdateWithoutFgBatchMovementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orgId?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.StringFieldUpdateOperationsInput | string
+  itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.StringFieldUpdateOperationsInput | string
+  movementType?: Prisma.EnumMovementTypeFieldUpdateOperationsInput | $Enums.MovementType
+  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceType?: Prisma.NullableEnumReferenceTypeFieldUpdateOperationsInput | $Enums.ReferenceType | null
+  referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  syncedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutMovementNestedInput
+  lotsReturnedFrom?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnMovementNestedInput
+  lotsFromRegrind?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceRegrindMovementNestedInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUncheckedUpdateOneWithoutProducedMovementNestedInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUncheckedUpdateOneWithoutTransferredFromMovementNestedInput
 }
 
 export type StockMovementCreateWithoutWarehouseInput = {
@@ -1057,6 +1625,10 @@ export type StockMovementCreateWithoutWarehouseInput = {
   item: Prisma.ItemCreateNestedOneWithoutStockMovementsInput
   lotConsumptions?: Prisma.LotConsumptionCreateNestedManyWithoutMovementInput
   lotsReturnedFrom?: Prisma.MaterialLotCreateNestedManyWithoutSourceReturnMovementInput
+  lotsFromRegrind?: Prisma.MaterialLotCreateNestedManyWithoutSourceRegrindMovementInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchCreateNestedOneWithoutProducedMovementInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchCreateNestedOneWithoutTransferredFromMovementInput
+  fgBatchMovements?: Prisma.FgBatchMovementCreateNestedManyWithoutMovementInput
 }
 
 export type StockMovementUncheckedCreateWithoutWarehouseInput = {
@@ -1076,6 +1648,10 @@ export type StockMovementUncheckedCreateWithoutWarehouseInput = {
   syncedAt?: Date | string
   lotConsumptions?: Prisma.LotConsumptionUncheckedCreateNestedManyWithoutMovementInput
   lotsReturnedFrom?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceReturnMovementInput
+  lotsFromRegrind?: Prisma.MaterialLotUncheckedCreateNestedManyWithoutSourceRegrindMovementInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUncheckedCreateNestedOneWithoutProducedMovementInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUncheckedCreateNestedOneWithoutTransferredFromMovementInput
+  fgBatchMovements?: Prisma.FgBatchMovementUncheckedCreateNestedManyWithoutMovementInput
 }
 
 export type StockMovementCreateOrConnectWithoutWarehouseInput = {
@@ -1138,6 +1714,10 @@ export type StockMovementUpdateWithoutItemInput = {
   warehouse?: Prisma.WarehouseUpdateOneRequiredWithoutStockMovementsNestedInput
   lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutMovementNestedInput
   lotsReturnedFrom?: Prisma.MaterialLotUpdateManyWithoutSourceReturnMovementNestedInput
+  lotsFromRegrind?: Prisma.MaterialLotUpdateManyWithoutSourceRegrindMovementNestedInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUpdateOneWithoutProducedMovementNestedInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUpdateOneWithoutTransferredFromMovementNestedInput
+  fgBatchMovements?: Prisma.FgBatchMovementUpdateManyWithoutMovementNestedInput
 }
 
 export type StockMovementUncheckedUpdateWithoutItemInput = {
@@ -1157,6 +1737,10 @@ export type StockMovementUncheckedUpdateWithoutItemInput = {
   syncedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutMovementNestedInput
   lotsReturnedFrom?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnMovementNestedInput
+  lotsFromRegrind?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceRegrindMovementNestedInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUncheckedUpdateOneWithoutProducedMovementNestedInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUncheckedUpdateOneWithoutTransferredFromMovementNestedInput
+  fgBatchMovements?: Prisma.FgBatchMovementUncheckedUpdateManyWithoutMovementNestedInput
 }
 
 export type StockMovementUncheckedUpdateManyWithoutItemInput = {
@@ -1210,6 +1794,10 @@ export type StockMovementUpdateWithoutWarehouseInput = {
   item?: Prisma.ItemUpdateOneRequiredWithoutStockMovementsNestedInput
   lotConsumptions?: Prisma.LotConsumptionUpdateManyWithoutMovementNestedInput
   lotsReturnedFrom?: Prisma.MaterialLotUpdateManyWithoutSourceReturnMovementNestedInput
+  lotsFromRegrind?: Prisma.MaterialLotUpdateManyWithoutSourceRegrindMovementNestedInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUpdateOneWithoutProducedMovementNestedInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUpdateOneWithoutTransferredFromMovementNestedInput
+  fgBatchMovements?: Prisma.FgBatchMovementUpdateManyWithoutMovementNestedInput
 }
 
 export type StockMovementUncheckedUpdateWithoutWarehouseInput = {
@@ -1229,6 +1817,10 @@ export type StockMovementUncheckedUpdateWithoutWarehouseInput = {
   syncedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lotConsumptions?: Prisma.LotConsumptionUncheckedUpdateManyWithoutMovementNestedInput
   lotsReturnedFrom?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceReturnMovementNestedInput
+  lotsFromRegrind?: Prisma.MaterialLotUncheckedUpdateManyWithoutSourceRegrindMovementNestedInput
+  fgBatchProduced?: Prisma.FinishedGoodsBatchUncheckedUpdateOneWithoutProducedMovementNestedInput
+  fgBatchTransferredInTo?: Prisma.FinishedGoodsBatchUncheckedUpdateOneWithoutTransferredFromMovementNestedInput
+  fgBatchMovements?: Prisma.FgBatchMovementUncheckedUpdateManyWithoutMovementNestedInput
 }
 
 export type StockMovementUncheckedUpdateManyWithoutWarehouseInput = {
@@ -1256,11 +1848,15 @@ export type StockMovementUncheckedUpdateManyWithoutWarehouseInput = {
 export type StockMovementCountOutputType = {
   lotConsumptions: number
   lotsReturnedFrom: number
+  lotsFromRegrind: number
+  fgBatchMovements: number
 }
 
 export type StockMovementCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   lotConsumptions?: boolean | StockMovementCountOutputTypeCountLotConsumptionsArgs
   lotsReturnedFrom?: boolean | StockMovementCountOutputTypeCountLotsReturnedFromArgs
+  lotsFromRegrind?: boolean | StockMovementCountOutputTypeCountLotsFromRegrindArgs
+  fgBatchMovements?: boolean | StockMovementCountOutputTypeCountFgBatchMovementsArgs
 }
 
 /**
@@ -1287,6 +1883,20 @@ export type StockMovementCountOutputTypeCountLotsReturnedFromArgs<ExtArgs extend
   where?: Prisma.MaterialLotWhereInput
 }
 
+/**
+ * StockMovementCountOutputType without action
+ */
+export type StockMovementCountOutputTypeCountLotsFromRegrindArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MaterialLotWhereInput
+}
+
+/**
+ * StockMovementCountOutputType without action
+ */
+export type StockMovementCountOutputTypeCountFgBatchMovementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FgBatchMovementWhereInput
+}
+
 
 export type StockMovementSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1309,6 +1919,10 @@ export type StockMovementSelect<ExtArgs extends runtime.Types.Extensions.Interna
   warehouse?: boolean | Prisma.WarehouseDefaultArgs<ExtArgs>
   lotConsumptions?: boolean | Prisma.StockMovement$lotConsumptionsArgs<ExtArgs>
   lotsReturnedFrom?: boolean | Prisma.StockMovement$lotsReturnedFromArgs<ExtArgs>
+  lotsFromRegrind?: boolean | Prisma.StockMovement$lotsFromRegrindArgs<ExtArgs>
+  fgBatchProduced?: boolean | Prisma.StockMovement$fgBatchProducedArgs<ExtArgs>
+  fgBatchTransferredInTo?: boolean | Prisma.StockMovement$fgBatchTransferredInToArgs<ExtArgs>
+  fgBatchMovements?: boolean | Prisma.StockMovement$fgBatchMovementsArgs<ExtArgs>
   _count?: boolean | Prisma.StockMovementCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["stockMovement"]>
 
@@ -1379,6 +1993,10 @@ export type StockMovementInclude<ExtArgs extends runtime.Types.Extensions.Intern
   warehouse?: boolean | Prisma.WarehouseDefaultArgs<ExtArgs>
   lotConsumptions?: boolean | Prisma.StockMovement$lotConsumptionsArgs<ExtArgs>
   lotsReturnedFrom?: boolean | Prisma.StockMovement$lotsReturnedFromArgs<ExtArgs>
+  lotsFromRegrind?: boolean | Prisma.StockMovement$lotsFromRegrindArgs<ExtArgs>
+  fgBatchProduced?: boolean | Prisma.StockMovement$fgBatchProducedArgs<ExtArgs>
+  fgBatchTransferredInTo?: boolean | Prisma.StockMovement$fgBatchTransferredInToArgs<ExtArgs>
+  fgBatchMovements?: boolean | Prisma.StockMovement$fgBatchMovementsArgs<ExtArgs>
   _count?: boolean | Prisma.StockMovementCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type StockMovementIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1397,6 +2015,10 @@ export type $StockMovementPayload<ExtArgs extends runtime.Types.Extensions.Inter
     warehouse: Prisma.$WarehousePayload<ExtArgs>
     lotConsumptions: Prisma.$LotConsumptionPayload<ExtArgs>[]
     lotsReturnedFrom: Prisma.$MaterialLotPayload<ExtArgs>[]
+    lotsFromRegrind: Prisma.$MaterialLotPayload<ExtArgs>[]
+    fgBatchProduced: Prisma.$FinishedGoodsBatchPayload<ExtArgs> | null
+    fgBatchTransferredInTo: Prisma.$FinishedGoodsBatchPayload<ExtArgs> | null
+    fgBatchMovements: Prisma.$FgBatchMovementPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1813,6 +2435,10 @@ export interface Prisma__StockMovementClient<T, Null = never, ExtArgs extends ru
   warehouse<T extends Prisma.WarehouseDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WarehouseDefaultArgs<ExtArgs>>): Prisma.Prisma__WarehouseClient<runtime.Types.Result.GetResult<Prisma.$WarehousePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   lotConsumptions<T extends Prisma.StockMovement$lotConsumptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StockMovement$lotConsumptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LotConsumptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   lotsReturnedFrom<T extends Prisma.StockMovement$lotsReturnedFromArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StockMovement$lotsReturnedFromArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaterialLotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  lotsFromRegrind<T extends Prisma.StockMovement$lotsFromRegrindArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StockMovement$lotsFromRegrindArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaterialLotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  fgBatchProduced<T extends Prisma.StockMovement$fgBatchProducedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StockMovement$fgBatchProducedArgs<ExtArgs>>): Prisma.Prisma__FinishedGoodsBatchClient<runtime.Types.Result.GetResult<Prisma.$FinishedGoodsBatchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  fgBatchTransferredInTo<T extends Prisma.StockMovement$fgBatchTransferredInToArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StockMovement$fgBatchTransferredInToArgs<ExtArgs>>): Prisma.Prisma__FinishedGoodsBatchClient<runtime.Types.Result.GetResult<Prisma.$FinishedGoodsBatchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  fgBatchMovements<T extends Prisma.StockMovement$fgBatchMovementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StockMovement$fgBatchMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FgBatchMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2304,6 +2930,92 @@ export type StockMovement$lotsReturnedFromArgs<ExtArgs extends runtime.Types.Ext
   take?: number
   skip?: number
   distinct?: Prisma.MaterialLotScalarFieldEnum | Prisma.MaterialLotScalarFieldEnum[]
+}
+
+/**
+ * StockMovement.lotsFromRegrind
+ */
+export type StockMovement$lotsFromRegrindArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MaterialLot
+   */
+  select?: Prisma.MaterialLotSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MaterialLot
+   */
+  omit?: Prisma.MaterialLotOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MaterialLotInclude<ExtArgs> | null
+  where?: Prisma.MaterialLotWhereInput
+  orderBy?: Prisma.MaterialLotOrderByWithRelationInput | Prisma.MaterialLotOrderByWithRelationInput[]
+  cursor?: Prisma.MaterialLotWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MaterialLotScalarFieldEnum | Prisma.MaterialLotScalarFieldEnum[]
+}
+
+/**
+ * StockMovement.fgBatchProduced
+ */
+export type StockMovement$fgBatchProducedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FinishedGoodsBatch
+   */
+  select?: Prisma.FinishedGoodsBatchSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FinishedGoodsBatch
+   */
+  omit?: Prisma.FinishedGoodsBatchOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FinishedGoodsBatchInclude<ExtArgs> | null
+  where?: Prisma.FinishedGoodsBatchWhereInput
+}
+
+/**
+ * StockMovement.fgBatchTransferredInTo
+ */
+export type StockMovement$fgBatchTransferredInToArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FinishedGoodsBatch
+   */
+  select?: Prisma.FinishedGoodsBatchSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FinishedGoodsBatch
+   */
+  omit?: Prisma.FinishedGoodsBatchOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FinishedGoodsBatchInclude<ExtArgs> | null
+  where?: Prisma.FinishedGoodsBatchWhereInput
+}
+
+/**
+ * StockMovement.fgBatchMovements
+ */
+export type StockMovement$fgBatchMovementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FgBatchMovement
+   */
+  select?: Prisma.FgBatchMovementSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FgBatchMovement
+   */
+  omit?: Prisma.FgBatchMovementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FgBatchMovementInclude<ExtArgs> | null
+  where?: Prisma.FgBatchMovementWhereInput
+  orderBy?: Prisma.FgBatchMovementOrderByWithRelationInput | Prisma.FgBatchMovementOrderByWithRelationInput[]
+  cursor?: Prisma.FgBatchMovementWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FgBatchMovementScalarFieldEnum | Prisma.FgBatchMovementScalarFieldEnum[]
 }
 
 /**

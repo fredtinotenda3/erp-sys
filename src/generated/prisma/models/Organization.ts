@@ -42,6 +42,7 @@ export type OrganizationMinAggregateOutputType = {
   staleOrderThresholdDays: number | null
   createdAt: Date | null
   updatedAt: Date | null
+  industryProfile: $Enums.IndustryProfile | null
 }
 
 export type OrganizationMaxAggregateOutputType = {
@@ -52,6 +53,7 @@ export type OrganizationMaxAggregateOutputType = {
   staleOrderThresholdDays: number | null
   createdAt: Date | null
   updatedAt: Date | null
+  industryProfile: $Enums.IndustryProfile | null
 }
 
 export type OrganizationCountAggregateOutputType = {
@@ -62,6 +64,8 @@ export type OrganizationCountAggregateOutputType = {
   staleOrderThresholdDays: number
   createdAt: number
   updatedAt: number
+  industryProfile: number
+  industryProfileModules: number
   _all: number
 }
 
@@ -82,6 +86,7 @@ export type OrganizationMinAggregateInputType = {
   staleOrderThresholdDays?: true
   createdAt?: true
   updatedAt?: true
+  industryProfile?: true
 }
 
 export type OrganizationMaxAggregateInputType = {
@@ -92,6 +97,7 @@ export type OrganizationMaxAggregateInputType = {
   staleOrderThresholdDays?: true
   createdAt?: true
   updatedAt?: true
+  industryProfile?: true
 }
 
 export type OrganizationCountAggregateInputType = {
@@ -102,6 +108,8 @@ export type OrganizationCountAggregateInputType = {
   staleOrderThresholdDays?: true
   createdAt?: true
   updatedAt?: true
+  industryProfile?: true
+  industryProfileModules?: true
   _all?: true
 }
 
@@ -199,6 +207,8 @@ export type OrganizationGroupByOutputType = {
   staleOrderThresholdDays: number
   createdAt: Date
   updatedAt: Date
+  industryProfile: $Enums.IndustryProfile
+  industryProfileModules: runtime.JsonValue
   _count: OrganizationCountAggregateOutputType | null
   _avg: OrganizationAvgAggregateOutputType | null
   _sum: OrganizationSumAggregateOutputType | null
@@ -232,6 +242,8 @@ export type OrganizationWhereInput = {
   staleOrderThresholdDays?: Prisma.IntFilter<"Organization"> | number
   createdAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFilter<"Organization"> | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonFilter<"Organization">
   currency?: Prisma.XOR<Prisma.CurrencyScalarRelationFilter, Prisma.CurrencyWhereInput>
   branches?: Prisma.BranchListRelationFilter
   users?: Prisma.UserListRelationFilter
@@ -251,6 +263,8 @@ export type OrganizationOrderByWithRelationInput = {
   staleOrderThresholdDays?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  industryProfile?: Prisma.SortOrder
+  industryProfileModules?: Prisma.SortOrder
   currency?: Prisma.CurrencyOrderByWithRelationInput
   branches?: Prisma.BranchOrderByRelationAggregateInput
   users?: Prisma.UserOrderByRelationAggregateInput
@@ -273,6 +287,8 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   staleOrderThresholdDays?: Prisma.IntFilter<"Organization"> | number
   createdAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFilter<"Organization"> | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonFilter<"Organization">
   currency?: Prisma.XOR<Prisma.CurrencyScalarRelationFilter, Prisma.CurrencyWhereInput>
   branches?: Prisma.BranchListRelationFilter
   users?: Prisma.UserListRelationFilter
@@ -292,6 +308,8 @@ export type OrganizationOrderByWithAggregationInput = {
   staleOrderThresholdDays?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  industryProfile?: Prisma.SortOrder
+  industryProfileModules?: Prisma.SortOrder
   _count?: Prisma.OrganizationCountOrderByAggregateInput
   _avg?: Prisma.OrganizationAvgOrderByAggregateInput
   _max?: Prisma.OrganizationMaxOrderByAggregateInput
@@ -310,6 +328,8 @@ export type OrganizationScalarWhereWithAggregatesInput = {
   staleOrderThresholdDays?: Prisma.IntWithAggregatesFilter<"Organization"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Organization"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Organization"> | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileWithAggregatesFilter<"Organization"> | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonWithAggregatesFilter<"Organization">
 }
 
 export type OrganizationCreateInput = {
@@ -319,6 +339,8 @@ export type OrganizationCreateInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   currency: Prisma.CurrencyCreateNestedOneWithoutOrganizationsInput
   branches?: Prisma.BranchCreateNestedManyWithoutOrgInput
   users?: Prisma.UserCreateNestedManyWithoutOrgInput
@@ -338,6 +360,8 @@ export type OrganizationUncheckedCreateInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrgInput
   users?: Prisma.UserUncheckedCreateNestedManyWithoutOrgInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
@@ -355,6 +379,8 @@ export type OrganizationUpdateInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   currency?: Prisma.CurrencyUpdateOneRequiredWithoutOrganizationsNestedInput
   branches?: Prisma.BranchUpdateManyWithoutOrgNestedInput
   users?: Prisma.UserUpdateManyWithoutOrgNestedInput
@@ -374,6 +400,8 @@ export type OrganizationUncheckedUpdateInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   branches?: Prisma.BranchUncheckedUpdateManyWithoutOrgNestedInput
   users?: Prisma.UserUncheckedUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
@@ -392,6 +420,8 @@ export type OrganizationCreateManyInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
 export type OrganizationUpdateManyMutationInput = {
@@ -401,6 +431,8 @@ export type OrganizationUpdateManyMutationInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
 export type OrganizationUncheckedUpdateManyInput = {
@@ -411,6 +443,8 @@ export type OrganizationUncheckedUpdateManyInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
 export type OrganizationCountOrderByAggregateInput = {
@@ -421,6 +455,8 @@ export type OrganizationCountOrderByAggregateInput = {
   staleOrderThresholdDays?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  industryProfile?: Prisma.SortOrder
+  industryProfileModules?: Prisma.SortOrder
 }
 
 export type OrganizationAvgOrderByAggregateInput = {
@@ -435,6 +471,7 @@ export type OrganizationMaxOrderByAggregateInput = {
   staleOrderThresholdDays?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  industryProfile?: Prisma.SortOrder
 }
 
 export type OrganizationMinOrderByAggregateInput = {
@@ -445,6 +482,7 @@ export type OrganizationMinOrderByAggregateInput = {
   staleOrderThresholdDays?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  industryProfile?: Prisma.SortOrder
 }
 
 export type OrganizationSumOrderByAggregateInput = {
@@ -480,6 +518,10 @@ export type IntFieldUpdateOperationsInput = {
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type EnumIndustryProfileFieldUpdateOperationsInput = {
+  set?: $Enums.IndustryProfile
 }
 
 export type OrganizationCreateNestedOneWithoutBranchesInput = {
@@ -643,6 +685,8 @@ export type OrganizationCreateWithoutBranchesInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   currency: Prisma.CurrencyCreateNestedOneWithoutOrganizationsInput
   users?: Prisma.UserCreateNestedManyWithoutOrgInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutOrgInput
@@ -661,6 +705,8 @@ export type OrganizationUncheckedCreateWithoutBranchesInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   users?: Prisma.UserUncheckedCreateNestedManyWithoutOrgInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutOrgInput
@@ -693,6 +739,8 @@ export type OrganizationUpdateWithoutBranchesInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   currency?: Prisma.CurrencyUpdateOneRequiredWithoutOrganizationsNestedInput
   users?: Prisma.UserUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutOrgNestedInput
@@ -711,6 +759,8 @@ export type OrganizationUncheckedUpdateWithoutBranchesInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   users?: Prisma.UserUncheckedUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutOrgNestedInput
@@ -727,6 +777,8 @@ export type OrganizationCreateWithoutUsersInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   currency: Prisma.CurrencyCreateNestedOneWithoutOrganizationsInput
   branches?: Prisma.BranchCreateNestedManyWithoutOrgInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutOrgInput
@@ -745,6 +797,8 @@ export type OrganizationUncheckedCreateWithoutUsersInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrgInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutOrgInput
@@ -777,6 +831,8 @@ export type OrganizationUpdateWithoutUsersInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   currency?: Prisma.CurrencyUpdateOneRequiredWithoutOrganizationsNestedInput
   branches?: Prisma.BranchUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutOrgNestedInput
@@ -795,6 +851,8 @@ export type OrganizationUncheckedUpdateWithoutUsersInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   branches?: Prisma.BranchUncheckedUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutOrgNestedInput
@@ -811,6 +869,8 @@ export type OrganizationCreateWithoutAuditLogsInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   currency: Prisma.CurrencyCreateNestedOneWithoutOrganizationsInput
   branches?: Prisma.BranchCreateNestedManyWithoutOrgInput
   users?: Prisma.UserCreateNestedManyWithoutOrgInput
@@ -829,6 +889,8 @@ export type OrganizationUncheckedCreateWithoutAuditLogsInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrgInput
   users?: Prisma.UserUncheckedCreateNestedManyWithoutOrgInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutOrgInput
@@ -861,6 +923,8 @@ export type OrganizationUpdateWithoutAuditLogsInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   currency?: Prisma.CurrencyUpdateOneRequiredWithoutOrganizationsNestedInput
   branches?: Prisma.BranchUpdateManyWithoutOrgNestedInput
   users?: Prisma.UserUpdateManyWithoutOrgNestedInput
@@ -879,6 +943,8 @@ export type OrganizationUncheckedUpdateWithoutAuditLogsInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   branches?: Prisma.BranchUncheckedUpdateManyWithoutOrgNestedInput
   users?: Prisma.UserUncheckedUpdateManyWithoutOrgNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutOrgNestedInput
@@ -895,6 +961,8 @@ export type OrganizationCreateWithoutCurrencyInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   branches?: Prisma.BranchCreateNestedManyWithoutOrgInput
   users?: Prisma.UserCreateNestedManyWithoutOrgInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutOrgInput
@@ -912,6 +980,8 @@ export type OrganizationUncheckedCreateWithoutCurrencyInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrgInput
   users?: Prisma.UserUncheckedCreateNestedManyWithoutOrgInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
@@ -959,6 +1029,8 @@ export type OrganizationScalarWhereInput = {
   staleOrderThresholdDays?: Prisma.IntFilter<"Organization"> | number
   createdAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFilter<"Organization"> | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonFilter<"Organization">
 }
 
 export type OrganizationCreateWithoutExchangeRatesInput = {
@@ -968,6 +1040,8 @@ export type OrganizationCreateWithoutExchangeRatesInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   currency: Prisma.CurrencyCreateNestedOneWithoutOrganizationsInput
   branches?: Prisma.BranchCreateNestedManyWithoutOrgInput
   users?: Prisma.UserCreateNestedManyWithoutOrgInput
@@ -986,6 +1060,8 @@ export type OrganizationUncheckedCreateWithoutExchangeRatesInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrgInput
   users?: Prisma.UserUncheckedCreateNestedManyWithoutOrgInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
@@ -1018,6 +1094,8 @@ export type OrganizationUpdateWithoutExchangeRatesInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   currency?: Prisma.CurrencyUpdateOneRequiredWithoutOrganizationsNestedInput
   branches?: Prisma.BranchUpdateManyWithoutOrgNestedInput
   users?: Prisma.UserUpdateManyWithoutOrgNestedInput
@@ -1036,6 +1114,8 @@ export type OrganizationUncheckedUpdateWithoutExchangeRatesInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   branches?: Prisma.BranchUncheckedUpdateManyWithoutOrgNestedInput
   users?: Prisma.UserUncheckedUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
@@ -1052,6 +1132,8 @@ export type OrganizationCreateWithoutItemsInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   currency: Prisma.CurrencyCreateNestedOneWithoutOrganizationsInput
   branches?: Prisma.BranchCreateNestedManyWithoutOrgInput
   users?: Prisma.UserCreateNestedManyWithoutOrgInput
@@ -1070,6 +1152,8 @@ export type OrganizationUncheckedCreateWithoutItemsInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrgInput
   users?: Prisma.UserUncheckedCreateNestedManyWithoutOrgInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
@@ -1102,6 +1186,8 @@ export type OrganizationUpdateWithoutItemsInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   currency?: Prisma.CurrencyUpdateOneRequiredWithoutOrganizationsNestedInput
   branches?: Prisma.BranchUpdateManyWithoutOrgNestedInput
   users?: Prisma.UserUpdateManyWithoutOrgNestedInput
@@ -1120,6 +1206,8 @@ export type OrganizationUncheckedUpdateWithoutItemsInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   branches?: Prisma.BranchUncheckedUpdateManyWithoutOrgNestedInput
   users?: Prisma.UserUncheckedUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
@@ -1136,6 +1224,8 @@ export type OrganizationCreateWithoutCustomersInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   currency: Prisma.CurrencyCreateNestedOneWithoutOrganizationsInput
   branches?: Prisma.BranchCreateNestedManyWithoutOrgInput
   users?: Prisma.UserCreateNestedManyWithoutOrgInput
@@ -1154,6 +1244,8 @@ export type OrganizationUncheckedCreateWithoutCustomersInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrgInput
   users?: Prisma.UserUncheckedCreateNestedManyWithoutOrgInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
@@ -1186,6 +1278,8 @@ export type OrganizationUpdateWithoutCustomersInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   currency?: Prisma.CurrencyUpdateOneRequiredWithoutOrganizationsNestedInput
   branches?: Prisma.BranchUpdateManyWithoutOrgNestedInput
   users?: Prisma.UserUpdateManyWithoutOrgNestedInput
@@ -1204,6 +1298,8 @@ export type OrganizationUncheckedUpdateWithoutCustomersInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   branches?: Prisma.BranchUncheckedUpdateManyWithoutOrgNestedInput
   users?: Prisma.UserUncheckedUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
@@ -1220,6 +1316,8 @@ export type OrganizationCreateWithoutSuppliersInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   currency: Prisma.CurrencyCreateNestedOneWithoutOrganizationsInput
   branches?: Prisma.BranchCreateNestedManyWithoutOrgInput
   users?: Prisma.UserCreateNestedManyWithoutOrgInput
@@ -1238,6 +1336,8 @@ export type OrganizationUncheckedCreateWithoutSuppliersInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrgInput
   users?: Prisma.UserUncheckedCreateNestedManyWithoutOrgInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
@@ -1270,6 +1370,8 @@ export type OrganizationUpdateWithoutSuppliersInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   currency?: Prisma.CurrencyUpdateOneRequiredWithoutOrganizationsNestedInput
   branches?: Prisma.BranchUpdateManyWithoutOrgNestedInput
   users?: Prisma.UserUpdateManyWithoutOrgNestedInput
@@ -1288,6 +1390,8 @@ export type OrganizationUncheckedUpdateWithoutSuppliersInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   branches?: Prisma.BranchUncheckedUpdateManyWithoutOrgNestedInput
   users?: Prisma.UserUncheckedUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
@@ -1304,6 +1408,8 @@ export type OrganizationCreateWithoutJobCounterInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   currency: Prisma.CurrencyCreateNestedOneWithoutOrganizationsInput
   branches?: Prisma.BranchCreateNestedManyWithoutOrgInput
   users?: Prisma.UserCreateNestedManyWithoutOrgInput
@@ -1322,6 +1428,8 @@ export type OrganizationUncheckedCreateWithoutJobCounterInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   branches?: Prisma.BranchUncheckedCreateNestedManyWithoutOrgInput
   users?: Prisma.UserUncheckedCreateNestedManyWithoutOrgInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutOrgInput
@@ -1354,6 +1462,8 @@ export type OrganizationUpdateWithoutJobCounterInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   currency?: Prisma.CurrencyUpdateOneRequiredWithoutOrganizationsNestedInput
   branches?: Prisma.BranchUpdateManyWithoutOrgNestedInput
   users?: Prisma.UserUpdateManyWithoutOrgNestedInput
@@ -1372,6 +1482,8 @@ export type OrganizationUncheckedUpdateWithoutJobCounterInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   branches?: Prisma.BranchUncheckedUpdateManyWithoutOrgNestedInput
   users?: Prisma.UserUncheckedUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
@@ -1388,6 +1500,8 @@ export type OrganizationCreateManyCurrencyInput = {
   staleOrderThresholdDays?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  industryProfile?: $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
 export type OrganizationUpdateWithoutCurrencyInput = {
@@ -1397,6 +1511,8 @@ export type OrganizationUpdateWithoutCurrencyInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   branches?: Prisma.BranchUpdateManyWithoutOrgNestedInput
   users?: Prisma.UserUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutOrgNestedInput
@@ -1414,6 +1530,8 @@ export type OrganizationUncheckedUpdateWithoutCurrencyInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   branches?: Prisma.BranchUncheckedUpdateManyWithoutOrgNestedInput
   users?: Prisma.UserUncheckedUpdateManyWithoutOrgNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutOrgNestedInput
@@ -1431,6 +1549,8 @@ export type OrganizationUncheckedUpdateManyWithoutCurrencyInput = {
   staleOrderThresholdDays?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  industryProfile?: Prisma.EnumIndustryProfileFieldUpdateOperationsInput | $Enums.IndustryProfile
+  industryProfileModules?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
 
@@ -1526,6 +1646,8 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   staleOrderThresholdDays?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  industryProfile?: boolean
+  industryProfileModules?: boolean
   currency?: boolean | Prisma.CurrencyDefaultArgs<ExtArgs>
   branches?: boolean | Prisma.Organization$branchesArgs<ExtArgs>
   users?: boolean | Prisma.Organization$usersArgs<ExtArgs>
@@ -1546,6 +1668,8 @@ export type OrganizationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   staleOrderThresholdDays?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  industryProfile?: boolean
+  industryProfileModules?: boolean
   currency?: boolean | Prisma.CurrencyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["organization"]>
 
@@ -1557,6 +1681,8 @@ export type OrganizationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   staleOrderThresholdDays?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  industryProfile?: boolean
+  industryProfileModules?: boolean
   currency?: boolean | Prisma.CurrencyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["organization"]>
 
@@ -1568,9 +1694,11 @@ export type OrganizationSelectScalar = {
   staleOrderThresholdDays?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  industryProfile?: boolean
+  industryProfileModules?: boolean
 }
 
-export type OrganizationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "baseCurrency" | "staleOrderThresholdDays" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
+export type OrganizationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "baseCurrency" | "staleOrderThresholdDays" | "createdAt" | "updatedAt" | "industryProfile" | "industryProfileModules", ExtArgs["result"]["organization"]>
 export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   currency?: boolean | Prisma.CurrencyDefaultArgs<ExtArgs>
   branches?: boolean | Prisma.Organization$branchesArgs<ExtArgs>
@@ -1611,6 +1739,8 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     staleOrderThresholdDays: number
     createdAt: Date
     updatedAt: Date
+    industryProfile: $Enums.IndustryProfile
+    industryProfileModules: runtime.JsonValue
   }, ExtArgs["result"]["organization"]>
   composites: {}
 }
@@ -2050,6 +2180,8 @@ export interface OrganizationFieldRefs {
   readonly staleOrderThresholdDays: Prisma.FieldRef<"Organization", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Organization", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Organization", 'DateTime'>
+  readonly industryProfile: Prisma.FieldRef<"Organization", 'IndustryProfile'>
+  readonly industryProfileModules: Prisma.FieldRef<"Organization", 'Json'>
 }
     
 

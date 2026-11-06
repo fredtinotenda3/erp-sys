@@ -28,10 +28,14 @@ export type AggregateProductionStageTemplate = {
 
 export type ProductionStageTemplateAvgAggregateOutputType = {
   sequence: number | null
+  expectedSetupMinutes: number | null
+  expectedRunMinutes: number | null
 }
 
 export type ProductionStageTemplateSumAggregateOutputType = {
   sequence: number | null
+  expectedSetupMinutes: number | null
+  expectedRunMinutes: number | null
 }
 
 export type ProductionStageTemplateMinAggregateOutputType = {
@@ -40,6 +44,9 @@ export type ProductionStageTemplateMinAggregateOutputType = {
   productItemId: string | null
   stageName: string | null
   sequence: number | null
+  workCentreId: string | null
+  expectedSetupMinutes: number | null
+  expectedRunMinutes: number | null
 }
 
 export type ProductionStageTemplateMaxAggregateOutputType = {
@@ -48,6 +55,9 @@ export type ProductionStageTemplateMaxAggregateOutputType = {
   productItemId: string | null
   stageName: string | null
   sequence: number | null
+  workCentreId: string | null
+  expectedSetupMinutes: number | null
+  expectedRunMinutes: number | null
 }
 
 export type ProductionStageTemplateCountAggregateOutputType = {
@@ -56,16 +66,23 @@ export type ProductionStageTemplateCountAggregateOutputType = {
   productItemId: number
   stageName: number
   sequence: number
+  workCentreId: number
+  expectedSetupMinutes: number
+  expectedRunMinutes: number
   _all: number
 }
 
 
 export type ProductionStageTemplateAvgAggregateInputType = {
   sequence?: true
+  expectedSetupMinutes?: true
+  expectedRunMinutes?: true
 }
 
 export type ProductionStageTemplateSumAggregateInputType = {
   sequence?: true
+  expectedSetupMinutes?: true
+  expectedRunMinutes?: true
 }
 
 export type ProductionStageTemplateMinAggregateInputType = {
@@ -74,6 +91,9 @@ export type ProductionStageTemplateMinAggregateInputType = {
   productItemId?: true
   stageName?: true
   sequence?: true
+  workCentreId?: true
+  expectedSetupMinutes?: true
+  expectedRunMinutes?: true
 }
 
 export type ProductionStageTemplateMaxAggregateInputType = {
@@ -82,6 +102,9 @@ export type ProductionStageTemplateMaxAggregateInputType = {
   productItemId?: true
   stageName?: true
   sequence?: true
+  workCentreId?: true
+  expectedSetupMinutes?: true
+  expectedRunMinutes?: true
 }
 
 export type ProductionStageTemplateCountAggregateInputType = {
@@ -90,6 +113,9 @@ export type ProductionStageTemplateCountAggregateInputType = {
   productItemId?: true
   stageName?: true
   sequence?: true
+  workCentreId?: true
+  expectedSetupMinutes?: true
+  expectedRunMinutes?: true
   _all?: true
 }
 
@@ -185,6 +211,9 @@ export type ProductionStageTemplateGroupByOutputType = {
   productItemId: string | null
   stageName: string
   sequence: number
+  workCentreId: string | null
+  expectedSetupMinutes: number | null
+  expectedRunMinutes: number | null
   _count: ProductionStageTemplateCountAggregateOutputType | null
   _avg: ProductionStageTemplateAvgAggregateOutputType | null
   _sum: ProductionStageTemplateSumAggregateOutputType | null
@@ -216,7 +245,11 @@ export type ProductionStageTemplateWhereInput = {
   productItemId?: Prisma.UuidNullableFilter<"ProductionStageTemplate"> | string | null
   stageName?: Prisma.StringFilter<"ProductionStageTemplate"> | string
   sequence?: Prisma.IntFilter<"ProductionStageTemplate"> | number
+  workCentreId?: Prisma.UuidNullableFilter<"ProductionStageTemplate"> | string | null
+  expectedSetupMinutes?: Prisma.IntNullableFilter<"ProductionStageTemplate"> | number | null
+  expectedRunMinutes?: Prisma.IntNullableFilter<"ProductionStageTemplate"> | number | null
   product?: Prisma.XOR<Prisma.ItemNullableScalarRelationFilter, Prisma.ItemWhereInput> | null
+  workCentre?: Prisma.XOR<Prisma.WorkCentreNullableScalarRelationFilter, Prisma.WorkCentreWhereInput> | null
 }
 
 export type ProductionStageTemplateOrderByWithRelationInput = {
@@ -225,7 +258,11 @@ export type ProductionStageTemplateOrderByWithRelationInput = {
   productItemId?: Prisma.SortOrderInput | Prisma.SortOrder
   stageName?: Prisma.SortOrder
   sequence?: Prisma.SortOrder
+  workCentreId?: Prisma.SortOrderInput | Prisma.SortOrder
+  expectedSetupMinutes?: Prisma.SortOrderInput | Prisma.SortOrder
+  expectedRunMinutes?: Prisma.SortOrderInput | Prisma.SortOrder
   product?: Prisma.ItemOrderByWithRelationInput
+  workCentre?: Prisma.WorkCentreOrderByWithRelationInput
 }
 
 export type ProductionStageTemplateWhereUniqueInput = Prisma.AtLeast<{
@@ -238,7 +275,11 @@ export type ProductionStageTemplateWhereUniqueInput = Prisma.AtLeast<{
   productItemId?: Prisma.UuidNullableFilter<"ProductionStageTemplate"> | string | null
   stageName?: Prisma.StringFilter<"ProductionStageTemplate"> | string
   sequence?: Prisma.IntFilter<"ProductionStageTemplate"> | number
+  workCentreId?: Prisma.UuidNullableFilter<"ProductionStageTemplate"> | string | null
+  expectedSetupMinutes?: Prisma.IntNullableFilter<"ProductionStageTemplate"> | number | null
+  expectedRunMinutes?: Prisma.IntNullableFilter<"ProductionStageTemplate"> | number | null
   product?: Prisma.XOR<Prisma.ItemNullableScalarRelationFilter, Prisma.ItemWhereInput> | null
+  workCentre?: Prisma.XOR<Prisma.WorkCentreNullableScalarRelationFilter, Prisma.WorkCentreWhereInput> | null
 }, "id" | "orgId_id">
 
 export type ProductionStageTemplateOrderByWithAggregationInput = {
@@ -247,6 +288,9 @@ export type ProductionStageTemplateOrderByWithAggregationInput = {
   productItemId?: Prisma.SortOrderInput | Prisma.SortOrder
   stageName?: Prisma.SortOrder
   sequence?: Prisma.SortOrder
+  workCentreId?: Prisma.SortOrderInput | Prisma.SortOrder
+  expectedSetupMinutes?: Prisma.SortOrderInput | Prisma.SortOrder
+  expectedRunMinutes?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ProductionStageTemplateCountOrderByAggregateInput
   _avg?: Prisma.ProductionStageTemplateAvgOrderByAggregateInput
   _max?: Prisma.ProductionStageTemplateMaxOrderByAggregateInput
@@ -263,13 +307,19 @@ export type ProductionStageTemplateScalarWhereWithAggregatesInput = {
   productItemId?: Prisma.UuidNullableWithAggregatesFilter<"ProductionStageTemplate"> | string | null
   stageName?: Prisma.StringWithAggregatesFilter<"ProductionStageTemplate"> | string
   sequence?: Prisma.IntWithAggregatesFilter<"ProductionStageTemplate"> | number
+  workCentreId?: Prisma.UuidNullableWithAggregatesFilter<"ProductionStageTemplate"> | string | null
+  expectedSetupMinutes?: Prisma.IntNullableWithAggregatesFilter<"ProductionStageTemplate"> | number | null
+  expectedRunMinutes?: Prisma.IntNullableWithAggregatesFilter<"ProductionStageTemplate"> | number | null
 }
 
 export type ProductionStageTemplateCreateInput = {
   id?: string
   stageName: string
   sequence: number
+  expectedSetupMinutes?: number | null
+  expectedRunMinutes?: number | null
   product?: Prisma.ItemCreateNestedOneWithoutStageTemplatesInput
+  workCentre?: Prisma.WorkCentreCreateNestedOneWithoutStageTemplatesInput
 }
 
 export type ProductionStageTemplateUncheckedCreateInput = {
@@ -278,13 +328,19 @@ export type ProductionStageTemplateUncheckedCreateInput = {
   productItemId?: string | null
   stageName: string
   sequence: number
+  workCentreId?: string | null
+  expectedSetupMinutes?: number | null
+  expectedRunMinutes?: number | null
 }
 
 export type ProductionStageTemplateUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stageName?: Prisma.StringFieldUpdateOperationsInput | string
   sequence?: Prisma.IntFieldUpdateOperationsInput | number
+  expectedSetupMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  expectedRunMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   product?: Prisma.ItemUpdateOneWithoutStageTemplatesNestedInput
+  workCentre?: Prisma.WorkCentreUpdateOneWithoutStageTemplatesNestedInput
 }
 
 export type ProductionStageTemplateUncheckedUpdateInput = {
@@ -293,6 +349,9 @@ export type ProductionStageTemplateUncheckedUpdateInput = {
   productItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stageName?: Prisma.StringFieldUpdateOperationsInput | string
   sequence?: Prisma.IntFieldUpdateOperationsInput | number
+  workCentreId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expectedSetupMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  expectedRunMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type ProductionStageTemplateCreateManyInput = {
@@ -301,12 +360,17 @@ export type ProductionStageTemplateCreateManyInput = {
   productItemId?: string | null
   stageName: string
   sequence: number
+  workCentreId?: string | null
+  expectedSetupMinutes?: number | null
+  expectedRunMinutes?: number | null
 }
 
 export type ProductionStageTemplateUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stageName?: Prisma.StringFieldUpdateOperationsInput | string
   sequence?: Prisma.IntFieldUpdateOperationsInput | number
+  expectedSetupMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  expectedRunMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type ProductionStageTemplateUncheckedUpdateManyInput = {
@@ -315,6 +379,9 @@ export type ProductionStageTemplateUncheckedUpdateManyInput = {
   productItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stageName?: Prisma.StringFieldUpdateOperationsInput | string
   sequence?: Prisma.IntFieldUpdateOperationsInput | number
+  workCentreId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expectedSetupMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  expectedRunMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type ProductionStageTemplateListRelationFilter = {
@@ -338,10 +405,15 @@ export type ProductionStageTemplateCountOrderByAggregateInput = {
   productItemId?: Prisma.SortOrder
   stageName?: Prisma.SortOrder
   sequence?: Prisma.SortOrder
+  workCentreId?: Prisma.SortOrder
+  expectedSetupMinutes?: Prisma.SortOrder
+  expectedRunMinutes?: Prisma.SortOrder
 }
 
 export type ProductionStageTemplateAvgOrderByAggregateInput = {
   sequence?: Prisma.SortOrder
+  expectedSetupMinutes?: Prisma.SortOrder
+  expectedRunMinutes?: Prisma.SortOrder
 }
 
 export type ProductionStageTemplateMaxOrderByAggregateInput = {
@@ -350,6 +422,9 @@ export type ProductionStageTemplateMaxOrderByAggregateInput = {
   productItemId?: Prisma.SortOrder
   stageName?: Prisma.SortOrder
   sequence?: Prisma.SortOrder
+  workCentreId?: Prisma.SortOrder
+  expectedSetupMinutes?: Prisma.SortOrder
+  expectedRunMinutes?: Prisma.SortOrder
 }
 
 export type ProductionStageTemplateMinOrderByAggregateInput = {
@@ -358,10 +433,15 @@ export type ProductionStageTemplateMinOrderByAggregateInput = {
   productItemId?: Prisma.SortOrder
   stageName?: Prisma.SortOrder
   sequence?: Prisma.SortOrder
+  workCentreId?: Prisma.SortOrder
+  expectedSetupMinutes?: Prisma.SortOrder
+  expectedRunMinutes?: Prisma.SortOrder
 }
 
 export type ProductionStageTemplateSumOrderByAggregateInput = {
   sequence?: Prisma.SortOrder
+  expectedSetupMinutes?: Prisma.SortOrder
+  expectedRunMinutes?: Prisma.SortOrder
 }
 
 export type ProductionStageTemplateCreateNestedManyWithoutProductInput = {
@@ -406,16 +486,72 @@ export type ProductionStageTemplateUncheckedUpdateManyWithoutProductNestedInput 
   deleteMany?: Prisma.ProductionStageTemplateScalarWhereInput | Prisma.ProductionStageTemplateScalarWhereInput[]
 }
 
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type ProductionStageTemplateCreateNestedManyWithoutWorkCentreInput = {
+  create?: Prisma.XOR<Prisma.ProductionStageTemplateCreateWithoutWorkCentreInput, Prisma.ProductionStageTemplateUncheckedCreateWithoutWorkCentreInput> | Prisma.ProductionStageTemplateCreateWithoutWorkCentreInput[] | Prisma.ProductionStageTemplateUncheckedCreateWithoutWorkCentreInput[]
+  connectOrCreate?: Prisma.ProductionStageTemplateCreateOrConnectWithoutWorkCentreInput | Prisma.ProductionStageTemplateCreateOrConnectWithoutWorkCentreInput[]
+  createMany?: Prisma.ProductionStageTemplateCreateManyWorkCentreInputEnvelope
+  connect?: Prisma.ProductionStageTemplateWhereUniqueInput | Prisma.ProductionStageTemplateWhereUniqueInput[]
+}
+
+export type ProductionStageTemplateUncheckedCreateNestedManyWithoutWorkCentreInput = {
+  create?: Prisma.XOR<Prisma.ProductionStageTemplateCreateWithoutWorkCentreInput, Prisma.ProductionStageTemplateUncheckedCreateWithoutWorkCentreInput> | Prisma.ProductionStageTemplateCreateWithoutWorkCentreInput[] | Prisma.ProductionStageTemplateUncheckedCreateWithoutWorkCentreInput[]
+  connectOrCreate?: Prisma.ProductionStageTemplateCreateOrConnectWithoutWorkCentreInput | Prisma.ProductionStageTemplateCreateOrConnectWithoutWorkCentreInput[]
+  createMany?: Prisma.ProductionStageTemplateCreateManyWorkCentreInputEnvelope
+  connect?: Prisma.ProductionStageTemplateWhereUniqueInput | Prisma.ProductionStageTemplateWhereUniqueInput[]
+}
+
+export type ProductionStageTemplateUpdateManyWithoutWorkCentreNestedInput = {
+  create?: Prisma.XOR<Prisma.ProductionStageTemplateCreateWithoutWorkCentreInput, Prisma.ProductionStageTemplateUncheckedCreateWithoutWorkCentreInput> | Prisma.ProductionStageTemplateCreateWithoutWorkCentreInput[] | Prisma.ProductionStageTemplateUncheckedCreateWithoutWorkCentreInput[]
+  connectOrCreate?: Prisma.ProductionStageTemplateCreateOrConnectWithoutWorkCentreInput | Prisma.ProductionStageTemplateCreateOrConnectWithoutWorkCentreInput[]
+  upsert?: Prisma.ProductionStageTemplateUpsertWithWhereUniqueWithoutWorkCentreInput | Prisma.ProductionStageTemplateUpsertWithWhereUniqueWithoutWorkCentreInput[]
+  createMany?: Prisma.ProductionStageTemplateCreateManyWorkCentreInputEnvelope
+  set?: Prisma.ProductionStageTemplateWhereUniqueInput | Prisma.ProductionStageTemplateWhereUniqueInput[]
+  disconnect?: Prisma.ProductionStageTemplateWhereUniqueInput | Prisma.ProductionStageTemplateWhereUniqueInput[]
+  delete?: Prisma.ProductionStageTemplateWhereUniqueInput | Prisma.ProductionStageTemplateWhereUniqueInput[]
+  connect?: Prisma.ProductionStageTemplateWhereUniqueInput | Prisma.ProductionStageTemplateWhereUniqueInput[]
+  update?: Prisma.ProductionStageTemplateUpdateWithWhereUniqueWithoutWorkCentreInput | Prisma.ProductionStageTemplateUpdateWithWhereUniqueWithoutWorkCentreInput[]
+  updateMany?: Prisma.ProductionStageTemplateUpdateManyWithWhereWithoutWorkCentreInput | Prisma.ProductionStageTemplateUpdateManyWithWhereWithoutWorkCentreInput[]
+  deleteMany?: Prisma.ProductionStageTemplateScalarWhereInput | Prisma.ProductionStageTemplateScalarWhereInput[]
+}
+
+export type ProductionStageTemplateUncheckedUpdateManyWithoutWorkCentreNestedInput = {
+  create?: Prisma.XOR<Prisma.ProductionStageTemplateCreateWithoutWorkCentreInput, Prisma.ProductionStageTemplateUncheckedCreateWithoutWorkCentreInput> | Prisma.ProductionStageTemplateCreateWithoutWorkCentreInput[] | Prisma.ProductionStageTemplateUncheckedCreateWithoutWorkCentreInput[]
+  connectOrCreate?: Prisma.ProductionStageTemplateCreateOrConnectWithoutWorkCentreInput | Prisma.ProductionStageTemplateCreateOrConnectWithoutWorkCentreInput[]
+  upsert?: Prisma.ProductionStageTemplateUpsertWithWhereUniqueWithoutWorkCentreInput | Prisma.ProductionStageTemplateUpsertWithWhereUniqueWithoutWorkCentreInput[]
+  createMany?: Prisma.ProductionStageTemplateCreateManyWorkCentreInputEnvelope
+  set?: Prisma.ProductionStageTemplateWhereUniqueInput | Prisma.ProductionStageTemplateWhereUniqueInput[]
+  disconnect?: Prisma.ProductionStageTemplateWhereUniqueInput | Prisma.ProductionStageTemplateWhereUniqueInput[]
+  delete?: Prisma.ProductionStageTemplateWhereUniqueInput | Prisma.ProductionStageTemplateWhereUniqueInput[]
+  connect?: Prisma.ProductionStageTemplateWhereUniqueInput | Prisma.ProductionStageTemplateWhereUniqueInput[]
+  update?: Prisma.ProductionStageTemplateUpdateWithWhereUniqueWithoutWorkCentreInput | Prisma.ProductionStageTemplateUpdateWithWhereUniqueWithoutWorkCentreInput[]
+  updateMany?: Prisma.ProductionStageTemplateUpdateManyWithWhereWithoutWorkCentreInput | Prisma.ProductionStageTemplateUpdateManyWithWhereWithoutWorkCentreInput[]
+  deleteMany?: Prisma.ProductionStageTemplateScalarWhereInput | Prisma.ProductionStageTemplateScalarWhereInput[]
+}
+
 export type ProductionStageTemplateCreateWithoutProductInput = {
   id?: string
   stageName: string
   sequence: number
+  expectedSetupMinutes?: number | null
+  expectedRunMinutes?: number | null
+  workCentre?: Prisma.WorkCentreCreateNestedOneWithoutStageTemplatesInput
 }
 
 export type ProductionStageTemplateUncheckedCreateWithoutProductInput = {
   id?: string
   stageName: string
   sequence: number
+  workCentreId?: string | null
+  expectedSetupMinutes?: number | null
+  expectedRunMinutes?: number | null
 }
 
 export type ProductionStageTemplateCreateOrConnectWithoutProductInput = {
@@ -453,30 +589,125 @@ export type ProductionStageTemplateScalarWhereInput = {
   productItemId?: Prisma.UuidNullableFilter<"ProductionStageTemplate"> | string | null
   stageName?: Prisma.StringFilter<"ProductionStageTemplate"> | string
   sequence?: Prisma.IntFilter<"ProductionStageTemplate"> | number
+  workCentreId?: Prisma.UuidNullableFilter<"ProductionStageTemplate"> | string | null
+  expectedSetupMinutes?: Prisma.IntNullableFilter<"ProductionStageTemplate"> | number | null
+  expectedRunMinutes?: Prisma.IntNullableFilter<"ProductionStageTemplate"> | number | null
+}
+
+export type ProductionStageTemplateCreateWithoutWorkCentreInput = {
+  id?: string
+  stageName: string
+  sequence: number
+  expectedSetupMinutes?: number | null
+  expectedRunMinutes?: number | null
+  product?: Prisma.ItemCreateNestedOneWithoutStageTemplatesInput
+}
+
+export type ProductionStageTemplateUncheckedCreateWithoutWorkCentreInput = {
+  id?: string
+  productItemId?: string | null
+  stageName: string
+  sequence: number
+  expectedSetupMinutes?: number | null
+  expectedRunMinutes?: number | null
+}
+
+export type ProductionStageTemplateCreateOrConnectWithoutWorkCentreInput = {
+  where: Prisma.ProductionStageTemplateWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProductionStageTemplateCreateWithoutWorkCentreInput, Prisma.ProductionStageTemplateUncheckedCreateWithoutWorkCentreInput>
+}
+
+export type ProductionStageTemplateCreateManyWorkCentreInputEnvelope = {
+  data: Prisma.ProductionStageTemplateCreateManyWorkCentreInput | Prisma.ProductionStageTemplateCreateManyWorkCentreInput[]
+  skipDuplicates?: boolean
+}
+
+export type ProductionStageTemplateUpsertWithWhereUniqueWithoutWorkCentreInput = {
+  where: Prisma.ProductionStageTemplateWhereUniqueInput
+  update: Prisma.XOR<Prisma.ProductionStageTemplateUpdateWithoutWorkCentreInput, Prisma.ProductionStageTemplateUncheckedUpdateWithoutWorkCentreInput>
+  create: Prisma.XOR<Prisma.ProductionStageTemplateCreateWithoutWorkCentreInput, Prisma.ProductionStageTemplateUncheckedCreateWithoutWorkCentreInput>
+}
+
+export type ProductionStageTemplateUpdateWithWhereUniqueWithoutWorkCentreInput = {
+  where: Prisma.ProductionStageTemplateWhereUniqueInput
+  data: Prisma.XOR<Prisma.ProductionStageTemplateUpdateWithoutWorkCentreInput, Prisma.ProductionStageTemplateUncheckedUpdateWithoutWorkCentreInput>
+}
+
+export type ProductionStageTemplateUpdateManyWithWhereWithoutWorkCentreInput = {
+  where: Prisma.ProductionStageTemplateScalarWhereInput
+  data: Prisma.XOR<Prisma.ProductionStageTemplateUpdateManyMutationInput, Prisma.ProductionStageTemplateUncheckedUpdateManyWithoutWorkCentreInput>
 }
 
 export type ProductionStageTemplateCreateManyProductInput = {
   id?: string
   stageName: string
   sequence: number
+  workCentreId?: string | null
+  expectedSetupMinutes?: number | null
+  expectedRunMinutes?: number | null
 }
 
 export type ProductionStageTemplateUpdateWithoutProductInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stageName?: Prisma.StringFieldUpdateOperationsInput | string
   sequence?: Prisma.IntFieldUpdateOperationsInput | number
+  expectedSetupMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  expectedRunMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  workCentre?: Prisma.WorkCentreUpdateOneWithoutStageTemplatesNestedInput
 }
 
 export type ProductionStageTemplateUncheckedUpdateWithoutProductInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stageName?: Prisma.StringFieldUpdateOperationsInput | string
   sequence?: Prisma.IntFieldUpdateOperationsInput | number
+  workCentreId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expectedSetupMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  expectedRunMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type ProductionStageTemplateUncheckedUpdateManyWithoutProductInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stageName?: Prisma.StringFieldUpdateOperationsInput | string
   sequence?: Prisma.IntFieldUpdateOperationsInput | number
+  workCentreId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expectedSetupMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  expectedRunMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+}
+
+export type ProductionStageTemplateCreateManyWorkCentreInput = {
+  id?: string
+  productItemId?: string | null
+  stageName: string
+  sequence: number
+  expectedSetupMinutes?: number | null
+  expectedRunMinutes?: number | null
+}
+
+export type ProductionStageTemplateUpdateWithoutWorkCentreInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  stageName?: Prisma.StringFieldUpdateOperationsInput | string
+  sequence?: Prisma.IntFieldUpdateOperationsInput | number
+  expectedSetupMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  expectedRunMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  product?: Prisma.ItemUpdateOneWithoutStageTemplatesNestedInput
+}
+
+export type ProductionStageTemplateUncheckedUpdateWithoutWorkCentreInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  productItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stageName?: Prisma.StringFieldUpdateOperationsInput | string
+  sequence?: Prisma.IntFieldUpdateOperationsInput | number
+  expectedSetupMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  expectedRunMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+}
+
+export type ProductionStageTemplateUncheckedUpdateManyWithoutWorkCentreInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  productItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stageName?: Prisma.StringFieldUpdateOperationsInput | string
+  sequence?: Prisma.IntFieldUpdateOperationsInput | number
+  expectedSetupMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  expectedRunMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 
@@ -487,7 +718,11 @@ export type ProductionStageTemplateSelect<ExtArgs extends runtime.Types.Extensio
   productItemId?: boolean
   stageName?: boolean
   sequence?: boolean
+  workCentreId?: boolean
+  expectedSetupMinutes?: boolean
+  expectedRunMinutes?: boolean
   product?: boolean | Prisma.ProductionStageTemplate$productArgs<ExtArgs>
+  workCentre?: boolean | Prisma.ProductionStageTemplate$workCentreArgs<ExtArgs>
 }, ExtArgs["result"]["productionStageTemplate"]>
 
 export type ProductionStageTemplateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -496,7 +731,11 @@ export type ProductionStageTemplateSelectCreateManyAndReturn<ExtArgs extends run
   productItemId?: boolean
   stageName?: boolean
   sequence?: boolean
+  workCentreId?: boolean
+  expectedSetupMinutes?: boolean
+  expectedRunMinutes?: boolean
   product?: boolean | Prisma.ProductionStageTemplate$productArgs<ExtArgs>
+  workCentre?: boolean | Prisma.ProductionStageTemplate$workCentreArgs<ExtArgs>
 }, ExtArgs["result"]["productionStageTemplate"]>
 
 export type ProductionStageTemplateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -505,7 +744,11 @@ export type ProductionStageTemplateSelectUpdateManyAndReturn<ExtArgs extends run
   productItemId?: boolean
   stageName?: boolean
   sequence?: boolean
+  workCentreId?: boolean
+  expectedSetupMinutes?: boolean
+  expectedRunMinutes?: boolean
   product?: boolean | Prisma.ProductionStageTemplate$productArgs<ExtArgs>
+  workCentre?: boolean | Prisma.ProductionStageTemplate$workCentreArgs<ExtArgs>
 }, ExtArgs["result"]["productionStageTemplate"]>
 
 export type ProductionStageTemplateSelectScalar = {
@@ -514,23 +757,30 @@ export type ProductionStageTemplateSelectScalar = {
   productItemId?: boolean
   stageName?: boolean
   sequence?: boolean
+  workCentreId?: boolean
+  expectedSetupMinutes?: boolean
+  expectedRunMinutes?: boolean
 }
 
-export type ProductionStageTemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orgId" | "productItemId" | "stageName" | "sequence", ExtArgs["result"]["productionStageTemplate"]>
+export type ProductionStageTemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orgId" | "productItemId" | "stageName" | "sequence" | "workCentreId" | "expectedSetupMinutes" | "expectedRunMinutes", ExtArgs["result"]["productionStageTemplate"]>
 export type ProductionStageTemplateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   product?: boolean | Prisma.ProductionStageTemplate$productArgs<ExtArgs>
+  workCentre?: boolean | Prisma.ProductionStageTemplate$workCentreArgs<ExtArgs>
 }
 export type ProductionStageTemplateIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   product?: boolean | Prisma.ProductionStageTemplate$productArgs<ExtArgs>
+  workCentre?: boolean | Prisma.ProductionStageTemplate$workCentreArgs<ExtArgs>
 }
 export type ProductionStageTemplateIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   product?: boolean | Prisma.ProductionStageTemplate$productArgs<ExtArgs>
+  workCentre?: boolean | Prisma.ProductionStageTemplate$workCentreArgs<ExtArgs>
 }
 
 export type $ProductionStageTemplatePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ProductionStageTemplate"
   objects: {
     product: Prisma.$ItemPayload<ExtArgs> | null
+    workCentre: Prisma.$WorkCentrePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -538,6 +788,9 @@ export type $ProductionStageTemplatePayload<ExtArgs extends runtime.Types.Extens
     productItemId: string | null
     stageName: string
     sequence: number
+    workCentreId: string | null
+    expectedSetupMinutes: number | null
+    expectedRunMinutes: number | null
   }, ExtArgs["result"]["productionStageTemplate"]>
   composites: {}
 }
@@ -933,6 +1186,7 @@ readonly fields: ProductionStageTemplateFieldRefs;
 export interface Prisma__ProductionStageTemplateClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   product<T extends Prisma.ProductionStageTemplate$productArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductionStageTemplate$productArgs<ExtArgs>>): Prisma.Prisma__ItemClient<runtime.Types.Result.GetResult<Prisma.$ItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  workCentre<T extends Prisma.ProductionStageTemplate$workCentreArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductionStageTemplate$workCentreArgs<ExtArgs>>): Prisma.Prisma__WorkCentreClient<runtime.Types.Result.GetResult<Prisma.$WorkCentrePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -967,6 +1221,9 @@ export interface ProductionStageTemplateFieldRefs {
   readonly productItemId: Prisma.FieldRef<"ProductionStageTemplate", 'String'>
   readonly stageName: Prisma.FieldRef<"ProductionStageTemplate", 'String'>
   readonly sequence: Prisma.FieldRef<"ProductionStageTemplate", 'Int'>
+  readonly workCentreId: Prisma.FieldRef<"ProductionStageTemplate", 'String'>
+  readonly expectedSetupMinutes: Prisma.FieldRef<"ProductionStageTemplate", 'Int'>
+  readonly expectedRunMinutes: Prisma.FieldRef<"ProductionStageTemplate", 'Int'>
 }
     
 
@@ -1384,6 +1641,25 @@ export type ProductionStageTemplate$productArgs<ExtArgs extends runtime.Types.Ex
    */
   include?: Prisma.ItemInclude<ExtArgs> | null
   where?: Prisma.ItemWhereInput
+}
+
+/**
+ * ProductionStageTemplate.workCentre
+ */
+export type ProductionStageTemplate$workCentreArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkCentre
+   */
+  select?: Prisma.WorkCentreSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkCentre
+   */
+  omit?: Prisma.WorkCentreOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkCentreInclude<ExtArgs> | null
+  where?: Prisma.WorkCentreWhereInput
 }
 
 /**

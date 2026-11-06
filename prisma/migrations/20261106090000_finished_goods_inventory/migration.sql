@@ -89,6 +89,12 @@ CREATE TABLE "finished_goods_batch_cost_line" (
 CREATE UNIQUE INDEX "finished_goods_batch_org_id_batch_number_key" ON "finished_goods_batch"("org_id", "batch_number");
 CREATE UNIQUE INDEX "finished_goods_batch_org_id_id_key" ON "finished_goods_batch"("org_id", "id");
 CREATE UNIQUE INDEX "finished_goods_batch_org_id_produced_movement_id_key" ON "finished_goods_batch"("org_id", "produced_movement_id");
+-- Backs the one-to-one relation (fgBatchTransferredInTo / transferredFromMovement)
+-- in schema.prisma: a StockMovement is the transfer-in movement for at most
+-- one FinishedGoodsBatch. Without this, Prisma's "@relation must use unique
+-- fields on the defining side" check fails at `prisma generate`/validate --
+-- the FK two statements below already existed but had no backing unique index.
+CREATE UNIQUE INDEX "finished_goods_batch_org_id_transferred_from_movement_id_key" ON "finished_goods_batch"("org_id", "transferred_from_movement_id");
 CREATE INDEX "finished_goods_batch_org_id_product_item_id_warehouse_id_idx" ON "finished_goods_batch"("org_id", "product_item_id", "warehouse_id");
 CREATE INDEX "finished_goods_batch_org_id_job_id_idx" ON "finished_goods_batch"("org_id", "job_id");
 

@@ -40,6 +40,7 @@ export type LabourRecordMinAggregateOutputType = {
   id: string | null
   orgId: string | null
   jobId: string | null
+  jobStageId: string | null
   userId: string | null
   hours: runtime.Decimal | null
   rate: runtime.Decimal | null
@@ -52,6 +53,7 @@ export type LabourRecordMaxAggregateOutputType = {
   id: string | null
   orgId: string | null
   jobId: string | null
+  jobStageId: string | null
   userId: string | null
   hours: runtime.Decimal | null
   rate: runtime.Decimal | null
@@ -64,6 +66,7 @@ export type LabourRecordCountAggregateOutputType = {
   id: number
   orgId: number
   jobId: number
+  jobStageId: number
   userId: number
   hours: number
   rate: number
@@ -88,6 +91,7 @@ export type LabourRecordMinAggregateInputType = {
   id?: true
   orgId?: true
   jobId?: true
+  jobStageId?: true
   userId?: true
   hours?: true
   rate?: true
@@ -100,6 +104,7 @@ export type LabourRecordMaxAggregateInputType = {
   id?: true
   orgId?: true
   jobId?: true
+  jobStageId?: true
   userId?: true
   hours?: true
   rate?: true
@@ -112,6 +117,7 @@ export type LabourRecordCountAggregateInputType = {
   id?: true
   orgId?: true
   jobId?: true
+  jobStageId?: true
   userId?: true
   hours?: true
   rate?: true
@@ -211,6 +217,7 @@ export type LabourRecordGroupByOutputType = {
   id: string
   orgId: string
   jobId: string
+  jobStageId: string | null
   userId: string | null
   hours: runtime.Decimal
   rate: runtime.Decimal
@@ -246,6 +253,7 @@ export type LabourRecordWhereInput = {
   id?: Prisma.UuidFilter<"LabourRecord"> | string
   orgId?: Prisma.UuidFilter<"LabourRecord"> | string
   jobId?: Prisma.UuidFilter<"LabourRecord"> | string
+  jobStageId?: Prisma.UuidNullableFilter<"LabourRecord"> | string | null
   userId?: Prisma.UuidNullableFilter<"LabourRecord"> | string | null
   hours?: Prisma.DecimalFilter<"LabourRecord"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   rate?: Prisma.DecimalFilter<"LabourRecord"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -253,12 +261,14 @@ export type LabourRecordWhereInput = {
   clientRequestId?: Prisma.UuidNullableFilter<"LabourRecord"> | string | null
   recordedAt?: Prisma.DateTimeFilter<"LabourRecord"> | Date | string
   job?: Prisma.XOR<Prisma.ProductionJobScalarRelationFilter, Prisma.ProductionJobWhereInput>
+  jobStage?: Prisma.XOR<Prisma.ProductionJobStageNullableScalarRelationFilter, Prisma.ProductionJobStageWhereInput> | null
 }
 
 export type LabourRecordOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   orgId?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
+  jobStageId?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   hours?: Prisma.SortOrder
   rate?: Prisma.SortOrder
@@ -266,6 +276,7 @@ export type LabourRecordOrderByWithRelationInput = {
   clientRequestId?: Prisma.SortOrderInput | Prisma.SortOrder
   recordedAt?: Prisma.SortOrder
   job?: Prisma.ProductionJobOrderByWithRelationInput
+  jobStage?: Prisma.ProductionJobStageOrderByWithRelationInput
 }
 
 export type LabourRecordWhereUniqueInput = Prisma.AtLeast<{
@@ -276,6 +287,7 @@ export type LabourRecordWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.LabourRecordWhereInput | Prisma.LabourRecordWhereInput[]
   orgId?: Prisma.UuidFilter<"LabourRecord"> | string
   jobId?: Prisma.UuidFilter<"LabourRecord"> | string
+  jobStageId?: Prisma.UuidNullableFilter<"LabourRecord"> | string | null
   userId?: Prisma.UuidNullableFilter<"LabourRecord"> | string | null
   hours?: Prisma.DecimalFilter<"LabourRecord"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   rate?: Prisma.DecimalFilter<"LabourRecord"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -283,12 +295,14 @@ export type LabourRecordWhereUniqueInput = Prisma.AtLeast<{
   clientRequestId?: Prisma.UuidNullableFilter<"LabourRecord"> | string | null
   recordedAt?: Prisma.DateTimeFilter<"LabourRecord"> | Date | string
   job?: Prisma.XOR<Prisma.ProductionJobScalarRelationFilter, Prisma.ProductionJobWhereInput>
+  jobStage?: Prisma.XOR<Prisma.ProductionJobStageNullableScalarRelationFilter, Prisma.ProductionJobStageWhereInput> | null
 }, "id" | "orgId_clientRequestId">
 
 export type LabourRecordOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   orgId?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
+  jobStageId?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   hours?: Prisma.SortOrder
   rate?: Prisma.SortOrder
@@ -309,6 +323,7 @@ export type LabourRecordScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"LabourRecord"> | string
   orgId?: Prisma.UuidWithAggregatesFilter<"LabourRecord"> | string
   jobId?: Prisma.UuidWithAggregatesFilter<"LabourRecord"> | string
+  jobStageId?: Prisma.UuidNullableWithAggregatesFilter<"LabourRecord"> | string | null
   userId?: Prisma.UuidNullableWithAggregatesFilter<"LabourRecord"> | string | null
   hours?: Prisma.DecimalWithAggregatesFilter<"LabourRecord"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   rate?: Prisma.DecimalWithAggregatesFilter<"LabourRecord"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -326,12 +341,14 @@ export type LabourRecordCreateInput = {
   clientRequestId?: string | null
   recordedAt?: Date | string
   job: Prisma.ProductionJobCreateNestedOneWithoutLabourRecordsInput
+  jobStage?: Prisma.ProductionJobStageCreateNestedOneWithoutLabourRecordsInput
 }
 
 export type LabourRecordUncheckedCreateInput = {
   id?: string
   orgId: string
   jobId: string
+  jobStageId?: string | null
   userId?: string | null
   hours: runtime.Decimal | runtime.DecimalJsLike | number | string
   rate: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -349,12 +366,14 @@ export type LabourRecordUpdateInput = {
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   job?: Prisma.ProductionJobUpdateOneRequiredWithoutLabourRecordsNestedInput
+  jobStage?: Prisma.ProductionJobStageUpdateOneWithoutLabourRecordsNestedInput
 }
 
 export type LabourRecordUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orgId?: Prisma.StringFieldUpdateOperationsInput | string
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
+  jobStageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hours?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -367,6 +386,7 @@ export type LabourRecordCreateManyInput = {
   id?: string
   orgId: string
   jobId: string
+  jobStageId?: string | null
   userId?: string | null
   hours: runtime.Decimal | runtime.DecimalJsLike | number | string
   rate: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -389,6 +409,7 @@ export type LabourRecordUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orgId?: Prisma.StringFieldUpdateOperationsInput | string
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
+  jobStageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hours?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -416,6 +437,7 @@ export type LabourRecordCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orgId?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
+  jobStageId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   hours?: Prisma.SortOrder
   rate?: Prisma.SortOrder
@@ -433,6 +455,7 @@ export type LabourRecordMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orgId?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
+  jobStageId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   hours?: Prisma.SortOrder
   rate?: Prisma.SortOrder
@@ -445,6 +468,7 @@ export type LabourRecordMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orgId?: Prisma.SortOrder
   jobId?: Prisma.SortOrder
+  jobStageId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   hours?: Prisma.SortOrder
   rate?: Prisma.SortOrder
@@ -500,6 +524,48 @@ export type LabourRecordUncheckedUpdateManyWithoutJobNestedInput = {
   deleteMany?: Prisma.LabourRecordScalarWhereInput | Prisma.LabourRecordScalarWhereInput[]
 }
 
+export type LabourRecordCreateNestedManyWithoutJobStageInput = {
+  create?: Prisma.XOR<Prisma.LabourRecordCreateWithoutJobStageInput, Prisma.LabourRecordUncheckedCreateWithoutJobStageInput> | Prisma.LabourRecordCreateWithoutJobStageInput[] | Prisma.LabourRecordUncheckedCreateWithoutJobStageInput[]
+  connectOrCreate?: Prisma.LabourRecordCreateOrConnectWithoutJobStageInput | Prisma.LabourRecordCreateOrConnectWithoutJobStageInput[]
+  createMany?: Prisma.LabourRecordCreateManyJobStageInputEnvelope
+  connect?: Prisma.LabourRecordWhereUniqueInput | Prisma.LabourRecordWhereUniqueInput[]
+}
+
+export type LabourRecordUncheckedCreateNestedManyWithoutJobStageInput = {
+  create?: Prisma.XOR<Prisma.LabourRecordCreateWithoutJobStageInput, Prisma.LabourRecordUncheckedCreateWithoutJobStageInput> | Prisma.LabourRecordCreateWithoutJobStageInput[] | Prisma.LabourRecordUncheckedCreateWithoutJobStageInput[]
+  connectOrCreate?: Prisma.LabourRecordCreateOrConnectWithoutJobStageInput | Prisma.LabourRecordCreateOrConnectWithoutJobStageInput[]
+  createMany?: Prisma.LabourRecordCreateManyJobStageInputEnvelope
+  connect?: Prisma.LabourRecordWhereUniqueInput | Prisma.LabourRecordWhereUniqueInput[]
+}
+
+export type LabourRecordUpdateManyWithoutJobStageNestedInput = {
+  create?: Prisma.XOR<Prisma.LabourRecordCreateWithoutJobStageInput, Prisma.LabourRecordUncheckedCreateWithoutJobStageInput> | Prisma.LabourRecordCreateWithoutJobStageInput[] | Prisma.LabourRecordUncheckedCreateWithoutJobStageInput[]
+  connectOrCreate?: Prisma.LabourRecordCreateOrConnectWithoutJobStageInput | Prisma.LabourRecordCreateOrConnectWithoutJobStageInput[]
+  upsert?: Prisma.LabourRecordUpsertWithWhereUniqueWithoutJobStageInput | Prisma.LabourRecordUpsertWithWhereUniqueWithoutJobStageInput[]
+  createMany?: Prisma.LabourRecordCreateManyJobStageInputEnvelope
+  set?: Prisma.LabourRecordWhereUniqueInput | Prisma.LabourRecordWhereUniqueInput[]
+  disconnect?: Prisma.LabourRecordWhereUniqueInput | Prisma.LabourRecordWhereUniqueInput[]
+  delete?: Prisma.LabourRecordWhereUniqueInput | Prisma.LabourRecordWhereUniqueInput[]
+  connect?: Prisma.LabourRecordWhereUniqueInput | Prisma.LabourRecordWhereUniqueInput[]
+  update?: Prisma.LabourRecordUpdateWithWhereUniqueWithoutJobStageInput | Prisma.LabourRecordUpdateWithWhereUniqueWithoutJobStageInput[]
+  updateMany?: Prisma.LabourRecordUpdateManyWithWhereWithoutJobStageInput | Prisma.LabourRecordUpdateManyWithWhereWithoutJobStageInput[]
+  deleteMany?: Prisma.LabourRecordScalarWhereInput | Prisma.LabourRecordScalarWhereInput[]
+}
+
+export type LabourRecordUncheckedUpdateManyWithoutJobStageNestedInput = {
+  create?: Prisma.XOR<Prisma.LabourRecordCreateWithoutJobStageInput, Prisma.LabourRecordUncheckedCreateWithoutJobStageInput> | Prisma.LabourRecordCreateWithoutJobStageInput[] | Prisma.LabourRecordUncheckedCreateWithoutJobStageInput[]
+  connectOrCreate?: Prisma.LabourRecordCreateOrConnectWithoutJobStageInput | Prisma.LabourRecordCreateOrConnectWithoutJobStageInput[]
+  upsert?: Prisma.LabourRecordUpsertWithWhereUniqueWithoutJobStageInput | Prisma.LabourRecordUpsertWithWhereUniqueWithoutJobStageInput[]
+  createMany?: Prisma.LabourRecordCreateManyJobStageInputEnvelope
+  set?: Prisma.LabourRecordWhereUniqueInput | Prisma.LabourRecordWhereUniqueInput[]
+  disconnect?: Prisma.LabourRecordWhereUniqueInput | Prisma.LabourRecordWhereUniqueInput[]
+  delete?: Prisma.LabourRecordWhereUniqueInput | Prisma.LabourRecordWhereUniqueInput[]
+  connect?: Prisma.LabourRecordWhereUniqueInput | Prisma.LabourRecordWhereUniqueInput[]
+  update?: Prisma.LabourRecordUpdateWithWhereUniqueWithoutJobStageInput | Prisma.LabourRecordUpdateWithWhereUniqueWithoutJobStageInput[]
+  updateMany?: Prisma.LabourRecordUpdateManyWithWhereWithoutJobStageInput | Prisma.LabourRecordUpdateManyWithWhereWithoutJobStageInput[]
+  deleteMany?: Prisma.LabourRecordScalarWhereInput | Prisma.LabourRecordScalarWhereInput[]
+}
+
 export type LabourRecordCreateWithoutJobInput = {
   id?: string
   userId?: string | null
@@ -508,10 +574,12 @@ export type LabourRecordCreateWithoutJobInput = {
   rateCurrency: string
   clientRequestId?: string | null
   recordedAt?: Date | string
+  jobStage?: Prisma.ProductionJobStageCreateNestedOneWithoutLabourRecordsInput
 }
 
 export type LabourRecordUncheckedCreateWithoutJobInput = {
   id?: string
+  jobStageId?: string | null
   userId?: string | null
   hours: runtime.Decimal | runtime.DecimalJsLike | number | string
   rate: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -553,6 +621,7 @@ export type LabourRecordScalarWhereInput = {
   id?: Prisma.UuidFilter<"LabourRecord"> | string
   orgId?: Prisma.UuidFilter<"LabourRecord"> | string
   jobId?: Prisma.UuidFilter<"LabourRecord"> | string
+  jobStageId?: Prisma.UuidNullableFilter<"LabourRecord"> | string | null
   userId?: Prisma.UuidNullableFilter<"LabourRecord"> | string | null
   hours?: Prisma.DecimalFilter<"LabourRecord"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   rate?: Prisma.DecimalFilter<"LabourRecord"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -561,8 +630,57 @@ export type LabourRecordScalarWhereInput = {
   recordedAt?: Prisma.DateTimeFilter<"LabourRecord"> | Date | string
 }
 
+export type LabourRecordCreateWithoutJobStageInput = {
+  id?: string
+  userId?: string | null
+  hours: runtime.Decimal | runtime.DecimalJsLike | number | string
+  rate: runtime.Decimal | runtime.DecimalJsLike | number | string
+  rateCurrency: string
+  clientRequestId?: string | null
+  recordedAt?: Date | string
+  job: Prisma.ProductionJobCreateNestedOneWithoutLabourRecordsInput
+}
+
+export type LabourRecordUncheckedCreateWithoutJobStageInput = {
+  id?: string
+  jobId: string
+  userId?: string | null
+  hours: runtime.Decimal | runtime.DecimalJsLike | number | string
+  rate: runtime.Decimal | runtime.DecimalJsLike | number | string
+  rateCurrency: string
+  clientRequestId?: string | null
+  recordedAt?: Date | string
+}
+
+export type LabourRecordCreateOrConnectWithoutJobStageInput = {
+  where: Prisma.LabourRecordWhereUniqueInput
+  create: Prisma.XOR<Prisma.LabourRecordCreateWithoutJobStageInput, Prisma.LabourRecordUncheckedCreateWithoutJobStageInput>
+}
+
+export type LabourRecordCreateManyJobStageInputEnvelope = {
+  data: Prisma.LabourRecordCreateManyJobStageInput | Prisma.LabourRecordCreateManyJobStageInput[]
+  skipDuplicates?: boolean
+}
+
+export type LabourRecordUpsertWithWhereUniqueWithoutJobStageInput = {
+  where: Prisma.LabourRecordWhereUniqueInput
+  update: Prisma.XOR<Prisma.LabourRecordUpdateWithoutJobStageInput, Prisma.LabourRecordUncheckedUpdateWithoutJobStageInput>
+  create: Prisma.XOR<Prisma.LabourRecordCreateWithoutJobStageInput, Prisma.LabourRecordUncheckedCreateWithoutJobStageInput>
+}
+
+export type LabourRecordUpdateWithWhereUniqueWithoutJobStageInput = {
+  where: Prisma.LabourRecordWhereUniqueInput
+  data: Prisma.XOR<Prisma.LabourRecordUpdateWithoutJobStageInput, Prisma.LabourRecordUncheckedUpdateWithoutJobStageInput>
+}
+
+export type LabourRecordUpdateManyWithWhereWithoutJobStageInput = {
+  where: Prisma.LabourRecordScalarWhereInput
+  data: Prisma.XOR<Prisma.LabourRecordUpdateManyMutationInput, Prisma.LabourRecordUncheckedUpdateManyWithoutJobStageInput>
+}
+
 export type LabourRecordCreateManyJobInput = {
   id?: string
+  jobStageId?: string | null
   userId?: string | null
   hours: runtime.Decimal | runtime.DecimalJsLike | number | string
   rate: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -579,10 +697,12 @@ export type LabourRecordUpdateWithoutJobInput = {
   rateCurrency?: Prisma.StringFieldUpdateOperationsInput | string
   clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  jobStage?: Prisma.ProductionJobStageUpdateOneWithoutLabourRecordsNestedInput
 }
 
 export type LabourRecordUncheckedUpdateWithoutJobInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  jobStageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hours?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -593,6 +713,51 @@ export type LabourRecordUncheckedUpdateWithoutJobInput = {
 
 export type LabourRecordUncheckedUpdateManyWithoutJobInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  jobStageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hours?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  rateCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type LabourRecordCreateManyJobStageInput = {
+  id?: string
+  jobId: string
+  userId?: string | null
+  hours: runtime.Decimal | runtime.DecimalJsLike | number | string
+  rate: runtime.Decimal | runtime.DecimalJsLike | number | string
+  rateCurrency: string
+  clientRequestId?: string | null
+  recordedAt?: Date | string
+}
+
+export type LabourRecordUpdateWithoutJobStageInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hours?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  rateCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  job?: Prisma.ProductionJobUpdateOneRequiredWithoutLabourRecordsNestedInput
+}
+
+export type LabourRecordUncheckedUpdateWithoutJobStageInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  jobId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hours?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  rateCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  clientRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recordedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type LabourRecordUncheckedUpdateManyWithoutJobStageInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  jobId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hours?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -607,6 +772,7 @@ export type LabourRecordSelect<ExtArgs extends runtime.Types.Extensions.Internal
   id?: boolean
   orgId?: boolean
   jobId?: boolean
+  jobStageId?: boolean
   userId?: boolean
   hours?: boolean
   rate?: boolean
@@ -614,12 +780,14 @@ export type LabourRecordSelect<ExtArgs extends runtime.Types.Extensions.Internal
   clientRequestId?: boolean
   recordedAt?: boolean
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
+  jobStage?: boolean | Prisma.LabourRecord$jobStageArgs<ExtArgs>
 }, ExtArgs["result"]["labourRecord"]>
 
 export type LabourRecordSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   orgId?: boolean
   jobId?: boolean
+  jobStageId?: boolean
   userId?: boolean
   hours?: boolean
   rate?: boolean
@@ -627,12 +795,14 @@ export type LabourRecordSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   clientRequestId?: boolean
   recordedAt?: boolean
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
+  jobStage?: boolean | Prisma.LabourRecord$jobStageArgs<ExtArgs>
 }, ExtArgs["result"]["labourRecord"]>
 
 export type LabourRecordSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   orgId?: boolean
   jobId?: boolean
+  jobStageId?: boolean
   userId?: boolean
   hours?: boolean
   rate?: boolean
@@ -640,12 +810,14 @@ export type LabourRecordSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   clientRequestId?: boolean
   recordedAt?: boolean
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
+  jobStage?: boolean | Prisma.LabourRecord$jobStageArgs<ExtArgs>
 }, ExtArgs["result"]["labourRecord"]>
 
 export type LabourRecordSelectScalar = {
   id?: boolean
   orgId?: boolean
   jobId?: boolean
+  jobStageId?: boolean
   userId?: boolean
   hours?: boolean
   rate?: boolean
@@ -654,26 +826,31 @@ export type LabourRecordSelectScalar = {
   recordedAt?: boolean
 }
 
-export type LabourRecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orgId" | "jobId" | "userId" | "hours" | "rate" | "rateCurrency" | "clientRequestId" | "recordedAt", ExtArgs["result"]["labourRecord"]>
+export type LabourRecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orgId" | "jobId" | "jobStageId" | "userId" | "hours" | "rate" | "rateCurrency" | "clientRequestId" | "recordedAt", ExtArgs["result"]["labourRecord"]>
 export type LabourRecordInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
+  jobStage?: boolean | Prisma.LabourRecord$jobStageArgs<ExtArgs>
 }
 export type LabourRecordIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
+  jobStage?: boolean | Prisma.LabourRecord$jobStageArgs<ExtArgs>
 }
 export type LabourRecordIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   job?: boolean | Prisma.ProductionJobDefaultArgs<ExtArgs>
+  jobStage?: boolean | Prisma.LabourRecord$jobStageArgs<ExtArgs>
 }
 
 export type $LabourRecordPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "LabourRecord"
   objects: {
     job: Prisma.$ProductionJobPayload<ExtArgs>
+    jobStage: Prisma.$ProductionJobStagePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     orgId: string
     jobId: string
+    jobStageId: string | null
     userId: string | null
     hours: runtime.Decimal
     rate: runtime.Decimal
@@ -1075,6 +1252,7 @@ readonly fields: LabourRecordFieldRefs;
 export interface Prisma__LabourRecordClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   job<T extends Prisma.ProductionJobDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductionJobDefaultArgs<ExtArgs>>): Prisma.Prisma__ProductionJobClient<runtime.Types.Result.GetResult<Prisma.$ProductionJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  jobStage<T extends Prisma.LabourRecord$jobStageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LabourRecord$jobStageArgs<ExtArgs>>): Prisma.Prisma__ProductionJobStageClient<runtime.Types.Result.GetResult<Prisma.$ProductionJobStagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1107,6 +1285,7 @@ export interface LabourRecordFieldRefs {
   readonly id: Prisma.FieldRef<"LabourRecord", 'String'>
   readonly orgId: Prisma.FieldRef<"LabourRecord", 'String'>
   readonly jobId: Prisma.FieldRef<"LabourRecord", 'String'>
+  readonly jobStageId: Prisma.FieldRef<"LabourRecord", 'String'>
   readonly userId: Prisma.FieldRef<"LabourRecord", 'String'>
   readonly hours: Prisma.FieldRef<"LabourRecord", 'Decimal'>
   readonly rate: Prisma.FieldRef<"LabourRecord", 'Decimal'>
@@ -1511,6 +1690,25 @@ export type LabourRecordDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Limit how many LabourRecords to delete.
    */
   limit?: number
+}
+
+/**
+ * LabourRecord.jobStage
+ */
+export type LabourRecord$jobStageArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProductionJobStage
+   */
+  select?: Prisma.ProductionJobStageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProductionJobStage
+   */
+  omit?: Prisma.ProductionJobStageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductionJobStageInclude<ExtArgs> | null
+  where?: Prisma.ProductionJobStageWhereInput
 }
 
 /**

@@ -22,6 +22,19 @@ export const Role = {
 export type Role = (typeof Role)[keyof typeof Role]
 
 
+export const IndustryProfile = {
+  general: 'general',
+  plastics: 'plastics',
+  food_beverage: 'food_beverage',
+  metal_fabrication: 'metal_fabrication',
+  textile_garment: 'textile_garment',
+  furniture_woodworking: 'furniture_woodworking',
+  packaging_printing: 'packaging_printing'
+} as const
+
+export type IndustryProfile = (typeof IndustryProfile)[keyof typeof IndustryProfile]
+
+
 export const AuditAction = {
   create: 'create',
   update: 'update',
@@ -108,6 +121,24 @@ export const LotConsumptionType = {
 export type LotConsumptionType = (typeof LotConsumptionType)[keyof typeof LotConsumptionType]
 
 
+export const FgBatchStatus = {
+  active: 'active',
+  quarantined: 'quarantined',
+  rejected: 'rejected'
+} as const
+
+export type FgBatchStatus = (typeof FgBatchStatus)[keyof typeof FgBatchStatus]
+
+
+export const FgBatchMovementType = {
+  transfer_out: 'transfer_out',
+  adjustment: 'adjustment',
+  dispatch: 'dispatch'
+} as const
+
+export type FgBatchMovementType = (typeof FgBatchMovementType)[keyof typeof FgBatchMovementType]
+
+
 export const SalesOrderStatus = {
   draft: 'draft',
   confirmed: 'confirmed',
@@ -119,6 +150,14 @@ export const SalesOrderStatus = {
 } as const
 
 export type SalesOrderStatus = (typeof SalesOrderStatus)[keyof typeof SalesOrderStatus]
+
+
+export const DispatchStatus = {
+  dispatched: 'dispatched',
+  delivered: 'delivered'
+} as const
+
+export type DispatchStatus = (typeof DispatchStatus)[keyof typeof DispatchStatus]
 
 
 export const ProductionJobStatus = {
@@ -163,7 +202,8 @@ export const MovementType = {
   sale_delivery: 'sale_delivery',
   adjustment: 'adjustment',
   stock_transfer_out: 'stock_transfer_out',
-  stock_transfer_in: 'stock_transfer_in'
+  stock_transfer_in: 'stock_transfer_in',
+  regrind_generation: 'regrind_generation'
 } as const
 
 export type MovementType = (typeof MovementType)[keyof typeof MovementType]
@@ -177,3 +217,64 @@ export const ReferenceType = {
 } as const
 
 export type ReferenceType = (typeof ReferenceType)[keyof typeof ReferenceType]
+
+
+export const JobPriority = {
+  low: 'low',
+  normal: 'normal',
+  high: 'high',
+  urgent: 'urgent'
+} as const
+
+export type JobPriority = (typeof JobPriority)[keyof typeof JobPriority]
+
+
+export const MachineStatus = {
+  available: 'available',
+  in_use: 'in_use',
+  down: 'down',
+  maintenance: 'maintenance',
+  retired: 'retired'
+} as const
+
+export type MachineStatus = (typeof MachineStatus)[keyof typeof MachineStatus]
+
+
+export const DowntimeCategory = {
+  breakdown: 'breakdown',
+  changeover: 'changeover',
+  no_material: 'no_material',
+  no_operator: 'no_operator',
+  planned_maintenance: 'planned_maintenance',
+  other: 'other'
+} as const
+
+export type DowntimeCategory = (typeof DowntimeCategory)[keyof typeof DowntimeCategory]
+
+
+export const MaintenanceType = {
+  scheduled: 'scheduled',
+  unscheduled: 'unscheduled'
+} as const
+
+export type MaintenanceType = (typeof MaintenanceType)[keyof typeof MaintenanceType]
+
+
+export const CorrectiveActionStatus = {
+  open: 'open',
+  in_progress: 'in_progress',
+  completed: 'completed',
+  cancelled: 'cancelled'
+} as const
+
+export type CorrectiveActionStatus = (typeof CorrectiveActionStatus)[keyof typeof CorrectiveActionStatus]
+
+
+export const MouldStatus = {
+  available: 'available',
+  in_use: 'in_use',
+  maintenance: 'maintenance',
+  retired: 'retired'
+} as const
+
+export type MouldStatus = (typeof MouldStatus)[keyof typeof MouldStatus]
