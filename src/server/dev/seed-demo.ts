@@ -697,6 +697,17 @@ async function seedJobA1(c: JobsCtx): Promise<void> {
 /** Job A2: PET bottle 2L, consumes A1's preforms, linked to SO1 (Scenario E). Scrap and QA-rejected units feed Scenario D's regrind. */
 async function seedJobA2(c: JobsCtx): Promise<string> {
   const productId = c.itemIds.get("FG-PET-BTL-2000")!;
+  // Must equal SO1's own line quantity exactly: createJob (job-service.ts)
+  // enforces `line.quantity === plannedQty` for any job linked via
+  // salesOrderLineId -- confirmed by an actual run against a real database,
+  // which rejected the previous value of 1800 with "Planned quantity must
+  // equal the order line quantity (1730)". This is a genuine, deliberate
+  // validation in the real application, not something to work around:
+  // changed here, not in job-service.ts. The job still finishes with a
+  // real overage (1,800 total output against a 1,730 plan -- output-
+  // service.ts's own `exceedsPlan` flag is informational, not a block,
+  // "some over-run is normal (remakes for scrap)") rather than a fabricated
+  // exact match.
   const plannedQty = 1730;
   const existing = await findJobByBusinessKey(c.sessions.owner!.orgId, productId, plannedQty);
   if (existing) { bump(c.report, "jobs", false); return existing.id; }
@@ -797,10 +808,53 @@ async function seedJobA3(c: JobsCtx, regrindQty: number): Promise<void> {
 async function seedJobB1(c: JobsCtx): Promise<void> {
   const productId = c.itemIds.get("FG-PP-CAP-28")!;
   const plannedQty = 50000;
-  const existing = await findJobByBusinessKey(c.sessions.owner!.orgId, productId, plannedQty);
-  if (existing) { bump(c.report, "jobs", false); return; }
-
+  const orgId = c.sessions.owner!.orgId;
+  const existing = await findJobByBusinessKey(orgId, productId, plannedQty);
   const pm = c.sessions.production!, op = c.sessions.operator!, sup = c.sessions.supervisor!, qa = c.sessions.quality!;
+
+  if (existing) {
+    if (existing.status === "completed") { bump(c.report, "jobs", false); return; }
+    // Resume path, not a fresh create: an earlier run reached the
+    // "rework" disposition below and then crashed before closing the
+    // rework loop -- confirmed by an actual run: "Stage can't be
+    // completed yet: 300 unit(s) are still in rework at 'Injection
+    // Moulding'." findJobByBusinessKey only checks for existence, so
+    // without this branch every later rerun would see this job, assume
+    // it's done, and skip it forever -- silently leaving the real row
+    // stuck in_progress/overdue. Finish it against the SAME job/stage
+    // ids instead of creating a second job. Every sub-step is safe to
+    // repeat: recordOutput/recordInspection/receiveFinishedGoods are each
+    // idempotent by clientRequestId (same pattern as everywhere else in
+    // this file), and transitionStage/completeJob are guarded by an
+    // explicit status check first, since calling either on an
+    // already-completed stage/job throws a ConflictError rather than
+    // being a no-op.
+    const job = { id: existing.id, jobNumber: existing.jobNumber };
+    const stage = await prisma.productionJobStage.findFirst({ where: { orgId, jobId: job.id, stageName: "Injection Moulding" } });
+    if (!stage) throw new Error(`Job B1 (${job.jobNumber}) exists but its "Injection Moulding" stage could not be found; this needs manual review.`);
+    const id = (k: string) => demoUuid(`jobB1:${k}`);
+
+    if (stage.status !== "completed") {
+      await recordOutput(op, job.id, {
+        clientRequestId: id("output:rework-returned"), jobStageId: stage.id,
+        goodQty: 300, reworkGoodQty: 300,
+        notes: "300 closures returned from gate-flash trim/rework; all recovered as good.",
+      });
+      await recordInspection(qa, job.id, {
+        clientRequestId: id("inspection:rework-returned"), jobStageId: stage.id,
+        inspectedQty: 300, rejectedQty: 0,
+        notes: "Reworked batch (gate-flash trim) re-inspected after return; full pass.",
+      });
+      await transitionStage(sup, job.id, stage.id, { action: "complete" });
+    }
+    const jobNow = await prisma.productionJob.findFirst({ where: { orgId, id: job.id }, select: { status: true } });
+    if (jobNow?.status !== "completed") await completeJob(pm, job.id);
+    await receiveFinishedGoods(pm, job.id, { clientRequestId: id("fg"), warehouseId: c.warehouseIds.get("Finished Goods Warehouse"), quantity: 48500, disposition: "available", occurredAt: at(-10), qualityNotes: "PP 28mm closures, QA-cleared, including 300 units that passed after rework (gate-flash trim)." });
+    bump(c.report, "jobs", true);
+    c.log(`job ${job.jobNumber} (B1: PP 28mm closures, Scenario B) -- resumed and completed a previously interrupted run`);
+    return;
+  }
+
   const job = (await createJob(pm, {
     branchId: c.branchId, productItemId: productId, plannedQty, priority: "normal",
     plannedStart: day(-11), plannedEnd: day(-10),
@@ -827,9 +881,35 @@ async function seedJobB1(c: JobsCtx): Promise<void> {
     ],
   })) as unknown as { inspection: { id: string } };
   await recordDisposition(pm, job.id, inspection.id, { clientRequestId: id("disposition"), kind: "rework", qty: 300, reason: "Light gate flash; trimmed and reworked rather than scrapped." });
+  // A "rework" disposition only opens a tracked rework quantity (shopfloor-
+  // math.ts's reworkOpen) -- it does not, by itself, resolve it, and a stage
+  // can't be completed while any is still open (confirmed by an actual run:
+  // "Stage can't be completed yet: 300 unit(s) are still in rework"). Close
+  // the loop the same way a real operator would: the trimmed units come back
+  // from rework, recorded as their own output entry (goodQty with a matching
+  // reworkGoodQty, per output-service.ts's own "rework_good <= good" rule),
+  // then re-inspected -- this stage requires inspection, so the newly
+  // returned good units need their own inspection record too, or the stage's
+  // "good units not yet inspected" blocker would simply trade one block for
+  // another.
+  await recordOutput(op, job.id, {
+    clientRequestId: id("output:rework-returned"), jobStageId: st[0]!.id,
+    goodQty: 300, reworkGoodQty: 300,
+    notes: "300 closures returned from gate-flash trim/rework; all recovered as good.",
+  });
+  await recordInspection(qa, job.id, {
+    clientRequestId: id("inspection:rework-returned"), jobStageId: st[0]!.id,
+    inspectedQty: 300, rejectedQty: 0,
+    notes: "Reworked batch (gate-flash trim) re-inspected after return; full pass.",
+  });
   await transitionStage(sup, job.id, st[0]!.id, { action: "complete" });
   await completeJob(pm, job.id);
-  await receiveFinishedGoods(pm, job.id, { clientRequestId: id("fg"), warehouseId: c.warehouseIds.get("Finished Goods Warehouse"), quantity: 48200, disposition: "available", occurredAt: at(-10), qualityNotes: "PP 28mm closures, QA-cleared; excludes 300 units sent for rework, not yet returned to stock as of this demo snapshot." });
+  // effectiveGood is now 48,500 (48,500 + 300 recovered-from-rework, minus
+  // the 300 the disposition reclassified out of "good" when it sent them to
+  // rework -- shopfloor-math.ts's own formula) -- i.e. the full run's good
+  // output nets out once the reworked units are confirmed recovered, not
+  // 48,200. receiveFinishedGoods's own bound is this effectiveGood figure.
+  await receiveFinishedGoods(pm, job.id, { clientRequestId: id("fg"), warehouseId: c.warehouseIds.get("Finished Goods Warehouse"), quantity: 48500, disposition: "available", occurredAt: at(-10), qualityNotes: "PP 28mm closures, QA-cleared, including 300 units that passed after rework (gate-flash trim)." });
   bump(c.report, "jobs", true);
   c.log(`job ${job.jobNumber} (B1: PP 28mm closures, Scenario B)`);
 }
